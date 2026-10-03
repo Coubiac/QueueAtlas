@@ -50,6 +50,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Douzième lot FileSource : ouverture en lecture seule et vérification du
   chemin dans `internal/source/file/open*.go`, commit
   `6d5f79471a63f03437787ae24559c075a86a09b5`, toujours dans la PR #11.
+- Treizième lot FileSource : démarrage de `source.Source.Run`, décision de
+  génération, attente initiale et suivi du descripteur choisi dans
+  `internal/source/file/file_source.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -98,6 +101,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   compilation des tests FileSource Linux amd64 sans CGO réussis.
   [CI ouverture](https://github.com/Coubiac/mailtrace/actions/runs/37158920606)
   réussie, incluant remplacement/FIFO/symlink Linux et builds sans CGO.
+- Validation locale du lot démarrage : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Les tests Linux
+  du démarrage restent à exécuter en CI ; résultat à consigner après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -381,7 +387,7 @@ avec une ancre positive. Les garanties bornées/non atomiques du préfixe et la
 sérialisation de la source restent requises. Les anciennes empreintes vides
 restent insuffisantes. La politique n'est pas encore exposée par une CLI/config.
 
-## Dernier lot terminé : ouvrir et vérifier un chemin de journal
+## Ouverture vérifiée du chemin de journal
 
 `OpenLog(ctx, chemin)` retourne un descripteur en lecture seule, à l'offset zéro,
 et son identité physique, après vérification d'un fichier régulier. L'identité
@@ -408,31 +414,52 @@ génération ; les changements ultérieurs restent à surveiller. L'annulation e
 vérifiée entre appels système et n'interrompt pas un appel de filesystem bloqué.
 Aucun Sink, suivi de rotation, migration ou dépendance ajouté.
 
-## Prochain petit lot : orchestrer le démarrage FileSource
+## Dernier lot terminé : orchestrer le démarrage FileSource
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Ajouter une implémentation initiale du contrat `source.Source` qui
-relie les composants disponibles sur un chemin configuré :
+`file.New(Config, StateReader, Normalize)` valide l'identité de source, le chemin,
+les dépendances et l'intervalle sans ouvrir ni écrire. La configuration est copiée
+et le chemin relatif résolu une seule fois. `FileSource` implémente `source.Source`.
 
-- Valider configuration, normaliseur, StateReader et intervalle avant écriture.
-- Ouvrir avec `OpenLog`, décider avec `EnsureGenerationWithPolicy` et démarrer
-  l'ingesteur seulement si un état est utilisable.
-- Attendre de manière annulable pour `WaitingForContent`, en refaisant ouverture
-  et décision ; retourner les décisions insuffisantes/ambiguës/limitées clairement.
-- Appliquer `Ingestor.Follow`, fermer le descripteur à la fin et interdire deux
-  exécutions simultanées du même objet Source.
-- Tester démarrage, append après fichier vide, reprise, annulation et erreur Sink.
+`Run` ouvre avec `OpenLog`, décide avec `EnsureGenerationWithPolicy` puis suit
+l'état utilisable via l'ingesteur. Un fichier neuf vide est fermé avant une attente
+annulable ; ouverture et décision sont refaites après chaque intervalle. Les
+décisions insuffisantes, ambiguës ou limitées retournent `ResumeDecisionError`
+avec leur statut fixe, sans commit. La politique explicite de relecture à zéro
+est transmise depuis `Config` ; le défaut reste strict.
 
-La rotation et la troncature pendant suivi restent les lots suivants ; documenter
-le suivi du seul descripteur dans cette implémentation initiale. Pas de CLI ici.
+Tout descripteur ouvert est fermé à la sortie, y compris sur erreur/annulation.
+`ErrSourceRunning` refuse deux exécutions simultanées du même objet ; l'appelant
+doit toujours sérialiser les écritures d'un ID de source entre objets/processus.
+Un appel ultérieur reprend l'état acquitté ; le batch en mémoire n'est pas conservé
+entre appels à `Run`, la reprise durable et l'idempotence du Sink restent requises.
+
+Tests : configuration et copie, chemin absent, annulation, fermeture. Tests Linux :
+démarrage puis reprise SQLite sur le même objet, append après attentes sans
+enregistrement vide, fermeture avant attente initiale et annulation, refus d'un
+appel concurrent/libération du verrou, diagnostics sans commit, échec du Sink,
+politique explicite zéro avec checkpoint avancé sur la même origine.
+
+Limites : après sélection, seul ce descripteur est suivi. Rotation et troncature
+en cours de suivi ne sont pas encore détectées. Les erreurs d'ouverture et du Sink
+arrêtent `Run` sans réessai automatique. Pas de CLI, migration ou dépendance ajoutée.
+
+## Prochain petit lot : observer le chemin pendant une rotation
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4,
+ADR-003 et la section rotation du cadrage. Ajouter une observation bornée qui
+compare le chemin courant au descripteur conservé : distinguer identité stable,
+chemin absent et remplacement ; refuser un type non régulier. Elle doit préserver
+l'offset et la propriété du descripteur, sans choix ni écriture de génération.
+Tester rename/create, disparition/réapparition et remplacement par lien/FIFO sur
+Linux. L'intégration au scheduler, l'ouverture de la nouvelle génération et les
+écritures tardives de l'ancienne resteront des lots distincts.
 
 ## Suite à découper au fil des reprises
 
-1. Démarrage Source.Run avec décision de génération et attente initiale.
-2. Rotation par renommage/création et écritures tardives, en lots distincts.
-3. Reprise après arrêt, troncature et diagnostic des lacunes.
-4. Décisions insuffisantes restantes, dont anciennes empreintes vides.
-5. Import historique normal, puis gzip dans un lot distinct.
+1. Rotation par renommage/création et écritures tardives, en lots distincts.
+2. Reprise après arrêt, troncature et diagnostic des lacunes.
+3. Décisions insuffisantes restantes, dont anciennes empreintes vides.
+4. Import historique normal, puis gzip dans un lot distinct.
 
 Chaque demande de continuation traite par défaut un seul petit lot et actualise
 ce point de reprise avec le résultat et la prochaine action.

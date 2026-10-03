@@ -30,22 +30,32 @@ func (r *Ingestor) Follow(ctx context.Context, sink source.Sink, pollInterval ti
 	if sink == nil {
 		return errors.New("sink is required")
 	}
-	if pollInterval == 0 {
-		pollInterval = DefaultPollInterval
+	interval, err := resolvePollInterval(pollInterval)
+	if err != nil {
+		return err
 	}
-	if pollInterval < MinPollInterval || pollInterval > MaxPollInterval {
-		return errors.New("poll interval must be between 10ms and 1m")
+	return r.follow(ctx, sink, func(ctx context.Context) error { return waitForPoll(ctx, interval) })
+}
+
+func resolvePollInterval(interval time.Duration) (time.Duration, error) {
+	if interval == 0 {
+		interval = DefaultPollInterval
 	}
-	return r.follow(ctx, sink, func(ctx context.Context) error {
-		timer := time.NewTimer(pollInterval)
-		defer timer.Stop()
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-timer.C:
-			return nil
-		}
-	})
+	if interval < MinPollInterval || interval > MaxPollInterval {
+		return 0, errors.New("poll interval must be between 10ms and 1m")
+	}
+	return interval, nil
+}
+
+func waitForPoll(ctx context.Context, interval time.Duration) error {
+	timer := time.NewTimer(interval)
+	defer timer.Stop()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-timer.C:
+		return nil
+	}
 }
 
 func (r *Ingestor) follow(ctx context.Context, sink source.Sink, wait func(context.Context) error) error {
