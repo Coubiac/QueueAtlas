@@ -44,6 +44,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Dixième lot FileSource : décision d'attente sans écriture pour une génération
   neuve vide, dans `generation.go`, commit
   `90e4efcb6a0a8bc63f1b02f911618c5e2a01ade5`, toujours dans la PR #11.
+- Onzième lot FileSource : politique explicite de relecture à zéro dans les
+  vérificateur/sélecteur/décision de génération, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -84,6 +86,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   compilation des tests FileSource Linux amd64 sans CGO réussis.
   [CI fichier vide](https://github.com/Coubiac/mailtrace/actions/runs/37158062815)
   réussie, incluant attente sans écriture, append et builds Linux sans CGO.
+- Validation locale du lot politique zéro : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
+  les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -244,11 +249,12 @@ incomplètes/ambiguës/limitées et erreurs de Sink/lecteur.
 
 Limites : sérialisation de la source à assurer par l'appelant ; captures du
 fichier non atomiques. Un arrêt après création mais avant la première ligne
-validée laisse un checkpoint zéro qui exige une décision explicite à la reprise.
+validée laisse un checkpoint zéro qui exige la politique explicite décrite
+ci-dessous pour une relecture automatique.
 Une ancienne origine capturée vide conserve son empreinte vide immuable et ne
 fournit pas de preuve de contenu lors d'une reprise future. Les nouvelles
-origines vides sont désormais différées. La reprise à zéro reste à définir
-avant de déclarer FileSource terminé.
+origines vides sont désormais différées. Leur reprise sans preuve reste à
+définir avant de déclarer FileSource terminé.
 
 ## Acquitter une ligne complète
 
@@ -308,7 +314,7 @@ fermeture de fichier ou diagnostic de rotation/troncature. Un seul appelant ;
 l'annulation pendant une lecture bloquante ou un commit reste conditionnée aux
 contrats du lecteur et du Sink. FileSource n'est pas encore complet.
 
-## Dernier lot terminé : différer une génération initialement vide
+## Différer une génération initialement vide
 
 `GenerationStart.WaitingForContent` est vrai uniquement lorsque la sélection
 autorisait une nouvelle origine (`absent` ou `different`) mais que le préfixe
@@ -332,24 +338,58 @@ checkpoint zéro et course de réécriture du fichier restent des comportements
 distincts. Le scheduler de chemin devra gérer `WaitingForContent` avant de créer
 un ingesteur. Aucune migration ou dépendance ajoutée.
 
-## Prochain petit lot : politique explicite de reprise à zéro
+## Dernier lot terminé : politique explicite de reprise à zéro
+
+Les entrées `VerifyCandidateWithPolicy`, `SelectResumeWithPolicy` et
+`EnsureGenerationWithPolicy` acceptent `ResumePolicy{AllowZeroCheckpoint: true}`.
+Les entrées existantes et la valeur zéro de la politique restent strictes.
+
+La relecture exige un checkpoint présent à zéro avec OriginID cohérent, une
+ancre zéro canonique, une identité physique concordante et un préfixe non vide
+concordant. Le résultat est `restart_zero`, distinct de `match`/`unique` fondés
+sur une ancre positive. L'ancre vide ne devient pas une preuve de continuité.
+
+Le sélecteur applique les mêmes limites, pagination et règle de choix unique.
+Deux candidats à zéro, ou un candidat à zéro et un positif, sont ambigus.
+Un candidat incomplet ou à empreinte vide bloque toujours la décision. Aucune
+priorité par offset, date ou ID ; aucune nouvelle origine pour une relecture.
+
+La décision de génération renvoie l'origine et son checkpoint zéro sans écrire
+au Sink, sans marquer `Created` ou `WaitingForContent`. L'ingesteur peut alors
+relire depuis zéro ; son premier commit avancera le checkpoint normalement.
+Un préfixe changé, avec politique activée, est une différence et peut conduire
+à une nouvelle génération suivant les règles existantes.
+
+Tests : choix paginé à zéro avant/après des différences, ambiguïté zéro/zéro
+et zéro/positif dans les deux ordres, preuves insuffisantes. Tests Linux : append,
+préfixe modifié/tronqué, ancre incohérente/non canonique, identité/OriginID,
+checkpoint absent/négatif, préfixe vide ; réouverture SQLite, mode strict par
+défaut, décision sans écriture puis relecture réelle de la première ligne et
+retour à une reprise positive.
+
+Limites : l'activation autorise une relecture ; elle ne prouve pas la génération
+avec une ancre positive. Les garanties bornées/non atomiques du préfixe et la
+sérialisation de la source restent requises. Les anciennes empreintes vides
+restent insuffisantes. La politique n'est pas encore exposée par une CLI/config.
+
+## Prochain petit lot : ouvrir et vérifier un chemin de journal
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Permettre une politique explicite de relecture depuis le début
-pour un checkpoint zéro, tout en conservant le comportement strict par défaut :
+et ADR-003. Préparer l'ouverture d'un chemin configuré en lecture seule avant
+l'orchestration FileSource :
 
-- Exiger identité physique, préfixe non vide concordant et ancre zéro canonique.
-- Distinguer cette décision d'une correspondance prouvée par ancre positive.
-- Refuser les candidats incomplets ou multiples, sans choix par date/offset.
-- Réutiliser l'origine et relire à zéro sans avancer ni créer un checkpoint.
-- Tester défaut strict, politique activée, append, incohérences et ambiguïté.
+- Valider le fichier régulier via son descripteur, puis comparer au chemin.
+- Retourner un diagnostic explicite si le chemin a changé pendant l'ouverture.
+- Éviter qu'une entrée non régulière (notamment FIFO Linux) bloque à l'ouverture.
+- Fermer le descripteur en cas d'échec ; transférer sa propriété après succès.
+- Tester lecture seule, chemin absent, répertoire et remplacement ; pas de Sink.
 
-La reprise sans aucune preuve (empreinte vide ancienne) et l'orchestration sur
-chemin restent des lots séparés. Réutiliser la PR #11 sans migration.
+L'orchestration `Source.Run`, les rotations et les anciennes empreintes vides
+restent des lots distincts. Aucune migration ou dépendance nécessaire ici.
 
 ## Suite à découper au fil des reprises
 
-1. Politique de relecture explicite d'un checkpoint zéro vérifiable.
+1. Ouverture du chemin et vérification de l'identité du descripteur.
 2. Orchestration FileSource sur chemin et décisions insuffisantes restantes.
 3. Rotation par renommage/création et écritures tardives.
 4. Reprise après arrêt, troncature et diagnostic des lacunes.

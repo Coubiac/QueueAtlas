@@ -32,19 +32,25 @@ type GenerationStart struct {
 // prove a generation on a later restart: it then requires an explicit decision.
 // File content reads retain the bounded, non-atomic guarantees of CapturePrefix.
 func EnsureGeneration(ctx context.Context, f *os.File, identity source.Identity, reader source.StateReader, sink source.Sink) (GenerationStart, error) {
+	return EnsureGenerationWithPolicy(ctx, f, identity, reader, sink, ResumePolicy{})
+}
+
+// EnsureGenerationWithPolicy can return a zero replay decision without writing
+// an origin or checkpoint. All other registration rules remain unchanged.
+func EnsureGenerationWithPolicy(ctx context.Context, f *os.File, identity source.Identity, reader source.StateReader, sink source.Sink, policy ResumePolicy) (GenerationStart, error) {
 	if err := ctx.Err(); err != nil {
 		return GenerationStart{}, err
 	}
 	if identity.ID == "" || identity.Kind != "file" || identity.Name == "" || sink == nil {
 		return GenerationStart{}, errors.New("file source ID, name and sink are required")
 	}
-	selection, err := SelectResume(ctx, f, identity.ID, reader)
+	selection, err := SelectResumeWithPolicy(ctx, f, identity.ID, reader, policy)
 	if err != nil {
 		return GenerationStart{}, err
 	}
 	result := GenerationStart{Selection: selection.Status}
 	switch selection.Status {
-	case SelectionUnique:
+	case SelectionUnique, SelectionRestartZero:
 		result.State = selection.Candidate
 		return result, nil
 	case SelectionInsufficient, SelectionAmbiguous, SelectionLimit:

@@ -28,6 +28,9 @@ func selectionStates(statuses ...ResumeStatus) []source.OriginState {
 			Origin:     source.Origin{ID: id, Device: "1", Inode: "2", Fingerprint: string(status)},
 			Checkpoint: &source.Position{OriginID: id, Offset: int64(i + 1)},
 		}
+		if status == ResumeRestartZero {
+			states[i].Checkpoint.Offset = 0
+		}
 	}
 	return states
 }
@@ -75,6 +78,12 @@ func TestResumeSelectionAcrossPages(t *testing.T) {
 		{"incomplete after match", []ResumeStatus{ResumeMatch, ResumeInsufficient}, SelectionInsufficient},
 		{"incomplete before match", []ResumeStatus{ResumeInsufficient, ResumeMatch}, SelectionInsufficient},
 		{"incomplete and different", []ResumeStatus{ResumeDifferent, ResumeInsufficient}, SelectionInsufficient},
+		{"zero after different", []ResumeStatus{ResumeDifferent, ResumeRestartZero}, SelectionRestartZero},
+		{"zero then incomplete", []ResumeStatus{ResumeRestartZero, ResumeInsufficient}, SelectionInsufficient},
+		{"incomplete then zero", []ResumeStatus{ResumeInsufficient, ResumeRestartZero}, SelectionInsufficient},
+		{"two zero candidates", []ResumeStatus{ResumeRestartZero, ResumeRestartZero}, SelectionAmbiguous},
+		{"zero then positive", []ResumeStatus{ResumeRestartZero, ResumeMatch}, SelectionAmbiguous},
+		{"positive then zero", []ResumeStatus{ResumeMatch, ResumeRestartZero}, SelectionAmbiguous},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			states := selectionStates(tc.states...)
@@ -83,8 +92,12 @@ func TestResumeSelectionAcrossPages(t *testing.T) {
 			if err != nil || got.Status != tc.want || got.Examined != len(states) {
 				t.Fatalf("selection: %+v, %v", got, err)
 			}
-			if tc.want == SelectionUnique {
-				if got.Candidate == nil || got.Candidate.Origin.Fingerprint != string(ResumeMatch) {
+			if tc.want == SelectionUnique || tc.want == SelectionRestartZero {
+				wantFingerprint := ResumeMatch
+				if tc.want == SelectionRestartZero {
+					wantFingerprint = ResumeRestartZero
+				}
+				if got.Candidate == nil || got.Candidate.Origin.Fingerprint != string(wantFingerprint) {
 					t.Fatalf("missing matching candidate: %+v", got)
 				}
 				position := got.Candidate.Checkpoint.Offset

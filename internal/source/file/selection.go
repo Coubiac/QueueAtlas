@@ -20,6 +20,7 @@ const (
 	SelectionInsufficient SelectionStatus = "insufficient"
 	SelectionAmbiguous    SelectionStatus = "ambiguous"
 	SelectionLimit        SelectionStatus = "limit_reached"
+	SelectionRestartZero  SelectionStatus = "restart_zero"
 )
 
 // ErrInvalidOriginPage indicates that a reader violated ordering, pagination,
@@ -28,7 +29,7 @@ var ErrInvalidOriginPage = errors.New("invalid origin page")
 
 type ResumeSelection struct {
 	Status    SelectionStatus
-	Candidate *source.OriginState // populated only for SelectionUnique
+	Candidate *source.OriginState // populated only for Unique or RestartZero
 	Examined  int
 }
 
@@ -41,6 +42,13 @@ type ResumeSelection struct {
 // snapshot. Bounded fingerprints and concurrent file rewrites retain the limits
 // documented by VerifyCandidate. Cancellation is checked between bounded reads.
 func SelectResume(ctx context.Context, f *os.File, sourceID string, reader source.StateReader) (ResumeSelection, error) {
+	return SelectResumeWithPolicy(ctx, f, sourceID, reader, ResumePolicy{})
+}
+
+// SelectResumeWithPolicy includes permitted zero replay candidates in the same
+// bounded uniqueness scan. A zero replay and a positive match are ambiguous;
+// neither outranks the other. A sole replay returns SelectionRestartZero.
+func SelectResumeWithPolicy(ctx context.Context, f *os.File, sourceID string, reader source.StateReader, policy ResumePolicy) (ResumeSelection, error) {
 	if err := ctx.Err(); err != nil {
 		return ResumeSelection{}, err
 	}
@@ -59,13 +67,14 @@ func SelectResume(ctx context.Context, f *os.File, sourceID string, reader sourc
 	}
 	query := source.OriginQuery{SourceID: sourceID, Device: id.Device, Inode: id.Inode, Limit: source.MaxOriginPageSize}
 	return scanResume(ctx, reader, query, func(state source.OriginState) (ResumeCheck, error) {
-		return VerifyCandidate(f, state)
+		return VerifyCandidateWithPolicy(f, state, policy)
 	})
 }
 
 func scanResume(ctx context.Context, reader source.StateReader, query source.OriginQuery, verify func(source.OriginState) (ResumeCheck, error)) (ResumeSelection, error) {
 	result := ResumeSelection{}
 	var candidate *source.OriginState
+	candidateStatus := SelectionUnique
 	matches, insufficient := 0, false
 	for {
 		if err := ctx.Err(); err != nil {
@@ -89,9 +98,12 @@ func scanResume(ctx context.Context, reader source.StateReader, query source.Ori
 			}
 			result.Examined++
 			switch check.Status {
-			case ResumeMatch:
+			case ResumeMatch, ResumeRestartZero:
 				matches++
 				if matches == 1 {
+					if check.Status == ResumeRestartZero {
+						candidateStatus = SelectionRestartZero
+					}
 					copyState := state
 					if state.Checkpoint != nil {
 						copyPosition := *state.Checkpoint
@@ -118,7 +130,7 @@ func scanResume(ctx context.Context, reader source.StateReader, query source.Ori
 			case insufficient:
 				result.Status = SelectionInsufficient
 			case matches == 1:
-				result.Status, result.Candidate = SelectionUnique, candidate
+				result.Status, result.Candidate = candidateStatus, candidate
 			case result.Examined == 0:
 				result.Status = SelectionAbsent
 			default:
