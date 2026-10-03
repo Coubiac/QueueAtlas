@@ -24,6 +24,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Troisième lot FileSource : interface de lecture `source.StateReader` et
   implémentation SQLite de la recherche paginée des origines et checkpoints.
   Toujours dans la PR #11, sans migration ni dépendance ajoutée.
+- Quatrième lot FileSource : ancres bornées de checkpoint et lecture stricte
+  des formats persistés, dans `internal/source/file/anchor.go`.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -34,7 +36,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI identité](https://github.com/Coubiac/mailtrace/actions/runs/37154817870)
   réussie, notamment les tests d'identité Linux.
 - Validation locale du lot lecture d'état : `go test ./...` et `go vet ./...`
-  réussis. Consulter les checks de la PR #11 pour la CI du dernier commit.
+  réussis. [CI lecture d'état](https://github.com/Coubiac/mailtrace/actions/runs/37155184130)
+  réussie, incluant les builds Linux sans CGO.
+- Validation locale du lot ancres : `go test ./...` et `go vet ./...` réussis.
+  Consulter les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -83,7 +88,7 @@ génération ; la réutilisation d'inode et la troncature exigent encore les anc
 de checkpoint et un diagnostic. La capture n'est pas une vue atomique du fichier
 pendant une écriture concurrente. Aucune dépendance ou migration ajoutée.
 
-## Dernier lot terminé : lecture des origines et checkpoints persistés
+## Lecture des origines et checkpoints persistés
 
 `source.StateReader` définit `FileOrigins` et le lecteur de checkpoint existant.
 `OriginQuery` filtre exactement une source, un device et un inode. Les résultats
@@ -101,18 +106,42 @@ Limites : les pages successives ne constituent pas un instantané global et
 l'ordre des IDs n'est pas chronologique ; le prochain sélecteur devra en tenir
 compte. La boucle de suivi et le choix d'une génération restent à développer.
 
-## Prochain petit lot : ancres de checkpoint et formats d'empreinte
+## Dernier lot terminé : ancres et formats persistés
+
+`CaptureAnchor` hache les derniers `min(offset, 4096)` octets avant l'offset,
+sans déplacer la position de lecture. Un offset au-delà de EOF ou une fenêtre
+partielle produit une erreur. `CheckpointAnchor.Matches` vérifie la même fenêtre
+après append et renvoie une non-correspondance si le fichier a été tronqué.
+
+Format canonique de l'ancre : `sha256:<offset>:<longueur>:<hex>`, à enregistrer
+dans `Position.AnchorHash`. `ParseCheckpointAnchor` et `ParsePrefixFingerprint`
+rejettent encodages malformés, tailles hors bornes, digests invalides et formes
+non canoniques. La chaîne est limitée à 128 octets avant décodage.
+
+Offset zéro : ancre valide, longueur zéro, SHA-256 du contenu vide ; `Matches`
+renvoie toujours false car elle ne fournit aucune preuve. Les fenêtres bornées
+ne détectent pas une modification hors fenêtre et ne prouvent pas à elles seules
+la génération du fichier. Ces helpers ne vérifient pas la frontière de ligne.
+
+Tests : fenêtre courte/longue, round-trip, append, position de lecture inchangée,
+modification dans/hors fenêtre, troncature, zéro et nombreux formats invalides.
+La sélection de génération et la boucle de suivi restent à développer.
+
+## Prochain petit lot : vérifier un candidat de reprise
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Ajouter les helpers bornés nécessaires pour vérifier un offset :
+et ADR-003. Ajouter un contrôle borné d'un seul `source.OriginState` face au
+fichier ouvert, avec résultat explicite (correspondance, différence ou preuve
+insuffisante) :
 
-- Hacher une fenêtre avant l'offset de checkpoint sans déplacer la lecture.
-- Conserver la position, la longueur et le digest dans `Position.AnchorHash`.
-- Lire et valider les formats persistés des empreintes de début et des ancres.
-- Tester append, modification de la fenêtre, troncature et formats invalides.
+- Comparer l'identité physique et les formats persistés avant les lectures.
+- Vérifier préfixe, ancre et égalité des offsets ancre/checkpoint.
+- Refuser un checkpoint positif au milieu d'une ligne et un OriginID incohérent.
+- Traiter checkpoint absent/zéro et empreinte vide sans inventer une preuve.
+- Tester reprise après append, contenu changé, troncature et états incohérents.
 
-Ce lot ne choisit pas encore la génération et ne suit pas les fichiers. Définir
-explicitement le cas du checkpoint à zéro et les limites d'une fenêtre bornée.
+Le parcours des pages, le choix d'un candidat unique et la création d'une
+nouvelle génération viendront dans le lot suivant ; aucune boucle de suivi ici.
 
 ## Suite à découper au fil des reprises
 
