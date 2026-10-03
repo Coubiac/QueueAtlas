@@ -27,8 +27,9 @@ func (e *ResumeDecisionError) Error() string {
 	return "file resume decision required: " + string(e.Status)
 }
 
-// FileSource orchestrates startup and follows the chosen descriptor. It observes
-// path changes but does not switch generations or detect live truncation.
+// FileSource orchestrates startup and switches to an observed regular replacement.
+// It retains the previous descriptor but does not yet follow its late writes,
+// expire retained generations or detect live truncation.
 // The caller must serialize state writes for its source ID across all objects;
 // Run guards only this object.
 // The object must not be copied after use. Dependencies must support context.
@@ -65,11 +66,12 @@ func New(cfg Config, reader source.StateReader, normalize Normalize) (*FileSourc
 func (s *FileSource) ID() string { return s.config.Identity.ID }
 
 // Run reopens and reconsiders an initially empty file after each cancellable
-// wait. Once a generation is usable, it follows that descriptor until error or
-// cancellation, then closes it. Unusable decisions and all Sink errors stop Run;
+// wait. Once a generation is usable, it follows the current descriptor, retaining
+// an old generation on replacement. All descriptors close on error/cancellation.
+// Unusable decisions and all Sink errors stop Run;
 // there is no automatic retry of failed commits or opening errors.
-// Path observation errors also stop Run. A missing or replaced regular path
-// keeps the descriptor in use; a replacement is not opened in this version.
+// Path observation errors also stop Run. A missing path keeps its descriptor in
+// use. At most MaxOpenGenerations are retained; exceeding this capacity stops Run.
 // A later Run starts from committed state; in-memory pending data is not retained.
 func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 	if err := ctx.Err(); err != nil {
@@ -100,21 +102,26 @@ func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 
 func (s *FileSource) runOpened(ctx context.Context, f *os.File, sink source.Sink) (waiting bool, err error) {
 	defer func() { err = errors.Join(err, f.Close()) }()
-	start, err := EnsureGenerationWithPolicy(ctx, f, s.config.Identity, s.reader, sink, s.config.ResumePolicy)
-	if err != nil {
-		return false, err
-	}
-	if start.WaitingForContent {
-		return true, nil
-	}
-	if start.State == nil {
-		return false, &ResumeDecisionError{Status: start.Selection}
-	}
-	ingestor, err := NewIngestor(ctx, f, s.config.Identity, *start.State, s.normalize)
-	if err != nil {
-		return false, err
+	ingestor, waiting, err := s.prepareGeneration(ctx, f, sink)
+	if err != nil || waiting {
+		return waiting, err
 	}
 	return false, s.followPath(ctx, f, ingestor, sink, func(ctx context.Context) error {
 		return waitForPoll(ctx, s.config.PollInterval)
 	})
+}
+
+func (s *FileSource) prepareGeneration(ctx context.Context, f *os.File, sink source.Sink) (*Ingestor, bool, error) {
+	start, err := EnsureGenerationWithPolicy(ctx, f, s.config.Identity, s.reader, sink, s.config.ResumePolicy)
+	if err != nil {
+		return nil, false, err
+	}
+	if start.WaitingForContent {
+		return nil, true, nil
+	}
+	if start.State == nil {
+		return nil, false, &ResumeDecisionError{Status: start.Selection}
+	}
+	ingestor, err := NewIngestor(ctx, f, s.config.Identity, *start.State, s.normalize)
+	return ingestor, false, err
 }

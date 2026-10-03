@@ -61,6 +61,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   et maintien du descripteur pendant une absence temporaire du chemin, dans
   `internal/source/file/source_path.go`, commit
   `d1e4a1257f11e85ebec200d8217a4d79b24cda8b`, toujours dans la PR #11.
+- Seizième lot FileSource : bascule vers un remplacement régulier en conservant
+  l'ancien descripteur/ingesteur, avec limite de deux fichiers dans
+  `internal/source/file/rotation.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -125,6 +128,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie, incluant disparition/append/réapparition SQLite, remplacement, erreurs
   au polling et builds Linux sans CGO. L'étape `go test -race ./internal/source/file`
   est confirmée réussie sur le job Go 1.26.x.
+- Validation locale du lot bascule : `go test ./...`, `go vet ./...` et compilation
+  des tests FileSource Linux amd64 sans CGO réussis. Les scénarios de rotation
+  Linux et le détecteur de courses restent à confirmer en CI après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -461,10 +467,9 @@ enregistrement vide, fermeture avant attente initiale et annulation, refus d'un
 appel concurrent/libération du verrou, diagnostics sans commit, échec du Sink,
 politique explicite zéro avec checkpoint avancé sur la même origine.
 
-Limites : après sélection, seul ce descripteur est suivi. Les changements du chemin
-sont maintenant observés au polling décrit ci-dessous ; aucune bascule ou décision
-de troncature. Les erreurs d'ouverture et du Sink arrêtent `Run` sans réessai
-automatique. Pas de CLI, migration ou dépendance ajoutée.
+Les changements du chemin et la bascule sont décrits dans les lots suivants.
+Les erreurs d'ouverture et du Sink arrêtent `Run` sans réessai automatique.
+Pas de CLI, migration ou dépendance ajoutée.
 
 ## Observation du chemin pendant une rotation
 
@@ -491,12 +496,13 @@ lien signalée comme erreur, FIFO refusée sans attendre un écrivain.
 L'intégration de cette observation dans `Run` est décrite au lot suivant.
 Aucune migration ou dépendance ajoutée.
 
-## Dernier lot terminé : polling du chemin et disparition temporaire
+## Polling du chemin et disparition temporaire
 
 Après décision de génération, `FileSource` observe le chemin avant la première
-consommation, puis après chaque attente à EOF du lecteur. `missing` et `replaced`
-conservent le descripteur et l'ingesteur, y compris une ligne partielle. Une erreur
-de contrôle du chemin arrête `Run` et sa fermeture habituelle du descripteur.
+consommation, puis après chaque attente à EOF du lecteur. `missing` conserve le
+descripteur et l'ingesteur, y compris une ligne partielle. Le statut `replaced`
+déclenche désormais le lot de bascule ci-dessous. Une erreur de contrôle du chemin
+arrête `Run` et sa fermeture habituelle des descripteurs.
 Les erreurs du Sink, y compris EOF, restent retournées sans polling ni réessai.
 
 `LastPathStatus()` est consultable pendant `Run`, sous verrou bref, et expose
@@ -510,27 +516,60 @@ Tests locaux : observation avant consommation, erreur initiale, erreur Sink/EOF,
 annulation sans acquitter une ligne partielle, conservation puis réinitialisation
 du statut. Tests Linux : disparition après première ligne, append terminant une
 ligne partielle sur l'ancien fichier, retour de son chemin puis nouvelle ligne,
-une seule origine SQLite et checkpoint 24 ; remplacement observé avec append sur
-l'ancien descripteur, erreurs FIFO/boucle de lien au polling et fermeture.
+une seule origine SQLite et checkpoint 24 ; erreurs FIFO/boucle de lien au polling
+et fermeture. Le test initial sans bascule a été remplacé par les tests de rotation.
 La CI Go 1.26 ajoute le détecteur de courses sur le paquet FileSource pour vérifier
 la consultation concurrente du statut avec les tests de suivi.
 
 Limites : le polling se fait à EOF ; un flux continuellement lisible peut différer
-l'observation. Le fichier de remplacement n'est pas ouvert, les générations ne
-basculent pas, et aucune période de grâce ou détection de troncature n'est ajoutée.
-L'absence lors de l'ouverture initiale reste une erreur immédiate. Pas de migration
-ou dépendance ajoutée.
+l'observation. L'absence lors de l'ouverture initiale reste une erreur immédiate.
+Pas de migration ou dépendance ajoutée.
 
-## Prochain petit lot : bascule après rename/create
+## Dernier lot terminé : bascule après rename/create
+
+Sur `replaced`, `Run` ouvre le nouveau chemin avec `OpenLog` et exige que l'identité
+ouverte corresponde à celle observée. Une nouvelle course observée arrête le suivi
+avec `ErrPathChanged`. Décision de génération et construction de l'ingesteur sont
+réutilisées : checkpoints séparés, reprise existante vérifiée, sinon origine neuve
+avec lecture depuis zéro. Les décisions inutilisables restent des erreurs typées.
+
+Le descripteur et l'ingesteur précédents sont conservés, y compris les octets
+partiels, sans continuer leur lecture après bascule dans cette version. Si leur
+identité redevient courante, cet ingesteur est réutilisé sans nouvelle décision
+ou registration. La capacité `MaxOpenGenerations = 2` compte les identités ouvertes,
+y compris un successeur vide. Une troisième identité produit `ErrRotationCapacity`
+avant toute ouverture ou écriture pour ce troisième fichier.
+
+Un successeur vide reste ouvert et la décision d'enregistrement est différée
+jusqu'à contenu non vide. `missing` conserve le fichier actif. Les successeurs sont
+fermés à toute sortie du scheduler ; `runOpened` ferme aussi le premier fichier.
+Les erreurs d'ouverture, de décision, d'ingesteur ou du Sink restent sans réessai.
+
+Tests Linux : origines et checkpoints SQLite distincts après rename/create,
+ancien descripteur encore ouvert pendant ingestion du nouveau puis fermeture de
+tous à l'annulation ; attente d'un successeur vide sans état persisté puis append ;
+troisième identité refusée sans ouverture/registration ; échecs de registration,
+de ligne et annulation après registration ; décision de reprise insuffisante ;
+retour d'une identité conservée reprenant sa ligne partielle et son checkpoint.
+La propriété des descripteurs est vérifiée via `/proc/self/fd` sur les seuls fichiers
+synthétiques du test, sans compter les fichiers SQLite/runtime.
+
+Limites : les écritures tardives sur un fichier conservé ne sont pas suivies tant
+qu'il ne redevient pas courant ; ces données et une ligne partielle peuvent rester
+non acquittées à l'arrêt. Pas de période de grâce/expiration, diagnostic de lacune,
+recherche des rotations après redémarrage ou détection de troncature. La rotation
+complète du MVP reste inachevée. Pas de migration ou dépendance ajoutée.
+
+## Prochain petit lot : lire conjointement l'ancien et le nouveau
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4,
-ADR-003 et la section rotation du cadrage. Sur `replaced`, ouvrir/vérifier le
-nouveau chemin, décider sa génération et ingérer ses lignes sans fermer l'ancien
-descripteur/ingesteur. Borner ce premier scheduler à deux descripteurs et signaler
-explicitement une rotation supplémentaire dépassant la capacité. Tester origines
-et checkpoints distincts, fichier nouveau vide, annulation et fermeture sur erreur.
-Le suivi conjoint des écritures tardives et l'expiration de la période de grâce
-seront les lots suivants ; ne pas promettre une rotation complète avant ces lots.
+ADR-003 et la section rotation du cadrage. Faire avancer les deux ingesteurs de
+façon équitable et sérialisée au Sink pour récupérer les écritures tardives et
+terminer une ligne partielle de l'ancien fichier après bascule. Attendre seulement
+quand aucun lecteur ne progresse ; préserver erreurs/pending/checkpoints par
+origine et borne de deux descripteurs. Tester ordre par génération, absence de
+famine, append tardif et erreurs. L'expiration après EOF stable avec période de
+grâce configurable reste le lot suivant.
 
 ## Suite à découper au fil des reprises
 

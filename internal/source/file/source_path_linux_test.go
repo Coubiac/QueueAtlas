@@ -115,40 +115,6 @@ func TestFileSourcePollsMissingPathKeepsPartialLineAndSeesReturn(t *testing.T) {
 	}
 }
 
-func TestSourcePathPollObservesReplacementWithoutSwitching(t *testing.T) {
-	s, r, f := pathFollower(t, "first\n")
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	waits := 0
-	var records []source.Record
-	err := s.followPath(ctx, f, r, sinkFunc(func(_ context.Context, b source.Batch) error {
-		records = append(records, b.Records[0])
-		if len(records) == 2 {
-			cancel()
-		}
-		return nil
-	}), func(context.Context) error {
-		waits++
-		if waits != 1 {
-			return errors.New("unexpected wait")
-		}
-		if err := os.Rename(f.Name(), f.Name()+".1"); err != nil {
-			return err
-		}
-		if err := os.WriteFile(f.Name(), []byte("new generation\n"), 0600); err != nil {
-			return err
-		}
-		_, err := f.WriteAt([]byte("late\n"), 6)
-		return err
-	})
-	if !errors.Is(err, context.Canceled) || waits != 1 || len(records) != 2 || string(records[1].Raw) != "late\n" || s.LastPathStatus() != PathReplaced {
-		t.Fatalf("replacement follow: %v, waits %d, records %+v, status %s", err, waits, records, s.LastPathStatus())
-	}
-	if records[0].OriginID != records[1].OriginID || r.Position().Offset != 11 {
-		t.Fatal("replacement switched generations or lost old append")
-	}
-}
-
 func TestRunOpenedStopsOnPathPollErrorAndClosesDescriptor(t *testing.T) {
 	for _, kind := range []string{"fifo", "symlink loop"} {
 		t.Run(kind, func(t *testing.T) {

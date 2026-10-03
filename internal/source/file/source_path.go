@@ -3,8 +3,6 @@ package file
 import (
 	"context"
 	"os"
-
-	"github.com/Coubiac/mailtrace/internal/source"
 )
 
 // LastPathStatus returns the last successful observation in the accepted Run.
@@ -24,27 +22,11 @@ func (s *FileSource) setPathStatus(status PathStatus) {
 	s.pathMu.Unlock()
 }
 
-func (s *FileSource) observePath(ctx context.Context, f *os.File) error {
+func (s *FileSource) observePath(ctx context.Context, f *os.File) (PathObservation, error) {
 	observation, err := ObservePath(ctx, f, s.config.Path)
 	if err != nil {
-		return err
+		return PathObservation{}, err
 	}
 	s.setPathStatus(observation.Status)
-	return nil
-}
-
-// followPath observes once before consumption and after each reader EOF wait.
-// It keeps the same ingestor, including partial bytes and pending checkpoints,
-// while the path is missing or replaced. Continuous input can defer EOF polling.
-// Descriptor ownership remains with runOpened; errors are not retried here.
-func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context) error) error {
-	if err := s.observePath(ctx, f); err != nil {
-		return err
-	}
-	return ingestor.follow(ctx, sink, func(ctx context.Context) error {
-		if err := wait(ctx); err != nil {
-			return err
-		}
-		return s.observePath(ctx, f)
-	})
+	return observation, nil
 }
