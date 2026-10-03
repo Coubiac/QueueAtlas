@@ -52,7 +52,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `6d5f79471a63f03437787ae24559c075a86a09b5`, toujours dans la PR #11.
 - Treizième lot FileSource : démarrage de `source.Source.Run`, décision de
   génération, attente initiale et suivi du descripteur choisi dans
-  `internal/source/file/file_source.go`, toujours dans la PR #11.
+  `internal/source/file/file_source.go`, commit
+  `100669637fbfe219bcc5b1e5ce8dd9dcb7cb0a90`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -102,8 +103,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI ouverture](https://github.com/Coubiac/mailtrace/actions/runs/37158920606)
   réussie, incluant remplacement/FIFO/symlink Linux et builds sans CGO.
 - Validation locale du lot démarrage : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Les tests Linux
-  du démarrage restent à exécuter en CI ; résultat à consigner après publication.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI démarrage](https://github.com/Coubiac/mailtrace/actions/runs/37159624661)
+  réussie, incluant démarrage/reprise SQLite, attente initiale/append/annulation,
+  concurrence, diagnostics, politique zéro et builds Linux sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -385,7 +388,8 @@ retour à une reprise positive.
 Limites : l'activation autorise une relecture ; elle ne prouve pas la génération
 avec une ancre positive. Les garanties bornées/non atomiques du préfixe et la
 sérialisation de la source restent requises. Les anciennes empreintes vides
-restent insuffisantes. La politique n'est pas encore exposée par une CLI/config.
+restent insuffisantes. La politique est acceptée par `file.Config` depuis le lot
+démarrage ; elle n'est pas encore exposée par une CLI ou un fichier de configuration.
 
 ## Ouverture vérifiée du chemin de journal
 
