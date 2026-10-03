@@ -63,7 +63,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `d1e4a1257f11e85ebec200d8217a4d79b24cda8b`, toujours dans la PR #11.
 - Seizième lot FileSource : bascule vers un remplacement régulier en conservant
   l'ancien descripteur/ingesteur, avec limite de deux fichiers dans
-  `internal/source/file/rotation.go`, toujours dans la PR #11.
+  `internal/source/file/rotation.go`, commit
+  `bc1b12db4478633b206908b9db1027ddc3eb3ef2`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -129,8 +130,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   au polling et builds Linux sans CGO. L'étape `go test -race ./internal/source/file`
   est confirmée réussie sur le job Go 1.26.x.
 - Validation locale du lot bascule : `go test ./...`, `go vet ./...` et compilation
-  des tests FileSource Linux amd64 sans CGO réussis. Les scénarios de rotation
-  Linux et le détecteur de courses restent à confirmer en CI après publication.
+  des tests FileSource Linux amd64 sans CGO réussis.
+  [CI bascule](https://github.com/Coubiac/mailtrace/actions/runs/37161105324)
+  réussie, incluant rotations/SQLite, attente vide, capacité, retour d'identité
+  conservée, erreurs/fermeture, détecteur de courses et builds Linux sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
