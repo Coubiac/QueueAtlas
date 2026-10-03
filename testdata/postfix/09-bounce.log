@@ -1,0 +1,6 @@
+Oct  3 12:08:00 mx-a postfix/qmgr[1181]: 09A1B2C3D4: from=<alice@example.org>, size=996, nrcpt=1 (queue active)
+Oct  3 12:08:01 mx-a postfix/smtp[1182]: 09A1B2C3D4: to=<missing@example.net>, relay=mx.example.net[203.0.113.29]:25, delay=1, delays=0.1/0.1/0.3/0.5, dsn=5.1.1, status=bounced (host mx.example.net[203.0.113.29] said: 550 5.1.1 user unknown (in reply to RCPT TO command))
+Oct  3 12:08:02 mx-a postfix/bounce[1183]: 09A1B2C3D4: sender non-delivery notification: 09F1B2C3D4
+Oct  3 12:08:02 mx-a postfix/qmgr[1181]: 09A1B2C3D4: removed
+Oct  3 12:08:02 mx-a postfix/qmgr[1181]: 09F1B2C3D4: from=<>, size=2601, nrcpt=1 (queue active)
+Oct  3 12:08:03 mx-a postfix/local[1184]: 09F1B2C3D4: to=<alice@example.org>, relay=local, delay=1, delays=0.1/0.1/0/0.8, dsn=2.0.0, status=sent (delivered to maildir)

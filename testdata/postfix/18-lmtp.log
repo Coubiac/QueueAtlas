@@ -1,0 +1,2 @@
+Oct  3 12:17:00 mx-a postfix/qmgr[1271]: 18A1B2C3D4: from=<alice@example.net>, size=910, nrcpt=1 (queue active)
+Oct  3 12:17:01 mx-a postfix/lmtp[1272]: 18A1B2C3D4: to=<bob@example.org>, relay=mailstore.example.org[203.0.113.36]:24, delay=1, delays=0.1/0.1/0.3/0.5, dsn=2.0.0, status=sent (250 2.0.0 <bob@example.org> Saved)

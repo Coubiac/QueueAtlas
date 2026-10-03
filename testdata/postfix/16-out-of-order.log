@@ -1,0 +1,4 @@
+Oct  3 12:15:03 mx-a postfix/smtp[1253]: 16A1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.34]:25, delay=3, delays=0.1/0.1/0.5/2.3, dsn=2.0.0, status=sent (250 2.0.0 accepted)
+Oct  3 12:15:00 mx-a postfix/qmgr[1252]: 16A1B2C3D4: from=<alice@example.org>, size=735, nrcpt=1 (queue active)
+Oct  3 12:15:01 mx-a postfix/cleanup[1251]: 16A1B2C3D4: message-id=<late-cleanup-16@example.org>
+Oct  3 12:15:04 mx-a postfix/qmgr[1252]: 16A1B2C3D4: removed

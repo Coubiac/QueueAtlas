@@ -1,0 +1,6 @@
+Oct  3 12:04:00 mx-a postfix/smtpd[1141]: connect from sender.example.net[192.0.2.14]
+Oct  3 12:04:01 mx-a postfix/smtpd[1141]: NOQUEUE: reject: RCPT from sender.example.net[192.0.2.14]: 550 5.1.1 <absent@example.org>: Recipient address rejected: User unknown in local recipient table; from=<alice@example.net> to=<absent@example.org> proto=ESMTP helo=<sender.example.net>
+Oct  3 12:04:02 mx-a postfix/smtpd[1141]: 05A1B2C3D4: client=sender.example.net[192.0.2.14]
+Oct  3 12:04:02 mx-a postfix/cleanup[1142]: 05A1B2C3D4: message-id=<rcpt-05@example.net>
+Oct  3 12:04:02 mx-a postfix/qmgr[1143]: 05A1B2C3D4: from=<alice@example.net>, size=914, nrcpt=1 (queue active)
+Oct  3 12:04:03 mx-a postfix/local[1144]: 05A1B2C3D4: to=<valid@example.org>, relay=local, delay=1, delays=0.1/0.1/0/0.8, dsn=2.0.0, status=sent (delivered to maildir)

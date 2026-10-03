@@ -1,0 +1,5 @@
+Oct  3 12:07:00 mx-a postfix/qmgr[1171]: 08A1B2C3D4: from=<alice@example.org>, size=956, nrcpt=1 (queue active)
+Oct  3 12:07:01 mx-a postfix/smtp[1172]: 08A1B2C3D4: to=<bob@example.net>, relay=none, delay=1, delays=0.1/0.1/0.8/0, dsn=4.4.1, status=deferred (connect to mx.example.net[203.0.113.28]:25: Connection refused)
+Oct  3 12:17:00 mx-a postfix/smtp[1173]: 08A1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.28]:25, delay=601, delays=600/0.1/0.4/0.5, dsn=4.2.0, status=deferred (host mx.example.net[203.0.113.28] said: 450 4.2.0 mailbox temporarily unavailable (in reply to RCPT TO command))
+Oct  3 12:37:00 mx-a postfix/smtp[1174]: 08A1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.28]:25, delay=1801, delays=1800/0.1/0.4/0.5, dsn=2.0.0, status=sent (250 2.0.0 accepted)
+Oct  3 12:37:00 mx-a postfix/qmgr[1171]: 08A1B2C3D4: removed

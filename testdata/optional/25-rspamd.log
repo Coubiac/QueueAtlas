@@ -1,0 +1,1 @@
+Oct  3 12:24:00 mx-a rspamd[1345]: <b3a00a>; proxy; rspamd_task_write_log: id: <optional-25@example.net>, qid: 25A1B2C3D4, ip: 192.0.2.25, from: <alice@example.net>, (default: F (no action): [1.20/15.00] [R_SPF_ALLOW(-0.20),MIME_GOOD(-0.10)], len: 1001, time: 24.000ms)

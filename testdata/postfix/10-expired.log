@@ -1,0 +1,5 @@
+Oct  3 12:09:00 mx-a postfix/qmgr[1191]: 10A1B2C3D4: from=<alice@example.org>, size=981, nrcpt=1 (queue active)
+Oct  3 12:09:01 mx-a postfix/smtp[1192]: 10A1B2C3D4: to=<bob@example.net>, relay=none, delay=1, delays=0.1/0.1/0.8/0, dsn=4.4.1, status=deferred (connect to mx.example.net[203.0.113.30]:25: Connection timed out)
+Oct  8 12:09:01 mx-a postfix/qmgr[1191]: 10A1B2C3D4: from=<alice@example.org>, status=expired, returned to sender
+Oct  8 12:09:02 mx-a postfix/bounce[1193]: 10A1B2C3D4: sender non-delivery notification: 10F1B2C3D4
+Oct  8 12:09:02 mx-a postfix/qmgr[1191]: 10A1B2C3D4: removed

@@ -1,0 +1,3 @@
+Oct  3 12:05:00 mx-a postfix/smtpd[1151]: connect from bad.example.net[192.0.2.15]
+Oct  3 12:05:01 mx-a postfix/smtpd[1151]: NOQUEUE: reject: RCPT from bad.example.net[192.0.2.15]: 554 5.7.1 <bob@example.org>: Relay access denied; from=<mallory@example.net> to=<bob@example.org> proto=ESMTP helo=<bad.example.net>
+Oct  3 12:05:02 mx-a postfix/smtpd[1151]: disconnect from bad.example.net[192.0.2.15] ehlo=1 mail=1 rcpt=0/1 quit=1 commands=3/4

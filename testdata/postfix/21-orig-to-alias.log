@@ -1,0 +1,4 @@
+Oct  3 12:20:00 mx-a postfix/qmgr[1301]: 21A1B2C3D4: from=<alice@example.net>, size=950, nrcpt=1 (queue active)
+Oct  3 12:20:01 mx-a postfix/local[1302]: 21A1B2C3D4: to=<bob@example.org>, orig_to=<sales@example.org>, relay=local, delay=1, delays=0.1/0.1/0/0.8, dsn=2.0.0, status=sent (forwarded as 21F1B2C3D4)
+Oct  3 12:20:02 mx-a postfix/qmgr[1301]: 21F1B2C3D4: from=<alice@example.net>, size=950, nrcpt=1 (queue active)
+Oct  3 12:20:03 mx-a postfix/smtp[1303]: 21F1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.37]:25, delay=1, delays=0.1/0.1/0.3/0.5, dsn=2.0.0, status=sent (250 2.0.0 accepted)

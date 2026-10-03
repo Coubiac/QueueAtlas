@@ -1,0 +1,1 @@
+Oct  3 12:24:01 mailstore dovecot: lmtp(bob@example.org)<1346><SYNTHETIC25>: msgid=<optional-25@example.net>: saved mail to INBOX
