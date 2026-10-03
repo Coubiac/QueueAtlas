@@ -36,7 +36,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   vérifiée dans `internal/source/file/generation.go`, commit
   `9902546d1a1b342b9f834a96afe5842863203fe2`, toujours dans la PR #11.
 - Huitième lot FileSource : ingestion d'une ligne et acquittement de son
-  checkpoint dans `internal/source/file/ingestor.go`, toujours dans la PR #11.
+  checkpoint dans `internal/source/file/ingestor.go`, commit
+  `2d3c7d7ab72f07b0bbfccef2932cceb7c2531e07`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -66,8 +67,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie, incluant la réouverture SQLite sur Linux et les builds sans CGO.
   La CI du commit documentaire `02c4744` est aussi confirmée réussie.
 - Validation locale du lot ingestion : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
-  les checks de la PR #11 pour la CI du dernier commit.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI ingestion](https://github.com/Coubiac/mailtrace/actions/runs/37157404479)
+  réussie, incluant le réessai idempotent SQLite et les builds sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
