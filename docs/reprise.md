@@ -45,7 +45,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   neuve vide, dans `generation.go`, commit
   `90e4efcb6a0a8bc63f1b02f911618c5e2a01ade5`, toujours dans la PR #11.
 - Onzième lot FileSource : politique explicite de relecture à zéro dans les
-  vérificateur/sélecteur/décision de génération, toujours dans la PR #11.
+  vérificateur/sélecteur/décision de génération, commit
+  `a879283d0de1b632dc7d9960662eb1ef6b1ca591`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -87,8 +88,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI fichier vide](https://github.com/Coubiac/mailtrace/actions/runs/37158062815)
   réussie, incluant attente sans écriture, append et builds Linux sans CGO.
 - Validation locale du lot politique zéro : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
-  les checks de la PR #11 pour la CI du dernier commit.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI politique zéro](https://github.com/Coubiac/mailtrace/actions/runs/37158472028)
+  réussie, incluant relecture réelle après réouverture SQLite et builds sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
