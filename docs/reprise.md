@@ -75,7 +75,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `84cfae72db4ce4642588563d2f3cad57e25a2dc3`, toujours dans la PR #11.
 - Dix-neuvième lot FileSource : polling périodique entre les passages de lecture,
   y compris sous flux continu, et attente limitée au temps restant avant contrôle,
-  dans `rotation.go`, toujours dans la PR #11.
+  dans `rotation.go`, commit
+  `311fe756a5dfd25b14ad4a78dfe4a19f2a809ab8`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -156,8 +157,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   incluant horloge contrôlée, délai/append/capacité réutilisée, partiels/pending,
   chemin absent, détecteur de courses et builds Linux sans CGO.
 - Validation locale du lot flux continu : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Les nouveaux
-  scénarios Linux et le détecteur de courses restent à confirmer en CI.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI flux continu](https://github.com/Coubiac/mailtrace/actions/runs/37163133260)
+  réussie, incluant attente restante, rotation avant EOF, expiration en progression,
+  Sink EOF prioritaire, détecteur de courses et builds Linux sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
