@@ -30,7 +30,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `internal/source/file/resume.go`, commit
   `489c2dc5a2f067d7d7a1ca8271b32fb88f8a0ff4`, toujours dans la PR #11.
 - Sixième lot FileSource : sélection bornée d'un candidat unique dans
-  `internal/source/file/selection.go`, toujours dans la PR #11.
+  `internal/source/file/selection.go`, commit
+  `362817ad349a3bd0f438e8e7fd84cb7040ac2721`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -51,8 +52,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI candidat](https://github.com/Coubiac/mailtrace/actions/runs/37156132714)
   réussie, incluant les cas device/inode sur Linux et les builds sans CGO.
 - Validation locale du lot sélection : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
-  les checks de la PR #11 pour la CI du dernier commit.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI sélection](https://github.com/Coubiac/mailtrace/actions/runs/37156470072)
+  réussie, incluant les preuves réelles sur Linux et les builds sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
