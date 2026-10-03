@@ -54,6 +54,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   génération, attente initiale et suivi du descripteur choisi dans
   `internal/source/file/file_source.go`, commit
   `100669637fbfe219bcc5b1e5ce8dd9dcb7cb0a90`, toujours dans la PR #11.
+- Quatorzième lot FileSource : observation du chemin courant par rapport au
+  descripteur conservé dans `internal/source/file/path.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -107,6 +109,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI démarrage](https://github.com/Coubiac/mailtrace/actions/runs/37159624661)
   réussie, incluant démarrage/reprise SQLite, attente initiale/append/annulation,
   concurrence, diagnostics, politique zéro et builds Linux sans CGO.
+- Validation locale du lot observation : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Les scénarios
+  Linux restent à exécuter en CI après publication de ce lot.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -418,7 +423,7 @@ génération ; les changements ultérieurs restent à surveiller. L'annulation e
 vérifiée entre appels système et n'interrompt pas un appel de filesystem bloqué.
 Aucun Sink, suivi de rotation, migration ou dépendance ajouté.
 
-## Dernier lot terminé : orchestrer le démarrage FileSource
+## Démarrage FileSource
 
 `file.New(Config, StateReader, Normalize)` valide l'identité de source, le chemin,
 les dépendances et l'intervalle sans ouvrir ni écrire. La configuration est copiée
@@ -447,16 +452,41 @@ Limites : après sélection, seul ce descripteur est suivi. Rotation et troncatu
 en cours de suivi ne sont pas encore détectées. Les erreurs d'ouverture et du Sink
 arrêtent `Run` sans réessai automatique. Pas de CLI, migration ou dépendance ajoutée.
 
-## Prochain petit lot : observer le chemin pendant une rotation
+## Dernier lot terminé : observer le chemin pendant une rotation
+
+`ObservePath(ctx, descripteur, chemin)` retourne `PathObservation` avec un statut
+fixe `same`, `missing` ou `replaced` et les identités observées du descripteur et
+du chemin. Pour `missing`, l'identité courante est vide ; ce statut couvre aussi
+un lien symbolique dont la cible est absente. Les liens vers des fichiers réguliers
+sont suivis. Un type non régulier produit `ErrPathNotRegular` ; les autres erreurs
+de filesystem sont conservées. Tout échec retourne une observation vide.
+
+Deux appels de métadonnées, sans ouverture, lecture, seek, fermeture, choix de
+génération ou écriture d'état. Le descripteur reste à l'appelant sur tous les chemins.
+La taille peut varier avec une identité `same` ; cette observation ne décide pas
+d'une troncature et ne prouve pas la continuité d'une génération. Les observations
+ne sont pas atomiques ; l'annulation est vérifiée entre appels système.
+
+Tests locaux : identité stable après croissance/troncature, absence, remplacement
+avec contenu identique, annulation/entrées invalides, refus d'un répertoire,
+position inchangée et descripteur encore lisible après succès ou erreur. Tests Linux :
+rename/create, disparition puis retour de la même identité, tailles distinctes et
+écriture tardive dans l'ancien fichier, liens stables/retargetés/pendants, boucle de
+lien signalée comme erreur, FIFO refusée sans attendre un écrivain.
+
+Limites : l'observation est disponible mais n'est pas encore appelée par `Run`.
+Le suivi reste sur son seul descripteur et ne réagit pas aux rotations/troncatures.
+Aucune migration ou dépendance ajoutée.
+
+## Prochain petit lot : polling du chemin et disparition temporaire
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4,
-ADR-003 et la section rotation du cadrage. Ajouter une observation bornée qui
-compare le chemin courant au descripteur conservé : distinguer identité stable,
-chemin absent et remplacement ; refuser un type non régulier. Elle doit préserver
-l'offset et la propriété du descripteur, sans choix ni écriture de génération.
-Tester rename/create, disparition/réapparition et remplacement par lien/FIFO sur
-Linux. L'intégration au scheduler, l'ouverture de la nouvelle génération et les
-écritures tardives de l'ancienne resteront des lots distincts.
+ADR-003 et la section rotation du cadrage. Appeler l'observation au polling de
+`FileSource`, conserver le descripteur pendant une absence temporaire du chemin
+et continuer les ajouts de son fichier. Rendre le dernier statut observable sans
+contenu de journal. Tester disparition/append sur l'ancien fichier/réapparition,
+annulation et erreurs du contrôle. Aucun remplacement de génération dans ce lot :
+le scheduler de bascule et la période de grâce resteront des lots distincts.
 
 ## Suite à découper au fil des reprises
 
