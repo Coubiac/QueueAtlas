@@ -32,6 +32,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Sixième lot FileSource : sélection bornée d'un candidat unique dans
   `internal/source/file/selection.go`, commit
   `362817ad349a3bd0f438e8e7fd84cb7040ac2721`, toujours dans la PR #11.
+- Septième lot FileSource : enregistrement initial et retour d'une reprise
+  vérifiée dans `internal/source/file/generation.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -55,6 +57,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   compilation des tests FileSource Linux amd64 sans CGO réussis.
   [CI sélection](https://github.com/Coubiac/mailtrace/actions/runs/37156470072)
   réussie, incluant les preuves réelles sur Linux et les builds sans CGO.
+- Validation locale du lot génération : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
+  les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -164,7 +169,7 @@ hors fenêtres et les écritures concurrentes ne sont pas couverts. Le contrôle
 n'est pas un instantané atomique. L'appelant conserve le namespace de source
 fourni par `StateReader`. Aucun choix global ni suivi de fichier n'est ajouté.
 
-## Dernier lot terminé : choisir un candidat unique
+## Choisir un candidat unique
 
 `SelectResume(ctx, fichier, sourceID, StateReader)` interroge exactement la
 source et l'identité du descripteur, puis réutilise `VerifyCandidate`.
@@ -192,25 +197,52 @@ forment pas un instantané global ; le sélecteur n'ajoute ni verrou ni transact
 globale. Les limites des fenêtres et écritures concurrentes du fichier restent
 celles de `VerifyCandidate`. Aucun état n'est écrit par ce lot.
 
-## Prochain petit lot : enregistrer une nouvelle génération
+## Dernier lot terminé : enregistrer une nouvelle génération
+
+`EnsureGeneration` sélectionne dans le namespace d'une identité de source
+`file`. Pour `absent` ou `different`, il crée un ID opaque aléatoire de 128 bits,
+capture identité et préfixe du descripteur, puis transmet origine et checkpoint
+zéro avec ancre canonique dans un seul `Sink.Commit`, sans record.
+
+Le résultat contient l'état et `Created == true` seulement après acquittement.
+Pour `unique`, il retourne l'origine et le checkpoint vérifiés sans écrire.
+Pour `insufficient`, `ambiguous` ou `limit_reached`, il retourne le diagnostic
+avec état absent. Une erreur de lecture, de Sink ou une annulation avant commit
+ne produit pas d'état utilisable. Le helper ne déplace pas la lecture.
+
+Tests : validation des entrées, annulation, absence d'identité persistable ;
+sur Linux, état initial d'un fichier vide/non vide retrouvé après réouverture
+SQLite, origine et checkpoint transmis ensemble, chemin/identité/date conservés,
+reprise existante, nouvelle génération après différence, refus des décisions
+incomplètes/ambiguës/limitées et erreurs de Sink/lecteur.
+
+Limites : sérialisation de la source à assurer par l'appelant ; captures du
+fichier non atomiques. Un arrêt après création mais avant la première ligne
+validée laisse un checkpoint zéro qui exige une décision explicite à la reprise.
+Une origine capturée vide conserve son empreinte vide immuable et ne fournit
+pas de preuve de contenu lors d'une reprise future. Le traitement opérationnel
+de ces cas reste à définir avant de déclarer FileSource terminé.
+
+## Prochain petit lot : acquitter une ligne complète
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Préparer et enregistrer l'origine initiale via le Sink lorsque la
-sélection renvoie `absent` ou `different` :
+et ADR-003. Relier une génération utilisable au lecteur de lignes et au Sink
+pour consommer une seule ligne complète :
 
-- Générer un ID opaque, capturer l'identité et l'empreinte de début.
-- Enregistrer origine et checkpoint initial zéro dans un même `Sink.Commit`.
-- Retourner la reprise existante pour `unique`, sans créer une autre origine.
-- Ne pas créer automatiquement pour preuves insuffisantes, ambiguïté ou limite.
-- Tester l'échec du Sink et les décisions sans modifier la boucle de suivi.
+- Positionner la lecture sur l'offset validé, attribuer OriginID et ReadAt.
+- Injecter la normalisation existante plutôt que coupler FileSource à SQLite.
+- Envoyer record et checkpoint de fin avec ancre dans un même commit.
+- Avancer l'état acquitté seulement après succès et retenir le lot en cas d'échec.
+- Tester EOF partiel, ligne trop longue et échec puis reprise du Sink.
 
-Conserver la sérialisation des écritures exigée par le sélecteur. La lecture
-des lignes et l'avancement des checkpoints viendront dans le lot suivant.
+Conserver la sérialisation des écritures exigée par le sélecteur. Le polling,
+la gestion des générations initialement vides et les rotations viendront dans
+des lots séparés ; ne pas ajouter toute la boucle `Source.Run` dans ce lot.
 
 ## Suite à découper au fil des reprises
 
-1. Création et enregistrement d'une génération, puis reprise de son offset.
-2. Suivi d'un fichier actif et acquittement par le Sink.
+1. Lecture et acquittement d'une ligne, puis boucle de suivi bornée.
+2. Décisions de reprise à zéro et génération initialement vide.
 3. Rotation par renommage/création et écritures tardives.
 4. Reprise après arrêt, troncature et diagnostic des lacunes.
 5. Import historique normal, puis gzip dans un lot distinct.
