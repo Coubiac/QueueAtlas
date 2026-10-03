@@ -71,7 +71,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `a389cc8895fefdbea70fb4059a7ecd98ed361b11`, toujours dans la PR #11.
 - Dix-huitième lot FileSource : période de grâce configurable après EOF stable,
   protection des lignes partielles/batches pending et libération des descripteurs
-  dans `internal/source/file/grace.go`, toujours dans la PR #11.
+  dans `internal/source/file/grace.go`, commit
+  `84cfae72db4ce4642588563d2f3cad57e25a2dc3`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -147,8 +148,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie, incluant append tardif/ligne partielle, équité, sérialisation, checkpoints
   SQLite, successeur vide, erreurs/pending, détecteur de courses et builds sans CGO.
 - Validation locale du lot grâce : `go test ./...`, `go vet ./...` et compilation
-  des tests FileSource Linux amd64 sans CGO réussis. Les scénarios à horloge
-  contrôlée Linux et le détecteur de courses restent à confirmer en CI.
+  des tests FileSource Linux amd64 sans CGO réussis.
+  [CI grâce](https://github.com/Coubiac/mailtrace/actions/runs/37162405314) réussie,
+  incluant horloge contrôlée, délai/append/capacité réutilisée, partiels/pending,
+  chemin absent, détecteur de courses et builds Linux sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -556,7 +559,7 @@ Le descripteur et l'ingesteur précédents sont conservés, y compris les octets
 partiels ; le suivi conjoint est décrit ci-dessous. Si leur identité redevient
 courante, cet ingesteur est réutilisé sans nouvelle décision
 ou registration. La capacité `MaxOpenGenerations = 2` compte les identités ouvertes,
-y compris un successeur vide. Une troisième identité produit `ErrRotationCapacity`
+y compris un successeur vide. Une troisième identité simultanée produit `ErrRotationCapacity`
 avant toute ouverture ou écriture pour ce troisième fichier.
 
 Un successeur vide reste ouvert et la décision d'enregistrement est différée
