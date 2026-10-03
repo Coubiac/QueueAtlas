@@ -1,6 +1,6 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 3 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 4 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
@@ -35,6 +35,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Septième lot FileSource : enregistrement initial et retour d'une reprise
   vérifiée dans `internal/source/file/generation.go`, commit
   `9902546d1a1b342b9f834a96afe5842863203fe2`, toujours dans la PR #11.
+- Huitième lot FileSource : ingestion d'une ligne et acquittement de son
+  checkpoint dans `internal/source/file/ingestor.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -62,6 +64,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   compilation des tests FileSource Linux amd64 sans CGO réussis.
   [CI génération](https://github.com/Coubiac/mailtrace/actions/runs/37156904624)
   réussie, incluant la réouverture SQLite sur Linux et les builds sans CGO.
+  La CI du commit documentaire `02c4744` est aussi confirmée réussie.
+- Validation locale du lot ingestion : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
+  les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -83,9 +89,10 @@ puis ajout de données, la ligne trop longue partielle, l'annulation, une erreur
 de lecture et le débordement d'offset. Les records retournés restent stables
 après les lectures suivantes. Aucun changement au schéma ou aux dépendances.
 
-Limites : le lecteur ne remplit pas encore OriginID, ReadAt et Observation ;
-il ne suit pas les chemins, ne détecte pas les rotations et ne persiste aucun
-checkpoint. Une lecture bloquante reste à interrompre par son propriétaire.
+Limites : le lecteur seul ne remplit pas OriginID, ReadAt et Observation ;
+le composant d'ingestion ci-dessous les attribue. Le lecteur ne suit pas les
+chemins, ne détecte pas les rotations et ne persiste aucun checkpoint seul.
+Une lecture bloquante reste à interrompre par son propriétaire.
 
 ## Identité physique des fichiers
 
@@ -199,7 +206,7 @@ forment pas un instantané global ; le sélecteur n'ajoute ni verrou ni transact
 globale. Les limites des fenêtres et écritures concurrentes du fichier restent
 celles de `VerifyCandidate`. Aucun état n'est écrit par ce lot.
 
-## Dernier lot terminé : enregistrer une nouvelle génération
+## Enregistrer une nouvelle génération
 
 `EnsureGeneration` sélectionne dans le namespace d'une identité de source
 `file`. Pour `absent` ou `different`, il crée un ID opaque aléatoire de 128 bits,
@@ -225,25 +232,59 @@ Une origine capturée vide conserve son empreinte vide immuable et ne fournit
 pas de preuve de contenu lors d'une reprise future. Le traitement opérationnel
 de ces cas reste à définir avant de déclarer FileSource terminé.
 
-## Prochain petit lot : acquitter une ligne complète
+## Dernier lot terminé : acquitter une ligne complète
+
+`NewIngestor` reçoit l'identité de source, l'état de génération décidé et une
+fonction de normalisation injectée. Il vérifie le checkpoint initial, son
+contenu/frontière LF, le préfixe et l'identité physique disponible, puis positionne
+le descripteur à cet offset. `Position()` expose seulement l'état acquitté.
+
+`CommitNext(ctx, Sink)` envoie une ligne complète et son checkpoint dans un même
+batch. Il attribue OriginID, ReadAt et SourceID configuré. Les lignes trop longues
+contournent le parser et deviennent des observations `unknown` avec erreur,
+tout en validant la consommation physique jusqu'au séparateur.
+
+Le lecteur transmet les fragments consommés à une fenêtre roulante de 4 Kio,
+initialisée depuis l'ancre de reprise. Le digest de fin est calculé sur ces
+octets, y compris après lecture anticipée ou pour les suffixes de lignes trop
+longues ; il n'est pas recalculé depuis un fichier éventuellement réécrit.
+
+EOF partiel n'écrit rien et conserve la ligne en cours. En cas d'erreur du Sink
+ou d'annulation avant commit, le batch complet reste en mémoire et sera réémis
+à l'identique avant toute lecture suivante. L'offset acquitté avance seulement
+après succès ; normalisation et heure de lecture restent stables au réessai.
+
+Tests : normalisation Postfix réelle, CRLF, source configurée, reprise à offset
+non nul, fenêtres courtes/longues, EOF répété puis append, ligne trop longue,
+réessai après erreur/annulation, fichier réécrit après lecture anticipée,
+checkpoint initial invalide et commit SQLite réussi suivi d'un accusé perdu
+(un seul record et événement après réessai).
+
+Limites : un seul appelant et ownership exclusif des lectures/seeks du
+descripteur ; sérialisation des écritures de source à assurer par l'appelant.
+Le Sink ne doit pas modifier le batch ; le normaliseur cède son résultat à
+l'ingestion. Aucun polling, suivi de chemin ou diagnostic de rotation/troncature
+pendant lecture dans ce lot. Le constructeur n'arbitre pas une reprise jugée
+insuffisante : l'état doit venir de la décision de génération.
+
+## Prochain petit lot : attendre les ajouts à EOF
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Relier une génération utilisable au lecteur de lignes et au Sink
-pour consommer une seule ligne complète :
+et ADR-003. Ajouter une boucle sur une génération déjà décidée et ouverte,
+avec attente annulable lorsque `CommitNext` renvoie EOF :
 
-- Positionner la lecture sur l'offset validé, attribuer OriginID et ReadAt.
-- Injecter la normalisation existante plutôt que coupler FileSource à SQLite.
-- Envoyer record et checkpoint de fin avec ancre dans un même commit.
-- Avancer l'état acquitté seulement après succès et retenir le lot en cas d'échec.
-- Tester EOF partiel, ligne trop longue et échec puis reprise du Sink.
+- Réutiliser l'ingesteur pour poursuivre après append et conserver EOF partiel.
+- Borner/configurer l'intervalle d'attente, éviter une boucle active à EOF.
+- Retourner les erreurs du Sink sans réessai automatique infini.
+- Tester append après attente, annulation à EOF et propagation des erreurs.
 
-Conserver la sérialisation des écritures exigée par le sélecteur. Le polling,
-la gestion des générations initialement vides et les rotations viendront dans
-des lots séparés ; ne pas ajouter toute la boucle `Source.Run` dans ce lot.
+La décision des générations initialement vides, le suivi de chemin et les
+rotations restent des lots séparés. Ne pas présenter cette boucle sur descripteur
+comme une implémentation FileSource complète.
 
 ## Suite à découper au fil des reprises
 
-1. Lecture et acquittement d'une ligne, puis boucle de suivi bornée.
+1. Attente annulable des ajouts sur une génération ouverte.
 2. Décisions de reprise à zéro et génération initialement vide.
 3. Rotation par renommage/création et écritures tardives.
 4. Reprise après arrêt, troncature et diagnostic des lacunes.

@@ -24,6 +24,7 @@ type LineReader struct {
 	kept     int
 	tooLong  bool
 	fatalErr error
+	observe  func([]byte) // optional synchronous observer of consumed fragments
 }
 
 // NewLineReader expects input to already be positioned at startOffset, which
@@ -64,6 +65,9 @@ func (r *LineReader) Next(ctx context.Context) (source.Record, error) {
 			return source.Record{}, r.fatalErr
 		}
 		r.offset += int64(len(fragment))
+		if r.observe != nil {
+			r.observe(fragment)
+		}
 		copied := copy(r.prefix[r.kept:], fragment)
 		r.kept += copied
 		if copied < len(fragment) {
