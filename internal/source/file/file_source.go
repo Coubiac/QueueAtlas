@@ -28,8 +28,8 @@ func (e *ResumeDecisionError) Error() string {
 }
 
 // FileSource orchestrates startup and switches to an observed regular replacement.
-// It retains the previous descriptor but does not yet follow its late writes,
-// expire retained generations or detect live truncation.
+// It follows both opened generations, including late writes to a retained file.
+// It does not yet expire retained generations or detect live truncation.
 // The caller must serialize state writes for its source ID across all objects;
 // Run guards only this object.
 // The object must not be copied after use. Dependencies must support context.
@@ -66,8 +66,8 @@ func New(cfg Config, reader source.StateReader, normalize Normalize) (*FileSourc
 func (s *FileSource) ID() string { return s.config.Identity.ID }
 
 // Run reopens and reconsiders an initially empty file after each cancellable
-// wait. Once a generation is usable, it follows the current descriptor, retaining
-// an old generation on replacement. All descriptors close on error/cancellation.
+// wait. Once a generation is usable, it follows all opened generations, retaining
+// an old one on replacement. All descriptors close on error/cancellation.
 // Unusable decisions and all Sink errors stop Run;
 // there is no automatic retry of failed commits or opening errors.
 // Path observation errors also stop Run. A missing path keeps its descriptor in

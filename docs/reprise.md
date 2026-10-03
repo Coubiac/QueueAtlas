@@ -65,6 +65,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   l'ancien descripteur/ingesteur, avec limite de deux fichiers dans
   `internal/source/file/rotation.go`, commit
   `bc1b12db4478633b206908b9db1027ddc3eb3ef2`, toujours dans la PR #11.
+- Dix-septième lot FileSource : suivi conjoint des deux générations, une ligne
+  par ingesteur et par passage, avec commits sérialisés et récupération des
+  écritures tardives dans `rotation.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -134,6 +137,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI bascule](https://github.com/Coubiac/mailtrace/actions/runs/37161105324)
   réussie, incluant rotations/SQLite, attente vide, capacité, retour d'identité
   conservée, erreurs/fermeture, détecteur de courses et builds Linux sans CGO.
+- Validation locale du lot suivi conjoint : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Les scénarios
+  Linux et le détecteur de courses restent à confirmer en CI après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -502,7 +508,8 @@ Aucune migration ou dépendance ajoutée.
 ## Polling du chemin et disparition temporaire
 
 Après décision de génération, `FileSource` observe le chemin avant la première
-consommation, puis après chaque attente à EOF du lecteur. `missing` conserve le
+consommation, puis après chaque attente lorsque aucun lecteur ne progresse.
+`missing` conserve le
 descripteur et l'ingesteur, y compris une ligne partielle. Le statut `replaced`
 déclenche désormais le lot de bascule ci-dessous. Une erreur de contrôle du chemin
 arrête `Run` et sa fermeture habituelle des descripteurs.
@@ -528,7 +535,7 @@ Limites : le polling se fait à EOF ; un flux continuellement lisible peut diff�
 l'observation. L'absence lors de l'ouverture initiale reste une erreur immédiate.
 Pas de migration ou dépendance ajoutée.
 
-## Dernier lot terminé : bascule après rename/create
+## Bascule après rename/create
 
 Sur `replaced`, `Run` ouvre le nouveau chemin avec `OpenLog` et exige que l'identité
 ouverte corresponde à celle observée. Une nouvelle course observée arrête le suivi
@@ -537,8 +544,8 @@ réutilisées : checkpoints séparés, reprise existante vérifiée, sinon origi
 avec lecture depuis zéro. Les décisions inutilisables restent des erreurs typées.
 
 Le descripteur et l'ingesteur précédents sont conservés, y compris les octets
-partiels, sans continuer leur lecture après bascule dans cette version. Si leur
-identité redevient courante, cet ingesteur est réutilisé sans nouvelle décision
+partiels ; le suivi conjoint est décrit ci-dessous. Si leur identité redevient
+courante, cet ingesteur est réutilisé sans nouvelle décision
 ou registration. La capacité `MaxOpenGenerations = 2` compte les identités ouvertes,
 y compris un successeur vide. Une troisième identité produit `ErrRotationCapacity`
 avant toute ouverture ou écriture pour ce troisième fichier.
@@ -557,22 +564,56 @@ retour d'une identité conservée reprenant sa ligne partielle et son checkpoint
 La propriété des descripteurs est vérifiée via `/proc/self/fd` sur les seuls fichiers
 synthétiques du test, sans compter les fichiers SQLite/runtime.
 
-Limites : les écritures tardives sur un fichier conservé ne sont pas suivies tant
-qu'il ne redevient pas courant ; ces données et une ligne partielle peuvent rester
-non acquittées à l'arrêt. Pas de période de grâce/expiration, diagnostic de lacune,
-recherche des rotations après redémarrage ou détection de troncature. La rotation
-complète du MVP reste inachevée. Pas de migration ou dépendance ajoutée.
+Limites : pas de période de grâce/expiration, diagnostic de lacune, recherche des
+rotations après redémarrage ou détection de troncature. La rotation complète du MVP
+reste inachevée. Pas de migration ou dépendance ajoutée.
 
-## Prochain petit lot : lire conjointement l'ancien et le nouveau
+## Dernier lot terminé : lire conjointement l'ancien et le nouveau
+
+Chaque passage tente au plus une ligne complète par génération ouverte, dans
+l'ordre d'ouverture. L'ancien ingesteur conserve sa ligne partielle et reprend les
+ajouts après bascule, même si le chemin courant reste sur le nouveau fichier. Un
+successeur vide attend sans bloquer les ajouts de l'ancien et sans registration
+avant contenu non vide. Les deux descripteurs restent bornés par la capacité 2.
+
+Les commits sont appelés successivement sur le même goroutine de `Run` ; pas de
+transaction globale entre générations. Chaque ligne et son checkpoint conservent
+leur transaction indépendante. Une erreur de lecture ou du Sink sur l'un arrête
+immédiatement le scheduler avant les lectures suivantes. EOF du Sink ne déclenche
+ni attente ni réessai ; son batch reste pending dans l'ingesteur concerné et son
+checkpoint n'avance pas. La fermeture et la reprise durable entre `Run` restent
+identiques aux lots précédents.
+
+Une attente intervient seulement si aucun ingesteur n'a acquitté de ligne pendant
+le passage. Puis le chemin du descripteur courant est observé et la décision de
+bascule/capacité habituelle s'applique. La consultation du statut reste synchronisée.
+
+Tests Linux : nouvelle génération avec trois lignes prêtes, append tardif terminant
+une ligne partielle de l'ancien puis une autre ligne ; intercalage sans famine,
+identités distinctes, ordre par génération et checkpoints SQLite 24/18. Vérification
+de l'absence de commits concurrents et d'attente pendant la progression. Successeur
+vide avec append sur l'ancien sans registration vide. Erreur du Sink, EOF du Sink
+et erreur de lecture sur l'ancien : arrêt avant la ligne suivante du nouveau,
+checkpoints inchangés à 6/6, batch pending conservé et acquittable manuellement,
+successeur fermé. Les tests de bascule/capacité/retour d'identité restent applicables.
+
+Limites : l'équité est par ligne, pas par durée ; une ligne physique très longue ou
+un Sink lent peut retarder l'autre génération. Le polling du chemin peut être différé
+si au moins un lecteur fournit constamment des lignes. Pas de période de grâce,
+troncature, diagnostic de lacune ou recherche d'archives après redémarrage. Une
+ligne restant incomplète n'est jamais acquittée. Pas de migration ou dépendance ajoutée.
+
+## Prochain petit lot : période de grâce après EOF stable
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4,
-ADR-003 et la section rotation du cadrage. Faire avancer les deux ingesteurs de
-façon équitable et sérialisée au Sink pour récupérer les écritures tardives et
-terminer une ligne partielle de l'ancien fichier après bascule. Attendre seulement
-quand aucun lecteur ne progresse ; préserver erreurs/pending/checkpoints par
-origine et borne de deux descripteurs. Tester ordre par génération, absence de
-famine, append tardif et erreurs. L'expiration après EOF stable avec période de
-grâce configurable reste le lot suivant.
+ADR-003 et la section rotation du cadrage. Ajouter une durée de grâce configurable
+pour les générations qui ne sont plus courantes ; fermer une génération après EOF
+stable durant cette durée, en renouvelant la grâce sur ajout. Une ligne partielle
+ou un batch non acquitté ne doit pas être jeté implicitement à l'expiration. Libérer
+la capacité pour une rotation suivante et centraliser la propriété des descripteurs
+pour éviter les doubles fermetures du premier fichier. Tester délai, append tardif,
+annulation, ligne partielle et réutilisation de la capacité avec une horloge contrôlée.
+Le polling sous flux continu et les diagnostics de lacune resteront des lots séparés.
 
 ## Suite à découper au fil des reprises
 

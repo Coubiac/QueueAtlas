@@ -22,9 +22,10 @@ type openedGeneration struct {
 }
 
 // followPath owns only the successor descriptors it opens, closing them on every
-// return. The caller owns the initial descriptor. A switched-away ingestor stays
-// intact but is not polled for late writes in this version. No grace expiry yet.
-// Observation occurs at startup and after EOF waits; continuous input can defer it.
+// return. The caller owns the initial descriptor. Each round attempts one record
+// per opened generation, serially, including retained files and partial lines.
+// Waiting/polling occurs only when no reader commits a record. Continuous input
+// can defer path observation; retained generations have no grace expiry yet.
 func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context) error) (err error) {
 	if err := ctx.Err(); err != nil {
 		return err
@@ -74,23 +75,32 @@ func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Inges
 		if err := ctx.Err(); err != nil {
 			return err
 		}
-		if active.ingestor == nil {
-			var waiting bool
-			active.ingestor, waiting, err = s.prepareGeneration(ctx, active.file, sink)
-			if err != nil {
+		progress := false
+		for _, generation := range opened {
+			if err := ctx.Err(); err != nil {
 				return err
 			}
-			if !waiting {
-				continue
+			if generation.ingestor == nil {
+				var waiting bool
+				generation.ingestor, waiting, err = s.prepareGeneration(ctx, generation.file, sink)
+				if err != nil {
+					return err
+				}
+				if waiting {
+					continue
+				}
 			}
-		} else {
-			err := active.ingestor.CommitNext(ctx, sink)
+			err := generation.ingestor.CommitNext(ctx, sink)
 			if err == nil {
+				progress = true
 				continue
 			}
-			if !errors.Is(err, io.EOF) || active.ingestor.pending != nil {
+			if !errors.Is(err, io.EOF) || generation.ingestor.pending != nil {
 				return err
 			}
+		}
+		if progress {
+			continue
 		}
 		if err := wait(ctx); err != nil {
 			return err
