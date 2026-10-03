@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"database/sql"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -181,6 +182,9 @@ func TestNewerAndUnversionedDatabasesRefused(t *testing.T) {
 				t.Fatal(err)
 			}
 			seed.Close()
+			if err := os.Chmod(path, 0600); err != nil {
+				t.Fatal(err)
+			}
 			_, err = Open(context.Background(), path)
 			if err == nil || !strings.Contains(err.Error(), tc.want) {
 				t.Fatalf("Open error = %v, want %q", err, tc.want)
