@@ -67,7 +67,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `bc1b12db4478633b206908b9db1027ddc3eb3ef2`, toujours dans la PR #11.
 - Dix-septième lot FileSource : suivi conjoint des deux générations, une ligne
   par ingesteur et par passage, avec commits sérialisés et récupération des
-  écritures tardives dans `rotation.go`, toujours dans la PR #11.
+  écritures tardives dans `rotation.go`, commit
+  `a389cc8895fefdbea70fb4059a7ecd98ed361b11`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -138,8 +139,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie, incluant rotations/SQLite, attente vide, capacité, retour d'identité
   conservée, erreurs/fermeture, détecteur de courses et builds Linux sans CGO.
 - Validation locale du lot suivi conjoint : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Les scénarios
-  Linux et le détecteur de courses restent à confirmer en CI après publication.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI suivi conjoint](https://github.com/Coubiac/mailtrace/actions/runs/37161595157)
+  réussie, incluant append tardif/ligne partielle, équité, sérialisation, checkpoints
+  SQLite, successeur vide, erreurs/pending, détecteur de courses et builds sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
