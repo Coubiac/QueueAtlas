@@ -48,7 +48,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   vérificateur/sélecteur/décision de génération, commit
   `a879283d0de1b632dc7d9960662eb1ef6b1ca591`, toujours dans la PR #11.
 - Douzième lot FileSource : ouverture en lecture seule et vérification du
-  chemin dans `internal/source/file/open*.go`, toujours dans la PR #11.
+  chemin dans `internal/source/file/open*.go`, commit
+  `6d5f79471a63f03437787ae24559c075a86a09b5`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -94,8 +95,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI politique zéro](https://github.com/Coubiac/mailtrace/actions/runs/37158472028)
   réussie, incluant relecture réelle après réouverture SQLite et builds sans CGO.
 - Validation locale du lot ouverture : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
-  les checks de la PR #11 pour la CI du dernier commit.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI ouverture](https://github.com/Coubiac/mailtrace/actions/runs/37158920606)
+  réussie, incluant remplacement/FIFO/symlink Linux et builds sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
