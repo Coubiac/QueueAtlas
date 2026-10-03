@@ -29,6 +29,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Cinquième lot FileSource : vérification d'un candidat de reprise dans
   `internal/source/file/resume.go`, commit
   `489c2dc5a2f067d7d7a1ca8271b32fb88f8a0ff4`, toujours dans la PR #11.
+- Sixième lot FileSource : sélection bornée d'un candidat unique dans
+  `internal/source/file/selection.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -48,6 +50,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   compilation des tests FileSource pour Linux amd64 sans CGO réussis.
   [CI candidat](https://github.com/Coubiac/mailtrace/actions/runs/37156132714)
   réussie, incluant les cas device/inode sur Linux et les builds sans CGO.
+- Validation locale du lot sélection : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
+  les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -111,8 +116,8 @@ sans tentative de sélectionner ou fusionner les générations.
 Tests : état absent, réouverture, métadonnées conservées, pagination sans perte,
 checkpoints absents/zéro/non-zéro, séparation source/device/inode et annulation.
 Limites : les pages successives ne constituent pas un instantané global et
-l'ordre des IDs n'est pas chronologique ; le prochain sélecteur devra en tenir
-compte. La boucle de suivi et le choix d'une génération restent à développer.
+l'ordre des IDs n'est pas chronologique. Le sélecteur ci-dessous utilise cet
+ordre uniquement comme curseur. La boucle de suivi reste à développer.
 
 ## Ancres et formats persistés
 
@@ -133,9 +138,9 @@ la génération du fichier. Ces helpers ne vérifient pas la frontière de ligne
 
 Tests : fenêtre courte/longue, round-trip, append, position de lecture inchangée,
 modification dans/hors fenêtre, troncature, zéro et nombreux formats invalides.
-La sélection de génération et la boucle de suivi restent à développer.
+La boucle de suivi reste à développer.
 
-## Dernier lot terminé : vérifier un candidat de reprise
+## Vérifier un candidat de reprise
 
 `VerifyCandidate` compare un `source.OriginState` au descripteur ouvert :
 identité device/inode, préfixe, ancre, égalité des offsets et séparateur LF
@@ -157,25 +162,52 @@ hors fenêtres et les écritures concurrentes ne sont pas couverts. Le contrôle
 n'est pas un instantané atomique. L'appelant conserve le namespace de source
 fourni par `StateReader`. Aucun choix global ni suivi de fichier n'est ajouté.
 
-## Prochain petit lot : choisir un candidat unique
+## Dernier lot terminé : choisir un candidat unique
+
+`SelectResume(ctx, fichier, sourceID, StateReader)` interroge exactement la
+source et l'identité du descripteur, puis réutilise `VerifyCandidate`.
+`unique` exige un parcours terminé, une seule correspondance et aucun candidat
+aux preuves insuffisantes. Seul ce statut contient une copie de l'origine et
+du checkpoint sélectionnés ; aucun choix par date, ID ou offset maximal.
+
+Les autres statuts sont `absent`, `different`, `insufficient`, `ambiguous` et
+`limit_reached`. Deux correspondances suffisent pour conclure à l'ambiguïté.
+Le parcours examine au maximum 1 000 candidats, dans des pages de 100 au plus,
+sans accumuler toutes les origines. Une page incohérente (ordre, curseur,
+identité ou taille), une erreur d'accès ou une annulation ne renvoie aucun
+résultat partiel sélectionnable. Les plateformes sans device/inode persistable
+renvoient `insufficient`, sans requête large de remplacement.
+
+Tests : plusieurs pages, candidat unique avant/après les différences, preuves
+insuffisantes bloquant le choix, deux correspondances, copie du checkpoint,
+limite exacte/dépassée, pages invalides, erreurs et annulation après une
+correspondance. Les tests Linux vérifient aussi la sélection face aux preuves
+réelles d'un fichier et la position de lecture inchangée.
+
+Limites : l'appelant doit sérialiser les écritures d'origines/checkpoints de
+cette source pendant la sélection et l'application du résultat. Les pages ne
+forment pas un instantané global ; le sélecteur n'ajoute ni verrou ni transaction
+globale. Les limites des fenêtres et écritures concurrentes du fichier restent
+celles de `VerifyCandidate`. Aucun état n'est écrit par ce lot.
+
+## Prochain petit lot : enregistrer une nouvelle génération
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Parcourir les pages de `StateReader` pour l'identité du fichier
-ouvert et sélectionner une origine seulement lorsque les preuves permettent
-un choix unique :
+et ADR-003. Préparer et enregistrer l'origine initiale via le Sink lorsque la
+sélection renvoie `absent` ou `different` :
 
-- Réutiliser `VerifyCandidate`, sans supposer les IDs chronologiques.
-- Distinguer absence, différence, preuve insuffisante et ambiguïté.
-- Borner le parcours, gérer l'annulation et les erreurs du lecteur d'état.
-- Tester plusieurs pages et plusieurs candidats concordants ou incomplets.
+- Générer un ID opaque, capturer l'identité et l'empreinte de début.
+- Enregistrer origine et checkpoint initial zéro dans un même `Sink.Commit`.
+- Retourner la reprise existante pour `unique`, sans créer une autre origine.
+- Ne pas créer automatiquement pour preuves insuffisantes, ambiguïté ou limite.
+- Tester l'échec du Sink et les décisions sans modifier la boucle de suivi.
 
-La création/persistance d'une génération et la boucle de suivi viendront dans
-des lots ultérieurs. Les pages ne forment pas un instantané global ; le contrat
-du sélecteur devra expliciter cette limite.
+Conserver la sérialisation des écritures exigée par le sélecteur. La lecture
+des lignes et l'avancement des checkpoints viendront dans le lot suivant.
 
 ## Suite à découper au fil des reprises
 
-1. Sélection d'une génération avec empreintes et ancres de checkpoint.
+1. Création et enregistrement d'une génération, puis reprise de son offset.
 2. Suivi d'un fichier actif et acquittement par le Sink.
 3. Rotation par renommage/création et écritures tardives.
 4. Reprise après arrêt, troncature et diagnostic des lacunes.
