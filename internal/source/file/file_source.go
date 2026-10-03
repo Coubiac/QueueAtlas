@@ -12,10 +12,11 @@ import (
 )
 
 type Config struct {
-	Identity     source.Identity
-	Path         string
-	PollInterval time.Duration // zero selects DefaultPollInterval
-	ResumePolicy ResumePolicy
+	Identity      source.Identity
+	Path          string
+	PollInterval  time.Duration // zero selects DefaultPollInterval
+	RotationGrace time.Duration // zero selects DefaultRotationGrace
+	ResumePolicy  ResumePolicy
 }
 
 var ErrSourceRunning = errors.New("file source is already running")
@@ -29,7 +30,8 @@ func (e *ResumeDecisionError) Error() string {
 
 // FileSource orchestrates startup and switches to an observed regular replacement.
 // It follows both opened generations, including late writes to a retained file.
-// It does not yet expire retained generations or detect live truncation.
+// Retained files expire after stable EOF and a grace period. Live truncation
+// detection is not implemented yet.
 // The caller must serialize state writes for its source ID across all objects;
 // Run guards only this object.
 // The object must not be copied after use. Dependencies must support context.
@@ -55,11 +57,16 @@ func New(cfg Config, reader source.StateReader, normalize Normalize) (*FileSourc
 	if err != nil {
 		return nil, err
 	}
+	grace, err := resolveRotationGrace(cfg.RotationGrace)
+	if err != nil {
+		return nil, err
+	}
 	path, err := filepath.Abs(cfg.Path)
 	if err != nil {
 		return nil, err
 	}
 	cfg.Path, cfg.PollInterval = path, interval
+	cfg.RotationGrace = grace
 	return &FileSource{config: cfg, reader: reader, normalize: normalize}, nil
 }
 
@@ -101,10 +108,9 @@ func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 }
 
 func (s *FileSource) runOpened(ctx context.Context, f *os.File, sink source.Sink) (waiting bool, err error) {
-	defer func() { err = errors.Join(err, f.Close()) }()
 	ingestor, waiting, err := s.prepareGeneration(ctx, f, sink)
 	if err != nil || waiting {
-		return waiting, err
+		return waiting, errors.Join(err, f.Close())
 	}
 	return false, s.followPath(ctx, f, ingestor, sink, func(ctx context.Context) error {
 		return waitForPoll(ctx, s.config.PollInterval)

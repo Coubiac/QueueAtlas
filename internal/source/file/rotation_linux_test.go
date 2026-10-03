@@ -15,14 +15,18 @@ import (
 	"github.com/Coubiac/mailtrace/internal/storage/sqlite"
 )
 
-func rotationSource(t *testing.T, path string) (*FileSource, *sqlite.Store) {
+func rotationSource(t *testing.T, path string, grace ...time.Duration) (*FileSource, *sqlite.Store) {
 	t.Helper()
 	store, err := sqlite.Open(context.Background(), filepath.Join(t.TempDir(), "state.sqlite"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { store.Close() })
-	s, err := New(sourceConfig(path), store, testNormalizer)
+	cfg := sourceConfig(path)
+	if len(grace) > 0 {
+		cfg.RotationGrace = grace[0]
+	}
+	s, err := New(cfg, store, testNormalizer)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -183,8 +187,8 @@ func TestRotationCapacityStopsBeforeOpeningThirdDistinctFile(t *testing.T) {
 	if fileDescriptorCount(t, path) != 0 || fileDescriptorCount(t, path+".2") != 0 {
 		t.Fatal("capacity failure opened a third file or leaked the successor")
 	}
-	if _, err := f.Stat(); err != nil {
-		t.Fatal("follow closed caller's initial descriptor", err)
+	if err := f.Close(); !errors.Is(err, fs.ErrClosed) {
+		t.Fatal("scheduler retained initial descriptor", err)
 	}
 }
 

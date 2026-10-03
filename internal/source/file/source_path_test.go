@@ -62,7 +62,7 @@ func TestSourcePathFollowCancellationAndNextRunReset(t *testing.T) {
 	if !errors.Is(err, context.Canceled) || waits != 1 || r.Position().Offset != 0 || s.LastPathStatus() != PathSame {
 		t.Fatalf("cancelled follow: %v, waits %d, position %+v, status %s", err, waits, r.Position(), s.LastPathStatus())
 	}
-	if err := f.Close(); err != nil {
+	if err := f.Close(); !errors.Is(err, fs.ErrClosed) {
 		t.Fatal(err)
 	}
 	if err := os.Remove(f.Name()); err != nil {

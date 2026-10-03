@@ -22,7 +22,7 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 		return source.OriginPage{}, nil
 	})
 	path := filepath.Join(t.TempDir(), "not-created.log")
-	for _, kind := range []string{"ID", "kind", "name", "path", "reader", "normalizer", "interval short", "interval long"} {
+	for _, kind := range []string{"ID", "kind", "name", "path", "reader", "normalizer", "interval short", "interval long", "grace short", "grace long"} {
 		cfg, stateReader, normalize := sourceConfig(path), source.StateReader(reader), Normalize(testNormalizer)
 		switch kind {
 		case "ID":
@@ -41,6 +41,10 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 			cfg.PollInterval = MinPollInterval - 1
 		case "interval long":
 			cfg.PollInterval = MaxPollInterval + 1
+		case "grace short":
+			cfg.RotationGrace = MinRotationGrace - 1
+		case "grace long":
+			cfg.RotationGrace = MaxRotationGrace + 1
 		}
 		if s, err := New(cfg, stateReader, normalize); s != nil || err == nil {
 			t.Fatalf("invalid %s accepted", kind)
@@ -49,7 +53,7 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 	cfg := sourceConfig(path)
 	cfg.PollInterval = 0
 	s, err := New(cfg, reader, testNormalizer)
-	if err != nil || s.ID() != cfg.Identity.ID {
+	if err != nil || s.ID() != cfg.Identity.ID || s.config.RotationGrace != DefaultRotationGrace {
 		t.Fatalf("valid config: %v, %v", s, err)
 	}
 	cfg.Identity.ID, cfg.Path = "changed", "changed.log"

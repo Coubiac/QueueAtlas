@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"time"
 
 	"github.com/Coubiac/mailtrace/internal/source"
 )
@@ -12,21 +13,36 @@ import (
 const MaxOpenGenerations = 2
 
 // ErrRotationCapacity stops ingestion before opening a third distinct file.
-// It contains no path or log content. Retained files have no expiry yet.
+// It contains no path or log content. Partial lines and unexpired grace can
+// keep the capacity occupied.
 var ErrRotationCapacity = errors.New("file rotation descriptor capacity reached")
 
 type openedGeneration struct {
-	file     *os.File
-	identity Identity
-	ingestor *Ingestor // nil while a new empty file waits for content
+	file      *os.File
+	identity  Identity
+	ingestor  *Ingestor // nil while a new empty file waits for content
+	eofSince  time.Time
+	eofOffset int64
 }
 
-// followPath owns only the successor descriptors it opens, closing them on every
-// return. The caller owns the initial descriptor. Each round attempts one record
+// followPath owns the initial descriptor and every successor, closing each once
+// on retirement or return. Each round attempts one record
 // per opened generation, serially, including retained files and partial lines.
 // Waiting/polling occurs only when no reader commits a record. Continuous input
-// can defer path observation; retained generations have no grace expiry yet.
+// can defer path observation and grace expiry.
 func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context) error) (err error) {
+	return s.followPathWithClock(ctx, f, ingestor, sink, wait, time.Now)
+}
+
+func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context) error, now func() time.Time) (err error) {
+	opened := []*openedGeneration{{file: f, ingestor: ingestor}}
+	defer func() {
+		for _, generation := range opened {
+			if generation.file != nil {
+				err = errors.Join(err, generation.file.Close())
+			}
+		}
+	}()
 	if err := ctx.Err(); err != nil {
 		return err
 	}
@@ -34,25 +50,31 @@ func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Inges
 	if err != nil {
 		return err
 	}
-	opened := []*openedGeneration{{file: f, identity: id, ingestor: ingestor}}
-	defer func() {
-		for _, generation := range opened[1:] {
-			err = errors.Join(err, generation.file.Close())
-		}
-	}()
+	opened[0].identity = id
 	active := opened[0]
 	poll := func() error {
 		observation, err := s.observePath(ctx, active.file)
-		if err != nil || observation.Status != PathReplaced {
+		if err != nil {
 			return err
 		}
 		// A known descriptor can become current again without spending capacity
 		// or repeating its generation decision/checkpoint registration.
-		for _, generation := range opened {
-			if generation.identity.SameFile(observation.Current) {
-				active = generation
-				return nil
+		known := observation.Status != PathReplaced
+		if !known {
+			for _, generation := range opened {
+				if generation.identity.SameFile(observation.Current) {
+					active = generation
+					known = true
+					break
+				}
 			}
+		}
+		active.eofSince = time.Time{}
+		if err := retireExpired(ctx, &opened, active, s.config.RotationGrace, now()); err != nil {
+			return err
+		}
+		if known {
+			return nil
 		}
 		if len(opened) >= MaxOpenGenerations {
 			return ErrRotationCapacity
@@ -87,17 +109,20 @@ func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Inges
 					return err
 				}
 				if waiting {
+					generation.observeEOF(active, now())
 					continue
 				}
 			}
 			err := generation.ingestor.CommitNext(ctx, sink)
 			if err == nil {
+				generation.eofSince = time.Time{}
 				progress = true
 				continue
 			}
 			if !errors.Is(err, io.EOF) || generation.ingestor.pending != nil {
 				return err
 			}
+			generation.observeEOF(active, now())
 		}
 		if progress {
 			continue

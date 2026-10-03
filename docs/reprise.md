@@ -69,6 +69,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   par ingesteur et par passage, avec commits sérialisés et récupération des
   écritures tardives dans `rotation.go`, commit
   `a389cc8895fefdbea70fb4059a7ecd98ed361b11`, toujours dans la PR #11.
+- Dix-huitième lot FileSource : période de grâce configurable après EOF stable,
+  protection des lignes partielles/batches pending et libération des descripteurs
+  dans `internal/source/file/grace.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -143,6 +146,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI suivi conjoint](https://github.com/Coubiac/mailtrace/actions/runs/37161595157)
   réussie, incluant append tardif/ligne partielle, équité, sérialisation, checkpoints
   SQLite, successeur vide, erreurs/pending, détecteur de courses et builds sans CGO.
+- Validation locale du lot grâce : `go test ./...`, `go vet ./...` et compilation
+  des tests FileSource Linux amd64 sans CGO réussis. Les scénarios à horloge
+  contrôlée Linux et le détecteur de courses restent à confirmer en CI.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -554,9 +560,10 @@ y compris un successeur vide. Une troisième identité produit `ErrRotationCapac
 avant toute ouverture ou écriture pour ce troisième fichier.
 
 Un successeur vide reste ouvert et la décision d'enregistrement est différée
-jusqu'à contenu non vide. `missing` conserve le fichier actif. Les successeurs sont
-fermés à toute sortie du scheduler ; `runOpened` ferme aussi le premier fichier.
-Les erreurs d'ouverture, de décision, d'ingesteur ou du Sink restent sans réessai.
+jusqu'à contenu non vide. `missing` conserve le fichier actif. Le scheduler possède
+désormais tous les descripteurs après initialisation et les ferme à toute sortie
+ou expiration. Les erreurs d'ouverture, de décision, d'ingesteur ou du Sink restent
+sans réessai.
 
 Tests Linux : origines et checkpoints SQLite distincts après rename/create,
 ancien descripteur encore ouvert pendant ingestion du nouveau puis fermeture de
@@ -567,11 +574,11 @@ retour d'une identité conservée reprenant sa ligne partielle et son checkpoint
 La propriété des descripteurs est vérifiée via `/proc/self/fd` sur les seuls fichiers
 synthétiques du test, sans compter les fichiers SQLite/runtime.
 
-Limites : pas de période de grâce/expiration, diagnostic de lacune, recherche des
-rotations après redémarrage ou détection de troncature. La rotation complète du MVP
-reste inachevée. Pas de migration ou dépendance ajoutée.
+Limites : pas de diagnostic de lacune, recherche des rotations après redémarrage
+ou détection de troncature. La rotation complète du MVP reste inachevée.
+Pas de migration ou dépendance ajoutée.
 
-## Dernier lot terminé : lire conjointement l'ancien et le nouveau
+## Suivi conjoint de l'ancien et du nouveau
 
 Chaque passage tente au plus une ligne complète par génération ouverte, dans
 l'ordre d'ouverture. L'ancien ingesteur conserve sa ligne partielle et reprend les
@@ -601,22 +608,60 @@ checkpoints inchangés à 6/6, batch pending conservé et acquittable manuelleme
 successeur fermé. Les tests de bascule/capacité/retour d'identité restent applicables.
 
 Limites : l'équité est par ligne, pas par durée ; une ligne physique très longue ou
-un Sink lent peut retarder l'autre génération. Le polling du chemin peut être différé
-si au moins un lecteur fournit constamment des lignes. Pas de période de grâce,
-troncature, diagnostic de lacune ou recherche d'archives après redémarrage. Une
-ligne restant incomplète n'est jamais acquittée. Pas de migration ou dépendance ajoutée.
+un Sink lent peut retarder l'autre génération. Le polling du chemin et l'expiration
+peuvent être différés si un lecteur fournit constamment des lignes. Pas de troncature,
+diagnostic de lacune ou recherche d'archives après redémarrage. Une ligne restant
+incomplète n'est jamais acquittée. Pas de migration ou dépendance ajoutée.
 
-## Prochain petit lot : période de grâce après EOF stable
+## Dernier lot terminé : période de grâce après EOF stable
+
+`Config.RotationGrace` fixe la grâce des fichiers qui ne sont plus courants : zéro
+sélectionne 30 s ; valeurs explicites entre 10 ms et 24 h. Validation et copie ont
+lieu dans `New`, avant ouverture ou écriture. La durée ne s'accumule qu'après un
+EOF observé sur un fichier retiré du chemin courant, sans ligne partielle ni batch
+pending. Chaque ligne acquittée remet le compteur à zéro ; une fin partielle le
+désactive jusqu'à complétion. Une génération neuve vide peut également expirer
+si elle n'est plus courante, sans écrire d'origine vide.
+
+Au polling, identifier d'abord le fichier courant, y compris le retour d'une
+identité conservée ; le courant est protégé, même si son chemin a disparu. Puis
+fermer les autres générations ayant atteint la grâce et libérer leur capacité
+avant d'ouvrir un éventuel troisième fichier. La fermeture recontrôle l'absence
+de batch/partiel et la taille du descripteur par rapport à l'EOF observé. Une
+croissance ou diminution constatée renouvelle l'observation au prochain passage.
+
+La propriété des descripteurs est centralisée : `runOpened` ferme un échec ou un
+fichier initial vide ; après transfert, le scheduler possède le premier et ses
+successeurs. Une fermeture d'expiration retire le fichier de sa liste avant
+propagation d'erreur pour éviter toute double fermeture. Les checkpoints et
+origines SQLite des fichiers fermés restent conservés.
+
+Tests locaux : bornes/default de configuration, batch non acquitté protégé puis
+retrait après acquittement/EOF, annulation du retrait, fichier courant conservé.
+Tests Linux à horloge contrôlée : aucun retrait avant le délai, retrait à la
+limite exacte et rotation suivante avec trois origines/checkpoints distincts ;
+append pendant l'attente à la limite détecté avant fermeture et grâce renouvelée ;
+lignes partielles normales/surdimensionnées bloquant un troisième descripteur ;
+chemin courant absent protégé bien au-delà du délai, nettoyage sans double fermeture.
+Les scénarios précédents et le détecteur de courses restent dans la CI.
+
+Limites : retrait lors du polling sans progression, donc retard possible sous
+flux continu. Stat/fermeture ne sont pas atomiques ; un ajout après la dernière
+observation ou après la grâce peut être manqué, et une réécriture de taille identique
+n'est pas détectée ici. Pas de détection de troncature, diagnostic de lacune ou
+recherche d'archives après redémarrage. Une ligne partielle protégée peut maintenir
+la capacité occupée et provoquer `ErrRotationCapacity`. Pas de migration ou dépendance.
+
+## Prochain petit lot : polling pendant un flux continu
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4,
-ADR-003 et la section rotation du cadrage. Ajouter une durée de grâce configurable
-pour les générations qui ne sont plus courantes ; fermer une génération après EOF
-stable durant cette durée, en renouvelant la grâce sur ajout. Une ligne partielle
-ou un batch non acquitté ne doit pas être jeté implicitement à l'expiration. Libérer
-la capacité pour une rotation suivante et centraliser la propriété des descripteurs
-pour éviter les doubles fermetures du premier fichier. Tester délai, append tardif,
-annulation, ligne partielle et réutilisation de la capacité avec une horloge contrôlée.
-Le polling sous flux continu et les diagnostics de lacune resteront des lots séparés.
+ADR-003 et la section rotation du cadrage. Déclencher observation du chemin et
+expiration lorsque l'intervalle de polling s'est écoulé, même si un ingesteur
+continue d'acquitter des lignes ; conserver équité et commits sérialisés. Réutiliser
+l'horloge contrôlée pour tester rotation visible avant EOF du flux, expiration de
+l'ancien pendant progression du nouveau et absence de boucle d'attente sur Sink
+EOF. La durée d'une lecture/normalisation/commit peut encore retarder un contrôle.
+La détection de troncature et les diagnostics de lacune resteront des lots séparés.
 
 ## Suite à découper au fil des reprises
 
