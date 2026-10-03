@@ -18,6 +18,39 @@ type Sink interface {
 	Commit(ctx context.Context, batch Batch) error
 }
 
+// StateReader exposes committed ingestion state without coupling sources to
+// a storage implementation. FileOrigins returns candidates, not a verdict
+// that the observed file belongs to any particular generation.
+type StateReader interface {
+	FileOrigins(ctx context.Context, query OriginQuery) (OriginPage, error)
+	Checkpoint(ctx context.Context, sourceID, originID string) (Position, bool, error)
+}
+
+const MaxOriginPageSize = 100
+
+// OriginQuery selects one source's physical file identity. Limit must be in
+// [1, MaxOriginPageSize]. AfterID is an exclusive cursor, empty for the first
+// page; results are sorted by ID, not by creation time.
+type OriginQuery struct {
+	SourceID string
+	Device   string
+	Inode    string
+	AfterID  string
+	Limit    int
+}
+
+type OriginState struct {
+	Origin     Origin
+	Checkpoint *Position // nil means no committed position; offset zero is valid
+}
+
+// OriginPage is bounded. Pass NextID as AfterID for the next page; an empty
+// NextID ends the scan. Each page reflects one committed storage snapshot.
+type OriginPage struct {
+	States []OriginState
+	NextID string
+}
+
 type Identity struct {
 	ID          string
 	Kind        string

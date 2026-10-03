@@ -21,14 +21,20 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `codex/m2-file-source`, empilée sur la PR #10.
 - Deuxième lot FileSource : identité physique et empreinte de début bornée dans
   `internal/source/file/identity*.go`, sur la même branche et dans la PR #11.
+- Troisième lot FileSource : interface de lecture `source.StateReader` et
+  implémentation SQLite de la recherche paginée des origines et checkpoints.
+  Toujours dans la PR #11, sans migration ni dépendance ajoutée.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
   [CI du commit de code](https://github.com/Coubiac/mailtrace/actions/runs/37142141635)
   réussie, incluant les builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot identité : `go test ./...`, `go vet ./...` et builds
-  Linux amd64/arm64 avec `CGO_ENABLED=0` réussis. Consulter les checks de la PR #11
-  pour le résultat CI du dernier commit, notamment les tests d'identité Linux.
+  Linux amd64/arm64 avec `CGO_ENABLED=0` réussis.
+  [CI identité](https://github.com/Coubiac/mailtrace/actions/runs/37154817870)
+  réussie, notamment les tests d'identité Linux.
+- Validation locale du lot lecture d'état : `go test ./...` et `go vet ./...`
+  réussis. Consulter les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -54,7 +60,7 @@ Limites : le lecteur ne remplit pas encore OriginID, ReadAt et Observation ;
 il ne suit pas les chemins, ne détecte pas les rotations et ne persiste aucun
 checkpoint. Une lecture bloquante reste à interrompre par son propriétaire.
 
-## Dernier lot terminé : identité physique des fichiers
+## Identité physique des fichiers
 
 `Inspect` valide un fichier régulier à partir du descripteur et expose sa taille
 ainsi que device/inode sur Linux. `Identity.SameFile` compare les identités via
@@ -77,18 +83,36 @@ génération ; la réutilisation d'inode et la troncature exigent encore les anc
 de checkpoint et un diagnostic. La capture n'est pas une vue atomique du fichier
 pendant une écriture concurrente. Aucune dépendance ou migration ajoutée.
 
-## Prochain petit lot : lecture des origines et checkpoints persistés
+## Dernier lot terminé : lecture des origines et checkpoints persistés
+
+`source.StateReader` définit `FileOrigins` et le lecteur de checkpoint existant.
+`OriginQuery` filtre exactement une source, un device et un inode. Les résultats
+sont triés par ID et paginés avec `AfterID`/`NextID`, avec 1 à 100 états par page.
+L'identité physique vide est refusée, sans recherche large implicite.
+
+Le stockage SQLite renvoie métadonnées et checkpoint optionnel dans une seule
+requête pour chaque page. `OriginState.Checkpoint == nil` signifie absent ; un
+checkpoint à zéro reste présent. Les empreintes sont renvoyées telles quelles,
+sans tentative de sélectionner ou fusionner les générations.
+
+Tests : état absent, réouverture, métadonnées conservées, pagination sans perte,
+checkpoints absents/zéro/non-zéro, séparation source/device/inode et annulation.
+Limites : les pages successives ne constituent pas un instantané global et
+l'ordre des IDs n'est pas chronologique ; le prochain sélecteur devra en tenir
+compte. La boucle de suivi et le choix d'une génération restent à développer.
+
+## Prochain petit lot : ancres de checkpoint et formats d'empreinte
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Définir une interface de lecture d'état injectée dans FileSource,
-indépendante de SQLite, puis l'implémenter dans le stockage existant :
+et ADR-003. Ajouter les helpers bornés nécessaires pour vérifier un offset :
 
-- Retrouver les origines d'une source par device/inode, sans fusion automatique.
-- Récupérer les métadonnées et positions déjà enregistrées par `Sink.Commit`.
-- Tester l'absence initiale, la réouverture de base et la séparation des sources.
+- Hacher une fenêtre avant l'offset de checkpoint sans déplacer la lecture.
+- Conserver la position, la longueur et le digest dans `Position.AnchorHash`.
+- Lire et valider les formats persistés des empreintes de début et des ancres.
+- Tester append, modification de la fenêtre, troncature et formats invalides.
 
-Ce lot prépare la sélection d'une génération ; il n'ajoute pas encore la boucle
-de suivi, ni les décisions de correspondance entre empreintes et checkpoints.
+Ce lot ne choisit pas encore la génération et ne suit pas les fichiers. Définir
+explicitement le cas du checkpoint à zéro et les limites d'une fenêtre bornée.
 
 ## Suite à découper au fil des reprises
 
