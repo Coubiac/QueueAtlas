@@ -38,6 +38,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Huitième lot FileSource : ingestion d'une ligne et acquittement de son
   checkpoint dans `internal/source/file/ingestor.go`, commit
   `2d3c7d7ab72f07b0bbfccef2932cceb7c2531e07`, toujours dans la PR #11.
+- Neuvième lot FileSource : attente annulable des ajouts sur une génération
+  ouverte, dans `internal/source/file/follow.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -70,6 +72,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   compilation des tests FileSource Linux amd64 sans CGO réussis.
   [CI ingestion](https://github.com/Coubiac/mailtrace/actions/runs/37157404479)
   réussie, incluant le réessai idempotent SQLite et les builds sans CGO.
+- Validation locale du lot suivi ouvert : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
+  les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -234,7 +239,7 @@ Une origine capturée vide conserve son empreinte vide immuable et ne fournit
 pas de preuve de contenu lors d'une reprise future. Le traitement opérationnel
 de ces cas reste à définir avant de déclarer FileSource terminé.
 
-## Dernier lot terminé : acquitter une ligne complète
+## Acquitter une ligne complète
 
 `NewIngestor` reçoit l'identité de source, l'état de génération décidé et une
 fonction de normalisation injectée. Il vérifie le checkpoint initial, son
@@ -269,25 +274,48 @@ l'ingestion. Aucun polling, suivi de chemin ou diagnostic de rotation/troncature
 pendant lecture dans ce lot. Le constructeur n'arbitre pas une reprise jugée
 insuffisante : l'état doit venir de la décision de génération.
 
-## Prochain petit lot : attendre les ajouts à EOF
+## Dernier lot terminé : attendre les ajouts à EOF
+
+`Ingestor.Follow(ctx, Sink, intervalle)` poursuit les commits sur la génération
+déjà ouverte. Un EOF du lecteur provoque une attente avec timer annulable, puis
+une nouvelle lecture conservant la ligne partielle. L'intervalle zéro choisit
+une seconde ; une valeur explicite doit être entre 10 ms et une minute.
+
+Les autres erreurs sont retournées immédiatement. Un EOF du Sink, même enveloppé,
+reste une erreur de commit et ne déclenche aucune attente ou tentative automatique.
+Le batch reste disponible dans l'ingesteur pour un réessai explicite. Aucun timer
+n'est actif entre les lignes déjà disponibles ; un seul timer est utilisé par
+attente, arrêté au retour. L'annulation à EOF ne dépend pas de l'intervalle choisi.
+
+Tests : append après EOF partiel, parcours de plusieurs lignes, attente réelle
+avec timer puis append, annulation pendant une attente longue, erreurs du Sink
+(dont EOF direct/enveloppé) sans boucle de réessais, erreur de lecture et intervalles
+invalides sans progression. Les tests couvrent aussi le batch réessayable après arrêt.
+
+Limites : suivi du seul descripteur, pas du chemin ; aucun choix de génération,
+fermeture de fichier ou diagnostic de rotation/troncature. Un seul appelant ;
+l'annulation pendant une lecture bloquante ou un commit reste conditionnée aux
+contrats du lecteur et du Sink. FileSource n'est pas encore complet.
+
+## Prochain petit lot : différer une génération initialement vide
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Ajouter une boucle sur une génération déjà décidée et ouverte,
-avec attente annulable lorsque `CommitNext` renvoie EOF :
+et ADR-003. Éviter de créer une origine neuve avec empreinte vide lorsque le
+fichier n'a encore aucun octet :
 
-- Réutiliser l'ingesteur pour poursuivre après append et conserver EOF partiel.
-- Borner/configurer l'intervalle d'attente, éviter une boucle active à EOF.
-- Retourner les erreurs du Sink sans réessai automatique infini.
-- Tester append après attente, annulation à EOF et propagation des erreurs.
+- Ajouter un résultat explicite d'attente de contenu à `EnsureGeneration`.
+- Ne pas écrire d'origine/checkpoint lorsque la capture du préfixe est vide.
+- Après append, permettre une nouvelle décision avec empreinte non vide.
+- Garder les anciennes origines à empreinte vide immuables et diagnostiquées.
+- Tester absence d'écriture, append et conservation des décisions insuffisantes.
 
-La décision des générations initialement vides, le suivi de chemin et les
-rotations restent des lots séparés. Ne pas présenter cette boucle sur descripteur
-comme une implémentation FileSource complète.
+La politique de reprise d'un checkpoint zéro existant et le suivi de chemin
+restent des lots séparés. Réutiliser la PR #11 sans introduire de migration.
 
 ## Suite à découper au fil des reprises
 
-1. Attente annulable des ajouts sur une génération ouverte.
-2. Décisions de reprise à zéro et génération initialement vide.
+1. Différer l'enregistrement d'une génération neuve vide.
+2. Décisions de reprise à zéro, puis orchestration FileSource sur chemin.
 3. Rotation par renommage/création et écritures tardives.
 4. Reprise après arrêt, troncature et diagnostic des lacunes.
 5. Import historique normal, puis gzip dans un lot distinct.
