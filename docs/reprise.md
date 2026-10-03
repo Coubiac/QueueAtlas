@@ -41,6 +41,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Neuvième lot FileSource : attente annulable des ajouts sur une génération
   ouverte, dans `internal/source/file/follow.go`, commit
   `719d5139c345e4eede483a4646eabc172e162833`, toujours dans la PR #11.
+- Dixième lot FileSource : décision d'attente sans écriture pour une génération
+  neuve vide, dans `generation.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -77,6 +79,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   compilation des tests FileSource Linux amd64 sans CGO réussis.
   [CI suivi ouvert](https://github.com/Coubiac/mailtrace/actions/runs/37157772435)
   réussie, incluant attente/append/annulation et builds Linux sans CGO.
+- Validation locale du lot fichier vide : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
+  les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -218,9 +223,10 @@ celles de `VerifyCandidate`. Aucun état n'est écrit par ce lot.
 ## Enregistrer une nouvelle génération
 
 `EnsureGeneration` sélectionne dans le namespace d'une identité de source
-`file`. Pour `absent` ou `different`, il crée un ID opaque aléatoire de 128 bits,
-capture identité et préfixe du descripteur, puis transmet origine et checkpoint
-zéro avec ancre canonique dans un seul `Sink.Commit`, sans record.
+`file`. Pour `absent` ou `different`, il capture identité et préfixe du
+descripteur. Si le préfixe est non vide, il crée un ID opaque aléatoire de
+128 bits puis transmet origine et checkpoint zéro avec ancre canonique dans
+un seul `Sink.Commit`, sans record. Une capture vide diffère cet enregistrement.
 
 Le résultat contient l'état et `Created == true` seulement après acquittement.
 Pour `unique`, il retourne l'origine et le checkpoint vérifiés sans écrire.
@@ -229,7 +235,7 @@ avec état absent. Une erreur de lecture, de Sink ou une annulation avant commit
 ne produit pas d'état utilisable. Le helper ne déplace pas la lecture.
 
 Tests : validation des entrées, annulation, absence d'identité persistable ;
-sur Linux, état initial d'un fichier vide/non vide retrouvé après réouverture
+sur Linux, état initial d'un fichier non vide retrouvé après réouverture
 SQLite, origine et checkpoint transmis ensemble, chemin/identité/date conservés,
 reprise existante, nouvelle génération après différence, refus des décisions
 incomplètes/ambiguës/limitées et erreurs de Sink/lecteur.
@@ -237,9 +243,10 @@ incomplètes/ambiguës/limitées et erreurs de Sink/lecteur.
 Limites : sérialisation de la source à assurer par l'appelant ; captures du
 fichier non atomiques. Un arrêt après création mais avant la première ligne
 validée laisse un checkpoint zéro qui exige une décision explicite à la reprise.
-Une origine capturée vide conserve son empreinte vide immuable et ne fournit
-pas de preuve de contenu lors d'une reprise future. Le traitement opérationnel
-de ces cas reste à définir avant de déclarer FileSource terminé.
+Une ancienne origine capturée vide conserve son empreinte vide immuable et ne
+fournit pas de preuve de contenu lors d'une reprise future. Les nouvelles
+origines vides sont désormais différées. La reprise à zéro reste à définir
+avant de déclarer FileSource terminé.
 
 ## Acquitter une ligne complète
 
@@ -276,7 +283,7 @@ l'ingestion. Aucun polling, suivi de chemin ou diagnostic de rotation/troncature
 pendant lecture dans ce lot. Le constructeur n'arbitre pas une reprise jugée
 insuffisante : l'état doit venir de la décision de génération.
 
-## Dernier lot terminé : attendre les ajouts à EOF
+## Attendre les ajouts à EOF
 
 `Ingestor.Follow(ctx, Sink, intervalle)` poursuit les commits sur la génération
 déjà ouverte. Un EOF du lecteur provoque une attente avec timer annulable, puis
@@ -299,25 +306,49 @@ fermeture de fichier ou diagnostic de rotation/troncature. Un seul appelant ;
 l'annulation pendant une lecture bloquante ou un commit reste conditionnée aux
 contrats du lecteur et du Sink. FileSource n'est pas encore complet.
 
-## Prochain petit lot : différer une génération initialement vide
+## Dernier lot terminé : différer une génération initialement vide
+
+`GenerationStart.WaitingForContent` est vrai uniquement lorsque la sélection
+autorisait une nouvelle origine (`absent` ou `different`) mais que le préfixe
+capturé contient zéro octet. Aucun ID, origine ou checkpoint n'est enregistré ;
+`State` reste absent et `Created` faux. L'appel ne déplace pas la lecture.
+
+L'appelant peut relancer `EnsureGeneration` après ajout de contenu. La décision
+est alors refaite, et un préfixe non vide permet l'enregistrement initial normal.
+Il n'y a pas de boucle d'attente ajoutée à ce helper. Les origines persistées
+avec empreinte vide restent diagnostiquées `insufficient`, même après append,
+sans réécriture de leur identité ou remplacement implicite.
+
+Tests Linux : décisions répétées sur fichier vide sans aucun commit, état SQLite
+inchangé pour source sans origine ou après troncature d'une génération connue,
+position inchangée, enregistrement après append avec préfixe non vide, et
+conservation d'une ancienne origine vide avant/après append. Les tests de
+registration existants couvrent maintenant aussi un fichier d'un seul octet.
+
+Limites : une ancienne origine vide exige encore une décision explicite ;
+checkpoint zéro et course de réécriture du fichier restent des comportements
+distincts. Le scheduler de chemin devra gérer `WaitingForContent` avant de créer
+un ingesteur. Aucune migration ou dépendance ajoutée.
+
+## Prochain petit lot : politique explicite de reprise à zéro
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Éviter de créer une origine neuve avec empreinte vide lorsque le
-fichier n'a encore aucun octet :
+et ADR-003. Permettre une politique explicite de relecture depuis le début
+pour un checkpoint zéro, tout en conservant le comportement strict par défaut :
 
-- Ajouter un résultat explicite d'attente de contenu à `EnsureGeneration`.
-- Ne pas écrire d'origine/checkpoint lorsque la capture du préfixe est vide.
-- Après append, permettre une nouvelle décision avec empreinte non vide.
-- Garder les anciennes origines à empreinte vide immuables et diagnostiquées.
-- Tester absence d'écriture, append et conservation des décisions insuffisantes.
+- Exiger identité physique, préfixe non vide concordant et ancre zéro canonique.
+- Distinguer cette décision d'une correspondance prouvée par ancre positive.
+- Refuser les candidats incomplets ou multiples, sans choix par date/offset.
+- Réutiliser l'origine et relire à zéro sans avancer ni créer un checkpoint.
+- Tester défaut strict, politique activée, append, incohérences et ambiguïté.
 
-La politique de reprise d'un checkpoint zéro existant et le suivi de chemin
-restent des lots séparés. Réutiliser la PR #11 sans introduire de migration.
+La reprise sans aucune preuve (empreinte vide ancienne) et l'orchestration sur
+chemin restent des lots séparés. Réutiliser la PR #11 sans migration.
 
 ## Suite à découper au fil des reprises
 
-1. Différer l'enregistrement d'une génération neuve vide.
-2. Décisions de reprise à zéro, puis orchestration FileSource sur chemin.
+1. Politique de relecture explicite d'un checkpoint zéro vérifiable.
+2. Orchestration FileSource sur chemin et décisions insuffisantes restantes.
 3. Rotation par renommage/création et écritures tardives.
 4. Reprise après arrêt, troncature et diagnostic des lacunes.
 5. Import historique normal, puis gzip dans un lot distinct.

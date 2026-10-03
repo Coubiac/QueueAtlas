@@ -18,7 +18,7 @@ import (
 func TestEnsureGenerationRegistrationAndDurableInitialState(t *testing.T) {
 	ctx := context.Background()
 	identity := fileSourceIdentity()
-	for _, content := range []string{"synthetic line\n", ""} {
+	for _, content := range []string{"synthetic line\n", "x"} {
 		t.Run(content, func(t *testing.T) {
 			f, path := testRegularFile(t, content)
 			if _, err := f.Seek(3, io.SeekStart); err != nil {
@@ -40,7 +40,7 @@ func TestEnsureGenerationRegistrationAndDurableInitialState(t *testing.T) {
 			})
 			before := time.Now().UTC()
 			got, err := EnsureGeneration(ctx, f, identity, store, sink)
-			if err != nil || !got.Created || got.State == nil || got.Selection != SelectionAbsent || calls != 1 {
+			if err != nil || got.WaitingForContent || !got.Created || got.State == nil || got.Selection != SelectionAbsent || calls != 1 {
 				t.Fatalf("initial start: %+v, %v, calls %d", got, err, calls)
 			}
 			o, p := got.State.Origin, got.State.Checkpoint

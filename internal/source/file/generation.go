@@ -12,9 +12,10 @@ import (
 )
 
 type GenerationStart struct {
-	Selection SelectionStatus
-	State     *source.OriginState // nil when the selection cannot be applied
-	Created   bool                // true only after successful Sink.Commit
+	Selection         SelectionStatus
+	State             *source.OriginState // nil when the selection cannot be applied
+	Created           bool                // true only after successful Sink.Commit
+	WaitingForContent bool                // new registration deferred after empty capture
 }
 
 // EnsureGeneration returns a verified existing origin or registers a new one
@@ -22,6 +23,9 @@ type GenerationStart struct {
 // Insufficient, ambiguous and limited selections return a nil State without
 // writing. A successful registration acknowledges origin and offset zero in one
 // Sink.Commit, with no log records; no file seeking or reading loop is started.
+// An empty captured prefix instead sets WaitingForContent, with no write; the
+// caller can invoke this decision again after append. Existing insufficient
+// origins, including legacy empty fingerprints, are never replaced implicitly.
 //
 // The caller must serialize this source's state writes through selection and
 // application, as required by SelectResume. An initial zero checkpoint cannot
@@ -59,6 +63,13 @@ func EnsureGeneration(ctx context.Context, f *os.File, identity source.Identity,
 	prefix, err := CapturePrefix(f)
 	if err != nil {
 		return GenerationStart{}, err
+	}
+	if err := ctx.Err(); err != nil {
+		return GenerationStart{}, err
+	}
+	if prefix.Length == 0 {
+		result.WaitingForContent = true
+		return result, nil
 	}
 	anchor, err := CaptureAnchor(f, 0)
 	if err != nil {
