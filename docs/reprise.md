@@ -47,6 +47,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Onzième lot FileSource : politique explicite de relecture à zéro dans les
   vérificateur/sélecteur/décision de génération, commit
   `a879283d0de1b632dc7d9960662eb1ef6b1ca591`, toujours dans la PR #11.
+- Douzième lot FileSource : ouverture en lecture seule et vérification du
+  chemin dans `internal/source/file/open*.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -91,6 +93,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   compilation des tests FileSource Linux amd64 sans CGO réussis.
   [CI politique zéro](https://github.com/Coubiac/mailtrace/actions/runs/37158472028)
   réussie, incluant relecture réelle après réouverture SQLite et builds sans CGO.
+- Validation locale du lot ouverture : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
+  les checks de la PR #11 pour la CI du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -340,7 +345,7 @@ checkpoint zéro et course de réécriture du fichier restent des comportements
 distincts. Le scheduler de chemin devra gérer `WaitingForContent` avant de créer
 un ingesteur. Aucune migration ou dépendance ajoutée.
 
-## Dernier lot terminé : politique explicite de reprise à zéro
+## Politique explicite de reprise à zéro
 
 Les entrées `VerifyCandidateWithPolicy`, `SelectResumeWithPolicy` et
 `EnsureGenerationWithPolicy` acceptent `ResumePolicy{AllowZeroCheckpoint: true}`.
@@ -374,27 +379,57 @@ avec une ancre positive. Les garanties bornées/non atomiques du préfixe et la
 sérialisation de la source restent requises. Les anciennes empreintes vides
 restent insuffisantes. La politique n'est pas encore exposée par une CLI/config.
 
-## Prochain petit lot : ouvrir et vérifier un chemin de journal
+## Dernier lot terminé : ouvrir et vérifier un chemin de journal
+
+`OpenLog(ctx, chemin)` retourne un descripteur en lecture seule, à l'offset zéro,
+et son identité physique, après vérification d'un fichier régulier. L'identité
+doit être identique avant l'ouverture, sur le descripteur et sur le chemin après
+l'ouverture. Les liens symboliques vers des fichiers réguliers sont acceptés.
+
+Un remplacement ou une disparition observée pendant cette séquence produit
+`ErrPathChanged` ; la disparition conserve aussi `fs.ErrNotExist`. Tous les
+échecs après ouverture ferment le descripteur et ne retournent ni fichier ni
+identité utilisables. Après succès, la fermeture appartient à l'appelant.
+
+Sur Linux, `O_NONBLOCK` empêche une course de remplacement par FIFO d'attendre
+un écrivain ; le descripteur non régulier est ensuite refusé. Les autres
+plateformes font le contrôle préalable et après ouverture mais ne garantissent
+pas une ouverture non bloquante pendant une course de remplacement.
+
+Tests : lecture dès zéro, écriture refusée/contenu inchangé, chemin vide/absent,
+répertoire, annulation, identités remplacées et fermeture sur échec. Tests Linux :
+lien symbolique régulier puis cible changée, rename/create avec ancien descripteur
+ouvert, FIFO connu et remplacement par FIFO après un contrôle régulier.
+
+Limites : les vérifications ne verrouillent pas le chemin et ne prouvent pas la
+génération ; les changements ultérieurs restent à surveiller. L'annulation est
+vérifiée entre appels système et n'interrompt pas un appel de filesystem bloqué.
+Aucun Sink, suivi de rotation, migration ou dépendance ajouté.
+
+## Prochain petit lot : orchestrer le démarrage FileSource
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Préparer l'ouverture d'un chemin configuré en lecture seule avant
-l'orchestration FileSource :
+et ADR-003. Ajouter une implémentation initiale du contrat `source.Source` qui
+relie les composants disponibles sur un chemin configuré :
 
-- Valider le fichier régulier via son descripteur, puis comparer au chemin.
-- Retourner un diagnostic explicite si le chemin a changé pendant l'ouverture.
-- Éviter qu'une entrée non régulière (notamment FIFO Linux) bloque à l'ouverture.
-- Fermer le descripteur en cas d'échec ; transférer sa propriété après succès.
-- Tester lecture seule, chemin absent, répertoire et remplacement ; pas de Sink.
+- Valider configuration, normaliseur, StateReader et intervalle avant écriture.
+- Ouvrir avec `OpenLog`, décider avec `EnsureGenerationWithPolicy` et démarrer
+  l'ingesteur seulement si un état est utilisable.
+- Attendre de manière annulable pour `WaitingForContent`, en refaisant ouverture
+  et décision ; retourner les décisions insuffisantes/ambiguës/limitées clairement.
+- Appliquer `Ingestor.Follow`, fermer le descripteur à la fin et interdire deux
+  exécutions simultanées du même objet Source.
+- Tester démarrage, append après fichier vide, reprise, annulation et erreur Sink.
 
-L'orchestration `Source.Run`, les rotations et les anciennes empreintes vides
-restent des lots distincts. Aucune migration ou dépendance nécessaire ici.
+La rotation et la troncature pendant suivi restent les lots suivants ; documenter
+le suivi du seul descripteur dans cette implémentation initiale. Pas de CLI ici.
 
 ## Suite à découper au fil des reprises
 
-1. Ouverture du chemin et vérification de l'identité du descripteur.
-2. Orchestration FileSource sur chemin et décisions insuffisantes restantes.
-3. Rotation par renommage/création et écritures tardives.
-4. Reprise après arrêt, troncature et diagnostic des lacunes.
+1. Démarrage Source.Run avec décision de génération et attente initiale.
+2. Rotation par renommage/création et écritures tardives, en lots distincts.
+3. Reprise après arrêt, troncature et diagnostic des lacunes.
+4. Décisions insuffisantes restantes, dont anciennes empreintes vides.
 5. Import historique normal, puis gzip dans un lot distinct.
 
 Chaque demande de continuation traite par défaut un seul petit lot et actualise
