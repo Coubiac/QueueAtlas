@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/Coubiac/mailtrace/internal/source"
 )
@@ -42,7 +43,7 @@ func TestSourcePathFollowObservesBeforeConsumptionAndPreservesSinkFailure(t *tes
 				t.Fatal("initial observation missing before consumption")
 			}
 			return failure
-		}), func(context.Context) error { t.Fatal("sink failure polled"); return nil })
+		}), func(context.Context, time.Duration) error { t.Fatal("sink failure polled"); return nil })
 		if !errors.Is(err, failure) || commits != 1 || r.Position().Offset != 0 || s.LastPathStatus() != PathSame {
 			t.Fatalf("failed follow: %v, commits %d, position %+v, status %s", err, commits, r.Position(), s.LastPathStatus())
 		}
@@ -54,7 +55,7 @@ func TestSourcePathFollowCancellationAndNextRunReset(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	waits := 0
-	err := s.followPath(ctx, f, r, sinkFunc(func(context.Context, source.Batch) error { t.Fatal("partial line committed"); return nil }), func(context.Context) error {
+	err := s.followPath(ctx, f, r, sinkFunc(func(context.Context, source.Batch) error { t.Fatal("partial line committed"); return nil }), func(context.Context, time.Duration) error {
 		waits++
 		cancel()
 		return ctx.Err()
@@ -78,7 +79,7 @@ func TestSourcePathFollowReturnsObservationErrorBeforeConsuming(t *testing.T) {
 	if err := f.Close(); err != nil {
 		t.Fatal(err)
 	}
-	err := s.followPath(context.Background(), f, r, sinkFunc(func(context.Context, source.Batch) error { t.Fatal("invalid observation consumed input"); return nil }), func(context.Context) error { t.Fatal("invalid observation waited"); return nil })
+	err := s.followPath(context.Background(), f, r, sinkFunc(func(context.Context, source.Batch) error { t.Fatal("invalid observation consumed input"); return nil }), func(context.Context, time.Duration) error { t.Fatal("invalid observation waited"); return nil })
 	if err == nil || r.Position().Offset != 0 || s.LastPathStatus() != "" {
 		t.Fatalf("initial observation error: %v, position %+v, status %s", err, r.Position(), s.LastPathStatus())
 	}

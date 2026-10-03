@@ -112,9 +112,7 @@ func (s *FileSource) runOpened(ctx context.Context, f *os.File, sink source.Sink
 	if err != nil || waiting {
 		return waiting, errors.Join(err, f.Close())
 	}
-	return false, s.followPath(ctx, f, ingestor, sink, func(ctx context.Context) error {
-		return waitForPoll(ctx, s.config.PollInterval)
-	})
+	return false, s.followPath(ctx, f, ingestor, sink, waitForPoll)
 }
 
 func (s *FileSource) prepareGeneration(ctx context.Context, f *os.File, sink source.Sink) (*Ingestor, bool, error) {

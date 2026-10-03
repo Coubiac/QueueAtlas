@@ -133,7 +133,7 @@ func TestRotationWaitsForEmptySuccessorWithoutRegistering(t *testing.T) {
 			cancel()
 		}
 		return nil
-	}), func(context.Context) error {
+	}), func(context.Context, time.Duration) error {
 		waits++
 		if waits == 1 {
 			return rotateTo(path, ".1", "")
@@ -171,7 +171,7 @@ func TestRotationCapacityStopsBeforeOpeningThirdDistinctFile(t *testing.T) {
 		registrations += len(b.Origins)
 		records += len(b.Records)
 		return store.Commit(ctx, b)
-	}), func(context.Context) error {
+	}), func(context.Context, time.Duration) error {
 		waits++
 		if waits == 1 {
 			return rotateTo(path, ".1", "second\n")
@@ -217,7 +217,7 @@ func TestRotationSinkFailureClosesSuccessorWithoutRetry(t *testing.T) {
 					cancel()
 				}
 				return nil
-			}), func(context.Context) error {
+			}), func(context.Context, time.Duration) error {
 				waits++
 				if waits != 1 {
 					t.Fatal("successor error was retried")
@@ -258,7 +258,7 @@ func TestRotationReusesRetainedGenerationWithItsPartialLine(t *testing.T) {
 			cancel()
 		}
 		return nil
-	}), func(context.Context) error {
+	}), func(context.Context, time.Duration) error {
 		waits++
 		if waits == 1 {
 			return rotateTo(path, ".1", "second\n")
@@ -303,7 +303,7 @@ func TestRotationUnusableSuccessorDecisionDoesNotCommit(t *testing.T) {
 		registrations += len(b.Origins)
 		records += len(b.Records)
 		return store.Commit(ctx, b)
-	}), func(context.Context) error { return rotateTo(path, ".1", "second\n") })
+	}), func(context.Context, time.Duration) error { return rotateTo(path, ".1", "second\n") })
 	var decision *ResumeDecisionError
 	if !errors.As(err, &decision) || decision.Status != SelectionInsufficient || queries != 1 || registrations != 0 || records != 1 {
 		t.Fatalf("successor decision: %v, queries %d, registrations %d, records %d", err, queries, registrations, records)

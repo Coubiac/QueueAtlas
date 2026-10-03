@@ -28,13 +28,13 @@ type openedGeneration struct {
 // followPath owns the initial descriptor and every successor, closing each once
 // on retirement or return. Each round attempts one record
 // per opened generation, serially, including retained files and partial lines.
-// Waiting/polling occurs only when no reader commits a record. Continuous input
-// can defer path observation and grace expiry.
-func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context) error) (err error) {
+// Path checks and grace expiry run when due between rounds, including during
+// continuous input. Only idle rounds wait, until the next scheduled check.
+func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context, time.Duration) error) (err error) {
 	return s.followPathWithClock(ctx, f, ingestor, sink, wait, time.Now)
 }
 
-func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context) error, now func() time.Time) (err error) {
+func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context, time.Duration) error, now func() time.Time) (err error) {
 	opened := []*openedGeneration{{file: f, ingestor: ingestor}}
 	defer func() {
 		for _, generation := range opened {
@@ -93,6 +93,7 @@ func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingest
 	if err := poll(); err != nil {
 		return err
 	}
+	nextPoll := now().Add(s.config.PollInterval)
 	for {
 		if err := ctx.Err(); err != nil {
 			return err
@@ -124,14 +125,18 @@ func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingest
 			}
 			generation.observeEOF(active, now())
 		}
-		if progress {
+		remaining := nextPoll.Sub(now())
+		if progress && remaining > 0 {
 			continue
 		}
-		if err := wait(ctx); err != nil {
-			return err
+		if !progress && remaining > 0 {
+			if err := wait(ctx, remaining); err != nil {
+				return err
+			}
 		}
 		if err := poll(); err != nil {
 			return err
 		}
+		nextPoll = now().Add(s.config.PollInterval)
 	}
 }

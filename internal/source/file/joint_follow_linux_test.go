@@ -48,7 +48,7 @@ func TestJointFollowCommitsLatePartialAndDoesNotStarveEitherGeneration(t *testin
 			cancel()
 		}
 		return nil
-	}), func(context.Context) error {
+	}), func(context.Context, time.Duration) error {
 		waits++
 		if waits != 1 {
 			t.Fatal("waited while complete records were available")
@@ -100,7 +100,7 @@ func TestJointFollowOldAppendContinuesWhileSuccessorIsEmpty(t *testing.T) {
 			cancel()
 		}
 		return nil
-	}), func(context.Context) error {
+	}), func(context.Context, time.Duration) error {
 		waits++
 		if waits == 1 {
 			return rotateTo(path, ".1", "")
@@ -155,7 +155,7 @@ func TestJointFollowRetainedErrorStopsBeforeLaterSuccessorCommit(t *testing.T) {
 					return err
 				}
 				return nil
-			}), func(context.Context) error {
+			}), func(context.Context, time.Duration) error {
 				waits++
 				if waits != 1 {
 					t.Fatal("retained error waited or retried")

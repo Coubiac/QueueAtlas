@@ -40,7 +40,7 @@ func TestGraceDeadlineClosesOldFileAndReusesCapacityForThirdGeneration(t *testin
 			cancel()
 		}
 		return nil
-	}), func(context.Context) error {
+	}), func(context.Context, time.Duration) error {
 		waits++
 		switch waits {
 		case 1:
@@ -92,7 +92,7 @@ func TestGraceRechecksAppendDuringWaitAndRenewsDeadline(t *testing.T) {
 	err = s.followPathWithClock(ctx, f, r, sinkFunc(func(ctx context.Context, b source.Batch) error {
 		records += len(b.Records)
 		return store.Commit(ctx, b)
-	}), func(context.Context) error {
+	}), func(context.Context, time.Duration) error {
 		waits++
 		switch waits {
 		case 1:
@@ -143,7 +143,7 @@ func TestGraceDoesNotRetirePartialOrOversizedPartialLine(t *testing.T) {
 			err = s.followPathWithClock(ctx, f, r, sinkFunc(func(ctx context.Context, b source.Batch) error {
 				records += len(b.Records)
 				return store.Commit(ctx, b)
-			}), func(context.Context) error {
+			}), func(context.Context, time.Duration) error {
 				waits++
 				if waits == 1 {
 					return rotateTo(path, ".1", "second\n")
@@ -172,7 +172,7 @@ func TestGraceKeepsCurrentDescriptorWhilePathIsMissing(t *testing.T) {
 	defer cancel()
 	stamp := time.Date(2026, 10, 4, 0, 0, 0, 0, time.UTC)
 	waits := 0
-	err = s.followPathWithClock(ctx, f, r, store, func(context.Context) error {
+	err = s.followPathWithClock(ctx, f, r, store, func(context.Context, time.Duration) error {
 		waits++
 		if waits == 1 {
 			stamp = stamp.Add(100 * s.config.RotationGrace)

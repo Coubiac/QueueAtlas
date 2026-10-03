@@ -73,6 +73,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   protection des lignes partielles/batches pending et libération des descripteurs
   dans `internal/source/file/grace.go`, commit
   `84cfae72db4ce4642588563d2f3cad57e25a2dc3`, toujours dans la PR #11.
+- Dix-neuvième lot FileSource : polling périodique entre les passages de lecture,
+  y compris sous flux continu, et attente limitée au temps restant avant contrôle,
+  dans `rotation.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -152,6 +155,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI grâce](https://github.com/Coubiac/mailtrace/actions/runs/37162405314) réussie,
   incluant horloge contrôlée, délai/append/capacité réutilisée, partiels/pending,
   chemin absent, détecteur de courses et builds Linux sans CGO.
+- Validation locale du lot flux continu : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Les nouveaux
+  scénarios Linux et le détecteur de courses restent à confirmer en CI.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -543,8 +549,8 @@ et fermeture. Le test initial sans bascule a été remplacé par les tests de ro
 La CI Go 1.26 ajoute le détecteur de courses sur le paquet FileSource pour vérifier
 la consultation concurrente du statut avec les tests de suivi.
 
-Limites : le polling se fait à EOF ; un flux continuellement lisible peut différer
-l'observation. L'absence lors de l'ouverture initiale reste une erreur immédiate.
+Le polling périodique entre lectures est décrit dans le lot flux continu.
+L'absence lors de l'ouverture initiale reste une erreur immédiate.
 Pas de migration ou dépendance ajoutée.
 
 ## Bascule après rename/create
@@ -598,8 +604,9 @@ checkpoint n'avance pas. La fermeture et la reprise durable entre `Run` restent
 identiques aux lots précédents.
 
 Une attente intervient seulement si aucun ingesteur n'a acquitté de ligne pendant
-le passage. Puis le chemin du descripteur courant est observé et la décision de
-bascule/capacité habituelle s'applique. La consultation du statut reste synchronisée.
+le passage et si la prochaine échéance de polling n'est pas encore atteinte.
+Le contrôle périodique applique la décision de bascule/capacité habituelle.
+La consultation du statut reste synchronisée.
 
 Tests Linux : nouvelle génération avec trois lignes prêtes, append tardif terminant
 une ligne partielle de l'ancien puis une autre ligne ; intercalage sans famine,
@@ -611,12 +618,11 @@ checkpoints inchangés à 6/6, batch pending conservé et acquittable manuelleme
 successeur fermé. Les tests de bascule/capacité/retour d'identité restent applicables.
 
 Limites : l'équité est par ligne, pas par durée ; une ligne physique très longue ou
-un Sink lent peut retarder l'autre génération. Le polling du chemin et l'expiration
-peuvent être différés si un lecteur fournit constamment des lignes. Pas de troncature,
+un Sink lent peut retarder l'autre génération et le prochain contrôle. Pas de troncature,
 diagnostic de lacune ou recherche d'archives après redémarrage. Une ligne restant
 incomplète n'est jamais acquittée. Pas de migration ou dépendance ajoutée.
 
-## Dernier lot terminé : période de grâce après EOF stable
+## Période de grâce après EOF stable
 
 `Config.RotationGrace` fixe la grâce des fichiers qui ne sont plus courants : zéro
 sélectionne 30 s ; valeurs explicites entre 10 ms et 24 h. Validation et copie ont
@@ -648,23 +654,52 @@ lignes partielles normales/surdimensionnées bloquant un troisième descripteur 
 chemin courant absent protégé bien au-delà du délai, nettoyage sans double fermeture.
 Les scénarios précédents et le détecteur de courses restent dans la CI.
 
-Limites : retrait lors du polling sans progression, donc retard possible sous
-flux continu. Stat/fermeture ne sont pas atomiques ; un ajout après la dernière
+Limites : retrait lors du polling entre passages de lecture. Stat/fermeture ne
+sont pas atomiques ; un ajout après la dernière
 observation ou après la grâce peut être manqué, et une réécriture de taille identique
 n'est pas détectée ici. Pas de détection de troncature, diagnostic de lacune ou
 recherche d'archives après redémarrage. Une ligne partielle protégée peut maintenir
 la capacité occupée et provoquer `ErrRotationCapacity`. Pas de migration ou dépendance.
 
-## Prochain petit lot : polling pendant un flux continu
+## Dernier lot terminé : polling pendant un flux continu
+
+Après le contrôle initial, une échéance est fixée à `PollInterval`. Entre les
+passages équitables de lecture, si elle est atteinte, contrôler le chemin et
+expirer les générations éligibles, même si des lignes viennent d'être acquittées.
+L'échéance suivante est calculée après le contrôle ; pas de rafale de rattrapage
+pour des intervalles manqués. Le temps de production repose sur `time.Now` et
+ses mesures monotones ; l'horloge contrôlée reste un détail privé des tests.
+
+Sans progression, attendre uniquement la durée restante avant ce contrôle ; si
+l'échéance est déjà atteinte, contrôler immédiatement sans attendre. En progression,
+aucune attente. Le callback privé d'attente accepte désormais cette durée ; `Run`
+utilise le timer annulable existant. Une erreur de lecture/Sink interrompt le passage
+avant tout polling supplémentaire, y compris EOF du Sink arrivé à l'échéance.
+
+Tests locaux : un commit consommant 75 ms d'un intervalle de 100 ms produit une
+attente de 25 ms, annulable, sans nouvelle ligne acquittée. Tests Linux à horloge
+contrôlée : rename/create observé avant consommation de toutes les lignes de
+l'ancien, lectures intercalées sans attente et checkpoints distincts ; retrait
+de l'ancien à la grâce pendant que le nouveau garde des lignes prêtes ; EOF du
+Sink à l'échéance conservant pending/checkpoint avant un contrôle de chemin qui
+aurait échoué. Les tests précédents ont seulement adapté la signature d'attente.
+
+Limites : le contrôle attend la fin d'un passage ; une lecture de ligne physique
+très longue, un normaliseur ou un Sink lent peut encore le retarder. Les appels
+filesystem restent non atomiques avec les écritures. Pas de détection de troncature,
+diagnostic de lacune ou recherche d'archives après redémarrage. Pas de migration
+ou dépendance ajoutée.
+
+## Prochain petit lot : diagnostiquer une troncature observée
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4,
-ADR-003 et la section rotation du cadrage. Déclencher observation du chemin et
-expiration lorsque l'intervalle de polling s'est écoulé, même si un ingesteur
-continue d'acquitter des lignes ; conserver équité et commits sérialisés. Réutiliser
-l'horloge contrôlée pour tester rotation visible avant EOF du flux, expiration de
-l'ancien pendant progression du nouveau et absence de boucle d'attente sur Sink
-EOF. La durée d'une lecture/normalisation/commit peut encore retarder un contrôle.
-La détection de troncature et les diagnostics de lacune resteront des lots séparés.
+ADR-003 et la section rotation du cadrage. Au polling, examiner les tailles des
+descripteurs ouverts ; une taille inférieure au dernier offset consommé par
+l'ingesteur (y compris les octets d'une ligne partielle) doit arrêter le suivi avec
+un diagnostic fixe, sans reset à zéro ni nouvelle origine implicite. Tester le
+fichier courant et un fichier conservé, le cas partiel au-delà du checkpoint, les
+checkpoints inchangés et les append normaux. La récupération copytruncate, les
+réécritures ayant déjà retrouvé une taille suffisante et les lacunes restent séparées.
 
 ## Suite à découper au fil des reprises
 
