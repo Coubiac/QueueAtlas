@@ -42,7 +42,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   ouverte, dans `internal/source/file/follow.go`, commit
   `719d5139c345e4eede483a4646eabc172e162833`, toujours dans la PR #11.
 - Dixième lot FileSource : décision d'attente sans écriture pour une génération
-  neuve vide, dans `generation.go`, toujours dans la PR #11.
+  neuve vide, dans `generation.go`, commit
+  `90e4efcb6a0a8bc63f1b02f911618c5e2a01ade5`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -80,8 +81,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI suivi ouvert](https://github.com/Coubiac/mailtrace/actions/runs/37157772435)
   réussie, incluant attente/append/annulation et builds Linux sans CGO.
 - Validation locale du lot fichier vide : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Consulter
-  les checks de la PR #11 pour la CI du dernier commit.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI fichier vide](https://github.com/Coubiac/mailtrace/actions/runs/37158062815)
+  réussie, incluant attente sans écriture, append et builds Linux sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
