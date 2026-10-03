@@ -26,6 +26,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   Toujours dans la PR #11, sans migration ni dépendance ajoutée.
 - Quatrième lot FileSource : ancres bornées de checkpoint et lecture stricte
   des formats persistés, dans `internal/source/file/anchor.go`.
+- Cinquième lot FileSource : vérification d'un candidat de reprise dans
+  `internal/source/file/resume.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -39,7 +41,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussis. [CI lecture d'état](https://github.com/Coubiac/mailtrace/actions/runs/37155184130)
   réussie, incluant les builds Linux sans CGO.
 - Validation locale du lot ancres : `go test ./...` et `go vet ./...` réussis.
-  Consulter les checks de la PR #11 pour la CI du dernier commit.
+  [CI ancres](https://github.com/Coubiac/mailtrace/actions/runs/37155582363)
+  réussie.
+- Validation locale du lot candidat : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource pour Linux amd64 sans CGO réussis.
+  Les cas device/inode s'exécutent sur Linux en CI ; consulter les checks
+  de la PR #11 pour le résultat du dernier commit.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -106,7 +113,7 @@ Limites : les pages successives ne constituent pas un instantané global et
 l'ordre des IDs n'est pas chronologique ; le prochain sélecteur devra en tenir
 compte. La boucle de suivi et le choix d'une génération restent à développer.
 
-## Dernier lot terminé : ancres et formats persistés
+## Ancres et formats persistés
 
 `CaptureAnchor` hache les derniers `min(offset, 4096)` octets avant l'offset,
 sans déplacer la position de lecture. Un offset au-delà de EOF ou une fenêtre
@@ -127,21 +134,43 @@ Tests : fenêtre courte/longue, round-trip, append, position de lecture inchang�
 modification dans/hors fenêtre, troncature, zéro et nombreux formats invalides.
 La sélection de génération et la boucle de suivi restent à développer.
 
-## Prochain petit lot : vérifier un candidat de reprise
+## Dernier lot terminé : vérifier un candidat de reprise
+
+`VerifyCandidate` compare un `source.OriginState` au descripteur ouvert :
+identité device/inode, préfixe, ancre, égalité des offsets et séparateur LF
+avant le checkpoint. Le chemin enregistré ne sert pas de preuve d'identité.
+Le résultat contient un statut et un code de diagnostic fixe, sans contenu
+des journaux. La position de lecture n'est pas déplacée.
+
+Une différence d'identité, de contenu ou de taille produit `different`.
+Un état malformé, un checkpoint absent/zéro, une empreinte vide, une identité
+indisponible ou une frontière de ligne invalide produit `insufficient`.
+Les erreurs d'accès au descripteur sont retournées séparément.
+
+Tests : append, chemin enregistré obsolète, position inchangée, changements
+d'identité/préfixe/ancre, troncature, états incohérents, frontière de ligne,
+absence de preuve, descripteur invalide et répertoire.
+
+Limites : `match` signifie que ces preuves bornées concordent ; les changements
+hors fenêtres et les écritures concurrentes ne sont pas couverts. Le contrôle
+n'est pas un instantané atomique. L'appelant conserve le namespace de source
+fourni par `StateReader`. Aucun choix global ni suivi de fichier n'est ajouté.
+
+## Prochain petit lot : choisir un candidat unique
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4
-et ADR-003. Ajouter un contrôle borné d'un seul `source.OriginState` face au
-fichier ouvert, avec résultat explicite (correspondance, différence ou preuve
-insuffisante) :
+et ADR-003. Parcourir les pages de `StateReader` pour l'identité du fichier
+ouvert et sélectionner une origine seulement lorsque les preuves permettent
+un choix unique :
 
-- Comparer l'identité physique et les formats persistés avant les lectures.
-- Vérifier préfixe, ancre et égalité des offsets ancre/checkpoint.
-- Refuser un checkpoint positif au milieu d'une ligne et un OriginID incohérent.
-- Traiter checkpoint absent/zéro et empreinte vide sans inventer une preuve.
-- Tester reprise après append, contenu changé, troncature et états incohérents.
+- Réutiliser `VerifyCandidate`, sans supposer les IDs chronologiques.
+- Distinguer absence, différence, preuve insuffisante et ambiguïté.
+- Borner le parcours, gérer l'annulation et les erreurs du lecteur d'état.
+- Tester plusieurs pages et plusieurs candidats concordants ou incomplets.
 
-Le parcours des pages, le choix d'un candidat unique et la création d'une
-nouvelle génération viendront dans le lot suivant ; aucune boucle de suivi ici.
+La création/persistance d'une génération et la boucle de suivi viendront dans
+des lots ultérieurs. Les pages ne forment pas un instantané global ; le contrat
+du sélecteur devra expliciter cette limite.
 
 ## Suite à découper au fil des reprises
 
