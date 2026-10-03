@@ -59,7 +59,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `b72c9f2fa2a3209fed2ce5368fa3cc499b7a0a11`, toujours dans la PR #11.
 - Quinzième lot FileSource : observation au polling de `Run`, statut consultable
   et maintien du descripteur pendant une absence temporaire du chemin, dans
-  `internal/source/file/source_path.go`, toujours dans la PR #11.
+  `internal/source/file/source_path.go`, commit
+  `d1e4a1257f11e85ebec200d8217a4d79b24cda8b`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -119,9 +120,11 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie, incluant rename/create, disparition/réapparition, ancien descripteur,
   liens/FIFO Linux et builds amd64/arm64 sans CGO.
 - Validation locale du lot polling : `go test ./...`, `go vet ./...` et compilation
-  des tests FileSource Linux amd64 sans CGO réussis. Les scénarios Linux et le
-  contrôle de concurrence `go test -race ./internal/source/file` ajouté en CI
-  restent à valider après publication.
+  des tests FileSource Linux amd64 sans CGO réussis.
+  [CI polling](https://github.com/Coubiac/mailtrace/actions/runs/37160397278)
+  réussie, incluant disparition/append/réapparition SQLite, remplacement, erreurs
+  au polling et builds Linux sans CGO. L'étape `go test -race ./internal/source/file`
+  est confirmée réussie sur le job Go 1.26.x.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
