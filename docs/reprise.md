@@ -14,10 +14,16 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [PR #10](https://github.com/Coubiac/mailtrace/pull/10), branche
   `codex/m2-sqlite-storage`, dernier commit de code
   `34478635265c8001b4f0d2e8f42485b380f5060f`.
-- Les deux PR sont en brouillon. La PR #10 cible la branche de la PR #9.
+- Premier lot FileSource : lecteur de lignes borné dans
+  `internal/source/file/reader.go`, commit
+  `dfacfa20575529b421d7a6f0dedef8e7f476ddcc`.
+  [PR #11](https://github.com/Coubiac/mailtrace/pull/11), branche
+  `codex/m2-file-source`, empilée sur la PR #10.
+- Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
-- Dernière validation du code : `go test ./...`, `go vet ./...` et CI GitHub
-  réussis ; builds Linux amd64/arm64 avec `CGO_ENABLED=0` réussis.
+- Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
+  [CI du commit de code](https://github.com/Coubiac/mailtrace/actions/runs/37142141635)
+  réussie, incluant les builds Linux amd64/arm64 sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -27,28 +33,39 @@ est épinglé à v1.60.1 ; mesures de charge et inventaire complet des notices d
 dépendances restent à faire avant distribution. La revue sécurité indépendante
 des PR reste à mener.
 
-## Prochain petit lot : lecteur de lignes borné
+## Dernier lot terminé : lecteur de lignes borné
 
-Objectif : un lecteur réutilisable pour FileSource, sans dépendance SQLite,
-capable de produire une ligne complète avec ses offsets physiques.
+`LineReader.Next(ctx)` renvoie une ligne complète avec son séparateur LF/CRLF et
+ses offsets physiques. Une ligne partielle à EOF reste en mémoire jusqu'à une
+lecture suivante ; une ligne trop longue conserve au maximum 64 Kio, consomme
+le suffixe et produit une erreur dans `source.Record` après son séparateur.
 
-Acceptation :
+Les tests couvrent les offsets non nuls, le seuil exact de taille, EOF répété
+puis ajout de données, la ligne trop longue partielle, l'annulation, une erreur
+de lecture et le débordement d'offset. Les records retournés restent stables
+après les lectures suivantes. Aucun changement au schéma ou aux dépendances.
 
-- Une ligne complète avance jusqu'à l'octet suivant son séparateur.
-- Une ligne partielle en fin de fichier attend la suite sans être validée.
-- Une ligne dépassant `model.MaxLineBytes` est consommée avec mémoire bornée,
-  puis signalée explicitement ; la ligne suivante reste lisible.
-- Tests ciblés : plusieurs lignes, CRLF, fin partielle puis ajout de données,
-  ligne trop longue et offsets après celle-ci.
+Limites : le lecteur ne remplit pas encore OriginID, ReadAt et Observation ;
+il ne suit pas les chemins, ne détecte pas les rotations et ne persiste aucun
+checkpoint. Une lecture bloquante reste à interrompre par son propriétaire.
 
-Partir du code de la PR #10 dans une branche `codex/` consacrée à FileSource.
-Réutiliser `internal/source/source.go` ; consulter l'issue #4 et ADR-003 avant de
-fixer l'interface du lecteur. Les rotations et la reprise durable feront l'objet
-de lots suivants.
+## Prochain petit lot : identité physique des fichiers
+
+Reprendre sur `codex/m2-file-source` et réutiliser la PR #11. Consulter l'issue #4
+et ADR-003. Ajouter une petite abstraction d'identité du fichier ouvert :
+
+- Identifier les fichiers réguliers et exposer device/inode sur Linux sans CGO.
+- Distinguer un renommage d'un remplacement à l'aide de l'identité physique.
+- Fournir une empreinte d'une fenêtre de début bornée, avec sa longueur, afin
+  de pouvoir comparer la même fenêtre après ajout de données.
+- Tester renommage, remplacement et stabilité de la fenêtre après append.
+
+La sélection d'une génération persistée et la recherche des checkpoints restent
+un lot distinct ; ne pas ajouter encore la boucle de suivi ou les rotations.
 
 ## Suite à découper au fil des reprises
 
-1. Identité de génération de fichier et recherche des checkpoints.
+1. Sélection d'une génération de fichier et recherche des checkpoints.
 2. Suivi d'un fichier actif et acquittement par le Sink.
 3. Rotation par renommage/création et écritures tardives.
 4. Reprise après arrêt, troncature et diagnostic des lacunes.
