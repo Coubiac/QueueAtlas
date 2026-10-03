@@ -57,6 +57,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Quatorzième lot FileSource : observation du chemin courant par rapport au
   descripteur conservé dans `internal/source/file/path.go`, commit
   `b72c9f2fa2a3209fed2ce5368fa3cc499b7a0a11`, toujours dans la PR #11.
+- Quinzième lot FileSource : observation au polling de `Run`, statut consultable
+  et maintien du descripteur pendant une absence temporaire du chemin, dans
+  `internal/source/file/source_path.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -115,6 +118,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI observation](https://github.com/Coubiac/mailtrace/actions/runs/37159970805)
   réussie, incluant rename/create, disparition/réapparition, ancien descripteur,
   liens/FIFO Linux et builds amd64/arm64 sans CGO.
+- Validation locale du lot polling : `go test ./...`, `go vet ./...` et compilation
+  des tests FileSource Linux amd64 sans CGO réussis. Les scénarios Linux et le
+  contrôle de concurrence `go test -race ./internal/source/file` ajouté en CI
+  restent à valider après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -451,11 +458,12 @@ enregistrement vide, fermeture avant attente initiale et annulation, refus d'un
 appel concurrent/libération du verrou, diagnostics sans commit, échec du Sink,
 politique explicite zéro avec checkpoint avancé sur la même origine.
 
-Limites : après sélection, seul ce descripteur est suivi. Rotation et troncature
-en cours de suivi ne sont pas encore détectées. Les erreurs d'ouverture et du Sink
-arrêtent `Run` sans réessai automatique. Pas de CLI, migration ou dépendance ajoutée.
+Limites : après sélection, seul ce descripteur est suivi. Les changements du chemin
+sont maintenant observés au polling décrit ci-dessous ; aucune bascule ou décision
+de troncature. Les erreurs d'ouverture et du Sink arrêtent `Run` sans réessai
+automatique. Pas de CLI, migration ou dépendance ajoutée.
 
-## Dernier lot terminé : observer le chemin pendant une rotation
+## Observation du chemin pendant une rotation
 
 `ObservePath(ctx, descripteur, chemin)` retourne `PathObservation` avec un statut
 fixe `same`, `missing` ou `replaced` et les identités observées du descripteur et
@@ -477,19 +485,49 @@ rename/create, disparition puis retour de la même identité, tailles distinctes
 écriture tardive dans l'ancien fichier, liens stables/retargetés/pendants, boucle de
 lien signalée comme erreur, FIFO refusée sans attendre un écrivain.
 
-Limites : l'observation est disponible mais n'est pas encore appelée par `Run`.
-Le suivi reste sur son seul descripteur et ne réagit pas aux rotations/troncatures.
+L'intégration de cette observation dans `Run` est décrite au lot suivant.
 Aucune migration ou dépendance ajoutée.
 
-## Prochain petit lot : polling du chemin et disparition temporaire
+## Dernier lot terminé : polling du chemin et disparition temporaire
+
+Après décision de génération, `FileSource` observe le chemin avant la première
+consommation, puis après chaque attente à EOF du lecteur. `missing` et `replaced`
+conservent le descripteur et l'ingesteur, y compris une ligne partielle. Une erreur
+de contrôle du chemin arrête `Run` et sa fermeture habituelle du descripteur.
+Les erreurs du Sink, y compris EOF, restent retournées sans polling ni réessai.
+
+`LastPathStatus()` est consultable pendant `Run`, sous verrou bref, et expose
+uniquement le dernier statut observé avec succès. Valeur vide avant observation,
+réinitialisée au début d'un nouvel appel accepté ; un appel concurrent refusé ne
+réinitialise rien. Le dernier statut est conservé après arrêt/erreur : il peut être
+périmé et ne constitue pas un état de fonctionnement ou une preuve de continuité.
+Aucun chemin, contenu de journal ou identité physique n'est exposé par cette méthode.
+
+Tests locaux : observation avant consommation, erreur initiale, erreur Sink/EOF,
+annulation sans acquitter une ligne partielle, conservation puis réinitialisation
+du statut. Tests Linux : disparition après première ligne, append terminant une
+ligne partielle sur l'ancien fichier, retour de son chemin puis nouvelle ligne,
+une seule origine SQLite et checkpoint 24 ; remplacement observé avec append sur
+l'ancien descripteur, erreurs FIFO/boucle de lien au polling et fermeture.
+La CI Go 1.26 ajoute le détecteur de courses sur le paquet FileSource pour vérifier
+la consultation concurrente du statut avec les tests de suivi.
+
+Limites : le polling se fait à EOF ; un flux continuellement lisible peut différer
+l'observation. Le fichier de remplacement n'est pas ouvert, les générations ne
+basculent pas, et aucune période de grâce ou détection de troncature n'est ajoutée.
+L'absence lors de l'ouverture initiale reste une erreur immédiate. Pas de migration
+ou dépendance ajoutée.
+
+## Prochain petit lot : bascule après rename/create
 
 Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4,
-ADR-003 et la section rotation du cadrage. Appeler l'observation au polling de
-`FileSource`, conserver le descripteur pendant une absence temporaire du chemin
-et continuer les ajouts de son fichier. Rendre le dernier statut observable sans
-contenu de journal. Tester disparition/append sur l'ancien fichier/réapparition,
-annulation et erreurs du contrôle. Aucun remplacement de génération dans ce lot :
-le scheduler de bascule et la période de grâce resteront des lots distincts.
+ADR-003 et la section rotation du cadrage. Sur `replaced`, ouvrir/vérifier le
+nouveau chemin, décider sa génération et ingérer ses lignes sans fermer l'ancien
+descripteur/ingesteur. Borner ce premier scheduler à deux descripteurs et signaler
+explicitement une rotation supplémentaire dépassant la capacité. Tester origines
+et checkpoints distincts, fichier nouveau vide, annulation et fermeture sur erreur.
+Le suivi conjoint des écritures tardives et l'expiration de la période de grâce
+seront les lots suivants ; ne pas promettre une rotation complète avant ces lots.
 
 ## Suite à découper au fil des reprises
 

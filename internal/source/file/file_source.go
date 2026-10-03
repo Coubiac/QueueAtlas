@@ -27,15 +27,18 @@ func (e *ResumeDecisionError) Error() string {
 	return "file resume decision required: " + string(e.Status)
 }
 
-// FileSource orchestrates startup and follows the chosen descriptor. It does
-// not yet detect rotation or live truncation. The caller must serialize state
-// writes for its source ID across all objects; Run guards only this object.
+// FileSource orchestrates startup and follows the chosen descriptor. It observes
+// path changes but does not switch generations or detect live truncation.
+// The caller must serialize state writes for its source ID across all objects;
+// Run guards only this object.
 // The object must not be copied after use. Dependencies must support context.
 type FileSource struct {
-	config    Config
-	reader    source.StateReader
-	normalize Normalize
-	running   sync.Mutex
+	config     Config
+	reader     source.StateReader
+	normalize  Normalize
+	running    sync.Mutex
+	pathMu     sync.RWMutex
+	pathStatus PathStatus
 }
 
 var _ source.Source = (*FileSource)(nil)
@@ -65,6 +68,8 @@ func (s *FileSource) ID() string { return s.config.Identity.ID }
 // wait. Once a generation is usable, it follows that descriptor until error or
 // cancellation, then closes it. Unusable decisions and all Sink errors stop Run;
 // there is no automatic retry of failed commits or opening errors.
+// Path observation errors also stop Run. A missing or replaced regular path
+// keeps the descriptor in use; a replacement is not opened in this version.
 // A later Run starts from committed state; in-memory pending data is not retained.
 func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 	if err := ctx.Err(); err != nil {
@@ -77,6 +82,7 @@ func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 		return ErrSourceRunning
 	}
 	defer s.running.Unlock()
+	s.setPathStatus("")
 	for {
 		f, _, err := OpenLog(ctx, s.config.Path)
 		if err != nil {
@@ -108,5 +114,7 @@ func (s *FileSource) runOpened(ctx context.Context, f *os.File, sink source.Sink
 	if err != nil {
 		return false, err
 	}
-	return false, ingestor.Follow(ctx, sink, s.config.PollInterval)
+	return false, s.followPath(ctx, f, ingestor, sink, func(ctx context.Context) error {
+		return waitForPoll(ctx, s.config.PollInterval)
+	})
 }
