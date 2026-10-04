@@ -108,6 +108,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI](https://github.com/Coubiac/mailtrace/actions/runs/37173188977) réussis sur
   `f10ea5e0b16d6b9d5a65ee16b35cd3795e1fb2db`, incluant tests Linux, détecteur de
   courses FileSource et builds Linux amd64/arm64 sans CGO.
+- Vingt-septième lot FileSource : retrait durable après EOF stable/grâce et avant
+  fermeture/libération de capacité dans `grace.go`, commit
+  `baf30a13353d9a16fa6216670529a6789132cdd2`, toujours dans la PR #11.
+  [CI retrait](https://github.com/Coubiac/mailtrace/actions/runs/37173662429)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource, builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1016,7 +1022,7 @@ atomique face aux écritures concurrentes. Écritures d'état à sérialiser par
 pas d'époque de propriétaire. À la fin de ce lot, le retrait durable restait à
 développer ; l'exploitation des états à la reprise, gzip/copytruncate/lacunes aussi.
 
-## Dernier lot : retrait acquitté à EOF stable/grâce
+## Dernier lot terminé : retrait acquitté à EOF stable/grâce
 
 `retireExpired` reçoit le Sink et, pour une génération enregistrée admissible,
 acquitte en suivi → retiré après les contrôles de taille/ancre du polling et la
@@ -1048,7 +1054,9 @@ le descripteur de la collection. Données synthétiques, aucune migration/dépen
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation des
 tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses et
-builds : CI à confirmer après publication du commit de code.
+builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI retrait](https://github.com/Coubiac/mailtrace/actions/runs/37173662429)
+Go 1.26.x/stable sur `baf30a13353d9a16fa6216670529a6789132cdd2`.
 
 Limites : taille, transaction du Sink et fermeture ne sont pas atomiques avec les
 écritures. Un ajout après le dernier contrôle, y compris pendant l'acquittement,
