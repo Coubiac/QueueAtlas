@@ -1394,15 +1394,55 @@ démarrage reste refusé, sans courant inventé ; pipeline encore absent de Run.
 Aucune migration/dépendance ajoutée. Gzip/copytruncate/lacunes et revue de sécurité
 indépendante restent à développer.
 
-## Prochain petit lot : décider explicitement une absence du courant au démarrage
+## Lot 34 : diagnostic explicite du courant absent au démarrage
 
-Reprendre sur `codex/m2-file-source`, conserver PR #11 et ADR-009. Définir le
-comportement `missing` pour un ensemble rouvert au démarrage : diagnostic fixe
-exploitable et conservation de propriété, sans choisir arbitrairement l'ancien
-comme courant. Tester absence puis réapparition/reprise par une nouvelle décision,
-avec positions/état durable conservés. Le raccordement à Run des helpers bornés
-existants sera ensuite un lot distinct, avec garde d'exécution et gestion des
-décisions insuffisantes/inconnues/capacité sans fallback implicite.
+`FollowOpened` traite une décision missing canonique sans origine/snapshot :
+recontrôle de l'ensemble, des descripteurs, du chemin toujours absent et de
+l'identité complète de source. ErrCurrentMissing, diagnostic fixe exploitable
+via errors.Is sans chemin/contenu, refuse le démarrage sans courant inventé.
+Propriétaire, positions/ingesteurs/grâce, état durable et LastPathStatus conservés.
+Aucun open/lecture de contenu/attente/écriture/transfert ; garde libérée au retour.
+
+Chemin réapparu : décision missing obsolète refusée avec ErrPathChanged ; nouvelle
+observation requise avant application de known/new ou traitement de capacity.
+Erreur de stat/ensemble/source/contexte conserve sa cause, sans diagnostic missing
+qui la masque. L'appelant peut réobserver ou fermer son propriétaire ; aucun
+réessai automatique ni choix d'une génération retenue comme courant pendant l'absence.
+
+Tests portables : ensembles de 1–2 fichiers, appels missing répétés sans open/wait/
+commit, positions/propriété/statut conservés et garde libérée ; décision périmée
+sur nouveau fichier (new ou capacity) ou courant connu, diagnostic stable. Décision
+avec origine/snapshot, source incohérente, second fichier fermé, propriétaire nil,
+annulation/exécution concurrente refusés sans perte de propriété. Linux avec vrais
+fichiers localisés/rouverts et SQLite : disparition, ajouts tardifs pendant absence,
+checkpoints/états inchangés après refus, retour de l'ancien par renommage et nouvelle
+décision known ; reprise des seuls ajouts à offset 4, checkpoints à 9 distincts,
+aucune acquisition/enregistrement répété ni fuite/double fermeture.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
+et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
+détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
+Dernier état Linux validé : lot 33, commit
+`c3791358b3c4d6b60c76d894109b1fe9ea9006e7`, CI 37176769622.
+
+Limites : diagnostic d'une observation non atomique, pas preuve de stabilité ni
+de continuité du contenu ; une nouvelle décision exigera toujours les contrôles
+de suivi. Run n'utilise pas encore le pipeline de reprise des ensembles persistés.
+Pas de migration/dépendance ajoutée. Gzip/copytruncate/lacunes et revue indépendante
+restent à développer.
+
+## Prochain petit lot : raccorder la reprise d'ensemble au démarrage de Run
+
+Reprendre sur `codex/m2-file-source`, conserver PR #11 et ADR-009. Raccorder les
+helpers bornés existants au démarrage avec StateReader/PathStateReader : lecture
+des origines en suivi, localisation, réouverture, observation et application du
+courant connu/nouveau. Définir les budgets et le chemin sans ensemble à reprendre,
+ainsi que les diagnostics inconnus/insuffisants/limite/capacité/missing sans fallback
+implicite. Conserver une seule garde d'exécution (Run appelle le cœur sans réacquérir
+son verrou) et fermer l'ensemble préparé si une décision bloque avant transfert.
+Tester le redémarrage avec ancien renommé et ajout tardif, les refus et le nettoyage.
+Si le périmètre grossit, commencer par l'orchestrateur de préparation isolé puis
+raccorder Run dans un lot suivant.
 
 ## Suite à découper au fil des reprises
 

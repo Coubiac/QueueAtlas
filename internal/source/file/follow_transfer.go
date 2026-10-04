@@ -9,15 +9,22 @@ import (
 	"github.com/Coubiac/mailtrace/internal/source"
 )
 
-var ErrInvalidFollowCurrent = errors.New("known or new current file decision is required")
+var ErrInvalidFollowCurrent = errors.New("valid current file decision is required")
+
+// ErrCurrentMissing refuses startup without inventing a current generation.
+// The opened set stays owned by its caller, which can close it or observe again.
+// The diagnostic contains no path or log content.
+var ErrCurrentMissing = errors.New("configured current log is missing at startup")
 
 // FollowOpened resumes a verified set with a known or new current file. Before
 // transfer, it validates the source identity and reobserves the configured path;
 // any rejection leaves set ownership intact. A stale physical identity or origin
 // decision returns ErrPathChanged. New requires one retained file, checks its
 // size/anchor and opens the current file with matching physical identity before
-// transfer. Capacity is checked before opening. Missing/capacity decisions need
-// a separate startup policy and cannot be adopted here.
+// transfer. Capacity is checked before opening. A Missing decision is reobserved
+// and refused with ErrCurrentMissing, preserving ownership; if the path returns,
+// ErrPathChanged requires a fresh decision. No retry/wait or current choice is
+// made for Missing. A capacity decision cannot be adopted here.
 //
 // After validation, the set becomes empty and the scheduler exclusively owns all
 // descriptors, closing each once on retirement or return. Close on the emptied
@@ -50,6 +57,7 @@ func (s *FileSource) followOpenedWithOpener(ctx context.Context, set *OpenedFoll
 	}
 	defer s.running.Unlock()
 	newCurrent := current.Status == FollowCurrentNew
+	missingCurrent := current.Status == FollowCurrentMissing
 	switch current.Status {
 	case FollowCurrentKnown:
 		if current.OriginID == "" {
@@ -57,6 +65,10 @@ func (s *FileSource) followOpenedWithOpener(ctx context.Context, set *OpenedFoll
 		}
 	case FollowCurrentNew:
 		if current.OriginID != "" {
+			return ErrInvalidFollowCurrent
+		}
+	case FollowCurrentMissing:
+		if current.OriginID != "" || current.Current.Device != "" || current.Current.Inode != "" || current.Current.Size != 0 || current.Current.info != nil {
 			return ErrInvalidFollowCurrent
 		}
 	default:
@@ -69,7 +81,7 @@ func (s *FileSource) followOpenedWithOpener(ctx context.Context, set *OpenedFoll
 	if err != nil {
 		return err
 	}
-	if observed.Status != current.Status || observed.OriginID != current.OriginID || !observed.Current.SameFile(current.Current) {
+	if observed.Status != current.Status || observed.OriginID != current.OriginID || !missingCurrent && !observed.Current.SameFile(current.Current) {
 		return ErrPathChanged
 	}
 	var active *openedGeneration
@@ -83,6 +95,9 @@ func (s *FileSource) followOpenedWithOpener(ctx context.Context, set *OpenedFoll
 	}
 	if err := ctx.Err(); err != nil {
 		return err
+	}
+	if missingCurrent {
+		return ErrCurrentMissing
 	}
 	opened := set.opened
 	if newCurrent {

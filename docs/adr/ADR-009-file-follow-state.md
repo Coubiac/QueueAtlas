@@ -170,7 +170,8 @@ ensemble valide, nouvelle observation du chemin et concordance OriginID/identit�
 physique avec la décision fournie ; identité de source complète de chaque
 ingesteur égale à la configuration. Toute erreur conserve le propriétaire et son
 statut de chemin. Une décision devenue obsolète retourne `ErrPathChanged`.
-Les décisions missing/capacity restent refusées ; new est traité ci-dessous.
+Les décisions missing/capacity restent refusées ; diagnostics missing et traitement
+new sont décrits ci-dessous.
 
 La collection du propriétaire est vidée avant remise au scheduler commun. Son
 Close devient inoffensif. Le scheduler possède seul les descripteurs : contrôle
@@ -212,6 +213,25 @@ nouveau avant sa première ligne. Les ingesteurs anciens ne sont pas réenregist
 Suivi conjoint, contrôles périodiques, grâce et capacité restent ceux du scheduler.
 Les contrôles ne sont pas atomiques ; un remplacement supplémentaire après transfert
 peut arrêter à capacité pleine. Aucun raccordement du pipeline à Run dans ce lot.
+
+## Absence du courant au démarrage
+
+Une décision `missing` canonique (sans origine/snapshot) est recontrôlée par
+FollowOpened : ensemble valide, descripteurs inspectables, absence encore observée,
+identités complètes de source et contexte valides. `ErrCurrentMissing` est un
+diagnostic fixe exploitable via errors.Is, sans chemin ni contenu. Aucune génération
+retenue n'est choisie comme courant ; le propriétaire conserve les 1–2 fichiers,
+positions/ingesteurs/grâce, LastPathStatus et état durable. Ni ouverture ni lecture
+de contenu, attente, écriture ou transfert. La garde d'exécution est libérée.
+
+Une décision obsolète lorsque le chemin réapparaît donne ErrPathChanged : l'appelant
+doit observer à nouveau, puis appliquer known/new ou traiter capacity. Une erreur
+de stat, un ensemble/source invalide ou une annulation reste cette cause d'erreur,
+sans être masquée par le diagnostic missing. Un appelant abandonnant la reprise
+doit fermer le propriétaire. Pas de réessai automatique. Au cours d'un suivi déjà
+transféré, le scheduler garde le dernier courant observé sur disparition ; ce
+comportement distinct ne justifie pas un choix arbitraire au démarrage. Run n'est
+pas encore raccordé au pipeline de reprise d'ensembles persistés.
 
 ## Limites
 
