@@ -168,6 +168,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI démarrage Run](https://github.com/Coubiac/mailtrace/actions/runs/37178273467)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+- Lot 37 FileSource : ErrFollowResumeGap, diagnostic de génération en suivi non
+  localisable avec cause de sélection conservée, commit
+  `86ff3b1ccac62dba97491309c2f8b5e1ff3419dc`, toujours dans la PR #11.
+  [CI lacune de reprise](https://github.com/Coubiac/mailtrace/actions/runs/37178727644)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1561,9 +1567,9 @@ source neuve, courant missing après localisation et répertoire vidé avec éta
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
-détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
-Dernier état Linux validé : lot 36, commit
-`ddf00f313195df21c8100833842180efe9dbfb74`, CI 37178273467.
+détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI lacune de reprise](https://github.com/Coubiac/mailtrace/actions/runs/37178727644)
+Go 1.26.x/stable sur `86ff3b1ccac62dba97491309c2f8b5e1ff3419dc`.
 
 Limites : lacune de continuité vérifiable, pas preuve de suppression/perte ni
 quantification des messages manqués ; un fichier réécrit peut donner different.
