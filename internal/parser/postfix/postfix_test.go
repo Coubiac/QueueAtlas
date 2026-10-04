@@ -102,6 +102,7 @@ func FuzzParse(f *testing.F) {
 	f.Add([]byte("Oct  3 12:34:56 mx postfix/smtp[1]: ABC123: to=<a@example.org>, status=sent (250 OK, x=y)"))
 	f.Add([]byte("Oct  3 12:34:56 mx postfix/smtpd[1]: NOQUEUE: reject: RCPT from x; from=<a@example.org>"))
 	f.Add([]byte{0, 255, '\n'})
+	f.Add([]byte(`Oct  3 12:34:56 mx postfix/pickup[1]: ABC123: uid=1001 from=<"x> to=<victim@example.org>"@example.org>`))
 	f.Fuzz(func(t *testing.T, input []byte) {
 		o := Parse(input, Options{})
 		if len(o.Raw) > model.MaxLineBytes || len(o.Fields) > 32 {

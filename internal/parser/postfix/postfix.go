@@ -15,7 +15,6 @@ type Options struct {
 	Time     syslog.TimeContext
 }
 
-var spaceField = regexp.MustCompile(`(?:^|[\s;])([A-Za-z][A-Za-z0-9_-]*)=(<[^>]*>|[^\s;]+)`)
 var rejectMetadata = regexp.MustCompile(`^from=<([^<>]*)> to=<([^<>]*)> proto=([A-Za-z0-9_-]+)(?: helo=(?:<([^<>]*)>|([^\s;]+)))?$`)
 
 var supported = map[string]bool{
@@ -220,9 +219,48 @@ func validKey(key string) bool {
 }
 
 func parseSpaceFields(o *model.Observation, message string) {
-	matches := spaceField.FindAllStringSubmatch(message, 32)
-	for _, match := range matches {
-		setField(o, match[1], strings.TrimSuffix(match[2], ","))
+	// A quoted local-part may contain spaces, semicolons and angle brackets.
+	// Split only outside quotes and the enclosing address, so hostile sender
+	// text cannot become another observed key. Escaped quotes stay in the value.
+	start := 0
+	quoted, escaped, angle := false, false, false
+	for i := 0; i <= len(message); i++ {
+		if i < len(message) {
+			c := message[i]
+			switch {
+			case escaped:
+				escaped = false
+				continue
+			case quoted && c == '\\':
+				escaped = true
+				continue
+			case c == '"':
+				quoted = !quoted
+				continue
+			case !quoted && c == '<':
+				angle = true
+				continue
+			case !quoted && c == '>':
+				angle = false
+				continue
+			}
+			if quoted || angle || strings.IndexByte(" \t\r\n\v\f;", c) < 0 {
+				continue
+			}
+		}
+		if quoted || angle {
+			return // incomplete value: preserve raw, never extract its inner keys
+		}
+		part := strings.TrimSuffix(message[start:i], ",")
+		start = i + 1
+		equal := strings.IndexByte(part, '=')
+		if equal <= 0 || equal == len(part)-1 || !validKey(part[:equal]) {
+			continue
+		}
+		setField(o, part[:equal], part[equal+1:])
+		if len(o.Fields) >= 32 {
+			return
+		}
 	}
 }
 
