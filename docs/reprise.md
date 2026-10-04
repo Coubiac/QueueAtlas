@@ -5,11 +5,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
-- Lot 49 en vérification : starvation sur ligne partielle très longue corrigée
+- Lot 49 terminé : starvation sur ligne partielle très longue corrigée
   dans le scheduler (budget 64 Kio par génération/passage). Régression échouant
   avant puis passant après ; relecture indépendante, tests/vet Windows et
-  compilation des tests Linux réussis. CI du correctif à confirmer avant clôture.
-  Rapport `docs/reviews/pr-11-part-9.md`. Dernière tête publiée validée : `337ceb5`.
+  compilation des tests Linux réussis. Correctif `cd931e0` publié, CI 37204731135
+  verte avec nouveau test conjoint Linux et race. Rapport `docs/reviews/pr-11-part-9.md`.
+  Prochaine revue : classement des états durables de reprise.
 - Lot 48 : courant et successeurs aux polls relus sur
   `82635d7e27fa3da5447a6e23fd27925a82f417aa`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-8.md`, code inchangé et tests portables réussis.
@@ -1921,7 +1922,7 @@ du changement entre observation et ouverture. Plafond de générations, pas tous
 handles du processus. Ordonnancement et reprise orchestrée/Run encore à relire ;
 PR en brouillon.
 
-## Lot 49 en vérification : ordonnancement et flux continu
+## Lot 49 terminé : ordonnancement et flux continu
 
 Référence initiale 337ceb56f0cfc28cef868bf52cb5ab19b28fb3c0. Défaut identifié :
 CommitNext pouvait consommer une quantité illimitée de fragments jusqu'à LF/EOF,
@@ -1934,18 +1935,22 @@ Régression portable échoue avant (196608 octets lus), passe après (au plus 65
 Test plusieurs yields/oversized/annulation/pending EOF/réessai identique/ancre réussi.
 Tests ciblés, go test ./..., go vet ./..., git diff --check et compilation des tests
 Linux amd64 sans CGO réussis localement sous Windows ; relecture du patch sans
-blocage restant. Nouveau test conjoint Linux à exécuter en CI : longue ligne de
+blocage restant. Nouveau test conjoint Linux exécuté en CI : longue ligne de
 l'ancien cède au successeur sans avancer son checkpoint ni fuite.
-Rapport docs/reviews/pr-11-part-9.md. CI du correctif encore à confirmer ; dernier
-état publié validé 337ceb5, CI 37204155236 verte avant ce correctif.
+Rapport docs/reviews/pr-11-part-9.md. Correctif publié
+cd931e08886677511b8521b32553c3714c0d3019 et
+[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37204731135) :
+tests/vet Linux Go 1.26.x/stable, nouveaux scénarios Linux, race FileSource, builds
+amd64/arm64 sans CGO et job Windows chemins. Consulter la PR #11 pour la CI de la
+clôture documentaire.
 
 Limites : budget en octets, pas en temps ; syscalls/normaliseur/Sink peuvent retarder
 un passage. Aucun benchmark/crash réel ajouté. PR reste en brouillon.
 
-## Prochaine action : confirmer la CI du lot 49, puis classer les états de reprise
+## Prochain petit lot : revue FileSource — classification des états de reprise
 
-Clore le lot 49 uniquement après publication et CI verte du correctif. Ensuite,
-dixième partie : LoadFollowOrigins et tests, classement après parcours complet par
+Reprendre sur #11 basée sur main. Dixième partie : LoadFollowOrigins et tests,
+classement après parcours complet par
 chemin, retired écarté, unknown/invalide/capacité/limite refusés sans candidats
 partiels, copies et checkpoints nil/zéro conservés. Auditeur indépendant en lecture
 seule ; régressions des défauts concrets. Recherche/réouverture/transfert et

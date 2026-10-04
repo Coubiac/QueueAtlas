@@ -50,11 +50,15 @@ Tests Linux relus : ordre conjoint, ajout tardif/partiel, successeur vide, erreu
 retenu arrêtant avant le successeur, rotation avant EOF de l'ancien, expiration sous
 flux continu et EOF du Sink avant poll dû. Nouveau test : ancien avec longue ligne
 partielle cédant au record du successeur avant LF, checkpoint ancien inchangé et
-aucune fuite. Exécution du nouveau test à confirmer par la CI de publication.
+aucune fuite. Ce nouveau test a été exécuté par la CI du correctif.
 
 La [CI de la référence initiale](https://github.com/Coubiac/mailtrace/actions/runs/37204155236)
-était verte ; elle ne valide pas ce correctif. Publication et vérification de sa CI
-en cours ; ne pas présenter le lot comme clos avant cette vérification.
+était verte ; elle ne valide pas ce correctif. Le correctif publié
+`cd931e08886677511b8521b32553c3714c0d3019` a sa
+[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37204731135) :
+tests/vet Linux Go 1.26.x/stable, nouveaux scénarios Linux, race FileSource, builds
+Linux amd64/arm64 sans CGO et job Windows chemins. Lot clos sur cette référence.
+Consulter la PR #11 pour la CI de publication de cette clôture documentaire.
 
 ## Limites et suite
 
