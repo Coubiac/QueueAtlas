@@ -22,7 +22,7 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `internal/source/file/reader.go`, commit
   `dfacfa20575529b421d7a6f0dedef8e7f476ddcc`.
   [PR #11](https://github.com/Coubiac/mailtrace/pull/11), branche
-  `codex/m2-file-source`, empilée sur la PR #10.
+  `codex/m2-file-source`, désormais basée sur main après fusion de la PR #10.
 - Deuxième lot FileSource : identité physique et empreinte de début bornée dans
   `internal/source/file/identity*.go`, sur la même branche et dans la PR #11.
 - Troisième lot FileSource : interface de lecture `source.StateReader` et
@@ -1717,14 +1717,30 @@ Windows non validées par bits Unix. Audit assisté par agents/données synthét
 pas de certification humaine. Débit, licences transitives, sauvegarde et rétention
 opérationnelles restent à traiter avant distribution. Revue FileSource encore à faire.
 
-## Prochain petit lot : revue FileSource — contrats, lecteur et identité
+## Lot 41 en cours : revue FileSource — contrats, lecteur et identité
 
-Reprendre sur #11 désormais basée sur main. Premier lot de revue : contrat Source/
-Sink et bornes de Record, lecteur de lignes/fragments, offsets et normalisation,
-identité/préfixe/ancre et vérification de candidats. Auditeur indépendant en lecture
-seule ; utiliser les tests déjà consignés et ajouter uniquement les régressions des
-problèmes concrets. La rotation, reprise orchestrée/Run et lifecycle v2 seront revus
-dans les lots suivants ; ne pas déclarer toute #11 validée après ce premier lot.
+Revue partielle de #11 sur 1968fc494c5191cf6ad8ea4cc9b11f792f2c85ea,
+coordinateur et auditeur agent indépendant dans le checkout isolé. Aucun blocage
+concret trouvé dans Source/Sink et Record, reader.go, ingestor.go, identity*.go,
+anchor.go et resume.go. Contrats d'acquittement/retry et bornes de Record précisés,
+sans modification de comportement. Rapport docs/reviews/pr-11-part-1.md.
+Tests FileSource et vet sources réussis sur la référence isolée sous Windows ;
+auditeur : tests ciblés -count=1 et diff propre. Vérifications finales locales
+go test ./..., go vet ./... et git diff --check réussies. Publication et CI du lot
+à confirmer avant sa clôture. Aucun test nouveau sans défaut concret à reproduire.
+
+La PR reste en brouillon : ce lot ne valide pas sélection, registration, chemins,
+rotation, reprise orchestrée/Run ni lifecycle SQLite v2. Preuves bornées/non
+atomiques et sérialisation requise restent des limites explicites du contrat.
+
+## Prochain petit lot : revue FileSource — décision de génération
+
+Reprendre sur #11 désormais basée sur main. Deuxième lot de revue : selection.go et
+generation.go, décision unique sur candidats paginés, refus d'ambiguïté et
+registration initiale acquittée. Auditeur indépendant en lecture seule ; utiliser
+les tests déjà consignés et ajouter uniquement les régressions des problèmes
+concrets. Chemins, rotation, reprise orchestrée/Run et lifecycle v2 seront revus
+dans les lots suivants ; ne pas déclarer toute #11 validée après ce deuxième lot.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 

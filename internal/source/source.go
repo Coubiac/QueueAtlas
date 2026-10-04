@@ -14,6 +14,12 @@ type Source interface {
 	Run(ctx context.Context, sink Sink) error
 }
 
+// Sink atomically persists a batch: nil acknowledges all records, checkpoints
+// and state changes together. An error does not acknowledge anything to the
+// caller, even if the durable commit succeeded but its acknowledgement was lost.
+// Sources must retry the same batch before advancing; sinks must accept an
+// identical retry without duplicating effects. A sink must not mutate the batch
+// or its referenced slices and observations, which remain owned by the source.
 type Sink interface {
 	Commit(ctx context.Context, batch Batch) error
 }
@@ -111,8 +117,10 @@ type Origin struct {
 	FirstSeen   time.Time
 }
 
-// Record covers a complete physical line. End is the byte after its newline.
-// Raw may be a bounded prefix when Error describes an oversized line.
+// Record covers a complete physical line in [Start, End), with 0 <= Start < End.
+// End is the byte after its newline. Raw is bounded by model.MaxLineBytes and
+// may be only a prefix when Error describes an oversized line; End still counts
+// all consumed bytes. The source is responsible for these provenance bounds.
 type Record struct {
 	OriginID    string
 	Start       int64
