@@ -92,6 +92,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   SQLite des origines/checkpoints filtrés par source et chemin exact dans
   `internal/storage/sqlite/state.go`, commit
   `61c59f763f9499119d56285e3af299b6f4c99de3`, toujours dans la PR #11.
+- Vingt-quatrième lot FileSource : parcours complet et borné des états par chemin,
+  validation des pages et copies de checkpoints dans
+  `internal/source/file/path_origins.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -196,6 +199,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI lecture par chemin](https://github.com/Coubiac/mailtrace/actions/runs/37171180557)
   réussie : tests Linux (Go 1.26.x/stable), pagination/isolation/littéraux SQL,
   détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
+- Validation locale du lot parcours des états : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Exécution Linux,
+  détecteur de courses et builds : CI à vérifier après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -835,7 +841,7 @@ interrompre un syscall bloqué ; les limites d'ouverture non Linux restent celle
 d'`OpenLog`. Pas de sélection d'états persistés au démarrage, raccordement à `Run`,
 récupération copytruncate ou diagnostic de lacunes. Pas de migration/dépendance.
 
-## Dernier lot terminé : lecture des origines enregistrées pour un chemin
+## Lecture des origines enregistrées pour un chemin
 
 `source.PathStateReader.FileOriginsByPath(ctx, source.OriginPathQuery)` fournit les
 origines d'une source dont le chemin stocké est exactement égal au chemin demandé,
@@ -869,17 +875,51 @@ métadonnée enregistrée, pas une preuve d'emplacement actuel sur disque. Les r
 ne valident pas identité/préfixe/ancre et ne déclenchent aucune recherche de rotation.
 La reprise automatique, gzip et la récupération copytruncate restent à développer.
 
-## Prochain petit lot : valider et borner le parcours des états par chemin
+## Dernier lot terminé : parcours borné et validé des états par chemin
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11. Ajouter un composant de
-lecture bornée via `PathStateReader` : contrôler tailles de pages, chemin exact,
-ordre des IDs et progression des curseurs ; recopier les états/checkpoints seulement
-après parcours terminé. Budget total explicite, résultat inexploitable sur limite,
-erreur ou annulation. Tester plusieurs pages, absence, limite, pages incohérentes
-et absence d'alias sur les checkpoints. Ce composant prépare les candidats sans
-choisir une génération active par ID/date et sans ouvrir de fichier ni écrire
-SQLite. Le raccordement à la recherche et la distinction entre générations encore
-suivies et historique restent à traiter avant une reprise automatique sûre.
+`LoadPathOrigins(ctx, sourceID, path, reader, limit)` utilise `PathStateReader` avec
+budget explicite de 1 à `MaxPathOrigins` (1000) états. Chaque demande est bornée à
+100 états et au budget restant. Les pages sont contrôlées : taille, chemin exact,
+IDs non vides strictement croissants au-delà du curseur précédent et continuation
+égale au dernier ID d'une page non vide. Toute page sans progression est refusée
+avec `ErrInvalidPathOriginPage`, diagnostic fixe sans contenu enregistré.
+
+Les états et positions optionnelles sont copiés à réception de chaque page. Le
+résultat `PathOrigins` ne les expose que sur `complete`, après épuisement du
+parcours. Un parcours vide donne `absent`. Si le budget est atteint avec une
+continuation, `limit_reached` garde le compte examiné et aucune liste exploitable ;
+le budget exact sans continuation reste complet. Erreurs et annulation renvoient
+un résultat vide, y compris après une première page valide. Les copies restent
+indépendantes si le lecteur réutilise ses buffers ou si le consommateur les modifie.
+
+Tests locaux : plusieurs pages, budgets exact/réduit sur 101/102 états, absence,
+bornes des demandes et absence de liste partielle ; checkpoint nil/zéro/positif,
+réutilisation de checkpoint entre deux appels et mutations dans les deux sens ;
+pages trop grandes, chemin incorrect, ID vide/dupliqué/non trié/périmé, curseur
+incohérent et continuation vide sans progression ; arguments invalides, erreur et
+annulation après une page, annulation avant tout appel. Intégration SQLite locale :
+101 états lus avec dernière page réduite à 1, puis budget 100 sans résultat partiel.
+
+Limites : le lecteur garantit le filtrage source (les états n'embarquent pas leur
+source ID). Les pages ne sont pas un snapshot global ; l'appelant doit sérialiser
+les écritures d'état de sa source pendant parcours/application. Les métadonnées et
+ancres restent brutes ; aucune preuve d'existence sur disque ni choix de génération
+active. ID/date ne servent pas à déduire une chronologie. Ce composant n'ouvre aucun
+journal et n'écrit aucun état. Pas de migration ou dépendance ajoutée. Le
+raccordement à la recherche/reprise, gzip et copytruncate restent à développer.
+
+## Prochain petit lot : marquer durablement le suivi des générations (stockage)
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11. La reprise ne peut pas
+traiter chaque origine historique comme un fichier encore suivi, ni le déduire
+d'un ID aléatoire, de FirstSeen ou du seul checkpoint. Consigner une ADR courte
+puis ajouter au stockage un état explicite inconnu/en suivi/retiré, avec transitions
+acquittées dans le contrat de transaction du Sink. Les données existantes doivent
+rester inconnues après migration, sans inventer un retrait ou un suivi actif.
+Tester migration/réouverture, isolation source/origine, transitions valides et
+rollback des transitions avec les checkpoints en cas d'échec. Ce lot concerne le
+contrat et SQLite ; le scheduler publiera acquisition/retrait dans un lot séparé,
+puis la reprise exploitera ces états dans un autre lot.
 
 ## Suite à découper au fil des reprises
 
