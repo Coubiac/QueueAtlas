@@ -87,7 +87,7 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `5fee37fd45ab9848d64e5e3f333505ff7f1acc29`, toujours dans la PR #11.
 - Vingt-deuxième lot FileSource : sélection bornée d'une rotation accessible pour
   une origine/checkpoint fournis, dans `internal/source/file/rotation_search.go`,
-  toujours dans la PR #11.
+  commit `f5e50894b4c9fe1e0efb9757f3545baaed9a2756`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -183,8 +183,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie : tests sur Linux (Go 1.26.x/stable), checkpoints SQLite conservés,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot recherche de rotation : `go test ./...`, `go vet ./...`
-  et compilation des tests FileSource Linux amd64 sans CGO réussis. Exécution Linux,
-  détecteur de courses et builds : CI à vérifier après publication.
+  et compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI recherche de rotation](https://github.com/Coubiac/mailtrace/actions/runs/37170755564)
+  réussie : tests Linux (Go 1.26.x/stable), renommage/preuves/exclusions/fermeture,
+  détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
