@@ -1,6 +1,6 @@
 # Avancement et estimation jusqu'au MVP
 
-État au 4 octobre 2026, après la fusion FileSource du lot 60. Référence de périmètre :
+État au 5 octobre 2026, après la récupération explicite fusionnée au lot 65. Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -11,7 +11,7 @@ Il reste donc quatre jalons à clôturer, dont un déjà commencé.
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 60 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 65 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -26,33 +26,38 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | --- | --- | --- | ---: |
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
-| M2 — ingestion | En cours : SQLite et FileSource fusionnés, PR #11 clôturée | Récupération des états encore bloquants, compléments du suivi #4, import normal/gzip et validations de reprise/import | 8–18 |
+| M2 — ingestion | En cours : SQLite, FileSource et récupération unique fusionnés (#10–12) | Départ initial explicite à EOF, compléments/diagnostics du suivi #4, import normal/gzip et validations de reprise/import | 8–16 |
 | M3 — reconstruction | À réaliser | Instances/générations, destinataires/tentatives, NOQUEUE, liens prouvés, recalcul, recherche indexée et rétention validés sur corpus | 18–30 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total jusqu'au MVP** | **Quatre jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **51–91, soit environ 50–90** |
+| **Total jusqu'au MVP** | **Quatre jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **51–89, soit environ 50–90** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
 après MVP et ne sont pas incluses dans ce total.
 
-## Chantier immédiat : récupération explicite d'un courant inconnu
+## Chantier achevé et suite immédiate
 
 La PR #11 est fusionnée le 4 octobre sur `27b9d98bba1f51749f10e8b9930e9c4da0302068` :
 sept lots de clôture après le lot 53, dans la fourchette 6–8 annoncée. Les 19 parties
 de revue et la [synthèse](reviews/pr-11.md) sont conservées. Cette fusion ne termine
 pas M2 ni toute l'issue #4.
 
-Prochain chantier : 4–5 petits lots estimés, inclus dans M2, pour une opération
-explicitement demandée de récupération d'une origine inconnue courante unique :
-cadrage, classification entière sans disque, preuves/ouverture, application et
-validation/fusion. Pas de reprise automatique d'un unknown par Run. Revue, tests
-utiles et documentation dans chaque lot d'implémentation.
+La récupération unique est fusionnée le 5 octobre avec la PR #12 sur `69dfe6b` :
+cinq lots 61–65, dans la fourchette 4–5. Classification, preuves et transition seule
+livrées comme opération de bibliothèque, tests utiles/revue intégrés aux lots de
+développement, CI main verte. Aucun unknown repris automatiquement par Run.
 
-Critère de fin : refus des états concurrents/incomplets, preuve vérifiée du courant,
-transition seule sans consommation/checkpoint changé, acquittement perdu/annulation
-et réessai vérifiés, CI verte et PR cohérente fusionnée. Ensembles inconnus multiples,
-compléments de diagnostics/suivi #4 et import normal/gzip restent à découper ensuite.
+Prochain chantier : environ trois petits lots, inclus dans M2, pour `start_at:end`
+au bootstrap sans historique (capture/frontière, intégration/test, clôture/fusion).
+Critère de fin : historique explicitement ignoré à une frontière complète, appends
+lus, checkpoints/reprises et rotations préservés, refus sûrs et CI verte/fusion.
+Import normal/gzip, compléments du suivi #4 et diagnostics restent à découper.
+Les ensembles inconnus multiples restent refusés ; leur résolution administrative
+ne doit pas devenir une reprise automatique sans preuves.
+
+M2 réestimé 8–16 à partir de cette suite, sans soustraction mécanique des cinq lots :
+le détail de l'import/reprise et ses revues reste incertain. Autres jalons inchangés.
 
 ## Pourquoi les prochains jalons ne devraient pas répéter 53 lots chacun
 
