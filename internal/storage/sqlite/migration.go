@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-const schemaVersion = 1
+const schemaVersion = 2
 
 func preflight(ctx context.Context, db *sql.DB) error {
 	var version int
@@ -179,6 +179,9 @@ CREATE TABLE import_runs (
 CREATE INDEX import_runs_hash ON import_runs(sha256) WHERE sha256 IS NOT NULL;
 `
 
+const schemaV2 = `ALTER TABLE file_generations ADD COLUMN follow_state INTEGER NOT NULL
+	DEFAULT 0 CHECK(follow_state IN (0, 1, 2));`
+
 func migrate(ctx context.Context, db *sql.DB, nowNS int64) error {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
@@ -213,10 +216,23 @@ func migrate(ctx context.Context, db *sql.DB, nowNS int64) error {
 		if _, err := tx.ExecContext(ctx, `PRAGMA user_version = 1`); err != nil {
 			return err
 		}
-	} else {
+		version = 1
+	}
+	for required := 1; required <= version; required++ {
 		var recorded int
-		if err := tx.QueryRowContext(ctx, `SELECT version FROM schema_migrations WHERE version = 1`).Scan(&recorded); err != nil {
+		if err := tx.QueryRowContext(ctx, `SELECT version FROM schema_migrations WHERE version = ?`, required).Scan(&recorded); err != nil {
 			return fmt.Errorf("invalid schema migration history: %w", err)
+		}
+	}
+	if version < 2 {
+		if _, err := tx.ExecContext(ctx, schemaV2); err != nil {
+			return fmt.Errorf("apply schema v2: %w", err)
+		}
+		if _, err := tx.ExecContext(ctx, `INSERT INTO schema_migrations(version, applied_at_ns) VALUES(2, ?)`, nowNS); err != nil {
+			return err
+		}
+		if _, err := tx.ExecContext(ctx, `PRAGMA user_version = 2`); err != nil {
+			return err
 		}
 	}
 	return tx.Commit()

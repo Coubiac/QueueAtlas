@@ -33,3 +33,10 @@ FirstSeen sont fournies par les sources internes, qui doivent donner des instant
 actuels valides ; elles ne proviennent pas de l'horodatage déclaré du journal.
 ## Limites
 Débit d'ingestion, taille du binaire et inventaire complet des licences transitives à mesurer avant la première distribution ; WAL sur réseau exclu ; FULL peut coûter du débit. Le schéma v1 ne doit plus être modifié après une release publique : toute évolution ultérieure passera par une migration v2. Les tables de projection existent mais seront alimentées par le moteur de corrélation au jalon M3.
+
+## Évolution du 4 octobre 2026
+
+La migration v2 ajoute l'état durable du suivi des générations (ADR-009), en
+conservant le schéma v1 intact et les anciennes générations à l'état inconnu.
+Les migrations, leur historique et `user_version` sont acquittés dans une même
+transaction ; l'ouverture contrôle désormais les entrées d'historique v1 et v2.

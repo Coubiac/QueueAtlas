@@ -54,7 +54,7 @@ func TestMigrationPragmasAndReopen(t *testing.T) {
 	s, path := openTestStore(t)
 	ctx := context.Background()
 	for pragma, want := range map[string]any{
-		"user_version":   int64(1),
+		"user_version":   int64(2),
 		"foreign_keys":   int64(1),
 		"trusted_schema": int64(0),
 		"synchronous":    int64(2),
@@ -83,7 +83,7 @@ func TestMigrationPragmasAndReopen(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer reopened.Close()
-	if count(t, reopened, "raw_records") != 1 || count(t, reopened, "events") != 1 || count(t, reopened, "schema_migrations") != 1 {
+	if count(t, reopened, "raw_records") != 1 || count(t, reopened, "events") != 1 || count(t, reopened, "schema_migrations") != 2 {
 		t.Fatal("unexpected row counts after reopen")
 	}
 	var instance, declaredHost, messageID, recipient, status string
@@ -169,7 +169,8 @@ func TestNewerAndUnversionedDatabasesRefused(t *testing.T) {
 		seed string
 		want string
 	}{
-		{"newer", `PRAGMA user_version = 2`, "newer than supported"},
+		{"newer", `PRAGMA user_version = 3`, "newer than supported"},
+		{"negative", `PRAGMA user_version = -1`, "invalid negative database schema version"},
 		{"unversioned", `CREATE TABLE another_app (id INTEGER)`, "unversioned nonempty"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
