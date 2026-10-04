@@ -94,7 +94,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `61c59f763f9499119d56285e3af299b6f4c99de3`, toujours dans la PR #11.
 - Vingt-quatrième lot FileSource : parcours complet et borné des états par chemin,
   validation des pages et copies de checkpoints dans
-  `internal/source/file/path_origins.go`, toujours dans la PR #11.
+  `internal/source/file/path_origins.go`, commit
+  `7b8f9d12d583228c7595674897a81572f364c046`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -200,8 +201,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie : tests Linux (Go 1.26.x/stable), pagination/isolation/littéraux SQL,
   détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot parcours des états : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Exécution Linux,
-  détecteur de courses et builds : CI à vérifier après publication.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI parcours des états](https://github.com/Coubiac/mailtrace/actions/runs/37171671535)
+  réussie : tests Linux (Go 1.26.x/stable), pagination/budget/alias et intégration
+  SQLite sur 101 états, détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -896,7 +899,7 @@ Tests locaux : plusieurs pages, budgets exact/réduit sur 101/102 états, absenc
 bornes des demandes et absence de liste partielle ; checkpoint nil/zéro/positif,
 réutilisation de checkpoint entre deux appels et mutations dans les deux sens ;
 pages trop grandes, chemin incorrect, ID vide/dupliqué/non trié/périmé, curseur
-incohérent et continuation vide sans progression ; arguments invalides, erreur et
+incohérent et page vide avec continuation ; arguments invalides, erreur et
 annulation après une page, annulation avant tout appel. Intégration SQLite locale :
 101 états lus avec dernière page réduite à 1, puis budget 100 sans résultat partiel.
 
