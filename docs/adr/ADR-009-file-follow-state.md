@@ -56,7 +56,8 @@ Les lecteurs par identité et chemin exposent l'état dans la même page que le
 checkpoint. Les empreintes et checkpoints restent conservés lors d'un retrait.
 Le contrat, la migration, le Sink, l'acquisition et le retrait par FileSource sont
 implémentés ; préparation/localisation et réouverture avec revérification des
-candidats implémentées, sélection du courant et reprise de Run restent à développer.
+candidats et observation du courant implémentées ; transfert au scheduler et
+reprise de Run restent à développer.
 
 ## Préparation des candidats de reprise
 
@@ -138,6 +139,28 @@ sont fermées et aucun ensemble partiel n'est rendu. Cause initiale et erreurs d
 fermeture sont conservées. Descripteurs restent au propriétaire jusqu'à Close ;
 choix du courant, transfert au scheduler et raccordement à Run seront séparés.
 Les vérifications bornées successives ne forment pas un snapshot atomique.
+
+## Observation du courant parmi les descripteurs
+
+`OpenedFollowSet.ObserveCurrent` exige un chemin configuré absolu et un propriétaire
+valide non vide de 1 ou 2 fichiers. Il inspecte tous les descripteurs, puis réutilise
+`ObservePath` et compare l'identité actuelle via `SameFile`. IDs d'origine et
+identités physiques de la collection doivent être distincts. Un second fichier
+inutilisable ne peut pas être ignoré parce que le premier semble courant.
+
+Résultats : `known` avec origine et snapshot courant ; `missing` sans courant
+inventé ; `new_generation` avec snapshot seulement s'il reste une place ;
+`capacity_exceeded` sans identité utilisable si les deux places sont prises.
+Ordre d'ingestion, ID, date et offset ne choisissent pas le courant. Les liens
+vers un fichier régulier suivent la même observation physique que `ObservePath`.
+
+Erreur, propriétaire fermé/invalide, chemin non régulier ou annulation : résultat
+vide, cause conservée et propriété des fichiers conservée pour nettoyage par
+l'appelant. Ni ouverture/lecture/seek/fermeture, consommation, changement de grâce,
+transition ni transfert. Les snapshots ne sont pas atomiques et `known` ne
+revalide ni checkpoint ni intégrité : contrôles de suivi restent nécessaires.
+Une nouvelle génération exigera ouverture vérifiée, acquisition et contrôle de
+capacité ; transfert et raccordement au démarrage seront des lots distincts.
 
 ## Limites
 

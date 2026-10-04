@@ -14,7 +14,8 @@ var ErrInvalidFollowLocations = errors.New("invalid complete following location 
 // OpenedFollowSet owns all reopened descriptors. It must not be copied or used
 // concurrently. Close is idempotent, including after a close error, and changes
 // no persisted follow state. The zero value and a nil receiver can be closed.
-// Scheduler ownership transfer and choosing the current file are separate work.
+// ObserveCurrent identifies the current file without transferring ownership.
+// Scheduler ownership transfer is separate work.
 type OpenedFollowSet struct {
 	opened []*openedGeneration
 }

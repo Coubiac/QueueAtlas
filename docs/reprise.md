@@ -1190,7 +1190,7 @@ candidats persistés ; un nouveau fichier courant devra aussi compter dans les
 deux descripteurs. Pas d'ingestion/transition ni raccordement à Run dans ce lot.
 Gzip/copytruncate/lacunes et revue de sécurité indépendante restent à développer.
 
-## Dernier lot terminé : réouverture et revérification de l'ensemble localisé
+## Réouverture et revérification de l'ensemble localisé
 
 `OpenFollowLocations(ctx, identity, locations, normalize)` exige un ensemble
 entièrement `unique` de 1 ou 2 états en suivi. Toute l'entrée est validée avant
@@ -1247,16 +1247,68 @@ candidats rouverts ; un nouveau fichier courant devra aussi compter. Propriété
 et fermeture explicites, mais sélection du courant/transfert/scheduler/Run restent
 à raccorder ; gzip/copytruncate/lacunes et revue de sécurité indépendante aussi.
 
-## Prochain petit lot : identifier le courant parmi les fichiers rouverts
+## Dernier lot : observer le courant parmi les fichiers rouverts
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Observer le
-chemin configuré par rapport à l'ensemble rouvert via `ObservePath`/`SameFile`.
-Distinguer un courant déjà ouvert, un chemin absent et une nouvelle génération
-qui nécessiterait une ouverture ; refuser le dépassement de capacité avant une
-troisième ouverture. Ne pas choisir le courant par ID/date/offset quand le chemin
-est absent. Traiter uniquement décision, tests et documentation, sans ingestion,
-transition, ouverture supplémentaire ni transfert au scheduler/Run. Ces
-raccordements resteront des lots distincts.
+`OpenedFollowSet.ObserveCurrent(ctx, absolutePath)` exige un propriétaire valide
+non vide de 1 ou 2 fichiers, IDs d'origine distincts. Il inspecte tous les fichiers
+détenus (incluant le second), refuse une collision physique, puis réutilise
+`ObservePath` pour le chemin configuré et `SameFile` pour identifier le courant.
+Diagnostic fixe `ErrInvalidOpenedFollowSet` pour collection invalide/fermée.
+
+`FollowCurrent` fournit quatre décisions :
+
+| Statut | Données exploitables |
+| --- | --- |
+| `known` | OriginID correspondant et snapshot physique courant |
+| `missing` | Aucun courant, ni identité ni ID inventé |
+| `new_generation` | Snapshot courant distinct, seulement avec une place libre |
+| `capacity_exceeded` | Aucune identité/ID utilisable, avant toute troisième ouverture |
+
+Les fichiers sont choisis par identité physique, jamais par ordre/ID/date/offset.
+Les liens réguliers sont suivis comme dans l'observation existante. Erreur de stat,
+chemin non régulier ou annulation : résultat vide, cause conservée. Le propriétaire
+conserve tous ses fichiers sur toute sortie ; aucun open/read/seek/close,
+normalisation, changement de checkpoint/grâce, transition ou transfert.
+
+Tests portables : deux fichiers de même contenu distingués physiquement, sélection
+de chacun et ordre inversé sans choix arbitraire ; chemin absent sans courant ;
+nouveau fichier à capacité 1/2, snapshots seulement quand exploitables. Erreurs de
+chemin/observation et annulation avant/après observation sans résultat, descripteurs
+et positions/ingesteurs/grâce conservés. Propriétaire nil/vide/invalide/trop grand,
+second descripteur fermé et propriétaire après Close refusés sans fermeture du
+premier. Tests Linux avec ensemble réellement localisé et rouvert : courant connu,
+taille après ajout sans consommation, troisième fichier refusé sans ouverture,
+disparition puis retour du fichier conservé identifié par origine ; descripteurs
+conservés puis fermés par le propriétaire. Lien régulier vers une génération
+conservée, boucle de lien et FIFO sans ouverture ni perte de propriété. Données
+synthétiques, aucune migration/dépendance ajoutée.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
+des tests FileSource Linux amd64 sans CGO. Exécution Linux/détecteur de courses/
+builds : CI à confirmer après publication du commit de code.
+
+Limites : snapshots de métadonnées successifs, pas de verrou ni preuve de
+checkpoint/intégrité. `known` signifie même fichier physique observé, pas mêmes
+octets ; les contrôles de taille/ancre du suivi restent nécessaires. Recontrôler
+le chemin lors de l'ouverture/adoption d'un nouveau courant. Méthodes du propriétaire
+et écritures d'état de source à sérialiser jusqu'à application. La décision `missing`
+exige une politique explicite au démarrage ; aucun courant retenu n'est inventé.
+Capacité vérifiée avant toute ouverture, mais nouvelle génération/acquisition,
+transfert au scheduler et raccordement à Run restent à développer, ainsi que
+gzip/copytruncate/lacunes et revue de sécurité indépendante.
+
+## Prochain petit lot : transférer un ensemble avec courant connu au scheduler
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Pour une
+décision `known`, transmettre les 1 ou 2 descripteurs/ingesteurs au scheduler
+existant en désignant le courant par OriginID. Définir la frontière de propriété :
+validation avant transfert conservant le propriétaire sur erreur, collection du
+propriétaire vidée avant remise, scheduler responsable de fermeture une seule
+fois à sa sortie. Réutiliser suivi conjoint/polling/grâce/checkpoints, sans
+enregistrement ou acquisition répétés pour les fichiers déjà en suivi. Tests de
+reprise/ajout tardif/cancellation/erreur et absence de double fermeture. La
+préparation complète depuis Run et le cas d'une nouvelle génération courante
+seront des lots distincts.
 
 ## Suite à découper au fil des reprises
 
