@@ -1655,7 +1655,13 @@ attendu, commit `b52e7fb78022049146d87eb69de002fc239e0f12`. Arbre de main identi
 PR #10 reciblée vers main ; intégration du correctif par merge de main dans sa
 branche, commit `6b861179f915917aae5f8c7452194e939b93681e`, sans clôturer sa revue.
 Cette branche est intégrée à #11 : pas de réintroduction du parseur vulnérable.
-CI des branches intégrées à confirmer sur les têtes publiées avant clôture du lot.
+[CI SQLite intégrée](https://github.com/Coubiac/mailtrace/actions/runs/37185908928)
+réussie sur `6b861179f915917aae5f8c7452194e939b93681e`.
+go test ./..., go vet ./... et git diff --check réussis après intégration dans
+FileSource ; parseurs identiques à main. [CI FileSource intégrée](https://github.com/Coubiac/mailtrace/actions/runs/37185969499)
+réussie sur `89816990fda14fa09a32ae6e5c873877a62b6803` : tests Linux
+Go 1.26.x/stable, détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
+Lot terminé et publié ; descriptions des trois PR actualisées.
 
 Limites : audit statique/données synthétiques, fuzz court, pas de Postfix réel.
 M1 ne livre pas encore de service/paquet installable. Revues sécurité SQLite et
@@ -1669,6 +1675,8 @@ M1. Relire contrats Source/Sink, migration v1, transactions/idempotence, permiss
 et limites, avec audit indépendant prévu au cadrage ; corriger uniquement les
 problèmes concrets, vérifier la tête publiée puis clôturer/fusionner si sans blocage.
 Conserver la dépendance de #11 et reporter sa revue complète dans un lot distinct.
+Réutiliser le checkout géré propre `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`,
+actuellement sur codex/m2-sqlite-storage ; le checkout principal reste sur #11.
 
 Après ces clôtures, reprendre le cadrage de récupération d'un lifecycle inconnu :
 politique distincte pour l'arrêt entre registration et acquisition, sans laisser
