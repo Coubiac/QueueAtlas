@@ -8,7 +8,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Nom QueueAtlas, licence MIT et conception de phase 0 approuvés.
 - M1 : enveloppes syslog, parseurs Postfix, corpus synthétique et tests/fuzz.
   [PR #9](https://github.com/Coubiac/mailtrace/pull/9), branche
-  `m1-parser-foundation`, commit `932bef1e20c3573b243d1ddbdfd6ec42e4fdb4d6`.
+  `m1-parser-foundation`, revue terminée et correctif des senders entre guillemets
+  `0c224a213d3148cef866f72f48e28fd0ced26a78`. Fusionnée dans main le 4 octobre,
+  commit `b52e7fb78022049146d87eb69de002fc239e0f12`.
 - Socle M2 : migration SQLite v1, contrat `Source`/`Sink`, insertion idempotente
   des observations et commit atomique des checkpoints.
   [PR #10](https://github.com/Coubiac/mailtrace/pull/10), branche
@@ -180,8 +182,11 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI reprise zéro](https://github.com/Coubiac/mailtrace/actions/runs/37185193175)
   réussie : tests Linux Go 1.26.x/stable, détecteur de courses FileSource et builds
   Linux amd64/arm64 sans CGO ; contrôles locaux également réussis.
-- Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
-  Aucune fusion n'a été effectuée.
+- Lot 39 : revue/correctif/clôture de M1. PR #9 fusionnée après revue coordinateur,
+  audit par un agent indépendant et CI réussie ; voir docs/reviews/pr-9.md.
+  Le correctif est intégré aux branches #10 et #11 en respectant leur dépendance.
+- PR #10 et #11 restent en brouillon. #10 cible maintenant main, #11 cible #10.
+  La prochaine revue porte sur SQLite (#10), sans attendre la fin de FileSource.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
   [CI du commit de code](https://github.com/Coubiac/mailtrace/actions/runs/37142141635)
   réussie, incluant les builds Linux amd64/arm64 sans CGO.
@@ -1622,14 +1627,54 @@ dépendance ajoutée ; revue indépendante toujours requise. Les relances entre 
 37 et ce lot n'avaient produit aucun nouveau commit ; le travail effectif et les
 vérifications de cette reprise sont décrits ici.
 
-## Prochain petit lot : cadrer la récupération explicite d'un lifecycle inconnu
+## Lot 39 : revue et fusion de la PR #9
 
-Reprendre sur codex/m2-file-source et PR #11. Définir une politique distincte pour
-l'arrêt entre registration et acquisition (état unknown), sans laisser AllowZeroCheckpoint
-reclasser implicitement le lifecycle. Préciser le cas unique courant vérifiable,
-les refus et la transition attendue ; consigner la décision dans ADR-009 avant
-implémentation. Le support d'ensembles inconnus multiples et l'import gzip restent
-des lots séparés.
+La demande de clôture des PR devient prioritaire sur le prochain comportement
+FileSource. Résultat : revue du commit M1 exact, correction d'un P2, revérification
+puis fusion ; pas de revue SQLite/FileSource globale dans ce lot.
+
+Checkout isolé M1 : revue des parseurs syslog/Postfix, modèle, corpus et CI par le
+coordinateur et un auditeur agent indépendant en lecture seule. L'audit a trouvé
+qu'un sender entre guillemets contenant `> to=<…>` pouvait créer un faux champ
+destinataire avec l'ancienne regex. Scanner respectant guillemets/échappements et
+chevrons, régressions (faux to/status/uid, sender vide, smtpd, valeur incomplète),
+seed fuzz ajouté. Relecture indépendante du correctif : aucun autre blocage concret.
+Rapport et limites dans docs/reviews/pr-9.md ; revue COMMENT consignée sur GitHub,
+analyse assistée par agents, sans prétendre à une approbation humaine externe.
+
+Sur M1 corrigé : go test ./..., go vet ./..., builds Linux amd64/arm64 sans CGO,
+fuzz Postfix/syslog trois secondes chacun (deux workers), git diff --check réussis.
+Manifest de 30 scénarios vérifié : fichiers présents, gzip identique au fichier normal.
+La [CI du correctif](https://github.com/Coubiac/mailtrace/actions/runs/37185777332)
+réussit sur `0c224a213d3148cef866f72f48e28fd0ced26a78` (Go 1.26.x/stable,
+tests/vet/builds Linux). PR sortie du brouillon, fusion par merge avec SHA de tête
+attendu, commit `b52e7fb78022049146d87eb69de002fc239e0f12`. Arbre de main identique
+à la tête revue ; [CI main](https://github.com/Coubiac/mailtrace/actions/runs/37185831304)
+également réussie. Les fichiers sont désormais visibles sur la branche principale.
+
+PR #10 reciblée vers main ; intégration du correctif par merge de main dans sa
+branche, commit `6b861179f915917aae5f8c7452194e939b93681e`, sans clôturer sa revue.
+Cette branche est intégrée à #11 : pas de réintroduction du parseur vulnérable.
+CI des branches intégrées à confirmer sur les têtes publiées avant clôture du lot.
+
+Limites : audit statique/données synthétiques, fuzz court, pas de Postfix réel.
+M1 ne livre pas encore de service/paquet installable. Revues sécurité SQLite et
+FileSource encore à faire ; main local aligné sur origin/main, branches dépendantes
+conservées. Aucun merge de #10/#11 ni nouveau comportement de source dans ce lot.
+
+## Prochain petit lot : revue et clôture de la PR #10
+
+Reprendre par la PR SQLite #10, désormais basée sur main et contenant le correctif
+M1. Relire contrats Source/Sink, migration v1, transactions/idempotence, permissions
+et limites, avec audit indépendant prévu au cadrage ; corriger uniquement les
+problèmes concrets, vérifier la tête publiée puis clôturer/fusionner si sans blocage.
+Conserver la dépendance de #11 et reporter sa revue complète dans un lot distinct.
+
+Après ces clôtures, reprendre le cadrage de récupération d'un lifecycle inconnu :
+politique distincte pour l'arrêt entre registration et acquisition, sans laisser
+AllowZeroCheckpoint reclasser implicitement l'état. Cas unique courant vérifiable,
+refus et transition attendue à consigner dans ADR-009 avant implémentation. Ensembles
+inconnus multiples et import gzip restent des lots séparés.
 
 ## Suite à découper au fil des reprises
 
