@@ -5,6 +5,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 46 : acquisition par FileSource avant première ligne relue sur
+  `55c820b0ae31387506a1754e97ec8d0edfa40762`, sans blocage concret identifié.
+  Rapport `docs/reviews/pr-11-part-6.md`, code inchangé. Prochaine revue : retrait/grâce.
 - Lot 45 : migration SQLite v2 et transitions durables relues sur
   `a0c0d13319a27c38ffad8054cc6b081fbec76299`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-5.md`, tests ciblés Windows réussis, code inchangé.
@@ -1838,14 +1841,38 @@ réel/concurrence/corruption injectés ; historique non équivalent à validatio
 du schéma. Open/WAL hors transaction de migration. Acquisition/retrait FileSource,
 rotation et orchestration encore à relire ; PR en brouillon.
 
-## Prochain petit lot : revue FileSource — acquisition avant première ligne
+## Lot 46 terminé : revue FileSource — acquisition avant première ligne
 
-Reprendre sur #11 basée sur main. Sixième partie : préparation et acquisition de
-génération par FileSource avant normalisation/consommation, unknown/following/retired,
-réacquisition justifiée, erreurs/EOF/annulation et propriété des descripteurs.
-Auditeur indépendant en lecture seule ; ajouter les régressions des défauts concrets.
-Retrait durable/grâce, rotation et reprise orchestrée/Run restent des lots suivants.
-Ne pas déclarer toute #11 validée après cette sixième partie.
+Référence 55c820b0ae31387506a1754e97ec8d0edfa40762, coordinateur et auditeur agent
+indépendant : runOpened/prepareGeneration/acquireGeneration, tests acquisition et
+propriété des successeurs à leur préparation. Aucun blocage concret identifié.
+Validation avant acquisition, transition seule avant normalisation/consommation,
+réutilisation following/réacquisition retired, erreurs/EOF/annulation et fermeture
+vérifiés. Rapport docs/reviews/pr-11-part-6.md, code inchangé et aucun nouveau test.
+
+Coordinateur : TestAcquisitionRejectsInvalidStateAndHonorsCancellation -count=1 ;
+auditeur : ce test et TestRunOpenedClosesOwnedDescriptorOnCancellation, réussis sous
+Windows. git diff --check réussi, checkout isolé propre.
+[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37203133730)
+verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
+et job Windows chemins. Intégrations Linux acquisition/erreurs/cleanup relues et
+exécutées par cette CI, pas localement sous Windows. Consulter la PR #11 pour la CI
+du rapport publié.
+
+Limites : ReadAt bornés de vérification avant acquisition, Sink durable et écritures
+sérialisées requis, filesystem/acquisition non atomiques. Registration/acquisition
+distinctes ; unknown ou zéro peuvent demander une décision explicite à la reprise.
+Retrait/grâce, rotation et reprise globale encore à relire ; PR en brouillon.
+
+## Prochain petit lot : revue FileSource — retrait durable et grâce
+
+Reprendre sur #11 basée sur main. Septième partie : grace.go et tests de retrait,
+EOF stable/grâce, protections courant/partiels/pending, ajout tardif renouvelant
+la grâce, transition acquittée avant fermeture/libération de capacité et sorties
+en erreur/annulation sans faux retrait ni double fermeture. Auditeur indépendant
+en lecture seule ; ajouter les régressions des défauts concrets. Rotation et reprise
+orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11 validée après
+cette septième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
