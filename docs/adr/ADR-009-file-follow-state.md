@@ -357,6 +357,55 @@ de la même archive, revérifiée à la reprise suivante, permet de reprendre se
 depuis le checkpoint conservé avec le scheduler normal. Pas d'enregistrement durable
 de la lacune, aucune récupération automatique ni preuve atomique de continuité.
 
+## Récupération explicite d'un courant inconnu — cadrage lot 61
+
+Décision de cadrage, pas encore implémentée. Ajouter une opération standalone
+`FileSource.RecoverUnknownCurrent(ctx, originID, sink) error`. Son invocation et
+l'ID exact constituent une autorisation explicite de lifecycle, distincte de
+`ResumePolicy.AllowZeroCheckpoint`. Elle ne démarre aucun suivi ni lecture de ligne ;
+Run continue à bloquer unknown. LastPathStatus reste conservé.
+
+Valider contexte/ID non vide/Sink/PathStateReader, puis prendre la garde partagée
+avec Run et FollowOpened. Conserver la garde jusqu'après fermeture. Charger toutes
+les origines du chemin exact avec ResumeLimits.Origins, retirées comprises dans le
+budget. Reader et Sink représentent le même stockage autoritatif ; écritures
+sérialisées par source pendant scan, preuves et application.
+
+Après parcours complet, accepter exactement une origine non retirée, avec l'ID
+demandé : unknown à acquérir, ou following pour vérification idempotente. Valeur
+invalide, concurrent unknown/following, absence, cible retired, ID discordant ou
+parcours limité refusent avant ouverture. Les retirés historiques restent ignorés
+pour l'éligibilité, sans prétendre prouver une unicité historique de contenu.
+
+Ouvrir uniquement le courant configuré avec OpenLog, sans recherche d'archive.
+Exiger VerifyCandidateWithPolicy : ResumeMatch à checkpoint positif, ou
+ResumeRestartZero à zéro canonique, avec identité physique et préfixe non vide
+concordants. Cette vérification zéro autorise seulement le lifecycle ; elle ne
+rejoue rien. Nil/preuves invalides/insuffisantes/modifiées bloquent sans écriture.
+Réobserver via ObservePath et exiger PathSame avant application. Aucun besoin de
+construire un ingesteur, de Seek ou de créer un OpenedFollowSet.
+
+Unknown : un seul Batch avec Source et transition unknown → following, sans origine,
+record ou checkpoint. Following : preuves fraîches puis succès sans Commit. Vérifier
+annulation avant Commit et après ACK. Toute sortie ferme le descripteur ; causes
+et erreurs de fermeture jointes, sans compensation de l'état déjà durable.
+
+Erreur Sink, dont EOF, conservée même si le commit durable a réussi sans accusé.
+Aucun retry automatique : une nouvelle invocation recharge unknown pour réappliquer,
+following pour revérifier sans Commit, et refuse retired. La transition SQLite
+idempotente ne remplace ni le scan complet ni la sérialisation entre objets.
+
+Après récupération zéro, Run demeure strict sans autorisation distincte de replay
+zéro ; sa branche following existante reprend avec préfixe retenu. Preuves 4096 octets,
+observation/Commit non atomiques et identité persistante Linux restent les limites.
+Ensembles inconnus multiples et récupération d'archives sont hors de ce premier cas.
+
+Lots : classification sans journal, ouverture/preuves avec propriétaire temporaire,
+application explicite et tests de crash/ACK, puis clôture. Tests utiles : limites et
+concurrents avant disque, ID/copies, mismatch/missing, ACK perdu, annulation avant/après
+ACK, erreur Close après succès durable et refus de réactivation retired. Revue
+indépendante intégrée à chaque lot ; pas de modification du stockage nécessaire.
+
 ## Limites
 
 Le stockage n'observe ni descripteur, EOF, grâce ni empreinte : l'appelant justifie
