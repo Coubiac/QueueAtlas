@@ -114,6 +114,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI retrait](https://github.com/Coubiac/mailtrace/actions/runs/37173662429)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource, builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+- Vingt-huitième lot FileSource : `LoadFollowOrigins`, préparation bornée des
+  candidats durables en suivi à partir des états par chemin, commit
+  `addd572898b0095c71952b232d1f5d26e066b710`, toujours dans la PR #11.
+  [CI candidats en suivi](https://github.com/Coubiac/mailtrace/actions/runs/37174070307)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1065,7 +1071,7 @@ peut être manqué ; retiré ne signifie pas absence d'écritures ultérieures. 
 À la fin de ce lot, la reprise n'exploitait pas encore les marqueurs. Gzip/copytruncate/lacunes restent
 à développer, ainsi que la revue de sécurité indépendante déjà prévue.
 
-## Dernier lot : candidats en suivi pour la reprise
+## Dernier lot terminé : candidats en suivi pour la reprise
 
 `LoadFollowOrigins(ctx, sourceID, path, reader, limit)` réutilise le parcours
 complet et borné de `LoadPathOrigins` (budget de 1 à 1000 états). Après épuisement
@@ -1102,7 +1108,9 @@ ou migration ajoutée.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
 des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
-et builds : CI à confirmer après publication du commit de code.
+et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI candidats en suivi](https://github.com/Coubiac/mailtrace/actions/runs/37174070307)
+Go 1.26.x/stable sur `addd572898b0095c71952b232d1f5d26e066b710`.
 
 Limites : seuls les états de suivi sont classés. Un ensemble complet ne prouve
 ni présence sur disque, ni identité/empreinte/ancre/frontière LF, ni possibilité
