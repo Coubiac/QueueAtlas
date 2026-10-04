@@ -27,8 +27,8 @@ type openedGeneration struct {
 }
 
 // followPath owns the initial descriptor and every successor, closing each once
-// on retirement or return. Each round attempts one record
-// per opened generation, serially, including retained files and partial lines.
+// on retirement or return. Each round attempts at most one record and consumes
+// at most 64 KiB per opened generation, serially, including partial lines.
 // Path checks and grace expiry run when due between rounds, including during
 // continuous input. Only idle rounds wait, until the next scheduled check.
 func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context, time.Duration) error) (err error) {
@@ -130,8 +130,15 @@ func (s *FileSource) followGenerations(ctx context.Context, opened []*openedGene
 					continue
 				}
 			}
-			err := generation.ingestor.CommitNext(ctx, sink)
+			err := generation.ingestor.commitNext(ctx, sink, followReadFragments)
 			if err == nil {
+				generation.eofSince = time.Time{}
+				progress = true
+				continue
+			}
+			if errors.Is(err, errReadYield) && generation.ingestor.pending == nil {
+				// Bytes progressed, but no complete line or EOF was observed.
+				// Keep the fragments and let the other generation/poll proceed.
 				generation.eofSince = time.Time{}
 				progress = true
 				continue

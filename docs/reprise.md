@@ -5,6 +5,11 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 49 en vérification : starvation sur ligne partielle très longue corrigée
+  dans le scheduler (budget 64 Kio par génération/passage). Régression échouant
+  avant puis passant après ; relecture indépendante, tests/vet Windows et
+  compilation des tests Linux réussis. CI du correctif à confirmer avant clôture.
+  Rapport `docs/reviews/pr-11-part-9.md`. Dernière tête publiée validée : `337ceb5`.
 - Lot 48 : courant et successeurs aux polls relus sur
   `82635d7e27fa3da5447a6e23fd27925a82f417aa`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-8.md`, code inchangé et tests portables réussis.
@@ -1916,15 +1921,36 @@ du changement entre observation et ouverture. Plafond de générations, pas tous
 handles du processus. Ordonnancement et reprise orchestrée/Run encore à relire ;
 PR en brouillon.
 
-## Prochain petit lot : revue FileSource — ordonnancement des lectures et polls
+## Lot 49 en vérification : ordonnancement et flux continu
 
-Reprendre sur #11 basée sur main. Neuvième partie : boucle de suivi dans rotation.go,
-une ligne par génération et par passage, progression conjointe/partiels, attente
-seulement sans progrès et échéance des polls sous flux continu. Vérifier les erreurs
-du lecteur/Sink (dont EOF avec pending), annulation, absence de réessai automatique
-et nettoyage. Auditeur indépendant en lecture seule ; ajouter les régressions des
-défauts concrets. Reprise orchestrée/Run restent des lots suivants ; ne pas déclarer
-toute #11 validée après cette neuvième partie.
+Référence initiale 337ceb56f0cfc28cef868bf52cb5ab19b28fb3c0. Défaut identifié :
+CommitNext pouvait consommer une quantité illimitée de fragments jusqu'à LF/EOF,
+retardant indéfiniment l'autre génération et les polls sur un flux sans LF.
+Correctif relu indépendamment : chemin interne limité à 16 fragments/64 Kio par
+génération/passage, yield conservant les fragments sans normalisation ni checkpoint,
+progression vers autre génération/poll. Contrats Next/CommitNext publics conservés.
+
+Régression portable échoue avant (196608 octets lus), passe après (au plus 65536).
+Test plusieurs yields/oversized/annulation/pending EOF/réessai identique/ancre réussi.
+Tests ciblés, go test ./..., go vet ./..., git diff --check et compilation des tests
+Linux amd64 sans CGO réussis localement sous Windows ; relecture du patch sans
+blocage restant. Nouveau test conjoint Linux à exécuter en CI : longue ligne de
+l'ancien cède au successeur sans avancer son checkpoint ni fuite.
+Rapport docs/reviews/pr-11-part-9.md. CI du correctif encore à confirmer ; dernier
+état publié validé 337ceb5, CI 37204155236 verte avant ce correctif.
+
+Limites : budget en octets, pas en temps ; syscalls/normaliseur/Sink peuvent retarder
+un passage. Aucun benchmark/crash réel ajouté. PR reste en brouillon.
+
+## Prochaine action : confirmer la CI du lot 49, puis classer les états de reprise
+
+Clore le lot 49 uniquement après publication et CI verte du correctif. Ensuite,
+dixième partie : LoadFollowOrigins et tests, classement après parcours complet par
+chemin, retired écarté, unknown/invalide/capacité/limite refusés sans candidats
+partiels, copies et checkpoints nil/zéro conservés. Auditeur indépendant en lecture
+seule ; régressions des défauts concrets. Recherche/réouverture/transfert et
+préparation orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11
+validée après cette dixième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 

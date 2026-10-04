@@ -102,6 +102,12 @@ func (r *Ingestor) Position() source.Position { return r.position }
 // line is read until acknowledgment. Cancellation before commit also retains it.
 // A Sink must honor the durable contract and must not mutate the supplied batch.
 func (r *Ingestor) CommitNext(ctx context.Context, sink source.Sink) error {
+	return r.commitNext(ctx, sink, 0)
+}
+
+// The scheduler can yield a partial physical line without normalization or a
+// commit. A pending batch always takes precedence over another read attempt.
+func (r *Ingestor) commitNext(ctx context.Context, sink source.Sink, fragmentLimit int) error {
 	if err := ctx.Err(); err != nil {
 		return err
 	}
@@ -109,7 +115,7 @@ func (r *Ingestor) CommitNext(ctx context.Context, sink source.Sink) error {
 		return errors.New("sink is required")
 	}
 	if r.pending == nil {
-		record, err := r.lines.Next(ctx)
+		record, err := r.lines.next(ctx, fragmentLimit)
 		if err != nil {
 			return err
 		}

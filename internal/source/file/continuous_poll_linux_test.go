@@ -8,11 +8,56 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/Coubiac/mailtrace/internal/source"
 )
+
+func TestContinuousPollPartialLineYieldsToSuccessor(t *testing.T) {
+	f, path := testRegularFile(t, "first\n"+strings.Repeat("x", 3*64*1024)+"\n")
+	s, store := rotationSource(t, path)
+	r, _, err := s.prepareGeneration(context.Background(), f, store)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	stamp := time.Date(2026, 10, 4, 0, 0, 0, 0, time.UTC)
+	var records []source.Record
+	err = s.followPathWithClock(ctx, f, r, sinkFunc(func(ctx context.Context, b source.Batch) error {
+		if err := store.Commit(ctx, b); err != nil {
+			return err
+		}
+		if len(b.Records) == 0 {
+			return nil
+		}
+		records = append(records, b.Records[0])
+		if len(records) == 1 {
+			stamp = stamp.Add(s.config.PollInterval)
+			return rotateTo(path, ".1", "new\n")
+		}
+		if string(b.Records[0].Raw) != "new\n" || r.lines.offset > 6+64*1024 || r.Position().Offset != 6 || r.pending != nil {
+			t.Fatal("partial old line monopolized the round or advanced its checkpoint")
+		}
+		cancel()
+		return nil
+	}), func(context.Context, time.Duration) error {
+		t.Fatal("read progress triggered a wait")
+		return nil
+	}, func() time.Time { return stamp })
+	if !errors.Is(err, context.Canceled) || len(records) != 2 || records[0].OriginID == records[1].OriginID {
+		t.Fatalf("partial joint follow: %v, records %d", err, len(records))
+	}
+	position, found, err := store.Checkpoint(context.Background(), s.ID(), r.Position().OriginID)
+	if err != nil || !found || position.Offset != 6 {
+		t.Fatal("partial line changed durable checkpoint", position, found, err)
+	}
+	if fileDescriptorCount(t, path) != 0 || fileDescriptorCount(t, path+".1") != 0 {
+		t.Fatal("partial joint follow leaked a descriptor")
+	}
+}
 
 func TestContinuousPollSeesRotationBeforeOldReaderEOF(t *testing.T) {
 	f, path := testRegularFile(t, "old-1\nold-2\nold-3\nold-4\n")

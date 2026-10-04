@@ -13,6 +13,12 @@ import (
 	"github.com/Coubiac/mailtrace/internal/source"
 )
 
+// Internal scheduling boundary, not EOF or a failed physical read. The partial
+// line stays intact. Public Next keeps its complete-record contract.
+var errReadYield = errors.New("file reader yielded after fragment budget")
+
+const followReadFragments = 16 // at most 64 KiB consumed per scheduler attempt
+
 // LineReader reads newline-terminated physical records without interpreting
 // them. It retains at most MaxLineBytes of a line, plus a fixed read buffer.
 // It is intended for one consumer and does not seek or own the input reader.
@@ -52,10 +58,14 @@ func NewLineReader(input io.Reader, startOffset int64) (*LineReader, error) {
 // bounded reads; interrupting a blocking input read is the caller's concern.
 // OriginID, ReadAt and Observation must be populated by the ingesting source.
 func (r *LineReader) Next(ctx context.Context) (source.Record, error) {
+	return r.next(ctx, 0)
+}
+
+func (r *LineReader) next(ctx context.Context, fragmentLimit int) (source.Record, error) {
 	if r.fatalErr != nil {
 		return source.Record{}, r.fatalErr
 	}
-	for {
+	for fragments := 0; ; fragments++ {
 		if err := ctx.Err(); err != nil {
 			return source.Record{}, err
 		}
@@ -88,6 +98,9 @@ func (r *LineReader) Next(ctx context.Context) (source.Record, error) {
 			return record, nil
 		}
 		if errors.Is(err, bufio.ErrBufferFull) {
+			if fragmentLimit > 0 && fragments+1 >= fragmentLimit {
+				return source.Record{}, errReadYield
+			}
 			continue
 		}
 		return source.Record{}, err
