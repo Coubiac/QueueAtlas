@@ -233,6 +233,37 @@ transféré, le scheduler garde le dernier courant observé sur disparition ; ce
 comportement distinct ne justifie pas un choix arbitraire au démarrage. Run n'est
 pas encore raccordé au pipeline de reprise d'ensembles persistés.
 
+## Orchestrateur de préparation de reprise
+
+`PrepareFollowResume` relie LoadFollowOrigins → LocateFollowOrigins →
+OpenFollowLocations → ObserveCurrent. Avant tout accès à l'état : identité de
+source file complète, chemin configuré absolu, PathStateReader/normaliseur et
+budgets explicites FollowResumeLimits (Origins de 1 à 1000, Entries de 1 à 2000).
+Les limites des composants restent applicables : pages de 100, scans de 1000
+entrées chacun au plus, budget partagé comptant répétitions/exclusions.
+
+Un parcours complet vide ou entièrement retiré donne `absent`, sans accès journal,
+et ne démarre pas lui-même une génération fraîche. Unknown bloque via
+ErrUnknownFollowState, invalide via ErrInvalidFollowState, capacité via
+ErrRotationCapacity, limite via ResumeDecisionError/limit_reached. Aucune décision
+bloquante ne devient absence ou fallback. Localisation non unique : diagnostic de
+sélection conservé (absent/different/insufficient/ambiguous/limit_reached), résultat
+vide ; strict nil/zéro maintenu, sans appliquer AllowZeroCheckpoint.
+
+Après réouverture vérifiée de tout l'ensemble, courant missing/capacity bloque et
+ferme tous les descripteurs sans état partiel. Erreur d'observation ou annulation
+conserve sa cause et joint les erreurs de fermeture. `ready` seul fournit le
+propriétaire complet et une observation known/new ; l'appelant doit fermer ou
+appliquer via FollowOpened. Pas de consommation/normalisation/Sink/transition ni
+transfert au scheduler ; nouvelle génération courante seulement observée, jamais
+ouverte ici. Recontrôle lors de l'application toujours nécessaire.
+
+Les accès à l'état doivent être sérialisés par source jusqu'à application ; aucune
+garde d'exécution de FileSource ni snapshot atomique ajouté. Cette fonction de
+préparation est isolée : Run n'est pas encore raccordé. Son intégration doit définir
+le contrat lorsque le StateReader n'offre pas PathStateReader, les budgets par
+défaut/configuration et le comportement absent, sans réacquérir la garde de Run.
+
 ## Limites
 
 Le stockage n'observe ni descripteur, EOF, grâce ni empreinte : l'appelant justifie

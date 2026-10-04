@@ -1437,18 +1437,59 @@ de suivi. Run n'utilise pas encore le pipeline de reprise des ensembles persist�
 Pas de migration/dépendance ajoutée. Gzip/copytruncate/lacunes et revue indépendante
 restent à développer.
 
-## Prochain petit lot : raccorder la reprise d'ensemble au démarrage de Run
+## Lot 35 : orchestrateur isolé de préparation de reprise
+
+Périmètre réduit conformément à la consigne de petits lots : la préparation
+orchestrée est terminée ; son intégration à Run reste explicitement incomplète.
+Le StateReader de Run et PathStateReader sont deux contrats distincts, et les
+budgets/compatibilité des lecteurs seront fixés lors du raccordement suivant.
+
+`PrepareFollowResume` valide avant lecture identité file/nom/ID, chemin absolu,
+PathStateReader/normaliseur et FollowResumeLimits explicites (Origins 1–1000,
+Entries 1–2000 partagées). Compose les helpers existants : lecture des états en
+suivi, localisation de tout l'ensemble, réouverture stricte puis observation.
+`absent` seulement sur parcours complet vide/tout retiré, sans journal ouvert.
+Unknown/invalide/capacité/limite bloque avec diagnostic fixe, jamais une absence
+ni fallback. Sélection non unique transmet ResumeDecisionError et zéro résultat.
+
+Après réouverture, absence du courant/capacité/erreur/annulation ferme l'ensemble
+entier et renvoie zéro résultat, erreurs de nettoyage jointes à la cause. `ready`
+seul remet le propriétaire complet à l'appelant avec courant known/new ; il doit
+fermer ou appliquer via FollowOpened. Pas de ligne consommée/normalisée, Sink,
+transition, nouveau courant ouvert ou transfert scheduler dans la préparation.
+
+Tests portables : validation avant lecture/disque, budgets stricts, absent vide/
+retiré sans FS, unknown/invalide/capacité/limite sans plan partiel, erreurs/annulation
+du lecteur conservées, requête source/chemin/limite exacte. Linux SQLite : ensembles
+1–2 connus, nouveau courant non vide/vide observé sans ouverture, ajouts aux fichiers
+en suivi sans consommation, positions au checkpoint positif et état durable inchangé ;
+propriétaire idempotent. Missing/capacité après réouverture, localisation bornée/
+ambiguë/différente/absente et checkpoints nil/zéro insuffisants : diagnostic sans
+ensemble partiel ni fuite. Erreur/annulation après réouverture et erreur de nettoyage
+jointes, fermeture de tous les descripteurs et état conservé.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
+et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
+détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
+Dernier état Linux validé : lot 34, commit
+`14204b35911620242e73325b1f602ca3a34c15af`, CI 37177140539.
+
+Limites : Run n'utilise pas encore cet orchestrateur. `absent` ne prouve pas la
+présence/absence physique du courant et ne l'enregistre pas. Les fenêtres/pages
+et observations restent non atomiques ; source state à sérialiser jusqu'à application,
+courant à recontrôler au transfert. Pas de reprise zéro implicite ni migration/
+dépendance ajoutée. Gzip/copytruncate/lacunes et revue indépendante restent à faire.
+
+## Prochain petit lot : utiliser l'orchestrateur au démarrage de Run
 
 Reprendre sur `codex/m2-file-source`, conserver PR #11 et ADR-009. Raccorder les
-helpers bornés existants au démarrage avec StateReader/PathStateReader : lecture
-des origines en suivi, localisation, réouverture, observation et application du
-courant connu/nouveau. Définir les budgets et le chemin sans ensemble à reprendre,
+nouvel orchestrateur PrepareFollowResume au démarrage avec StateReader/PathStateReader,
+puis application du courant connu/nouveau. Définir le contrat d'un lecteur sans
+PathStateReader (pas de fallback silencieux), les budgets et le chemin absent,
 ainsi que les diagnostics inconnus/insuffisants/limite/capacité/missing sans fallback
 implicite. Conserver une seule garde d'exécution (Run appelle le cœur sans réacquérir
 son verrou) et fermer l'ensemble préparé si une décision bloque avant transfert.
 Tester le redémarrage avec ancien renommé et ajout tardif, les refus et le nettoyage.
-Si le périmètre grossit, commencer par l'orchestrateur de préparation isolé puis
-raccorder Run dans un lot suivant.
 
 ## Suite à découper au fil des reprises
 
