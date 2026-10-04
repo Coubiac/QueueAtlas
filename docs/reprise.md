@@ -14,13 +14,16 @@ dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
 M1 (parseurs), socle SQLite M2 et FileSource sont fusionnés dans main. PR #11 clôturée
 au lot 60, synthèse de 19 parties et CI de tête verte. Chantier suivant : récupération
 explicite d'un unknown courant unique, cadrage lot 61 et classification lot 62 dans
-ADR-009, puis preuves/ouverture et application en lots distincts avec revue intégrée.
+ADR-009, preuves/ouverture lot 63, puis application avec revue intégrée.
 Critère de fin : refus sûrs, preuves, transition seule et réessai/ACK vérifiés,
 CI verte et PR du chantier fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 63 : préparation privée du courant/propriétaire/preuves implémentée et relue,
+  deux tests ciblés Windows, suite/vet/diff/compilation Linux réussis ; CI à vérifier.
+  Aucune application ou opération publique. Prochaine : RecoverUnknownCurrent.
 - Lot 62 : LoadRecoveryOrigin implémenté/relu indépendamment, trois tests ciblés
   Windows, go test ./..., go vet ./... et diff réussis. Rapport PR #12 ; aucune
   ouverture/preuve/transition encore. Prochaine : ouverture et preuves du courant.
@@ -2193,14 +2196,26 @@ Unique non-retired ID demandé, unknown/following seulement ; invalides, retired
 concurrents/ID discordant et limite refusés sans candidat. Copies et nil/zéro bruts,
 erreurs/annulation résultat vide, aucune ouverture/écriture. Rapport docs/reviews/pr-12.md.
 Trois tests ciblés Windows, suite locale/vet/diff réussis ; CI de publication à vérifier
-sur #12. Limites reader/namespace et pages non atomiques, écritures à sérialiser.
+sur #12 : 37241340339 verte sur `f0067dd74f2d63f8d52ea096c6264f54b1fa3cb6`.
+Limites reader/namespace et pages non atomiques, écritures à sérialiser.
+
+## Lot 63 terminé : préparation du courant et preuves
+
+Base `f0067dd`, helper privé prepareRecoveryCurrent/Close opaque implémentés, revue
+indépendante sans blocage. Copie avant open, preuve positif/zéro canonique puis
+PathSame/identité, propriétaire immédiat, cleanup errors/cancel joints. Aucun Seek,
+ligne ou état écrit, retour possédé/Close idempotent. Rapport PR #12.
+Deux tests ciblés Windows, suite locale/vet/diff et compilation Linux réussis.
+Linux relu, exécution/race/builds à vérifier par CI après publication ; pas exécuté
+localement. Limites preuves bornées et observations non atomiques, état sérialisé.
 
 ## Prochaine action concrète
 
-Lot 63 : préparation interne possédant le courant ouvert, copie du candidat classé,
-preuves positif/zéro canonique non vide via VerifyCandidateWithPolicy puis PathSame,
-aucune lecture de ligne/Seek/écriture. Erreurs/annulation ferment tout ; propriétaire
-retourné opaque avec Close idempotent. Application et opération publique au lot suivant.
+Lot 64 : FileSource.RecoverUnknownCurrent public sous garde partagée, composition
+classification/preuves puis unknown→following seule ; following retry revérifié
+sans Commit. Pas ingestion/Seek/checkpoint/status changé. Erreurs Sink/ACK perdu,
+annulation avant/après ACK, Close en erreur et cible retired refusée à tester ;
+reader/Sink même stockage et écritures sérialisées. Clôture/fusion ensuite.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-unknown-recovery.
 
