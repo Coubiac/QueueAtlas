@@ -993,6 +993,9 @@ de l'état invalide, de l'acquittement déjà présent et de l'annulation préal
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
 des tests FileSource Linux amd64 sans CGO. Exécution des nouveaux cas Linux et
 détecteur de courses : CI du commit de code à confirmer après publication.
+Premier passage CI `37173131616` : échec de l'assertion de provenance des nouveaux
+tests d'erreur, dû à une date zéro du helper hors plage UnixNano. Fixtures du lot
+corrigées avec une date synthétique représentable ; nouvelle CI à confirmer.
 
 Limites : enregistrement initial et acquisition sont deux transactions. Un échec
 après enregistrement ou un arrêt avant le premier record conserve le checkpoint

@@ -51,6 +51,7 @@ func TestFileSourceAcquiresVerifiedGenerationBeforeFirstRecord(t *testing.T) {
 				offset = 0
 			}
 			state := ingestState(t, f, offset)
+			state.Origin.FirstSeen = time.Date(2026, 10, 4, 0, 0, 0, 0, time.UTC)
 			if kind == "following" {
 				state.FollowState = source.FollowFollowing
 			} else if kind == "retired" {
@@ -124,6 +125,7 @@ func TestAcquisitionFailureStopsBeforeReadingAndClosesDescriptor(t *testing.T) {
 			f, path := testRegularFile(t, "first\nnext\n")
 			s, store := rotationSource(t, path)
 			state := ingestState(t, f, 6)
+			state.Origin.FirstSeen = time.Date(2026, 10, 4, 0, 0, 0, 0, time.UTC)
 			seedAcquisition(t, s, store, state)
 			normalized, commits := 0, 0
 			s.normalize = func(raw []byte) model.Observation { normalized++; return testNormalizer(raw) }
