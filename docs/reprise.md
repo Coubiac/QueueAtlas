@@ -156,6 +156,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI courant absent](https://github.com/Coubiac/mailtrace/actions/runs/37177140539)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+- Lot 35 FileSource : `PrepareFollowResume`, orchestrateur isolé et borné de
+  préparation de reprise, commit `bbbdc66c33547a1703d7dc81f8d32af2704500c9`, PR #11.
+  [CI préparation](https://github.com/Coubiac/mailtrace/actions/runs/37177688035)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+  Le raccordement à Run reste le prochain lot.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1470,9 +1476,9 @@ jointes, fermeture de tous les descripteurs et état conservé.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
-détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
-Dernier état Linux validé : lot 34, commit
-`14204b35911620242e73325b1f602ca3a34c15af`, CI 37177140539.
+détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI préparation](https://github.com/Coubiac/mailtrace/actions/runs/37177688035)
+Go 1.26.x/stable sur `bbbdc66c33547a1703d7dc81f8d32af2704500c9`.
 
 Limites : Run n'utilise pas encore cet orchestrateur. `absent` ne prouve pas la
 présence/absence physique du courant et ne l'enregistre pas. Les fenêtres/pages
