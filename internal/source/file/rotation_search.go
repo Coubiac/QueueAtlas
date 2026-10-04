@@ -31,6 +31,8 @@ type RotationSelection struct {
 // Context is checked between filesystem calls, not inside blocking syscalls.
 // At most one candidate descriptor is open alongside the directory descriptor.
 // Both are closed before return. No persisted state or ingestion is changed.
+// Windows uses temporary metadata handles to pin identities before data open;
+// fallback directory entries prove identity only when their IDs are loaded.
 // A caller must reopen and reverify the selected path before using it.
 func SelectRotation(ctx context.Context, directory string, state source.OriginState, limit int) (result RotationSelection, err error) {
 	if err := ctx.Err(); err != nil {
@@ -43,7 +45,7 @@ func SelectRotation(ctx context.Context, directory string, state source.OriginSt
 	if err != nil {
 		return RotationSelection{}, err
 	}
-	before, err := os.Stat(directory)
+	before, err := statPath(directory)
 	if err != nil {
 		return RotationSelection{}, err
 	}
@@ -82,7 +84,7 @@ func checkRotationEntry(ctx context.Context, path string, entry os.DirEntry, sta
 	if !entry.Type().IsRegular() || strings.EqualFold(filepath.Ext(entry.Name()), ".gz") {
 		return ResumeCheck{}, false, nil
 	}
-	info, err := entry.Info()
+	info, err := rotationEntryInfo(ctx, path, entry)
 	if err != nil {
 		return ResumeCheck{}, false, err
 	}

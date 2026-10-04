@@ -5,6 +5,11 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 51 en vérification : substitutions Windows du répertoire et des entrées
+  aux IDs différés corrigées dans SelectRotation/checkRotationEntry. Deux
+  régressions échouant avant puis passant après, cas inchangé réussi, patch relu
+  indépendamment, tests/vet Windows et compilation Linux réussis. CI à confirmer.
+  Rapport `docs/reviews/pr-11-part-11.md`. Dernière tête publiée validée : `dcc1455`.
 - Lot 50 : classification des états durables de reprise relue sur
   `848aa0694591e735ff9153d43b68e404aa8c8582`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-10.md`, code inchangé. Tests ciblés et intégration
@@ -1971,15 +1976,37 @@ Limites : filtrage source assuré par le lecteur, pages sans snapshot global et
 écritures sérialisées ; métadonnées encore non vérifiées, pas de preuve de présence
 ou de reprise sûre. Taille des chaînes/coût SQL non mesurés. PR reste en brouillon.
 
-## Prochain petit lot : revue FileSource — recherche de rotation
+## Lot 51 en vérification : recherche de rotation
 
-Reprendre sur #11 basée sur main. Onzième partie : SelectRotation et tests, scan non
-récursif paginé, exclusions gzip/liens/non réguliers, budgets incluant exclusions,
-preuves strictes et absence de chemin partiel sur refus/erreur/annulation. Vérifier
-ambiguïté et fermeture des descripteurs temporaires. Auditeur indépendant en lecture
-seule ; régressions des défauts concrets. Localisation de l'ensemble, réouverture/
-transfert et préparation orchestrée/Run restent des lots suivants ; ne pas déclarer
-toute #11 validée après cette onzième partie.
+Référence initiale dcc1455c1978ebd3431366f908599748e685de7d. Reprise après quota,
+aucun changement laissé par l'interruption. Scan/pages/budget/exclusions/preuves,
+refus sans chemin partiel et fermeture relus par coordinateur et auditeur indépendant.
+Deux défauts Windows reproduits : os.Stat du répertoire pouvait charger les IDs
+après substitution ; entry.Info fallback pouvait attribuer à l'entrée précédente
+l'identité du remplacement. Corrigés par statPath(directory) et helper Windows
+figeant les IDs puis comparant un snapshot cohérent avant OpenLog. Linux inchangé.
+
+Régressions Windows échouant avant, passant après ; entrée inchangée éligible,
+diagnostic de preuve physique indisponible conservé. Tests ciblés, go test ./...,
+go vet ./..., git diff --check et compilation des tests Linux sans CGO réussis.
+Patch relu indépendamment sans blocage restant ; job Windows étendu aux régressions.
+Rapport docs/reviews/pr-11-part-11.md. CI du correctif à confirmer ; dernier état
+publié validé dcc1455, CI 37205110566 verte avant ce correctif.
+
+Limites : fallback Windows simulé, pas de test réel sur autre filesystem ; identité
+acquise au chargement, erreurs natives SameFile masquées/refus sûr. Aucun faux unique
+Windows démontré, reprise persistante toujours Linux seulement. Snapshots non atomiques,
+chemin à rouvrir/revérifier. PR reste en brouillon.
+
+## Prochaine action : confirmer la CI du lot 51, puis localiser l'ensemble en suivi
+
+Clore le lot 51 après publication et CI verte du correctif. Ensuite, douzième partie :
+LocateFollowOrigins et tests, validation de l'ensemble avant disque, budget partagé
+entre scans, chemins uniques/distincts seulement si tous les candidats sont localisés,
+première décision bloquante sans chemins partiels, copies et fermeture sur erreur.
+Auditeur indépendant en lecture seule ; régressions des défauts concrets.
+Réouverture/transfert et préparation orchestrée/Run restent des lots suivants ;
+ne pas déclarer toute #11 validée après cette douzième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
