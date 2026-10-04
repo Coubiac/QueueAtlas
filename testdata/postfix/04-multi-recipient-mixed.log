@@ -1,0 +1,6 @@
+Oct  3 12:03:00 mx-a postfix/smtpd[1131]: 04A1B2C3D4: client=sender.example.net[192.0.2.12]
+Oct  3 12:03:00 mx-a postfix/cleanup[1132]: 04A1B2C3D4: message-id=<mixed-04@example.net>
+Oct  3 12:03:00 mx-a postfix/qmgr[1133]: 04A1B2C3D4: from=<alice@example.net>, size=1703, nrcpt=3 (queue active)
+Oct  3 12:03:01 mx-a postfix/local[1134]: 04A1B2C3D4: to=<one@example.org>, relay=local, delay=1, delays=0.1/0.1/0/0.8, dsn=2.0.0, status=sent (delivered to maildir)
+Oct  3 12:03:02 mx-a postfix/smtp[1135]: 04A1B2C3D4: to=<two@example.net>, relay=mx.example.net[203.0.113.26]:25, delay=2, delays=0.1/0.1/0.8/1, dsn=4.4.1, status=deferred (connect to mx.example.net[203.0.113.26]:25: Connection timed out)
+Oct  3 12:03:03 mx-a postfix/smtp[1136]: 04A1B2C3D4: to=<three@example.com>, relay=mx.example.com[203.0.113.27]:25, delay=3, delays=0.1/0.1/0.8/2, dsn=5.1.1, status=bounced (host mx.example.com[203.0.113.27] said: 550 5.1.1 user unknown (in reply to RCPT TO command))

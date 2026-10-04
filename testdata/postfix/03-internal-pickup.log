@@ -1,0 +1,5 @@
+Oct  3 12:02:00 mx-a postfix/pickup[1121]: 03A1B2C3D4: uid=1001 from=<cron@example.org>
+Oct  3 12:02:00 mx-a postfix/cleanup[1122]: 03A1B2C3D4: message-id=<internal-03@example.org>
+Oct  3 12:02:00 mx-a postfix/qmgr[1123]: 03A1B2C3D4: from=<cron@example.org>, size=425, nrcpt=1 (queue active)
+Oct  3 12:02:01 mx-a postfix/local[1124]: 03A1B2C3D4: to=<admin@example.org>, relay=local, delay=0.6, delays=0.1/0.1/0/0.4, dsn=2.0.0, status=sent (delivered to maildir)
+Oct  3 12:02:01 mx-a postfix/qmgr[1123]: 03A1B2C3D4: removed

@@ -1,0 +1,2 @@
+Oct  3 12:19:00 mx-a postfix/qmgr[1291]: 20A1B2C3D4: from=<alice@example.net>, size=940, nrcpt=1 (queue active)
+Oct  3 12:19:01 mx-a postfix/pipe[1292]: 20A1B2C3D4: to=<archive@example.org>, relay=archive, delay=1, delays=0.1/0.1/0/0.8, dsn=2.0.0, status=sent (delivered via archive service)

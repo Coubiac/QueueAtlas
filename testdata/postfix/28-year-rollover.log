@@ -1,0 +1,2 @@
+Dec 31 23:59:59 mx-a postfix/qmgr[1371]: 28A1B2C3D4: from=<alice@example.org>, size=780, nrcpt=1 (queue active)
+Jan  1 00:00:01 mx-a postfix/smtp[1372]: 28A1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.43]:25, delay=2, delays=0.1/0.1/0.3/1.5, dsn=2.0.0, status=sent (250 2.0.0 accepted)

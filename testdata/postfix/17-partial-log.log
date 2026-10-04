@@ -1,0 +1,2 @@
+Oct  3 12:16:03 mx-a postfix/smtp[1261]: 17A1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.35]:25, delay=3, delays=0.1/0.1/0.5/2.3, dsn=4.4.1, status=deferred (connect to mx.example.net[203.0.113.35]:25: Connection timed out)
+Oct  3 12:16:04 mx-a postfix/qmgr[1262]: 17A1B2C3D4: removed

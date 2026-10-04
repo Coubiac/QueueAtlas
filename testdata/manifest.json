@@ -1,0 +1,278 @@
+{
+  "version": 1,
+  "title": "QueueAtlas synthetic reference corpus",
+  "provenance": "Hand-written synthetic logs; no production records or real credentials.",
+  "defaults": {
+    "syslog_year": 2026,
+    "timezone": "Europe/Paris",
+    "instance": "mx-a",
+    "source_type": "regular_file",
+    "line_order": "file order unless a scenario says otherwise"
+  },
+  "outcome_vocabulary": {
+    "sent_local": "Postfix local transport reports delivery to maildir.",
+    "sent_remote": "A remote SMTP server accepted the message; mailbox delivery is unproven.",
+    "sent_lmtp": "The LMTP peer acknowledged the recipient; Dovecot evidence is separate.",
+    "sent_virtual": "Postfix virtual transport reports delivery.",
+    "sent_pipe": "A pipe transport accepted the message; downstream processing is unproven.",
+    "deferred": "A temporary failure was observed and the queue may retry.",
+    "bounced": "Postfix reports a permanent delivery failure for this recipient.",
+    "expired": "The queued message exceeded its lifetime; delivery is unproven.",
+    "rejected_prequeue": "SMTP rejection before this recipient acquired a Queue ID.",
+    "unknown": "The available lines do not establish a final recipient result."
+  },
+  "scenarios": [
+    {
+      "id": "01-inbound-local",
+      "files": ["postfix/01-inbound-local.log"],
+      "facts": ["Inbound SMTP client 192.0.2.10", "Queue 01A1B2C3D4 created and removed"],
+      "recipients": [{"queue": "01A1B2C3D4", "address": "bob@example.org", "outcome": "sent_local", "attempts": 1}],
+      "forbidden": ["Do not infer anything about later mailbox reads."]
+    },
+    {
+      "id": "02-outbound-auth",
+      "files": ["postfix/02-outbound-auth.log"],
+      "facts": ["Authenticated submission by alice@example.org", "Remote SMTP reply contains an unrelated remote queue token"],
+      "recipients": [{"queue": "02A1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 1}],
+      "forbidden": ["Do not call remote SMTP acceptance a mailbox delivery.", "Do not create a local queue from REMOTE02."]
+    },
+    {
+      "id": "03-internal-pickup",
+      "files": ["postfix/03-internal-pickup.log"],
+      "facts": ["Local pickup from uid 1001, not an SMTP connection"],
+      "recipients": [{"queue": "03A1B2C3D4", "address": "admin@example.org", "outcome": "sent_local", "attempts": 1}],
+      "forbidden": ["Do not invent a client IP or SASL account."]
+    },
+    {
+      "id": "04-multi-recipient-mixed",
+      "files": ["postfix/04-multi-recipient-mixed.log"],
+      "facts": ["One queue has three recipients with different outcomes", "The SMTP failure response contains nested parentheses"],
+      "recipients": [
+        {"queue": "04A1B2C3D4", "address": "one@example.org", "outcome": "sent_local", "attempts": 1},
+        {"queue": "04A1B2C3D4", "address": "two@example.net", "outcome": "deferred", "attempts": 1},
+        {"queue": "04A1B2C3D4", "address": "three@example.com", "outcome": "bounced", "attempts": 1}
+      ],
+      "forbidden": ["Do not mark the whole queue successful or permanently failed.", "Do not collapse the three recipient attempts."]
+    },
+    {
+      "id": "05-rcpt-reject",
+      "files": ["postfix/05-rcpt-reject.log"],
+      "facts": ["One RCPT is rejected before enqueue while a different RCPT in the same SMTP session is accepted"],
+      "recipients": [
+        {"queue": null, "address": "absent@example.org", "outcome": "rejected_prequeue", "attempts": 0},
+        {"queue": "05A1B2C3D4", "address": "valid@example.org", "outcome": "sent_local", "attempts": 1}
+      ],
+      "forbidden": ["Do not assign the rejected RCPT to queue 05A1B2C3D4 as a proven fact."]
+    },
+    {
+      "id": "06-noqueue-client-reject",
+      "files": ["postfix/06-noqueue-client-reject.log"],
+      "facts": ["NOQUEUE rejection has no queue instance"],
+      "recipients": [{"queue": null, "address": "bob@example.org", "outcome": "rejected_prequeue", "attempts": 0}],
+      "forbidden": ["Do not create a queue whose ID is NOQUEUE.", "Do not report a later delivery."]
+    },
+    {
+      "id": "07-deferred-then-sent",
+      "files": ["postfix/07-deferred-then-sent.log"],
+      "facts": ["Two delivery attempts for one recipient: temporary failure then remote acceptance"],
+      "recipients": [{"queue": "07A1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 2}],
+      "forbidden": ["Do not discard the deferred attempt.", "Do not infer mailbox delivery."]
+    },
+    {
+      "id": "08-multiple-retries",
+      "files": ["postfix/08-multiple-retries.log"],
+      "facts": ["Three attempts with distinct DSNs and replies"],
+      "recipients": [{"queue": "08A1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 3}],
+      "forbidden": ["Do not overwrite or merge the two deferred attempts."]
+    },
+    {
+      "id": "09-bounce",
+      "files": ["postfix/09-bounce.log"],
+      "facts": ["Queue 09F1B2C3D4 is a separate non-delivery notification with an empty envelope sender"],
+      "recipients": [
+        {"queue": "09A1B2C3D4", "address": "missing@example.net", "outcome": "bounced", "attempts": 1},
+        {"queue": "09F1B2C3D4", "address": "alice@example.org", "outcome": "sent_local", "attempts": 1}
+      ],
+      "forbidden": ["Do not treat delivery of the notification as delivery of the original message."]
+    },
+    {
+      "id": "10-expired",
+      "files": ["postfix/10-expired.log"],
+      "facts": ["The queue is explicitly marked expired after a temporary failure", "A notification queue ID is named but no lines for that queue are present"],
+      "recipients": [{"queue": "10A1B2C3D4", "address": "bob@example.net", "outcome": "expired", "attempts": 1}],
+      "forbidden": ["Do not claim the notification reached the sender.", "Do not convert the earlier deferral into a permanent remote rejection."]
+    },
+    {
+      "id": "11-filter-reinjection",
+      "files": ["postfix/11-filter-reinjection.log"],
+      "facts": ["The filter reply explicitly says queued as 11F1B2C3D4", "The second queue is observed on the same Postfix instance with matching sender, recipient and Message-ID", "The first queue is accepted by a local filter, the second by local delivery"],
+      "recipients": [
+        {"queue": "11A1B2C3D4", "address": "bob@example.org", "outcome": "sent_remote", "attempts": 1},
+        {"queue": "11F1B2C3D4", "address": "bob@example.org", "outcome": "sent_local", "attempts": 1}
+      ],
+      "forbidden": ["Do not call the first filter acceptance final delivery.", "Do not erase either queue from the journey."]
+    },
+    {
+      "id": "12-unverified-reinjection",
+      "files": ["postfix/12-unverified-reinjection.log"],
+      "facts": ["A local filter says queued as 12F1B2C3D4, but no target queue lines exist"],
+      "recipients": [{"queue": "12A1B2C3D4", "address": "bob@example.org", "outcome": "unknown", "attempts": 1}],
+      "forbidden": ["Do not create a confirmed target QueueInstance from the reply alone.", "Do not claim final recipient delivery."]
+    },
+    {
+      "id": "13-reused-queue-id",
+      "files": ["postfix/13-reused-queue-id.log"],
+      "facts": ["Queue ID 13A1B2C3D4 appears in two separate generations on mx-a", "Each generation has a distinct Message-ID, sender and recipient", "Both generations have an explicit removed event"],
+      "recipients": [
+        {"queue": "13A1B2C3D4#g1", "address": "first@example.org", "outcome": "sent_local", "attempts": 1},
+        {"queue": "13A1B2C3D4#g2", "address": "second@example.com", "outcome": "sent_remote", "attempts": 1}
+      ],
+      "forbidden": ["Do not merge both generations into one message.", "Do not apply the later sender to the first generation."]
+    },
+    {
+      "id": "14-same-id-two-hosts",
+      "inputs": [
+        {"path": "postfix/14-same-id-host-a.log", "source_id": "mx-a-file", "instance": "mx-a"},
+        {"path": "postfix/14-same-id-host-b.log", "source_id": "mx-b-file", "instance": "mx-b"}
+      ],
+      "facts": ["Both independent Postfix instances use Queue ID 14A1B2C3D4 at the same time"],
+      "recipients": [
+        {"queue": "mx-a/14A1B2C3D4", "address": "bob@example.org", "outcome": "sent_local", "attempts": 1},
+        {"queue": "mx-b/14A1B2C3D4", "address": "dave@example.com", "outcome": "sent_remote", "attempts": 1}
+      ],
+      "forbidden": ["Do not fuse the two queues on ID equality.", "Do not invent an interhost transfer."]
+    },
+    {
+      "id": "15-duplicate-message-id",
+      "files": ["postfix/15-duplicate-message-id.log"],
+      "facts": ["Two unrelated queue IDs share the exact Message-ID"],
+      "recipients": [
+        {"queue": "15A1B2C3D4", "address": "bob@example.org", "outcome": "sent_local", "attempts": 1},
+        {"queue": "15F1B2C3D4", "address": "eve@example.com", "outcome": "sent_remote", "attempts": 1}
+      ],
+      "forbidden": ["Do not merge queues solely by Message-ID."]
+    },
+    {
+      "id": "16-out-of-order",
+      "files": ["postfix/16-out-of-order.log"],
+      "facts": ["File order differs from event timestamp order", "A late cleanup line adds the Message-ID"],
+      "recipients": [{"queue": "16A1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 1}],
+      "forbidden": ["Do not drop the late cleanup observation.", "Do not use file order as proof that delivery preceded enqueue."]
+    },
+    {
+      "id": "17-partial-log",
+      "files": ["postfix/17-partial-log.log"],
+      "facts": ["Only a deferred delivery attempt and a removed event are available", "No sender, Message-ID, creation or later success is observed"],
+      "recipients": [{"queue": "17A1B2C3D4", "address": "bob@example.net", "outcome": "unknown", "attempts": 1}],
+      "forbidden": ["Do not invent a sender or Message-ID.", "Do not turn removed into proof of delivery or bounce."]
+    },
+    {
+      "id": "18-lmtp",
+      "files": ["postfix/18-lmtp.log"],
+      "facts": ["The LMTP peer acknowledges recipient bob@example.org"],
+      "recipients": [{"queue": "18A1B2C3D4", "address": "bob@example.org", "outcome": "sent_lmtp", "attempts": 1}],
+      "forbidden": ["Do not invent a Dovecot observation when no Dovecot log is present."]
+    },
+    {
+      "id": "19-virtual",
+      "files": ["postfix/19-virtual.log"],
+      "facts": ["The virtual transport reports maildir delivery"],
+      "recipients": [{"queue": "19A1B2C3D4", "address": "bob@example.org", "outcome": "sent_virtual", "attempts": 1}],
+      "forbidden": ["Do not misclassify virtual as remote SMTP."]
+    },
+    {
+      "id": "20-pipe",
+      "files": ["postfix/20-pipe.log"],
+      "facts": ["The named pipe transport accepted a message"],
+      "recipients": [{"queue": "20A1B2C3D4", "address": "archive@example.org", "outcome": "sent_pipe", "attempts": 1}],
+      "forbidden": ["Do not claim the downstream archive processed or stored it."]
+    },
+    {
+      "id": "21-orig-to-alias",
+      "files": ["postfix/21-orig-to-alias.log"],
+      "facts": ["orig_to=sales@example.org differs from the final recipient", "Local delivery says forwarded as 21F1B2C3D4 and that queue is observed"],
+      "recipients": [
+        {"queue": "21A1B2C3D4", "address": "bob@example.org", "orig_to": "sales@example.org", "outcome": "sent_local", "attempts": 1},
+        {"queue": "21F1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 1}
+      ],
+      "forbidden": ["Do not replace the original recipient with orig_to.", "Do not call remote SMTP acceptance mailbox delivery."]
+    },
+    {
+      "id": "22-hostile-fields",
+      "files": ["postfix/22-hostile-fields.log"],
+      "facts": ["A quoted local part contains SQL metacharacters", "The SMTP reply contains HTML-looking text, commas, equals signs and nested parentheses", "The HELO field contains HTML-looking text"],
+      "recipients": [
+        {"queue": null, "address": "\"x' OR 1=1--\"@example.net", "outcome": "rejected_prequeue", "attempts": 0},
+        {"queue": "22A1B2C3D4", "address": "bob@example.net", "outcome": "bounced", "attempts": 1}
+      ],
+      "forbidden": ["Do not execute or render log fields as HTML, URL or SQL.", "Do not treat this prequeue rejection as a queued recipient."]
+    },
+    {
+      "id": "23-rotation-restart",
+      "inputs": [
+        {"path": "source/23-rotation-before.log.1", "source_id": "mx-a-mail.log-generation-1", "instance": "mx-a"},
+        {"path": "source/23-rotation-after.log", "source_id": "mx-a-mail.log-generation-2", "instance": "mx-a"}
+      ],
+      "facts": ["These two files model a rename/create rotation boundary", "Postfix master restarts and PID changes", "One queue spans both file generations"],
+      "recipients": [{"queue": "23A1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 2}],
+      "forbidden": ["Do not split a QueueInstance solely because the log file or process PID changed.", "Do not count either line twice after restart."]
+    },
+    {
+      "id": "24-import-gzip-overlap",
+      "inputs": [
+        {"path": "source/24-import-overlap.log", "source_id": "mx-a-active-copy", "instance": "mx-a"},
+        {"path": "source/24-import-overlap.log.gz", "source_id": "mx-a-historical-gzip", "instance": "mx-a", "decode": "gzip"}
+      ],
+      "facts": ["The gzip stream decompresses byte-for-byte to the plain log", "The two inputs intentionally overlap"],
+      "recipients": [{"queue": "24A1B2C3D4", "address": "bob@example.org", "outcome": "sent_local", "attempts": 1}],
+      "forbidden": ["Do not double count the same proven event when both inputs are imported.", "Do not assume differently sourced lines are duplicates without matching evidence."]
+    },
+    {
+      "id": "25-optional-rspamd-dovecot",
+      "inputs": [
+        {"path": "postfix/25-rspamd-dovecot-link.log", "source_id": "mx-a-postfix", "instance": "mx-a"},
+        {"path": "optional/25-rspamd.log", "source_id": "mx-a-rspamd", "instance": "mx-a", "optional": true},
+        {"path": "optional/25-dovecot.log", "source_id": "mailstore-dovecot", "instance": "mailstore", "optional": true}
+      ],
+      "facts": ["Rspamd reports qid 25A1B2C3D4, score 1.20, action no action", "Postfix LMTP reports Saved", "Dovecot independently reports saving matching recipient and Message-ID"],
+      "recipients": [{"queue": "25A1B2C3D4", "address": "bob@example.org", "outcome": "sent_lmtp", "attempts": 1}],
+      "forbidden": ["Do not require optional sources for the Postfix result.", "Do not equate Message-ID equality alone with a proven Dovecot link."]
+    },
+    {
+      "id": "26-malformed-and-unknown",
+      "files": ["postfix/26-malformed-and-unknown.log"],
+      "facts": ["The first delivery line has malformed DSN", "The second delivery line is a valid sent event", "The third line has no syslog envelope"],
+      "recipients": [{"queue": "26A1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 1}],
+      "forbidden": ["Do not silently normalize not-a-dsn to a valid DSN.", "Do not crash or discard the raw malformed records."]
+    },
+    {
+      "id": "27-rfc5424",
+      "files": ["postfix/27-rfc5424.log"],
+      "facts": ["RFC5424 envelope has explicit +02:00 offset and process ID", "12:26 local time corresponds to 10:26 UTC"],
+      "recipients": [{"queue": "27A1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 1}],
+      "forbidden": ["Do not treat the explicit offset as UTC.", "Do not mistake structured-data NILVALUE for message text."]
+    },
+    {
+      "id": "28-year-rollover",
+      "files": ["postfix/28-year-rollover.log"],
+      "time_anchor": "2026-12-31T23:59:59+01:00",
+      "facts": ["RFC3164 lines have no year or timezone", "The second line is 2027-01-01, two seconds after the first"],
+      "recipients": [{"queue": "28A1B2C3D4", "address": "bob@example.net", "outcome": "sent_remote", "attempts": 1}],
+      "forbidden": ["Do not assign both lines to 2026.", "Do not claim timestamp certainty beyond the supplied source anchor."]
+    },
+    {
+      "id": "29-very-long-response",
+      "files": ["postfix/29-very-long-response.log"],
+      "facts": ["One complete line exceeds 128 KiB because its untrusted SMTP response contains repeated X characters"],
+      "recipients": [{"queue": "29A1B2C3D4", "address": "bob@example.net", "outcome": "unknown", "attempts": 0}],
+      "forbidden": ["Do not allocate without a configured bound or crash.", "Do not claim a verified bounce if the configured line limit rejects the record."]
+    },
+    {
+      "id": "30-incomplete-line",
+      "files": ["postfix/30-incomplete-line.log"],
+      "facts": ["The file ends without a newline after status= and represents a pending partial record"],
+      "recipients": [{"queue": "30A1B2C3D4", "address": "bob@example.net", "outcome": "unknown", "attempts": 0}],
+      "forbidden": ["Do not commit a partial line as a complete sent or deferred event.", "Do not advance the durable offset beyond an uncommitted partial record."]
+    }
+  ]
+}

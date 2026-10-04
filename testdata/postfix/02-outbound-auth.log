@@ -1,0 +1,5 @@
+Oct  3 12:01:00 mx-a postfix/submission/smtpd[1111]: 02A1B2C3D4: client=client.example.org[198.51.100.11], sasl_method=PLAIN, sasl_username=alice@example.org
+Oct  3 12:01:00 mx-a postfix/cleanup[1112]: 02A1B2C3D4: message-id=<outbound-02@example.org>
+Oct  3 12:01:00 mx-a postfix/qmgr[1113]: 02A1B2C3D4: from=<alice@example.org>, size=1201, nrcpt=1 (queue active)
+Oct  3 12:01:01 mx-a postfix/smtp[1114]: 02A1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.25]:25, delay=1.2, delays=0.1/0.1/0.4/0.6, dsn=2.0.0, status=sent (250 2.0.0 accepted as REMOTE02)
+Oct  3 12:01:01 mx-a postfix/qmgr[1113]: 02A1B2C3D4: removed

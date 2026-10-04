@@ -1,0 +1,8 @@
+Oct  3 12:12:00 mx-a postfix/cleanup[1221]: 13A1B2C3D4: message-id=<first-13@example.org>
+Oct  3 12:12:00 mx-a postfix/qmgr[1222]: 13A1B2C3D4: from=<alice@example.org>, size=600, nrcpt=1 (queue active)
+Oct  3 12:12:01 mx-a postfix/local[1223]: 13A1B2C3D4: to=<first@example.org>, relay=local, delay=1, delays=0.1/0.1/0/0.8, dsn=2.0.0, status=sent (delivered to maildir)
+Oct  3 12:12:01 mx-a postfix/qmgr[1222]: 13A1B2C3D4: removed
+Oct  4 09:00:00 mx-a postfix/cleanup[1224]: 13A1B2C3D4: message-id=<second-13@example.net>
+Oct  4 09:00:00 mx-a postfix/qmgr[1225]: 13A1B2C3D4: from=<carol@example.net>, size=901, nrcpt=1 (queue active)
+Oct  4 09:00:01 mx-a postfix/smtp[1226]: 13A1B2C3D4: to=<second@example.com>, relay=mx.example.com[203.0.113.31]:25, delay=1, delays=0.1/0.1/0.3/0.5, dsn=2.0.0, status=sent (250 2.0.0 accepted)
+Oct  4 09:00:01 mx-a postfix/qmgr[1225]: 13A1B2C3D4: removed

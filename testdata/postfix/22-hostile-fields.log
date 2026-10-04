@@ -1,0 +1,3 @@
+Oct  3 12:21:00 mx-a postfix/smtpd[1311]: NOQUEUE: reject: RCPT from unknown[192.0.2.22]: 550 5.7.1 <"x' OR 1=1--"@example.net>: policy denied; from=<mallory@example.net> to=<"x' OR 1=1--"@example.net> proto=ESMTP helo=<<svg/onload=alert(1)>.example.net>
+Oct  3 12:21:01 mx-a postfix/qmgr[1312]: 22A1B2C3D4: from=<mallory@example.net>, size=1234, nrcpt=1 (queue active)
+Oct  3 12:21:02 mx-a postfix/smtp[1313]: 22A1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.38]:25, delay=1, delays=0.1/0.1/0.3/0.5, dsn=5.7.1, status=bounced (host mx.example.net[203.0.113.38] said: 550 5.7.1 <script>alert(1)</script>, reason=(policy=deny), debug=a=b (in reply to RCPT TO command))

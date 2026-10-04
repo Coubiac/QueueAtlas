@@ -1,0 +1,1 @@
+Oct  3 12:28:00 mx-a postfix/smtp[1391]: 30A1B2C3D4: to=<bob@example.net>, relay=mx.example.net[203.0.113.45]:25, delay=1, status=

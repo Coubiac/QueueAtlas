@@ -1,0 +1,6 @@
+Oct  3 12:00:00 mx-a postfix/smtpd[1101]: connect from sender.example.net[192.0.2.10]
+Oct  3 12:00:01 mx-a postfix/smtpd[1101]: 01A1B2C3D4: client=sender.example.net[192.0.2.10]
+Oct  3 12:00:01 mx-a postfix/cleanup[1102]: 01A1B2C3D4: message-id=<inbound-01@example.net>
+Oct  3 12:00:01 mx-a postfix/qmgr[1103]: 01A1B2C3D4: from=<alice@example.net>, size=842, nrcpt=1 (queue active)
+Oct  3 12:00:02 mx-a postfix/local[1104]: 01A1B2C3D4: to=<bob@example.org>, relay=local, delay=1.1, delays=0.1/0.1/0/0.9, dsn=2.0.0, status=sent (delivered to maildir)
+Oct  3 12:00:02 mx-a postfix/qmgr[1103]: 01A1B2C3D4: removed

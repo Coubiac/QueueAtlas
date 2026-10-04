@@ -1,0 +1,3 @@
+Oct  3 12:23:00 mx-a postfix/cleanup[1331]: 24A1B2C3D4: message-id=<import-24@example.org>
+Oct  3 12:23:00 mx-a postfix/qmgr[1332]: 24A1B2C3D4: from=<alice@example.org>, size=777, nrcpt=1 (queue active)
+Oct  3 12:23:01 mx-a postfix/local[1333]: 24A1B2C3D4: to=<bob@example.org>, relay=local, delay=1, delays=0.1/0.1/0/0.8, dsn=2.0.0, status=sent (delivered to maildir)
