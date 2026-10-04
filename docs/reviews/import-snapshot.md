@@ -18,8 +18,36 @@ dix tests Inspect/Copy initiaux exécutés Windows, puis régression ciblée dou
 sous-cas après correctif : n+readErr et writer error/short/invalid/cancel, plain/gzipCRC,
 EOF exact jamais joint comme échec. Les causes simultanées sont désormais jointes.
 Copie normal/gzip/vide/partial/large, bytes et hash concordants, limites et output
-tentatif corrompu couverts. CI de publication à vérifier. Pas de risque restant identifié.
+tentatif corrompu couverts. Pas de risque restant identifié.
+[CI du lot 72 réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245062246)
+sur `8aa3fc8b57512eedadc66fe4e5f25df208b84da6`, PR #15 : tests Copy Linux exécutés.
 
 Limites : fermeture/cleanup/output partiel restent au caller jusqu'au lot 73,
 IO bloquante non interruptible, pas de snapshot atomic de l'entrée, aucun importeur.
 La copie privée détenue viendra dans un lot distinct. Audit assisté par agents.
+
+## Lot 73 : préparation régulière et copie détenue
+
+5 octobre 2026, base `8aa3fc8b57512eedadc66fe4e5f25df208b84da6`.
+Coordinateur et auditeur indépendant : prepared.go/tests et contrat relus, aucun
+blocage concret ou couverture supplémentaire nécessaire identifié. OpenLog réutilisé,
+copie/hash/CRC/budgets du lot 72 conservés, pas d'ingestion/manifest.
+
+Ownership dès MkdirTemp/CreateTemp/réouverture read-only ; refus ferme/nettoie avant
+close input. Si input.Close ou contexte échoue après keep, propriétaire détruit et
+résultat nil. Writer fermé une fois avant réouverture, taille = Info.Bytes, offset0.
+Disque au plus ContentBytes, dir/fichier Unix0700/0600, parent trusted/protected.
+Close vide les fields puis ferme et Remove fichier/dir vide, sans récursion ni parent ;
+causes jointes/idempotence même sur échec, failed removal signalé sans retry silencieux.
+
+Coordinateur/auditeur : trois tests Test(PrepareRegular|PreparedContent)* -count=1
+Windows réussis ; coordinateur suite/vet/diff réussis. Nominal normal/gzip, vide/partial/
+large, entrée changée après préparation, read-only/ReadAt/Seek/getters/Close/cleanup,
+douze refus options/ctx/input/temp/budgets/CRC/header, close déjà fermé et foreign file
+préservé. Première attente de test header corrigée : six octets donnaient UnexpectedEOF,
+header invalide complet choisi pour ErrHeader ; pas de changement runtime requis.
+Bits privés Unix et suite Linux à vérifier en CI de publication.
+
+Limites : parent temporaire protégé, ACL Windows non vérifiées, propriété exclusive,
+IO bloquante non interruptible, copie éphémère/no snapshot atomique original/manifest.
+Un failed removal peut laisser un résidu signalé ; pas d'import complet implicite.

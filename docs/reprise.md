@@ -13,8 +13,8 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end ainsi que prévalidation normale/gzip sont fusionnés dans main (#9–14).
-Bibliothèque seule, sans CLI/service. Lot 72 : copie pendant hash développée/relue,
-publication/CI à vérifier ; fichier privé détenu au prochain lot.
+Bibliothèque seule, sans CLI/service. Lot 72 : copie pendant hash publiée/CI verte ;
+lot 73 fichier privé détenu développé/relu, publication/CI à vérifier.
 Critère de fin du chantier : copie détenue des octets validés, refus bornés,
 fermeture/cleanup/annulation vérifiés, CI verte et PR cohérente fusionnée.
 Manifest et ingestion dans des lots distincts. M2 inclut les autres décisions encore ouvertes
@@ -22,9 +22,13 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 73 : PrepareRegular/PreparedContent développés/relus sans blocage, trois tests
+  ciblés Windows/suite/vet/diff réussis. Publication/CI à vérifier, bits privés Unix
+  non encore exécutés Linux. Manifest/ingestion non implémentés.
 - Lot 72 : CopyPlain/CopyGzip développés/relus, quatre tests Copy ciblés et suite/vet/diff
   Windows réussis. Correctif des causes lecture+écriture jointes relu, régression
-  douze sous-cas passée par auditeur. Publication/CI à vérifier ; pas de fichier détenu.
+  douze sous-cas passée par auditeur. Publié `8aa3fc8b57512eedadc66fe4e5f25df208b84da6`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245062246), PR #15.
 - Lot 71 terminé : [PR #14](https://github.com/Coubiac/mailtrace/pull/14) fusionnée
   avec tête `e980c0d545329e4b5a3ab013b2b81ef545696399`, CI 37244524828 verte.
   Main `85effe5b62e0786f32d8cd9bcbf8a0fe7c1c26fb` vérifié ;
@@ -2357,13 +2361,28 @@ Quatre tests Copy Windows -count=1, suite/vet/diff réussis ; inspection existan
 incluse dans suite. Revue indépendante sans blocage de sécurité, remarque diagnostics
 corrigée : readErr non-EOF joint aux erreurs/short/invalid Writer/cancel. Régression
 douze sous-cas plain/gzip/EOF exact exécutée/réussie par auditeur après correctif.
-Rapport import-snapshot.md, pas de risque restant identifié. Publication/CI à vérifier.
+Rapport import-snapshot.md, pas de risque restant identifié. Publié `8aa3fc8`,
+PR #15 créée/attachée, CI 37245062246 verte, copie/régression exécutées Linux.
+
+## Lot 73 : fichier privé validé et propriétaire
+
+Résultat attendu : entrée régulière détenue, copie/digest privée bornée, writer fermé
+puis reader read-only à zéro, cleanup final/erreur/cancel avec causes jointes.
+PrepareRegular/PreparedContent implémentés, OpenLog réutilisé, MkdirTemp/CreateTemp
+Unix0700/0600, parent TempDir protégé requis ; pas de manifest/Source.Run/ingestion.
+Metadata/getters, Read/ReadAt/Seek exclusifs, Close libère avant fermeture/removal
+fichier/directory vide seulement, sans RemoveAll/retry ou suppression parent/entrée.
+Trois tests Windows -count=1, suite/vet/diff réussis. Test header corrigé : fixture
+de six octets provoquait UnexpectedEOF, remplacée par header invalide complet pour
+ErrHeader ; pas de correctif runtime. Revue indépendante sans blocage/test supplémentaire
+nécessaire identifié ; trois tests ciblés Windows réussis par auditeur, rapport intégré.
+Publication/CI Linux à vérifier, notamment les bits privés Unix. Copie éphémère,
+ACL Windows non vérifiées, aucune garantie de snapshot atomique de l'entrée.
 
 ## Prochaine action concrète
 
-Publier/ouvrir la PR de copie privée du lot 72 et vérifier CI exacte.
-Lot 73 : fichier privé détenu, ouverture d'entrée régulière, copie validée/reader
-et cleanup sur succès/erreur/cancel, avant stockage du manifest.
+Publier le lot 73 sur #15 et vérifier CI exacte.
+Lot 74 : synthèse/propriété/CI de tête et fusion, avant stockage du manifest en lot distinct.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-snapshot.
 

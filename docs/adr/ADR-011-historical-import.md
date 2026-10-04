@@ -1,7 +1,8 @@
 # ADR-011 — import historique borné et identité de contenu
 
 Statut : prévalidation normale/gzip lots 69–71 fusionnée, copie vers writer lot 72
-développée/relue. Fichier privé détenu, importeur et manifest non implémentés.
+publiée/CI verte ; fichier privé détenu lot 73 développé/relu sans blocage.
+Publication/CI de 73 à vérifier ; importeur et manifest non implémentés.
 
 ## Décision et séparation des étapes
 
@@ -49,8 +50,8 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 
 ## Limites actuelles
 
-Les briques d'inspection/copie normale/gzip existent. Pas encore d'ouverture de fichiers,
-import_run, ingestion, CLI, déduplication ni garantie de snapshot. Les tests
+Les briques d'inspection/copie normale/gzip et préparation de fichier détenu existent.
+Pas encore d'import_run, ingestion, CLI, déduplication ni garantie de snapshot atomique. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
 
@@ -93,5 +94,28 @@ Si lecture et écriture échouent au même appel, leurs causes sont jointes, sau
 exact qui reste un succès de lecture. Contrats io et usage exclusif requis.
 Deadline entre lectures/écritures, sans interruption d'un syscall bloquant.
 
-Ce mécanisme prépare la copie privée détenue du prochain lot ; une simple sortie
+Ce mécanisme prépare la copie privée détenue du lot suivant ; une simple sortie
 io.Writer n'est pas encore un fichier privé, ni un snapshot de l'entrée originale.
+
+## Copie privée détenue du lot 73
+
+PrepareRegular valide options/contexte, résout les chemins puis réutilise OpenLog
+pour une entrée régulière possédée jusqu'à fermeture. Gzip est un choix explicite
+d'appelant, pas inféré par le nom ou l'API Web. Plain utilise ContentBytes seulement,
+gzip exige également CompressedBytes et MaxRatio positifs. Deadline globale au caller.
+
+Une sous-directory MkdirTemp 0700 et un CreateTemp 0600 sont créés sous TempDir
+(défaut os.TempDir), dont le parent doit être protégé/de confiance. Copie/digest au
+même passage, writer fermé puis ouverture read-only à offset zéro, taille contrôlée.
+Le résultat opaque PreparedContent fournit Info, Read, ReadAt, Seek et Close, un seul
+consommateur. Les mutations ultérieures de l'entrée ne changent pas la copie validée.
+Partiel reste metadata, sans déclarer l'import complet. La copie est éphémère, pas
+un manifest durable et pas un snapshot atomique du fichier d'origine en mutation.
+
+Les erreurs, annulations ou fermeture d'entrée en échec refusent le résultat et
+ferment/nettoient la copie. Close libère la propriété avant fermeture/removal,
+joint les causes et reste idempotent même sur échec : les removals échoués sont
+signalés, sans retry silencieux. Remove de son fichier puis de son directory vide
+seulement ; jamais de suppression récursive ou du parent TempDir/entrée d'origine.
+Windows ACL non vérifiées, protections de bits Unix à confirmer en CI Linux. La prochaine
+application devra jeter la copie sur toute erreur et fermer le propriétaire final.
