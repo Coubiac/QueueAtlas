@@ -150,6 +150,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI nouveau courant](https://github.com/Coubiac/mailtrace/actions/runs/37176769622)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+- Lot 34 FileSource : diagnostic `ErrCurrentMissing` au démarrage, recontrôle de
+  la décision sans courant arbitraire et propriété conservée, commit
+  `14204b35911620242e73325b1f602ca3a34c15af`, toujours dans la PR #11.
+  [CI courant absent](https://github.com/Coubiac/mailtrace/actions/runs/37177140539)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1421,9 +1427,9 @@ aucune acquisition/enregistrement répété ni fuite/double fermeture.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
-détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
-Dernier état Linux validé : lot 33, commit
-`c3791358b3c4d6b60c76d894109b1fe9ea9006e7`, CI 37176769622.
+détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI courant absent](https://github.com/Coubiac/mailtrace/actions/runs/37177140539)
+Go 1.26.x/stable sur `14204b35911620242e73325b1f602ca3a34c15af`.
 
 Limites : diagnostic d'une observation non atomique, pas preuve de stabilité ni
 de continuité du contenu ; une nouvelle décision exigera toujours les contrôles
