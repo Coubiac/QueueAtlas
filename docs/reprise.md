@@ -83,7 +83,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `765e0b13e2483631208fc3ff9de613a72e9c2afb`, toujours dans la PR #11.
 - Vingt-et-unième lot FileSource : contrôle au polling de l'ancre du dernier
   checkpoint positif acquitté, diagnostic fixe de non-correspondance et arrêt,
-  dans `internal/source/file/live_anchor.go`, toujours dans la PR #11.
+  dans `internal/source/file/live_anchor.go`, commit
+  `5fee37fd45ab9848d64e5e3f333505ff7f1acc29`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -174,8 +175,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie : tests sur Linux (Go 1.26.x/stable), checkpoints SQLite conservés,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot ancre en suivi : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Exécution Linux,
-  détecteur de courses et builds : CI à vérifier après publication.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI ancre en suivi](https://github.com/Coubiac/mailtrace/actions/runs/37164079280)
+  réussie : tests sur Linux (Go 1.26.x/stable), checkpoints SQLite conservés,
+  détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
