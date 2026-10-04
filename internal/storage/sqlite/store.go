@@ -28,11 +28,21 @@ type Store struct {
 // Open opens a local database. The caller must protect its parent directory;
 // newly created database files get owner-only permissions where supported.
 func Open(ctx context.Context, path string) (*Store, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
 	if strings.TrimSpace(path) == "" {
 		return nil, errors.New("database path is empty")
 	}
 	abs, err := filepath.Abs(path)
 	if err != nil {
+		return nil, err
+	}
+	if info, err := os.Stat(abs); err == nil {
+		if !info.Mode().IsRegular() {
+			return nil, errors.New("database input is not a regular file")
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
 	f, err := os.OpenFile(abs, os.O_CREATE|os.O_RDWR, 0600)
@@ -44,12 +54,33 @@ func Open(ctx context.Context, path string) (*Store, error) {
 		f.Close()
 		return nil, err
 	}
+	if !info.Mode().IsRegular() {
+		return nil, errors.Join(errors.New("database input is not a regular file"), f.Close())
+	}
 	if runtime.GOOS != "windows" && info.Mode().Perm()&0077 != 0 {
 		f.Close()
 		return nil, fmt.Errorf("database file %q is accessible by group or others", abs)
 	}
 	if err := f.Close(); err != nil {
 		return nil, err
+	}
+	// SQLite may reuse existing sidecars without reducing their permissions.
+	// Check them before connecting, since they can contain log data too. The
+	// protected parent remains required; these metadata observations are not locks.
+	for _, suffix := range []string{"-wal", "-shm", "-journal"} {
+		info, err := os.Stat(abs + suffix)
+		if errors.Is(err, os.ErrNotExist) {
+			continue
+		}
+		if err != nil {
+			return nil, err
+		}
+		if !info.Mode().IsRegular() {
+			return nil, errors.New("database sidecar is not a regular file")
+		}
+		if runtime.GOOS != "windows" && info.Mode().Perm()&0077 != 0 {
+			return nil, errors.New("database sidecar is accessible by group or others")
+		}
 	}
 	uriPath := filepath.ToSlash(abs)
 	if filepath.VolumeName(abs) != "" {
@@ -237,7 +268,12 @@ func insertEvent(ctx context.Context, tx *sql.Tx, recordID int64, instance strin
 	}
 	var utcNS any
 	if o.Timestamp.Value != nil {
-		utcNS = o.Timestamp.Value.UTC().UnixNano()
+		ns := o.Timestamp.Value.UTC().UnixNano()
+		// Valid RFC5424 dates can lie outside int64 nanoseconds. Preserve their
+		// raw date/year/zone/quality, but never index a wrapped, invented instant.
+		if time.Unix(0, ns).Equal(*o.Timestamp.Value) {
+			utcNS = ns
+		}
 	}
 	quality := o.Timestamp.Quality
 	if quality == "" {
