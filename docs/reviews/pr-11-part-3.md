@@ -52,7 +52,11 @@ Régression Windows reproduite sur la référence initiale, puis réussie avec l
 correctif. Coordinateur et auditeur : tests ciblés Windows `-count=1` réussis,
 incluant substitution et chemin long. Coordinateur : go test ./..., go vet ./...,
 git diff --check et compilation des tests FileSource Linux amd64 sans CGO réussis.
-La CI Linux et le nouveau job Windows du correctif sont à confirmer avant clôture.
+La [CI du correctif](https://github.com/Coubiac/mailtrace/actions/runs/37202322863)
+réussit sur `cded0a87fd22f96220d3f519cb70b85f55f2cf3b` : nouveau job windows-path
+(substitution et chemin long exécutés), Linux Go 1.26.x/stable, tests/vet,
+race FileSource et builds amd64/arm64 sans CGO. Consulter la PR #11 pour la CI
+de publication du point de reprise final.
 
 ## Limites et suite
 

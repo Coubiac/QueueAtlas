@@ -5,6 +5,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 43 : ouverture/observation relues et substitution Windows corrigée sur
+  `cded0a87fd22f96220d3f519cb70b85f55f2cf3b`, CI Linux et nouveau job Windows verts.
+  Rapport `docs/reviews/pr-11-part-3.md`. Prochaine revue : lecteurs d'état SQLite.
 - Lot 42 : sélection et registration initiale relues, sans blocage identifié,
   sur `c8a5b46a03289819f4b5d53208b94dd8377ee0a5`. Rapport
   `docs/reviews/pr-11-part-2.md`, code inchangé. Tests ciblés Windows réussis et
@@ -1765,7 +1768,7 @@ insuffisante et arrêt, sans génération remplacée implicitement. Registration
 acquisition restent distinctes ; récupération unknown encore à cadrer.
 La PR reste en brouillon pour les parties restantes.
 
-## Lot 43 en cours : revue FileSource — ouverture et observation du chemin
+## Lot 43 terminé : revue FileSource — ouverture et observation du chemin
 
 Revue de 25447608b60b1f0c6abdf96c9a7d3abdd215b3f4, coordinateur et auditeur agent
 indépendant : open*.go, path.go et source_path.go. Défaut Windows reproduit : le
@@ -1777,8 +1780,11 @@ Job CI Windows ciblé ajouté. Rapport docs/reviews/pr-11-part-3.md.
 
 Relecture du patch sans autre blocage concret. Tests ciblés Windows -count=1 pour
 les deux relecteurs, go test ./..., go vet ./..., git diff --check et compilation
-des tests FileSource Linux amd64 sans CGO réussis localement. Publication et CI du
-correctif restent à confirmer ; dernier état publié validé : lot 42, 2544760.
+des tests FileSource Linux amd64 sans CGO réussis localement. Correctif publié sur
+cded0a87fd22f96220d3f519cb70b85f55f2cf3b ; [CI du correctif](https://github.com/Coubiac/mailtrace/actions/runs/37202322863)
+réussie : nouveau job windows-path (substitution et chemin long réellement exécutés),
+Linux Go 1.26.x/stable, tests/vet, race FileSource et builds amd64/arm64 sans CGO.
+Consulter la PR #11 pour la CI de publication du point de reprise final.
 UNC distant/liens Windows non testés localement ; observations non atomiques et
 annulation entre syscalls restent des limites. Rotation/Run/lifecycle hors périmètre.
 
