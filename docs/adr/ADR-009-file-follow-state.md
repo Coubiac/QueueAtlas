@@ -49,12 +49,37 @@ fermeture conserve le retrait durable. Le descripteur est retiré de la collecti
 après l'appel à Close, même en erreur, pour éviter une seconde fermeture.
 Un arrêt, une annulation ou une erreur de suivi hors expiration n'invente aucun
 retrait.
-La reprise devra distinguer les états connus de ceux restés inconnus.
+La préparation de reprise distingue désormais les états connus de ceux restés
+inconnus avec `LoadFollowOrigins`, après parcours complet borné par chemin.
 
 Les lecteurs par identité et chemin exposent l'état dans la même page que le
 checkpoint. Les empreintes et checkpoints restent conservés lors d'un retrait.
 Le contrat, la migration, le Sink, l'acquisition et le retrait par FileSource sont
-implémentés ; l'exploitation des états à la reprise reste à développer.
+implémentés ; préparation des candidats implémentée, localisation/vérification
+et raccordement à la reprise de Run restent à développer.
+
+## Préparation des candidats de reprise
+
+`LoadFollowOrigins` réutilise `LoadPathOrigins` pour une source et un chemin
+enregistré exacts, avec le même budget de 1 à 1000 états. Un parcours inachevé
+renvoie `limit_reached` sans candidats. Après parcours complet, les états retirés
+sont écartés ; toute valeur de suivi invalide ou inconnue interdit un plan
+automatique. Plus de `MaxOpenGenerations` (2) états en suivi donne
+`capacity_exceeded`, sans choisir deux générations par ID, date ou offset.
+
+Priorité des décisions sur un parcours complet : invalide, inconnu, capacité,
+absence, ensemble complet. Aucun candidat sur une décision bloquante ; seules
+les valeurs en suivi sont rendues dans l'ensemble complet, avec copies détenues
+par l'appelant. Un historique uniquement retiré donne absence de candidats en
+suivi ; cela ne prouve pas l'absence de fichiers ou d'écritures futures.
+
+Ce choix porte uniquement sur `FollowState`. Checkpoints nil/zéro/positifs,
+identité et empreintes restent des métadonnées brutes pour vérification ultérieure.
+L'ordre lexical de parcours est conservé sans lui donner de sens temporel. Ce
+composant ne choisit pas le fichier courant, n'ouvre aucun journal, ne recherche
+aucune rotation et n'écrit aucun état. La capacité vérifiée porte sur les candidats
+persistés en suivi ; l'ensemble final des fichiers à ouvrir devra aussi respecter
+la capacité (notamment si le chemin courant est une nouvelle génération).
 
 ## Limites
 

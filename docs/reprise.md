@@ -1022,7 +1022,7 @@ atomique face aux écritures concurrentes. Écritures d'état à sérialiser par
 pas d'époque de propriétaire. À la fin de ce lot, le retrait durable restait à
 développer ; l'exploitation des états à la reprise, gzip/copytruncate/lacunes aussi.
 
-## Dernier lot terminé : retrait acquitté à EOF stable/grâce
+## Retrait acquitté à EOF stable/grâce
 
 `retireExpired` reçoit le Sink et, pour une génération enregistrée admissible,
 acquitte en suivi → retiré après les contrôles de taille/ancre du polling et la
@@ -1062,18 +1062,71 @@ Limites : taille, transaction du Sink et fermeture ne sont pas atomiques avec le
 écritures. Un ajout après le dernier contrôle, y compris pendant l'acquittement,
 peut être manqué ; retiré ne signifie pas absence d'écritures ultérieures. Un seul
 écrivain sérialise les transactions de la source ; pas d'époque de propriétaire.
-La reprise n'exploite pas encore les marqueurs. Gzip/copytruncate/lacunes restent
+À la fin de ce lot, la reprise n'exploitait pas encore les marqueurs. Gzip/copytruncate/lacunes restent
 à développer, ainsi que la revue de sécurité indépendante déjà prévue.
 
-## Prochain petit lot : préparer les états en suivi pour la reprise
+## Dernier lot : candidats en suivi pour la reprise
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. À partir du
-parcours borné `LoadPathOrigins`, préparer les candidats durables en suivi du
-chemin configuré, distinguer les états inconnus et écarter les états retirés.
-Définir les résultats absence/état invalide/inconnu/capacité dépassée sans déduire
-de chronologie des IDs/dates et sans résultat partiel exploitable. Tests et
-documentation de ce choix seulement ; aucune ouverture/recherche de rotation ni
-raccordement au démarrage dans ce prochain lot. Ces raccordements seront séparés.
+`LoadFollowOrigins(ctx, sourceID, path, reader, limit)` réutilise le parcours
+complet et borné de `LoadPathOrigins` (budget de 1 à 1000 états). Après épuisement
+du parcours, les états retirés sont écartés ; l'ensemble en suivi n'est exposé
+que s'il ne reste aucun état inconnu/invalide et au plus `MaxOpenGenerations` (2)
+candidats. Aucun choix selon ID, date ou offset. Les résultats fixes sont :
+
+| Statut | Résultat |
+| --- | --- |
+| `complete` | 1 ou 2 candidats en suivi, copies détenues par l'appelant |
+| `absent` | Parcours vide ou historique entièrement retiré, aucun candidat |
+| `limit_reached` | Parcours inachevé, aucun résultat partiel |
+| `invalid_state` | Valeur de FollowState hors contrat, aucun candidat |
+| `unknown_state` | Au moins un état inconnu, aucun candidat automatique |
+| `capacity_exceeded` | Plus de deux générations en suivi, aucun sous-ensemble choisi |
+
+Après parcours complet, priorité : invalide → inconnu → capacité → absence →
+complet. La limite du parcours précède la classification. `Examined` compte tous
+les états parcourus, y compris retirés/inconnus/invalides. Erreur du lecteur, page
+incohérente ou annulation : résultat entièrement vide avec cause conservée.
+Copies des checkpoints héritées du parcours ; nil et zéro restent distincts.
+
+Tests : vide/retrait seul, 1/2/3 générations en suivi, inconnus hérités/mélangés,
+valeurs négative/future et priorités quand plusieurs causes coexistent ; dates et
+offsets opposés à l'ordre ID sans sélection chronologique. Nil/zéro, métadonnées
+non vérifiées conservées et mutations sans alias dans les deux sens. Inconnu en
+dernière page après 100 états : limite ou inconnu sans candidats ; erreur/page
+invalide/annulation après première page et annulation/argument invalide avant
+lecture. Intégration SQLite : 101 origines, 99 retirées et deux en suivi en dernière
+page, budget réduit refusé, isolation de source, checkpoint absent/zéro et lectures
+répétées sans changement d'état. Chemin de journal inexistant, aucune ouverture
+ni écriture de suivi pendant la préparation. Données synthétiques, aucune dépendance
+ou migration ajoutée.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
+des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
+et builds : CI à confirmer après publication du commit de code.
+
+Limites : seuls les états de suivi sont classés. Un ensemble complet ne prouve
+ni présence sur disque, ni identité/empreinte/ancre/frontière LF, ni possibilité
+de reprise ; les checkpoints nil/zéro et empreintes restent bruts. Historique
+inconnu exige une décision explicite, sans inférence depuis les autres champs.
+Les états retirés ne garantissent pas absence d'écritures futures. Filtrage source
+garanti par le lecteur, pas de snapshot global ; sérialiser les écritures jusqu'à
+application. Le budget compte l'historique entier, pas seulement les candidats.
+La capacité finale devra aussi tenir compte d'un éventuel nouveau fichier courant.
+Ce composant ne choisit pas le courant, n'ouvre aucun journal et n'écrit aucun état.
+Localisation/revérification et raccordement à Run restent à développer, ainsi que
+gzip/copytruncate/lacunes et la revue de sécurité indépendante prévue.
+
+## Prochain petit lot : localiser les candidats en suivi sur disque
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Définir la
+résolution des candidats d'un ensemble `complete` avec la recherche bornée
+`SelectRotation` dans le répertoire du chemin configuré, incluant le fichier
+courant. Exiger un chemin unique par candidat, conserver les décisions
+absence/différence/preuves insuffisantes/ambiguïté/limite et interdire un résultat
+partiel utilisable. Budget explicite et gestion de capacité à préciser avant
+modification ; traiter seulement localisation et tests, sans descripteurs durables,
+ingestion, transition ni raccordement à Run. Ouverture/revérification puis démarrage
+seront des lots distincts.
 
 ## Suite à découper au fil des reprises
 
