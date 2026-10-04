@@ -3,8 +3,23 @@
 Mis à jour le 4 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
+## Avancement du jalon M2
+
+M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
+PR #11 développée et en revue ; lot 53 termine la revue de réouverture.
+Restent observation du courant, transfert, préparation/reprise orchestrée et Run,
+puis validation finale et fusion. Ces domaines seront traités en petits lots avec
+un résultat précis ; le numéro de lot compte aussi les revues et corrections.
+Critère de fin du chantier : chemins restants revus, défauts corrigés, CI verte et
+PR #11 fusionnée. M2 inclut ensuite les décisions de récupération encore ouvertes
+et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
+
 ## État validé
 
+- Lot 53 : réouverture/propriété de l'ensemble localisé relues sur
+  `a04afbb42fa93a678a4316017ba8b019f0a70894`, sans blocage concret identifié.
+  Rapport `docs/reviews/pr-11-part-13.md`, code inchangé et tests portables Windows
+  réussis. Prochaine revue : observation du courant parmi les descripteurs.
 - Lot 52 : localisation de l'ensemble en suivi relue sur
   `e95f84ecc53096bd8af11d67356bf78075f9a103`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-12.md`, code inchangé et tests ciblés Windows
@@ -2027,16 +2042,35 @@ Limites : namespace fourni par l'appelant, écritures sérialisées, recherches 
 atomiques et preuves bornées, chemins à rouvrir/revérifier. Budget d'entrées examinées,
 pas de temps réel. Reprise persistante Linux seulement. PR reste en brouillon.
 
-## Prochain petit lot : revue FileSource — réouverture de l'ensemble localisé
+## Lot 53 terminé : réouverture de l'ensemble localisé
 
-Reprendre sur #11 basée sur main. Treizième partie : OpenFollowLocations et
-OpenedFollowSet, validation/copies avant disque, ouverture de 1–2 fichiers puis
-vérification stricte sans consommation, collision physique et propriété/Close
-idempotent. Refus/erreur/annulation doivent fermer toutes les ouvertures sans
-ensemble partiel, avec causes et erreurs de nettoyage conservées. Auditeur indépendant
-en lecture seule ; régressions des défauts concrets. Observation/transfert et
-préparation orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11
-validée après cette treizième partie.
+Référence a04afbb42fa93a678a4316017ba8b019f0a70894, coordinateur et auditeur agent
+indépendant : OpenFollowLocations/OpenedFollowSet. Aucun blocage concret identifié.
+Validation/copie entière avant disque, propriété immédiatement après open, collision
+physique, preuves strictes/Seek sans consommation, erreurs/annulation sans ensemble
+partiel, causes de nettoyage et Close idempotent relus. Rapport
+docs/reviews/pr-11-part-13.md, code inchangé et aucun nouveau test.
+
+Coordinateur et auditeur : deux tests portables ciblés -count=1 réussis sous Windows.
+git diff --check réussi, checkout isolé propre. Intégrations Linux réouverture réelle,
+copies, collisions/échec du second fichier et fermeture relues et exécutées par la
+[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37220607670),
+pas localement sous Windows. CI verte : tests/vet Linux Go 1.26.x/stable, race FileSource,
+builds amd64/arm64 sans CGO et Windows chemins. Consulter la PR #11 pour la CI du rapport.
+
+Limites : namespace garanti par l'appelant, écritures sérialisées, snapshots non
+atomiques ; propriétaire à ne pas copier/utiliser concurremment. Reprise persistante
+Linux seulement. PR reste en brouillon ; critère de fin et reste M2 indiqués en tête.
+
+## Prochain petit lot : revue FileSource — observation du courant
+
+Reprendre sur #11 basée sur main. Quatorzième partie : OpenedFollowSet.ObserveCurrent,
+inspection de tout l'ensemble avant comparaison au chemin absolu, origine/identité
+distinctes, décisions known/missing/new/capacity. Vérifier absence d'ouverture de
+troisième fichier, de consommation/écriture/transfert et conservation du propriétaire
+sur erreur/annulation. Auditeur indépendant en lecture seule ; régressions des défauts
+concrets. Transfert et préparation orchestrée/Run restent des lots suivants ; ne pas
+déclarer toute #11 validée après cette quatorzième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
