@@ -15,16 +15,21 @@ M1 (parseurs), socle SQLite M2 et FileSource sont fusionnés dans main. PR #11 c
 au lot 60, synthèse de 19 parties et CI de tête verte. Chantier suivant : récupération
 explicite d'un unknown courant unique, cadrage lot 61 et classification lot 62 dans
 ADR-009, preuves/ouverture lot 63 et application lot 64 avec revue intégrée. Opération
-de bibliothèque développée ; CI de tête et clôture/fusion de #12 restent à faire.
+de bibliothèque développée, CI du lot 64 verte et synthèse finale lot 65 sans blocage.
+Publication/CI de clôture puis fusion de #12 restent à vérifier.
 Critère de fin : refus sûrs, preuves, transition seule et réessai/ACK vérifiés,
 CI verte et PR du chantier fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 65 : synthèse indépendante sur `31520075b7fc9ad18a30c23ace1a7c3dd356d96b`,
+  aucun blocage identifié ; anciens composants/dépendances/CI inchangés, diff propre.
+  CI 37242113816 verte, Linux réellement exécuté ; clôture documentaire prête,
+  publication/CI finale et fusion attendues, pas encore constatées dans ce commit.
 - Lot 64 : RecoverUnknownCurrent développé/relu, test portable onze cas, suite/vet/diff
   et compilation Linux réussis. Application seule sans ingestion, ACK/réessai couvert
-  par tests Linux à exécuter en CI de publication. Prochaine : validation/fusion #12.
+  par tests Linux exécutés en CI 37242113816 verte. Prochaine : validation/fusion #12.
 - Lot 63 : préparation privée du courant/propriétaire/preuves implémentée et relue,
   deux tests ciblés Windows, suite/vet/diff/compilation Linux réussis ; CI à vérifier.
   Aucune application ou opération publique. Prochaine : RecoverUnknownCurrent.
@@ -2220,21 +2225,33 @@ sans blocage. Garde jusqu'après cleanup, scan/preuves puis unique unknown→fol
 retry following sans Commit, retired refusé ; statut/CP/provenance conservés et aucune
 ingestion. Sink errors/EOF/ACK perdu sans retry/compensation ; annulation avant/aprèsACK.
 Rapport PR #12. Test portable onze cas, suite Windows/vet/diff/compilation Linux réussis.
-Linux relu (SQLite, ACK/cancel/Close/retry/zero strict), exécution par CI de publication
-à vérifier avant lot65. Reader/Sink même stockage, écritures sérialisées, preuves non
+Linux relu (SQLite, ACK/cancel/Close/retry/zero strict), exécution par
+CI 37242113816 verte sur `31520075b7fc9ad18a30c23ace1a7c3dd356d96b`.
+Reader/Sink même stockage, écritures sérialisées, preuves non
 atomiques. Opération bibliothèque, pas de CLI/service/récupération multiple/archives.
+
+## Lot 65 : synthèse et clôture de récupération explicite
+
+Revue indépendante du checkout publié `31520075` : les huit fichiers recovery*.go
+correspondent aux lots relus 62–64, anciens composants/dépendances/workflow inchangés.
+Aucun blocage identifié ; classifications/preuves/transition seule, réessai following,
+refus retired et séparation lifecycle/replay zéro cohérents avec ADR-009.
+CI 37242113816 terminée avec succès : tests Linux, vet, race, builds sans CGO et
+Windows chemins. Diff propre ; pas de test relancé sans modification d'exécution.
+Rapport intégré complété et récupération unique retirée des travaux futurs.
+Ce commit prépare la clôture ; vérifier sa publication/CI avant ready et fusion.
 
 ## Prochaine action concrète
 
-Lot 65 : confirmer CI verte de tête (tests Linux réellement exécutés), synthèse
-des trois comportements et diff depuis revue, passer #12 ready/fusion sur tête
-exacte puis vérifier main. Revoir avancement et prochain périmètre M2 (#4/#5) après fusion.
+Publier le lot 65, confirmer CI verte de tête, passer #12 ready/fusion sur tête
+exacte puis vérifier main. Lot suivant : cadrer le démarrage explicite start_at:end
+du suivi #4, avant l'import #5 ; revoir l'avancement après fusion.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-unknown-recovery.
 
 ## Suite à découper au fil des reprises
 
-1. Récupération explicite du courant unique : classification, preuves et application.
+1. Démarrage explicite start_at:end et compléments du suivi #4.
 2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
    ensembles multiples ; diagnostics/compléments du suivi #4.
 3. Import historique normal, puis gzip dans un lot distinct.
