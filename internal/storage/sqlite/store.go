@@ -25,6 +25,10 @@ type Store struct {
 	db *sql.DB
 }
 
+// ErrFollowStateConflict covers missing/foreign origins and stale expected state.
+// It contains no stored identity or log content.
+var ErrFollowStateConflict = errors.New("file generation follow state conflict")
+
 // Open opens a local database. The caller must protect its parent directory;
 // newly created database files get owner-only permissions where supported.
 func Open(ctx context.Context, path string) (*Store, error) {
@@ -152,6 +156,21 @@ func (s *Store) Commit(ctx context.Context, batch source.Batch) error {
 			return fmt.Errorf("origin %q changed immutable identity", origin.ID)
 		}
 	}
+	for _, transition := range batch.FollowTransitions {
+		result, err := tx.ExecContext(ctx, `UPDATE file_generations SET follow_state = ?
+			WHERE source_id = ? AND id = ? AND follow_state IN (?, ?)`,
+			transition.To, batch.Source.ID, transition.OriginID, transition.From, transition.To)
+		if err != nil {
+			return err
+		}
+		n, err := result.RowsAffected()
+		if err != nil {
+			return err
+		}
+		if n != 1 {
+			return ErrFollowStateConflict
+		}
+	}
 	for _, record := range batch.Records {
 		result, err := tx.ExecContext(ctx, `INSERT INTO raw_records(source_id, generation_id, start_offset, end_offset, raw, read_error, observed_at_ns)
 			VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT(source_id, generation_id, start_offset) DO NOTHING`,
@@ -210,6 +229,19 @@ func validate(batch source.Batch) error {
 		if origin.ID == "" || origin.Path == "" || origin.Fingerprint == "" {
 			return errors.New("origin ID, path and fingerprint are required")
 		}
+	}
+	if len(batch.FollowTransitions) > 0 && batch.Source.Kind != "file" {
+		return errors.New("follow transitions require a file source")
+	}
+	seen := make(map[string]bool, len(batch.FollowTransitions))
+	for _, transition := range batch.FollowTransitions {
+		valid := transition.From == source.FollowUnknown && transition.To == source.FollowFollowing ||
+			transition.From == source.FollowFollowing && transition.To == source.FollowRetired ||
+			transition.From == source.FollowRetired && transition.To == source.FollowFollowing
+		if transition.OriginID == "" || !valid || seen[transition.OriginID] {
+			return errors.New("invalid or duplicate follow transition")
+		}
+		seen[transition.OriginID] = true
 	}
 	for _, record := range batch.Records {
 		if record.OriginID == "" || record.Start < 0 || record.End <= record.Start || len(record.Raw) == 0 || len(record.Raw) > model.MaxLineBytes || int64(len(record.Raw)) > record.End-record.Start {

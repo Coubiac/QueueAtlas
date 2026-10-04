@@ -96,6 +96,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   validation des pages et copies de checkpoints dans
   `internal/source/file/path_origins.go`, commit
   `7b8f9d12d583228c7595674897a81572f364c046`, toujours dans la PR #11.
+- Vingt-cinquième lot FileSource (stockage) : ADR-009, état durable inconnu/en
+  suivi/retiré, migration SQLite v2 et transitions attendues/idempotentes dans
+  `Sink.Commit`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -205,6 +208,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI parcours des états](https://github.com/Coubiac/mailtrace/actions/runs/37171671535)
   réussie : tests Linux (Go 1.26.x/stable), pagination/budget/alias et intégration
   SQLite sur 101 états, détecteur de courses et builds Linux amd64/arm64 sans CGO.
+- Validation locale du lot état de suivi : `go test ./...`, `go vet ./...` et
+  compilation des tests SQLite Linux amd64 sans CGO réussis. Exécution Linux,
+  détecteur de courses FileSource et builds : CI à vérifier après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -878,7 +884,7 @@ métadonnée enregistrée, pas une preuve d'emplacement actuel sur disque. Les r
 ne valident pas identité/préfixe/ancre et ne déclenchent aucune recherche de rotation.
 La reprise automatique, gzip et la récupération copytruncate restent à développer.
 
-## Dernier lot terminé : parcours borné et validé des états par chemin
+## Parcours borné et validé des états par chemin
 
 `LoadPathOrigins(ctx, sourceID, path, reader, limit)` utilise `PathStateReader` avec
 budget explicite de 1 à `MaxPathOrigins` (1000) états. Chaque demande est bornée à
@@ -911,18 +917,59 @@ active. ID/date ne servent pas à déduire une chronologie. Ce composant n'ouvre
 journal et n'écrit aucun état. Pas de migration ou dépendance ajoutée. Le
 raccordement à la recherche/reprise, gzip et copytruncate restent à développer.
 
-## Prochain petit lot : marquer durablement le suivi des générations (stockage)
+## Dernier lot terminé : état durable du suivi des générations (stockage)
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11. La reprise ne peut pas
-traiter chaque origine historique comme un fichier encore suivi, ni le déduire
-d'un ID aléatoire, de FirstSeen ou du seul checkpoint. Consigner une ADR courte
-puis ajouter au stockage un état explicite inconnu/en suivi/retiré, avec transitions
-acquittées dans le contrat de transaction du Sink. Les données existantes doivent
-rester inconnues après migration, sans inventer un retrait ou un suivi actif.
-Tester migration/réouverture, isolation source/origine, transitions valides et
-rollback des transitions avec les checkpoints en cas d'échec. Ce lot concerne le
-contrat et SQLite ; le scheduler publiera acquisition/retrait dans un lot séparé,
-puis la reprise exploitera ces états dans un autre lot.
+ADR-009 consigne la distinction durable entre inconnu (0), en suivi (1) et retiré
+(2), exposée par `OriginState.FollowState`. La migration v2 ajoute une colonne
+SQLite contrainte à ces trois valeurs, avec 0 par défaut. Schéma v1 conservé ;
+ses générations, observations et checkpoints restent inchangés, sans suivi/retrait
+inventé. Une nouvelle origine sans déclaration reste également inconnue. Les deux
+lecteurs d'origines exposent cet état dans la même page que le checkpoint.
+
+`Batch.FollowTransitions` déclare une origine, l'état attendu et la cible. Paires
+autorisées : inconnu → en suivi, en suivi → retiré, retiré → en suivi pour une
+réacquisition explicite. Un retour à inconnu, un retrait direct d'inconnu, une
+transition sans changement ou deux transitions pour la même origine sont refusés.
+La source doit être de type file. SQLite exige la source/origine exacte et un état
+stocké égal à l'état attendu ou déjà à la cible (réessai idempotent). Origine absente,
+étrangère ou état incompatible : `ErrFollowStateConflict`, texte fixe.
+
+Transitions, origines, observations et checkpoints sont acquittés par une seule
+transaction. Échec/annulation : rollback complet. Un upsert d'origine ou un batch
+sans transition conserve l'état. Retrait/réacquisition ne suppriment ni provenance
+ni checkpoint. La migration v2, son historique et user_version sont atomiques ;
+l'ouverture vérifie l'historique de chaque version présente. Version future (>2),
+version négative et base étrangère non versionnée restent refusées avant changement
+du journal. Aucune dépendance ajoutée.
+
+Tests locaux : acquisition avec origine/observation/checkpoint, réessais sans
+doublon, upsert conservant l'état, retrait, acquisition obsolète refusée et
+réacquisition explicite persistée après réouverture ; lectures par identité et
+chemin ; isolation source/origine, conflit annulant une première transition,
+échec du second checkpoint annulant état/observation/premier checkpoint puis batch
+corrigé acquitté ; transitions invalides/dupliquées/non file, contrainte SQL et
+annulation. Migration depuis v1 avec données réelles synthétiques conservées comme
+inconnues ; échec injecté après ALTER annulant colonne/historique/version ; histoire
+v2 manquante refusée. Les tests des anciennes migrations ont adapté version/historique
+attendus et le cas version future, avec un cas négatif supplémentaire.
+
+Limites : le Sink ne vérifie ni fichier, empreinte, EOF ni grâce. La source doit
+justifier acquisition/retrait et sérialiser les transactions/réessais ; l'état
+attendu n'est pas une époque de propriétaire et n'empêche pas un ancien réessai
+après un cycle complet de réacquisition. Retiré n'est pas une promesse d'absence
+d'écritures futures. Le scheduler ne publie encore aucune transition : ses origines
+restent inconnues et la reprise automatique n'exploite pas encore ce champ. Gzip,
+copytruncate et diagnostic de lacunes restent à développer.
+
+## Prochain petit lot : acquitter l'acquisition d'une génération par FileSource
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Après décision
+de génération et vérification de l'ingesteur, publier une transition explicite
+vers en suivi et attendre le Sink avant de consommer la première ligne. Couvrir
+origine neuve, reprise positive, acquisition déjà acquittée, réacquisition retirée,
+fichier vide encore non enregistré, erreur/conflit/annulation du Sink et fermeture
+sans lecture supplémentaire. Conserver checkpoints et identité. Le retrait à EOF
+stable/grâce sera un lot séparé, puis la reprise exploitera ces marqueurs.
 
 ## Suite à découper au fil des reprises
 

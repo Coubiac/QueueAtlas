@@ -59,8 +59,31 @@ type OriginPathQuery struct {
 }
 
 type OriginState struct {
-	Origin     Origin
-	Checkpoint *Position // nil means no committed position; offset zero is valid
+	Origin      Origin
+	Checkpoint  *Position // nil means no committed position; offset zero is valid
+	FollowState FollowState
+}
+
+// FollowState values are persisted. Zero means unknown, including legacy state;
+// chronology and checkpoint offsets must never be used to infer this state.
+type FollowState int
+
+const (
+	FollowUnknown FollowState = iota
+	FollowFollowing
+	FollowRetired
+)
+
+// FollowTransition is an explicit, source-scoped expected-state change. A Sink
+// accepts the expected state or an already applied target for idempotent retry.
+// A source must serialize changes and retries and justify acquisition/retirement
+// using its file lifecycle; persistence alone does not verify the file.
+// Allowed pairs are unknown->following, following->retired and retired->following,
+// with at most one transition per origin in a batch.
+type FollowTransition struct {
+	OriginID string
+	From     FollowState
+	To       FollowState
 }
 
 // OriginPage is bounded. Pass NextID as AfterID for the next page; an empty
@@ -107,8 +130,9 @@ type Position struct {
 }
 
 type Batch struct {
-	Source      Identity
-	Origins     []Origin
-	Records     []Record
-	Checkpoints []Position
+	Source            Identity
+	Origins           []Origin
+	Records           []Record
+	Checkpoints       []Position
+	FollowTransitions []FollowTransition // acknowledged in the same transaction
 }

@@ -24,7 +24,7 @@ func (s *Store) FileOrigins(ctx context.Context, q source.OriginQuery) (source.O
 		return source.OriginPage{}, fmt.Errorf("origin page limit must be between 1 and %d", source.MaxOriginPageSize)
 	}
 	rows, err := s.db.QueryContext(ctx, `SELECT g.id, g.path, g.device, g.inode, g.fingerprint,
-		g.first_seen_ns, c.offset, c.anchor_hash
+		g.first_seen_ns, g.follow_state, c.offset, c.anchor_hash
 		FROM file_generations AS g LEFT JOIN checkpoints AS c
 		ON c.source_id = g.source_id AND c.generation_id = g.id
 		WHERE g.source_id = ? AND g.device = ? AND g.inode = ? AND g.id > ?
@@ -46,7 +46,7 @@ func (s *Store) FileOriginsByPath(ctx context.Context, q source.OriginPathQuery)
 		return source.OriginPage{}, fmt.Errorf("origin page limit must be between 1 and %d", source.MaxOriginPageSize)
 	}
 	rows, err := s.db.QueryContext(ctx, `SELECT g.id, g.path, g.device, g.inode, g.fingerprint,
-		g.first_seen_ns, c.offset, c.anchor_hash
+		g.first_seen_ns, g.follow_state, c.offset, c.anchor_hash
 		FROM file_generations AS g LEFT JOIN checkpoints AS c
 		ON c.source_id = g.source_id AND c.generation_id = g.id
 		WHERE g.source_id = ? AND g.path = ? AND g.id > ?
@@ -66,7 +66,7 @@ func readOriginPage(rows *sql.Rows, limit int) (source.OriginPage, error) {
 		var offset sql.NullInt64
 		var anchor sql.NullString
 		o := &state.Origin
-		if err := rows.Scan(&o.ID, &o.Path, &o.Device, &o.Inode, &o.Fingerprint, &firstSeen, &offset, &anchor); err != nil {
+		if err := rows.Scan(&o.ID, &o.Path, &o.Device, &o.Inode, &o.Fingerprint, &firstSeen, &state.FollowState, &offset, &anchor); err != nil {
 			return source.OriginPage{}, err
 		}
 		if len(page.States) == limit {
