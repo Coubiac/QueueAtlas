@@ -968,11 +968,11 @@ Limites : le Sink ne vérifie ni fichier, empreinte, EOF ni grâce. La source do
 justifier acquisition/retrait et sérialiser les transactions/réessais ; l'état
 attendu n'est pas une époque de propriétaire et n'empêche pas un ancien réessai
 après un cycle complet de réacquisition. Retiré n'est pas une promesse d'absence
-d'écritures futures. Le scheduler ne publie encore aucune transition : ses origines
-restent inconnues et la reprise automatique n'exploite pas encore ce champ. Gzip,
+d'écritures futures. À la fin de ce lot de stockage, le scheduler ne publiait
+aucune transition. La reprise automatique n'exploite pas encore ce champ. Gzip,
 copytruncate et diagnostic de lacunes restent à développer.
 
-## Dernier lot terminé : acquisition acquittée par FileSource
+## Acquisition acquittée par FileSource
 
 `prepareGeneration` attend désormais le Sink après décision et vérification par
 `NewIngestor`, avant toute consommation de ligne. Origines inconnues/neuves et
@@ -1013,17 +1013,59 @@ après enregistrement ou un arrêt avant le premier record conserve le checkpoin
 zéro ; sa reprise reste soumise à la politique explicite `AllowZeroCheckpoint`.
 Vérification bornée avec lectures de métadonnées avant acquisition, sans preuve
 atomique face aux écritures concurrentes. Écritures d'état à sérialiser par source ;
-pas d'époque de propriétaire. Le retrait durable à EOF/grâce et l'exploitation
-de ces états à la reprise restent à développer ; gzip/copytruncate/lacunes aussi.
+pas d'époque de propriétaire. À la fin de ce lot, le retrait durable restait à
+développer ; l'exploitation des états à la reprise, gzip/copytruncate/lacunes aussi.
 
-## Prochain petit lot : acquitter le retrait à EOF stable/grâce
+## Dernier lot : retrait acquitté à EOF stable/grâce
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Pour une
-génération ancienne admissible à expiration, publier en suivi → retiré après les
-contrôles d'EOF/grâce et attendre le Sink avant fermeture/libération de capacité.
-Couvrir conservation du checkpoint, partiel/pending/ajout tardif, erreur/conflit
-et annulation sans faux retrait ; traiter la fermeture après acquittement. La
-reprise exploitant ces marqueurs reste un lot ultérieur.
+`retireExpired` reçoit le Sink et, pour une génération enregistrée admissible,
+acquitte en suivi → retiré après les contrôles de taille/ancre du polling et la
+revérification finale de taille, avant fermeture/libération de capacité. Batch de
+transition seul, avec source et origine de l'ingesteur ; aucune modification de
+provenance/checkpoint. Un ancien fichier vide encore non enregistré est fermé
+sans transition. Génération courante (même chemin absent), partiels ordinaires ou
+surdimensionnés et batch pending restent protégés ; ajout observé renouvelle la
+grâce. Le suivi continu réutilise la même expiration.
+
+Erreur du Sink, dont EOF/conflit, ou annulation avant acquittement : arrêt sans
+réessai, lecture ou ouverture supplémentaire ; état en suivi conservé et fermeture
+des descripteurs restants par le nettoyage du scheduler. Annulation après commit :
+retrait durable conservé, sortie et fermeture par nettoyage. Échec de fermeture
+après commit : retrait conservé, descripteur retiré de la collection avant retour
+d'erreur, donc pas de seconde fermeture. Aucun retrait inventé sur arrêt hors
+expiration.
+
+Tests : retraite durable avant réutilisation de capacité pour une troisième
+génération, descripteur encore ouvert au Sink et checkpoint conservé ; seules
+les générations expirées sont retirées, les autres restent en suivi après
+annulation. Ajout tardif/grâce renouvelée, partiels et courant disparu conservent
+leur état attendu. Erreur, EOF, conflit injecté, annulation avant/après commit et
+fermeture en erreur : un seul essai, deux records/générations, pas d'enregistrement
+ou descripteur de troisième génération, provenance/checkpoint identiques et aucun
+retrait du successeur. Tests portables : pending/annulation préalable sans transition,
+acquittement avant Close, fichier vide sans transition, échec de Close retirant
+le descripteur de la collection. Données synthétiques, aucune migration/dépendance.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation des
+tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses et
+builds : CI à confirmer après publication du commit de code.
+
+Limites : taille, transaction du Sink et fermeture ne sont pas atomiques avec les
+écritures. Un ajout après le dernier contrôle, y compris pendant l'acquittement,
+peut être manqué ; retiré ne signifie pas absence d'écritures ultérieures. Un seul
+écrivain sérialise les transactions de la source ; pas d'époque de propriétaire.
+La reprise n'exploite pas encore les marqueurs. Gzip/copytruncate/lacunes restent
+à développer, ainsi que la revue de sécurité indépendante déjà prévue.
+
+## Prochain petit lot : préparer les états en suivi pour la reprise
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. À partir du
+parcours borné `LoadPathOrigins`, préparer les candidats durables en suivi du
+chemin configuré, distinguer les états inconnus et écarter les états retirés.
+Définir les résultats absence/état invalide/inconnu/capacité dépassée sans déduire
+de chronologie des IDs/dates et sans résultat partiel exploitable. Tests et
+documentation de ce choix seulement ; aucune ouverture/recherche de rotation ni
+raccordement au démarrage dans ce prochain lot. Ces raccordements seront séparés.
 
 ## Suite à découper au fil des reprises
 

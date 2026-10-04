@@ -28,7 +28,15 @@ func TestGraceDeadlineClosesOldFileAndReusesCapacityForThirdGeneration(t *testin
 	stamp := time.Date(2026, 10, 4, 0, 0, 0, 0, time.UTC)
 	waits := 0
 	var records []source.Record
+	retirements := 0
 	err = s.followPathWithClock(ctx, f, r, sinkFunc(func(ctx context.Context, b source.Batch) error {
+		if len(b.FollowTransitions) > 0 && b.FollowTransitions[0].To == source.FollowRetired {
+			retirements++
+			before := retirementState(t, s, store, r.Position().OriginID)
+			if _, err := f.Stat(); err != nil || before.FollowState != source.FollowFollowing || *before.Checkpoint != r.Position() || len(b.Origins)+len(b.Records)+len(b.Checkpoints) != 0 {
+				t.Fatal("retirement preceded EOF/ack or changed checkpoint", err, before, b)
+			}
+		}
 		if err := store.Commit(ctx, b); err != nil {
 			return err
 		}
@@ -58,7 +66,7 @@ func TestGraceDeadlineClosesOldFileAndReusesCapacityForThirdGeneration(t *testin
 		}
 		return nil
 	}, func() time.Time { return stamp })
-	if !errors.Is(err, context.Canceled) || errors.Is(err, fs.ErrClosed) || waits != 3 || len(records) != 3 {
+	if !errors.Is(err, context.Canceled) || errors.Is(err, fs.ErrClosed) || waits != 3 || len(records) != 3 || retirements != 1 {
 		t.Fatalf("grace capacity reuse: %v, waits %d, records %+v", err, waits, records)
 	}
 	seen := make(map[string]bool)
@@ -68,6 +76,13 @@ func TestGraceDeadlineClosesOldFileAndReusesCapacityForThirdGeneration(t *testin
 			t.Fatalf("generation %d: %+v", i, record)
 		}
 		seen[record.OriginID] = true
+		wantState := source.FollowFollowing
+		if i == 0 {
+			wantState = source.FollowRetired
+		}
+		if retirementState(t, s, store, record.OriginID).FollowState != wantState {
+			t.Fatal("durable retirement/cancellation state incorrect")
+		}
 		position, found, err := store.Checkpoint(context.Background(), s.ID(), record.OriginID)
 		if err != nil || !found || position.Offset != int64(len(want)) {
 			t.Fatal("retirement changed checkpoint", position, found, err)
@@ -102,7 +117,7 @@ func TestGraceRechecksAppendDuringWaitAndRenewsDeadline(t *testing.T) {
 			_, err := f.WriteAt([]byte("late\n"), 6)
 			return err
 		case 3:
-			if _, err := f.Stat(); err != nil || r.Position().Offset != 11 {
+			if _, err := f.Stat(); err != nil || r.Position().Offset != 11 || retirementState(t, s, store, r.Position().OriginID).FollowState != source.FollowFollowing {
 				t.Fatal("append at deadline lost or closed", err, r.Position())
 			}
 			stamp = stamp.Add(s.config.RotationGrace - time.Nanosecond)
@@ -124,6 +139,9 @@ func TestGraceRechecksAppendDuringWaitAndRenewsDeadline(t *testing.T) {
 	}, func() time.Time { return stamp })
 	if !errors.Is(err, context.Canceled) || errors.Is(err, fs.ErrClosed) || waits != 5 || records != 3 || r.Position().Offset != 11 {
 		t.Fatalf("late append grace: %v, waits %d, records %d, position %+v", err, waits, records, r.Position())
+	}
+	if state := retirementState(t, s, store, r.Position().OriginID); state.FollowState != source.FollowRetired || *state.Checkpoint != r.Position() {
+		t.Fatal("renewed EOF retirement changed state/checkpoint", state)
 	}
 }
 
@@ -157,6 +175,9 @@ func TestGraceDoesNotRetirePartialOrOversizedPartialLine(t *testing.T) {
 			if !errors.Is(err, ErrRotationCapacity) || records != 2 || r.Position().Offset != 6 || r.lines.offset != int64(6+size) || fileDescriptorCount(t, path) != 0 {
 				t.Fatalf("partial grace: %v, records %d, position %+v, consumed %d", err, records, r.Position(), r.lines.offset)
 			}
+			if retirementState(t, s, store, r.Position().OriginID).FollowState != source.FollowFollowing {
+				t.Fatal("partial/capacity failure invented retirement")
+			}
 		})
 	}
 }
@@ -189,5 +210,8 @@ func TestGraceKeepsCurrentDescriptorWhilePathIsMissing(t *testing.T) {
 	}, func() time.Time { return stamp })
 	if !errors.Is(err, context.Canceled) || errors.Is(err, fs.ErrClosed) || waits != 2 {
 		t.Fatal("missing path grace cancellation", err, waits)
+	}
+	if retirementState(t, s, store, r.Position().OriginID).FollowState != source.FollowFollowing {
+		t.Fatal("missing current file/cancellation invented retirement")
 	}
 }

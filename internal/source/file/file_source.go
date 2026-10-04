@@ -33,7 +33,9 @@ func (e *ResumeDecisionError) Error() string {
 // FileSource orchestrates startup and switches to an observed regular replacement.
 // It follows both opened generations, including late writes to a retained file.
 // Each verified generation is acquired durably before consuming its first line.
-// Retained files expire after stable EOF and a grace period. Polling stops with
+// Retained files acknowledge retirement after stable EOF and a grace period,
+// before closing. Cancellation/errors close descriptors without inventing a
+// retirement. Polling stops with
 // ErrFileTruncated if an opened file is shorter than its consumed offset.
 // ErrCheckpointChanged diagnoses a mismatch in its last acknowledged anchor
 // window. Neither check proves that all previously consumed bytes are unchanged.

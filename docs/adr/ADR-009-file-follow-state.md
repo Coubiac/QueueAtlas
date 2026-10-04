@@ -36,15 +36,25 @@ réacquisition. Erreur du Sink (y compris EOF), conflit ou annulation arrête la
 source sans consommer de ligne et ferme les descripteurs. Une annulation après
 acquittement laisse l'état en suivi.
 
-Le scheduler devra encore acquitter un retrait après EOF stable/grâce, avant de
-fermer le descripteur. Un arrêt, une annulation ou une erreur de suivi ne devra pas
-inventer un retrait.
+Le scheduler acquitte désormais en suivi → retiré après EOF stable/grâce et
+revérification de taille, avant fermeture/libération de capacité. Le batch ne
+change ni origine ni checkpoint. Un fichier vide encore non enregistré expire
+sans transition. La génération courante, les lignes partielles et les batches
+non acquittés restent protégés. Un ajout observé renouvelle la grâce.
+
+Une erreur du Sink (dont EOF/conflit) ou une annulation avant acquittement arrête
+le suivi sans retrait et sans nouvelle lecture/ouverture ; le nettoyage ferme
+les descripteurs restants. Après acquittement, une annulation ou un échec de
+fermeture conserve le retrait durable. Le descripteur est retiré de la collection
+après l'appel à Close, même en erreur, pour éviter une seconde fermeture.
+Un arrêt, une annulation ou une erreur de suivi hors expiration n'invente aucun
+retrait.
 La reprise devra distinguer les états connus de ceux restés inconnus.
 
 Les lecteurs par identité et chemin exposent l'état dans la même page que le
 checkpoint. Les empreintes et checkpoints restent conservés lors d'un retrait.
-Le contrat, la migration, le Sink et l'acquisition par FileSource sont implémentés ;
-le retrait par le scheduler et la reprise automatique restent des lots distincts.
+Le contrat, la migration, le Sink, l'acquisition et le retrait par FileSource sont
+implémentés ; l'exploitation des états à la reprise reste à développer.
 
 ## Limites
 
@@ -54,6 +64,12 @@ réacquisition exige une vérification explicite sans reset de checkpoint. Un se
 écrivain doit sérialiser acquisition, retrait et réessais pour une source ; ce
 protocole ne comporte pas d'époque de propriétaire ou de protection contre des
 réessais obsolètes après un cycle complet de réacquisition.
+
+Observation de taille, transaction du Sink et fermeture ne sont pas atomiques
+avec les écritures du journal : un ajout après le dernier contrôle, notamment
+pendant l'acquittement du retrait, peut être manqué. La grâce et l'état retiré
+ne prouvent pas l'absence d'écritures ultérieures. Le Sink doit respecter le
+contrat d'acquittement durable et l'annulation ; aucun réessai automatique.
 
 L'enregistrement initial (origine/checkpoint zéro) précède l'acquisition dans une
 transaction distincte. Si l'acquisition échoue ou si aucune première ligne n'est

@@ -78,7 +78,7 @@ func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingest
 			}
 		}
 		active.eofSince = time.Time{}
-		if err := retireExpired(ctx, &opened, active, s.config.RotationGrace, now()); err != nil {
+		if err := retireExpired(ctx, &opened, active, s.config.RotationGrace, now(), sink); err != nil {
 			return err
 		}
 		if known {

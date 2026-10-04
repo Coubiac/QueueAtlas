@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"time"
+
+	"github.com/Coubiac/mailtrace/internal/source"
 )
 
 const (
@@ -22,7 +24,7 @@ func resolveRotationGrace(grace time.Duration) (time.Duration, error) {
 	return grace, nil
 }
 
-// EOF observations only accrue grace for retired files at a complete boundary.
+// EOF observations only accrue grace for retained files at a complete boundary.
 // A partial physical line, including an oversized one, stays protected.
 func (g *openedGeneration) observeEOF(current *openedGeneration, now time.Time) {
 	if g == current || !g.atCompleteBoundary() {
@@ -44,10 +46,14 @@ func (g *openedGeneration) atCompleteBoundary() bool {
 
 // retireExpired rechecks the size after waiting, so an intervening append or
 // shrink does not discard unread bytes. Stat and close are not atomic: writes
-// after this final observation/grace can still be missed. Current is protected
+// after this final observation/grace, including during the Sink commit, can still
+// be missed. Registered generations acknowledge retirement before close without
+// changing their checkpoint. Unregistered empty files have no state to retire.
+// A Sink error stops without closing/removing the candidate; the scheduler's
+// cleanup owns closing all remaining descriptors. Current is protected
 // even if its path is missing. A closed file is removed before any close error
 // returns, so cleanup does not attempt a second close.
-func retireExpired(ctx context.Context, opened *[]*openedGeneration, current *openedGeneration, grace time.Duration, now time.Time) error {
+func retireExpired(ctx context.Context, opened *[]*openedGeneration, current *openedGeneration, grace time.Duration, now time.Time, sink source.Sink) error {
 	for i := 0; i < len(*opened); {
 		g := (*opened)[i]
 		if g == current || g.eofSince.IsZero() || now.Sub(g.eofSince) < grace {
@@ -73,6 +79,19 @@ func retireExpired(ctx context.Context, opened *[]*openedGeneration, current *op
 			g.eofSince = time.Time{}
 			i++
 			continue
+		}
+		if g.ingestor != nil {
+			if err := sink.Commit(ctx, source.Batch{
+				Source: g.ingestor.identity,
+				FollowTransitions: []source.FollowTransition{{
+					OriginID: g.ingestor.position.OriginID, From: source.FollowFollowing, To: source.FollowRetired,
+				}},
+			}); err != nil {
+				return err
+			}
+			if err := ctx.Err(); err != nil {
+				return err
+			}
 		}
 		err = g.file.Close()
 		*opened = append((*opened)[:i], (*opened)[i+1:]...)
