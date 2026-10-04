@@ -14,16 +14,22 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end sont fusionnés dans main (#9–13). Bibliothèque seule, sans CLI/service.
 Lot 69 : prévalidation normale publiée/CI verte ; lot 70 gzip développé, ADR-011,
-revue sans blocage, publication/CI à vérifier. Manifest et ingestion dans des lots distincts.
+CI 37244378495 verte, synthèse lot 71 sans blocage ; clôture/fusion à vérifier.
+Manifest et ingestion dans des lots distincts.
 Critère de fin du chantier : métadonnées seulement à EOF réussi, refus bornés,
 gzip/CRC/ratio vérifiés, CI verte et PR cohérente fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 71 : synthèse indépendante sur `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`
+  sans blocage, quatre fichiers source/tests identiques aux revues 69–70 ; diff propre.
+  CI 37244378495 verte, tests Linux/vet/race FileSource/builds/Windows exécutés.
+  Clôture documentaire prête ; publication/CI finale et fusion à constater.
 - Lot 70 : InspectGzip développé/relu sans blocage, quatre tests gzip et trois normal
   Windows, suite/vet/diff réussis après correctif no-progress d'en-tête.
-  Publication/CI à vérifier ; dernier état validé publié : lot 69.
+  Publié `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37244378495), PR #14.
 - Lot 69 : InspectPlain développé/relu sans blocage, trois tests Windows/suite/vet/diff
   réussis. Publié `e5541f73d3738bdb5f48ded5c332f5193fb5d76c`,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37243851152), PR #14.
@@ -2320,21 +2326,33 @@ indépendante. Close du décodeur/cancel joint, input à caller, aucune ingestio
 Quatre tests gzip et trois normal Windows -count=1, suite/vet/diff réussis.
 Défaut concret détecté : Reader(0,nil) bloquait gzip.NewReader/io.ReadFull ; test
 timeout10s échouant, limite100lecturesvides du compressedReader corrige, test passe.
-Ancien processus de test arrêté sur PID/commande vérifiés ; aucune exécution Linux
-ou publication de 70 constatée. Revue indépendante sans blocage ni test supplémentaire
+Ancien processus de test arrêté sur PID/commande vérifiés. Revue indépendante sans blocage ni test supplémentaire
 nécessaire identifié ; quatre tests gzip Windows réussis par auditeur, rapport intégré.
+Publié `8c48d1d`, CI 37244378495 verte : tests normal/gzip Linux réellement exécutés.
+
+## Lot 71 : synthèse et clôture de prévalidation
+
+Référence isolée `8c48d1d` propre/diff propre ; quatre fichiers content/gzip identiques
+aux revues 69–70, content inchangé depuis e5541f7. Revue indépendante sans blocage,
+aucun nouveau risque nécessitant rerun. Aucun changement FileSource/stockage/deps/CI.
+ADR/suite actualisés pour retirer les inspections déjà réalisées ; prochaine
+préparation de copie privée des octets validés avant ingestion. Rapport intégré.
+CI 37244378495 terminée success, trois jobs ; tests normal/gzip Linux, vet, race
+FileSource, builds sans CGO et Windows chemins. Publication/CI finale de cette clôture
+requises avant ready et fusion avec tête attendue ; pas encore constatées ici.
 
 ## Prochaine action concrète
 
-Publier le lot 70 sur #14 et vérifier CI exacte.
-Lot 71 : synthèse prévalidation/CI/fusion, puis préparation de fichiers détenus
-et manifest d'import en lots distincts.
+Publier le lot 71, vérifier CI exacte puis ready/fusion #14 et CI main.
+Lot 72 : copie bornée des octets inspectés au même passage (normal/gzip), writer
+fourni par appelant, erreurs/cancel sans metadata. Lot suivant : copie privée détenue
+avec ouverture de fichier régulier/cleanup, avant stockage du manifest.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-preflight.
 
 ## Suite à découper au fil des reprises
 
-1. Import historique normal, puis gzip dans un lot distinct.
+1. Import historique : copie validée détenue, manifest, application/reprise en lots distincts.
 2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
    ensembles multiples ; diagnostics/compléments du suivi #4.
 3. Application CLI/service et métriques au jalon adapté.

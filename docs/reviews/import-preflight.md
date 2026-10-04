@@ -50,9 +50,25 @@ Défaut concret avant correctif : Reader(0,nil) bloquait NewReader/io.ReadFull, 
 timeout10s a échoué. CompressedReader borne maintenant 100 lectures vides : test
 réussi après correctif, ancien processus bloqué arrêté via PID/commande vérifiés.
 Source standard Go gunzip.go consultée pour EOF/CRC/multistream et rôle de Close.
-Exécution Linux à vérifier en CI de publication.
+Exécution Linux vérifiée par la
+[CI du lot 70 réussie](https://github.com/Coubiac/mailtrace/actions/runs/37244378495)
+sur `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`.
 
 Limites : ratio de consommation, prélectures internes distinctes des Reader
 comptés, deadline du caller/Read bloquant non interruptible, pas de snapshot.
 Gzip vide valide distinct d'une entrée compressée vide sans header. Suffixe partiel
 signalé, ni importeur ni manifest livrés. Synthèse/fusion après CI exacte verte.
+
+## Lot 71 : synthèse finale
+
+5 octobre 2026, checkout isolé `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466` propre.
+Revue indépendante : quatre fichiers content/gzip identiques aux revues 69–70,
+scanner normal inchangé depuis e5541f7. Aucun blocage ni risque nouveau motivant
+rerun. Runtime FileSource/stockage/manifest/dépendances/workflow inchangés.
+ADR/suite actualisés pour préparation de la copie privée, manifest et ingestion.
+
+CI 37244378495 réussie : trois jobs, tests normal/gzip Linux, vet, race FileSource,
+builds sans CGO et Windows chemins. Diff propre. Limites conservées, bibliothèque
+d'inspection seulement, pas d'importeur installé. Audit assisté par agents.
+Après publication/CI verte de la clôture documentaire, PR #14 peut être prête
+puis fusionnée sur sa tête exacte ; résultat de fusion/main CI à vérifier ensuite.

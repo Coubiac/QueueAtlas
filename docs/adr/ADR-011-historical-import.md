@@ -1,7 +1,7 @@
 # ADR-011 — import historique borné et identité de contenu
 
-Statut : prévalidation normale lot 69 publiée/CI verte, gzip lot 70 développé,
-contrat de suite retenu le 5 octobre 2026. Importeur et manifest non implémentés.
+Statut : prévalidation normale/gzip lots 69–70 publiée/CI verte, synthèse lot 71
+sans blocage ; clôture/fusion à vérifier. Importeur et manifest non implémentés.
 
 ## Décision et séparation des étapes
 
@@ -26,18 +26,19 @@ Le lecteur de lignes conserve ses bornes et ne normalise pas seulement un suffix
 
 ## Lots suivants et invariants à conserver
 
-1. Inspecter gzip séparément : réutiliser la limite des octets décompressés, ajouter
-   une limite de ratio, lire à EOF pour contrôler CRC/taille et tous les membres.
-   Erreur de gzip, ratio, fermeture/annulation sans résultat complet ; pas d'ingestion.
-2. Préparer un fichier régulier détenu, ordre/nombre de fichiers/durée globale bornés.
+1. Conserver les octets décompressés inspectés dans une copie privée bornée avant
+   ingestion, pour ne pas relire un fichier d'origine modifié sous le même digest.
+   Copier au même passage que le SHA, fermer le writer puis rendre un reader détenu.
+   Échec/annulation : copie partielle supprimée, aucune ingestion de son contenu.
+2. Ouvrir l'entrée régulière avec propriété explicite ; ordre/nombre de fichiers/durée globale bornés.
    Ne pas déduire une identité de contenu d'un chemin, inode ou en-tête gzip ;
    recompressions/renommages identiques doivent pouvoir retrouver la même origine.
 3. Ajouter lecture/écriture source-scopée du manifest dans un lot stockage distinct,
    sans retoucher le schéma v1 publié. Lier provenance/offsets/digest décompressé,
    inscrire running/failed et n'autoriser complete qu'après validation finale.
 4. Application du contenu validé à parser/Sink, reprise du checkpoint exact,
-   vérification du contenu utilisé entre inspection et ingestion. Une inspection
-   n'est pas un snapshot filesystem et ne prouve pas un second passage identique.
+   depuis la copie privée validée. Une inspection n'est pas un snapshot filesystem
+   et ne prouve pas un second passage identique de l'entrée originale.
 5. CLI import hors service actif, ordre fourni sans tri implicite, recalcul M3,
    contraintes globales et scénarios de chevauchement avec suivi continu.
 
@@ -75,4 +76,5 @@ Le décodeur est fermé et sa cause jointe sur retour ; l'input reste à l'appel
 Erreurs/CRC/troncature/junk/limites/annulation ne rendent aucune métadonnée complète.
 Tests synthétiques : identité normal/gzip/recompression, membres successifs,
 second membre corrompu, CRC/taille/header/troncature/junk, budgets/ratio, contexte,
-reader invalide et sans progrès. Exécution CI à vérifier après publication.
+reader invalide et sans progrès. Exécution Linux vérifiée par CI 37244378495 verte
+sur `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`.
