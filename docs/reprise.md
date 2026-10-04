@@ -11,8 +11,8 @@ seront réévaluées après sa fusion ; AD/OIDC reste après MVP.
 ## Avancement du jalon M2
 
 M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
-PR #11 développée et en revue ; lot 56 termine le nouveau courant au transfert.
-Restent préparation/reprise orchestrée, zéro/lacune et Run,
+PR #11 développée et en revue ; lot 57 termine la préparation orchestrée stricte.
+Restent zéro/lacune et Run,
 puis validation finale et fusion. Ces domaines seront traités en petits lots avec
 un résultat précis ; le numéro de lot compte aussi les revues et corrections.
 Critère de fin du chantier : chemins restants revus, défauts corrigés, CI verte et
@@ -21,6 +21,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 57 : PrepareFollowResume strict relu sur `4e2c1fa`, sans blocage concret.
+  Deux tests portables Windows (19 sous-cas) réussis ; intégrations Linux/CI verte.
+  Rapport partie 17, code inchangé. Prochaine revue : politique zéro et lacune.
 - Lot 56 : nouveau courant et préparation après transfert relus sur `c5e928f`, sans
   blocage identifié. Test portable Windows (huit sous-cas) réussi ; intégrations
   Linux relues/CI verte. Rapport partie 16, code inchangé. Prochaine : PrepareFollowResume.
@@ -2107,12 +2110,22 @@ relu et exécuté par CI 37221815044 verte, pas localement. Code inchangé ; CI 
 publication sur #11. Snapshots non atomiques, unknown après registration sans
 acquisition reste bloquant, écritures/set sérialisés. PR en brouillon.
 
-## Prochain petit lot : préparation orchestrée stricte
+## Lot 57 terminé : préparation orchestrée stricte
 
-Lot 57 / partie 17 : PrepareFollowResume (politique stricte), validation/budgets,
-composition entière sans fallback, propriété du résultat Ready et cleanup sur
-erreur/annulation après réouverture. Auditeur indépendant en lecture seule ;
-politique zéro/diagnostic lacune et Run séparés.
+Référence `4e2c1fa890cc7778edb0303e66ac28412287c440`, coordinateur et auditeur :
+aucun blocage concret. Validation avant état, composition entière sans fallback,
+Absent après parcours complet, Ready propriétaire complet sans ingestion/écriture,
+cleanup de l'ensemble sur erreur/annulation avec causes jointes. Rapport partie 17.
+Deux tests Windows (19 sous-cas) réussis ; Linux relu et exécuté par CI 37221985374
+verte, pas localement. Code inchangé ; CI de publication sur #11. Namespace lecteur,
+état sérialisé, pages/preuves non atomiques. PR en brouillon.
+
+## Prochain petit lot : politique zéro et diagnostic de lacune
+
+Lot 58 / partie 18 : génération following unique à zéro au courant, preuves
+canoniques/non vides, refus stricts et préfixe revérifié jusqu'à acquittement positif ;
+lacune seulement après recherche entière absent/different, sans fallback, diagnostics
+fixes et causes préservées. Run et validation finale restent séparés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
