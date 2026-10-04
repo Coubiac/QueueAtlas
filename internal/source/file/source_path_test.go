@@ -69,7 +69,7 @@ func TestSourcePathFollowCancellationAndNextRunReset(t *testing.T) {
 	if err := os.Remove(f.Name()); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.Run(context.Background(), sinkFunc(func(context.Context, source.Batch) error { t.Fatal("absent input committed"); return nil })); !errors.Is(err, fs.ErrNotExist) || s.LastPathStatus() != "" {
+	if err := s.Run(context.Background(), sinkFunc(func(context.Context, source.Batch) error { t.Fatal("absent input committed"); return nil })); !errors.Is(err, ErrPathStateReaderRequired) || s.LastPathStatus() != "" {
 		t.Fatalf("next run retained status: %v, %s", err, s.LastPathStatus())
 	}
 }

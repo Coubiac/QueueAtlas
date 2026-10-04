@@ -81,7 +81,7 @@ func TestFileSourceWaitsOnEmptyInputAndRegistersAfterAppend(t *testing.T) {
 		}
 		return page, err
 	})
-	s, err := New(sourceConfig(path), reader, testNormalizer)
+	s, err := New(sourceConfig(path), statePathReader{reader, store}, testNormalizer)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -134,7 +134,7 @@ func TestFileSourceEmptyWaitClosesDescriptorAndCancels(t *testing.T) {
 	})
 	cfg := sourceConfig(path)
 	cfg.PollInterval = MaxPollInterval
-	s, err := New(cfg, reader, testNormalizer)
+	s, err := New(cfg, withAbsentPathState(reader), testNormalizer)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -154,7 +154,7 @@ func TestFileSourceEmptyWaitClosesDescriptorAndCancels(t *testing.T) {
 	}
 }
 
-func TestFileSourceAppliesExplicitZeroReplayPolicy(t *testing.T) {
+func TestFileSourceAppliesExplicitZeroReplayPolicyToRetiredCurrent(t *testing.T) {
 	f, path := testRegularFile(t, "seed\n")
 	state := ingestState(t, f, 0)
 	store, err := sqlite.Open(context.Background(), filepath.Join(t.TempDir(), "state.sqlite"))
@@ -173,6 +173,10 @@ func TestFileSourceAppliesExplicitZeroReplayPolicy(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// A lifecycle decision is explicit here: no following set is claimed, so
+	// current-file startup can apply its explicit checkpoint-zero policy.
+	state.FollowState = source.FollowRetired
+	seedAcquisition(t, s, store, state)
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	commits := 0
@@ -228,7 +232,7 @@ func TestFileSourceReturnsUnusableDecisionsAndSinkFailure(t *testing.T) {
 				}
 				panic("unknown test")
 			})
-			s, err := New(sourceConfig(path), reader, testNormalizer)
+			s, err := New(sourceConfig(path), withAbsentPathState(reader), testNormalizer)
 			if err != nil {
 				t.Fatal(err)
 			}

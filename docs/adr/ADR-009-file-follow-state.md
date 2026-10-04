@@ -56,8 +56,8 @@ Les lecteurs par identité et chemin exposent l'état dans la même page que le
 checkpoint. Les empreintes et checkpoints restent conservés lors d'un retrait.
 Le contrat, la migration, le Sink, l'acquisition et le retrait par FileSource sont
 implémentés ; préparation/localisation et réouverture avec revérification des
-candidats et observation du courant implémentées ; transfert au scheduler et
-reprise de Run restent à développer.
+candidats, observation du courant, transfert au scheduler et reprise de Run
+implémentés. Récupération explicite des états inconnus/à zéro encore à développer.
 
 ## Préparation des candidats de reprise
 
@@ -137,7 +137,8 @@ récepteur nil admis. L'objet ne doit pas être copié ni utilisé concurremment
 Échec/annulation, notamment sur le second fichier : toutes les ouvertures acquises
 sont fermées et aucun ensemble partiel n'est rendu. Cause initiale et erreurs de
 fermeture sont conservées. Descripteurs restent au propriétaire jusqu'à Close ;
-choix du courant, transfert au scheduler et raccordement à Run seront séparés.
+choix du courant, transfert au scheduler et raccordement à Run sont des étapes
+distinctes décrites ci-dessous.
 Les vérifications bornées successives ne forment pas un snapshot atomique.
 
 ## Observation du courant parmi les descripteurs
@@ -187,7 +188,7 @@ Les vérifications ne constituent pas un verrou du système de fichiers. Après
 transfert, une disparition du chemin conserve le dernier courant observé selon
 le suivi existant ; elle ne justifie pas une décision missing au démarrage.
 Les accès au propriétaire et écritures de namespace restent à sérialiser.
-Run ne lance pas encore le pipeline de reprise des ensembles persistés.
+Run utilise désormais le pipeline de reprise des ensembles persistés.
 
 ## Nouveau courant avec une génération conservée
 
@@ -212,7 +213,7 @@ Le scheduler attend ses ajouts tout en lisant l'ancien, puis prépare/acquiert l
 nouveau avant sa première ligne. Les ingesteurs anciens ne sont pas réenregistrés.
 Suivi conjoint, contrôles périodiques, grâce et capacité restent ceux du scheduler.
 Les contrôles ne sont pas atomiques ; un remplacement supplémentaire après transfert
-peut arrêter à capacité pleine. Aucun raccordement du pipeline à Run dans ce lot.
+peut arrêter à capacité pleine. Run applique désormais ce même cœur après préparation.
 
 ## Absence du courant au démarrage
 
@@ -230,8 +231,8 @@ de stat, un ensemble/source invalide ou une annulation reste cette cause d'erreu
 sans être masquée par le diagnostic missing. Un appelant abandonnant la reprise
 doit fermer le propriétaire. Pas de réessai automatique. Au cours d'un suivi déjà
 transféré, le scheduler garde le dernier courant observé sur disparition ; ce
-comportement distinct ne justifie pas un choix arbitraire au démarrage. Run n'est
-pas encore raccordé au pipeline de reprise d'ensembles persistés.
+comportement distinct ne justifie pas un choix arbitraire au démarrage. Run ferme
+l'ensemble préparé lorsque la décision bloque, sans propriétaire à rendre au client.
 
 ## Orchestrateur de préparation de reprise
 
@@ -260,9 +261,37 @@ ouverte ici. Recontrôle lors de l'application toujours nécessaire.
 
 Les accès à l'état doivent être sérialisés par source jusqu'à application ; aucune
 garde d'exécution de FileSource ni snapshot atomique ajouté. Cette fonction de
-préparation est isolée : Run n'est pas encore raccordé. Son intégration doit définir
-le contrat lorsque le StateReader n'offre pas PathStateReader, les budgets par
-défaut/configuration et le comportement absent, sans réacquérir la garde de Run.
+préparation reste utilisable isolément. Son intégration à Run est décrite ci-dessous.
+
+## Démarrage de Run avec reprise d'ensemble
+
+Run garde son verrou pendant préparation et application. Le StateReader injecté
+doit aussi implémenter PathStateReader ; sinon ErrPathStateReaderRequired arrête
+avant tout accès journal, sans fallback. New reste utilisable pour les helpers
+avec StateReader seul, mais Run impose ce contrat supplémentaire.
+
+Config.ResumeLimits est copié/validé par New : chaque champ zéro prend son maximum
+(1000 états, 2000 entrées partagées), valeurs négatives ou excessives refusées avant
+lecture/ouverture. Run appelle PrepareFollowResume avec ces budgets. Toute erreur
+de préparation bloque. Un résultat ready utilise le cœur d'application commun avec
+FollowOpened sans réacquérir le verrou. Fermeture du propriétaire sur toute sortie
+avant transfert ; après transfert, propriétaire vide et nettoyage par scheduler.
+LastPathStatus est réinitialisé à chaque Run accepté, même si la préparation bloque.
+
+Seul absent après parcours complet sans générations en suivi permet le démarrage
+du fichier courant existant, avec décision/acquisition et attente du fichier neuf
+vide. Aucune sélection bloquante n'est convertie en démarrage neuf. Unknown bloque
+la reprise, même avec AllowZeroCheckpoint ; la localisation stricte d'un ensemble
+en suivi refuse aussi nil/zéro. La politique explicite de replay zéro reste applicable
+au démarrage courant sans ensemble en suivi, par exemple un courant explicitement
+retiré. La récupération d'un état inconnu ou en suivi à zéro exige une décision
+explicite distincte à développer ; aucun reclassement implicite de lifecycle.
+
+La reprise known/new suit aussi les ajouts tardifs des fichiers renommés. Ancres,
+polling/grâce/retrait durable et erreurs du Sink restent ceux du scheduler. Un
+courant missing au redémarrage bloque, tandis qu'une disparition pendant un suivi
+déjà établi conserve le descripteur. Contrôles, pages et écritures non atomiques ;
+écritures d'état à sérialiser par source entre tous les objets.
 
 ## Limites
 
@@ -281,6 +310,7 @@ contrat d'acquittement durable et l'annulation ; aucun réessai automatique.
 
 L'enregistrement initial (origine/checkpoint zéro) précède l'acquisition dans une
 transaction distincte. Si l'acquisition échoue ou si aucune première ligne n'est
-acquittée, le checkpoint reste zéro ; la reprise exige toujours la politique
-explicite `AllowZeroCheckpoint`. Les lectures de métadonnées nécessaires à la
+acquittée, le checkpoint reste zéro ; la reprise exige une décision explicite de
+lifecycle ainsi que la politique `AllowZeroCheckpoint` lorsqu'elle est applicable.
+Run ne contourne pas un état inconnu/en suivi insuffisant. Les métadonnées de
 vérification précèdent l'acquisition ; aucune ligne n'est consommée avant elle.

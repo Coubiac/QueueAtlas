@@ -1486,16 +1486,57 @@ et observations restent non atomiques ; source state à sérialiser jusqu'à app
 courant à recontrôler au transfert. Pas de reprise zéro implicite ni migration/
 dépendance ajoutée. Gzip/copytruncate/lacunes et revue indépendante restent à faire.
 
-## Prochain petit lot : utiliser l'orchestrateur au démarrage de Run
+## Lot 36 : reprise d'ensemble au démarrage de Run
 
-Reprendre sur `codex/m2-file-source`, conserver PR #11 et ADR-009. Raccorder les
-nouvel orchestrateur PrepareFollowResume au démarrage avec StateReader/PathStateReader,
-puis application du courant connu/nouveau. Définir le contrat d'un lecteur sans
-PathStateReader (pas de fallback silencieux), les budgets et le chemin absent,
-ainsi que les diagnostics inconnus/insuffisants/limite/capacité/missing sans fallback
-implicite. Conserver une seule garde d'exécution (Run appelle le cœur sans réacquérir
-son verrou) et fermer l'ensemble préparé si une décision bloque avant transfert.
-Tester le redémarrage avec ancien renommé et ajout tardif, les refus et le nettoyage.
+Run appelle désormais PrepareFollowResume puis le cœur d'application commun de
+FollowOpened sous une seule garde, sans réacquisition. Reader doit implémenter
+StateReader et PathStateReader ; ErrPathStateReaderRequired avant accès journal
+si le second manque. New reste utilisable pour les helpers avec StateReader seul.
+Config.ResumeLimits : zéro par champ → maximum borné (1000 états/2000 entrées),
+copie/validation avant lecture et refus des valeurs négatives/excessives.
+
+Préparation bloquée : arrêt sans fallback. Seul absent complet (aucun en suivi)
+utilise le démarrage courant existant et l'attente annulable du neuf vide. Ready
+applique known/new en réutilisant les ingesteurs et leurs checkpoints ; propriétaire
+fermé si un refus survient avant transfert, vide après transfert et fermeture par
+scheduler. Run accepté réinitialise LastPathStatus, même sur préparation bloquée.
+
+Politique stricte : unknown de lifecycle bloque même avec AllowZeroCheckpoint ;
+nil/zéro d'un ensemble en suivi demeure insuffisant. Replay zéro explicite reste
+possible au démarrage courant sans ensemble en suivi, par exemple état retiré
+explicitement. Aucune migration/reclassification ni fallback implicite ajouté.
+
+Tests utiles : budgets constructeur/defaults, capacité de lecteur manquante,
+garde concurrente et tests existants de démarrage/attente/cancellation adaptés au
+contrat par chemin. Test replay zéro précisé avec état courant explicitement retiré.
+Linux SQLite : Run reprenant 1–2 connus, ancien renommé + nouveau courant non vide/
+vide, ajouts tardifs sans replay/acquisition répétés, acquisition du nouveau avant
+ligne, checkpoints distincts et guard/FDs libérés. Unknown/zero même avec politique
+explicite, missing/capacité/limite états ou entrées/réécriture sans fallback ni mutation.
+Rejet ou annulation après préparation et avant transfert : fermeture complète,
+cause conservée sans double fermeture.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
+et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
+détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
+Dernier état Linux validé : lot 35, commit
+`bbbdc66c33547a1703d7dc81f8d32af2704500c9`, CI 37177688035.
+
+Limites : nil/zéro en suivi et lifecycle inconnu exigent encore une récupération
+explicite distincte. Métadonnées/pages et observations non atomiques, writer de
+source à sérialiser ; aucune reprise copytruncate automatique. Gzip/lacunes et
+revue de sécurité indépendante restent à développer, aucune dépendance/migration
+ajoutée. Ce lot raccorde le redémarrage, sans interface ou corrélation ajoutée.
+
+## Prochain petit lot : diagnostic explicite d'une génération en suivi introuvable
+
+Reprendre sur codex/m2-file-source, conserver PR #11. Distinguer une génération
+persistée en suivi introuvable au redémarrage d'une source sans historique ou d'un
+courant temporairement absent. Diagnostic de lacune fixe, sans marquer artificiellement
+retiré ou reprendre seulement les fichiers restants ; checkpoints/provenance conservés.
+Réutiliser les décisions de localisation existantes et tester le refus sans lecture
+du nouveau courant, puis la reprise lorsque l'archive synthétique est restaurée.
+La récupération explicite des checkpoints zéro/inconnus sera un lot séparé.
 
 ## Suite à découper au fil des reprises
 

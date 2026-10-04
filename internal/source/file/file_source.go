@@ -17,7 +17,10 @@ type Config struct {
 	PollInterval  time.Duration // zero selects DefaultPollInterval
 	RotationGrace time.Duration // zero selects DefaultRotationGrace
 	ResumePolicy  ResumePolicy
+	ResumeLimits  FollowResumeLimits // each zero selects its bounded maximum
 }
+
+var ErrPathStateReaderRequired = errors.New("file startup requires a path state reader")
 
 var ErrSourceRunning = errors.New("file source is already running")
 
@@ -54,6 +57,7 @@ type FileSource struct {
 var _ source.Source = (*FileSource)(nil)
 
 // New validates configuration without opening the path or writing state.
+// Run additionally requires the reader to implement source.PathStateReader.
 // Relative paths are resolved once, so a later working directory change cannot
 // redirect the source. Configuration is copied and cannot be mutated via cfg.
 func New(cfg Config, reader source.StateReader, normalize Normalize) (*FileSource, error) {
@@ -63,6 +67,15 @@ func New(cfg Config, reader source.StateReader, normalize Normalize) (*FileSourc
 	interval, err := resolvePollInterval(cfg.PollInterval)
 	if err != nil {
 		return nil, err
+	}
+	if cfg.ResumeLimits.Origins == 0 {
+		cfg.ResumeLimits.Origins = MaxPathOrigins
+	}
+	if cfg.ResumeLimits.Entries == 0 {
+		cfg.ResumeLimits.Entries = MaxFollowLocationEntries
+	}
+	if cfg.ResumeLimits.Origins < 1 || cfg.ResumeLimits.Origins > MaxPathOrigins || cfg.ResumeLimits.Entries < 1 || cfg.ResumeLimits.Entries > MaxFollowLocationEntries {
+		return nil, errors.New("bounded file resume limits are required")
 	}
 	grace, err := resolveRotationGrace(cfg.RotationGrace)
 	if err != nil {
@@ -79,13 +92,19 @@ func New(cfg Config, reader source.StateReader, normalize Normalize) (*FileSourc
 
 func (s *FileSource) ID() string { return s.config.Identity.ID }
 
+// Run requires PathStateReader and first prepares the persisted following set
+// with configured limits. Blocking decisions stop without fallback. A complete
+// absence of following states uses current-file startup; explicit zero policy
+// applies only there, never to unknown lifecycle or unverified following sets.
+// Reopened sets are closed on every failure, before or after scheduler transfer.
 // Run reopens and reconsiders an initially empty file after each cancellable
 // wait. Once a generation is usable, it follows all opened generations, retaining
 // an old one on replacement. All descriptors close on error/cancellation.
 // Unusable decisions and all Sink errors stop Run;
 // there is no automatic retry of failed commits or opening errors.
-// Path observation errors also stop Run. A missing path keeps its descriptor in
-// use. At most MaxOpenGenerations are retained; exceeding this capacity stops Run.
+// Path observation errors also stop Run. Missing current at resumed startup is
+// refused; a later disappearance keeps the already-followed descriptor in use.
+// At most MaxOpenGenerations are retained; exceeding capacity stops Run.
 // A later Run starts from committed state; in-memory pending data is not retained.
 func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 	if err := ctx.Err(); err != nil {
@@ -99,6 +118,20 @@ func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 	}
 	defer s.running.Unlock()
 	s.setPathStatus("")
+	pathReader, ok := s.reader.(source.PathStateReader)
+	if !ok {
+		return ErrPathStateReaderRequired
+	}
+	resume, err := PrepareFollowResume(ctx, s.config.Identity, s.config.Path, pathReader, s.normalize, s.config.ResumeLimits)
+	if err != nil {
+		return err
+	}
+	if resume.Status == FollowResumeReady {
+		return s.runPreparedResume(ctx, resume, sink)
+	}
+	if resume.Status != FollowResumeAbsent {
+		return ErrInvalidFollowOrigins
+	}
 	for {
 		f, _, err := OpenLog(ctx, s.config.Path)
 		if err != nil {
@@ -112,6 +145,13 @@ func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 			return err
 		}
 	}
+}
+
+// Run already owns the execution guard. Close also covers validation failures
+// before transfer; after transfer the owner is empty and cleanup is harmless.
+func (s *FileSource) runPreparedResume(ctx context.Context, resume FollowResume, sink source.Sink) (err error) {
+	defer func() { err = errors.Join(err, resume.Opened.Close()) }()
+	return s.applyOpened(ctx, resume.Opened, resume.Current, sink, waitForPoll, time.Now, OpenLog)
 }
 
 func (s *FileSource) runOpened(ctx context.Context, f *os.File, sink source.Sink) (waiting bool, err error) {

@@ -44,7 +44,8 @@ type FollowResume struct {
 // normalization, Sink commit, lifecycle transition or scheduler transfer occurs.
 // The caller must serialize source state writes through application and close
 // Opened or pass it to FollowOpened. Files/pages are not an atomic snapshot and
-// Ready does not make its current observation permanent. Run is not wired yet.
+// Ready does not make its current observation permanent. Run uses this preparation
+// with its configured budgets, then applies the result under its execution guard.
 func PrepareFollowResume(ctx context.Context, identity source.Identity, path string, reader source.PathStateReader, normalize Normalize, limits FollowResumeLimits) (FollowResume, error) {
 	return prepareFollowResume(ctx, identity, path, reader, normalize, limits, func(ctx context.Context, opened *OpenedFollowSet, path string) (FollowCurrent, error) {
 		return opened.ObserveCurrent(ctx, path)

@@ -16,13 +16,26 @@ func sourceConfig(path string) Config {
 	return Config{Identity: fileSourceIdentity(), Path: path, PollInterval: MinPollInterval}
 }
 
+// Synthetic readers used to exercise current-file startup explicitly declare
+// an empty lifecycle scan; physical selection remains independently injectable.
+type statePathReader struct {
+	source.StateReader
+	source.PathStateReader
+}
+
+func withAbsentPathState(reader source.StateReader) source.StateReader {
+	return statePathReader{reader, pathReaderFunc(func(context.Context, source.OriginPathQuery) (source.OriginPage, error) {
+		return source.OriginPage{}, nil
+	})}
+}
+
 func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 	reader := originReaderFunc(func(context.Context, source.OriginQuery) (source.OriginPage, error) {
 		t.Fatal("constructor read state")
 		return source.OriginPage{}, nil
 	})
 	path := filepath.Join(t.TempDir(), "not-created.log")
-	for _, kind := range []string{"ID", "kind", "name", "path", "reader", "normalizer", "interval short", "interval long", "grace short", "grace long"} {
+	for _, kind := range []string{"ID", "kind", "name", "path", "reader", "normalizer", "interval short", "interval long", "grace short", "grace long", "origins negative", "origins high", "entries negative", "entries high"} {
 		cfg, stateReader, normalize := sourceConfig(path), source.StateReader(reader), Normalize(testNormalizer)
 		switch kind {
 		case "ID":
@@ -45,6 +58,14 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 			cfg.RotationGrace = MinRotationGrace - 1
 		case "grace long":
 			cfg.RotationGrace = MaxRotationGrace + 1
+		case "origins negative":
+			cfg.ResumeLimits.Origins = -1
+		case "origins high":
+			cfg.ResumeLimits.Origins = MaxPathOrigins + 1
+		case "entries negative":
+			cfg.ResumeLimits.Entries = -1
+		case "entries high":
+			cfg.ResumeLimits.Entries = MaxFollowLocationEntries + 1
 		}
 		if s, err := New(cfg, stateReader, normalize); s != nil || err == nil {
 			t.Fatalf("invalid %s accepted", kind)
@@ -53,7 +74,7 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 	cfg := sourceConfig(path)
 	cfg.PollInterval = 0
 	s, err := New(cfg, reader, testNormalizer)
-	if err != nil || s.ID() != cfg.Identity.ID || s.config.RotationGrace != DefaultRotationGrace {
+	if err != nil || s.ID() != cfg.Identity.ID || s.config.RotationGrace != DefaultRotationGrace || s.config.ResumeLimits != (FollowResumeLimits{Origins: MaxPathOrigins, Entries: MaxFollowLocationEntries}) {
 		t.Fatalf("valid config: %v, %v", s, err)
 	}
 	cfg.Identity.ID, cfg.Path = "changed", "changed.log"
@@ -69,6 +90,10 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 	if err := s.Run(context.Background(), nil); err == nil {
 		t.Fatal("nil sink accepted")
 	}
+	if err := s.Run(context.Background(), sink); !errors.Is(err, ErrPathStateReaderRequired) {
+		t.Fatalf("missing path reader error: %v", err)
+	}
+	s.reader = withAbsentPathState(reader)
 	if err := s.Run(context.Background(), sink); !errors.Is(err, fs.ErrNotExist) {
 		t.Fatalf("missing input error: %v", err)
 	}
@@ -110,7 +135,7 @@ func TestFileSourceRejectsConcurrentRunAndReleasesGuard(t *testing.T) {
 		}
 		return source.OriginPage{}, errors.New("stop selection")
 	})
-	s, err := New(sourceConfig(path), reader, testNormalizer)
+	s, err := New(sourceConfig(path), withAbsentPathState(reader), testNormalizer)
 	if err != nil {
 		t.Fatal(err)
 	}

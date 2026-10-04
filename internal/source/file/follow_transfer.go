@@ -36,7 +36,8 @@ var ErrCurrentMissing = errors.New("configured current log is missing at startup
 // LastPathStatus resets only on transfer; rejected attempts preserve it.
 // Run and FollowOpened share this object's execution guard. The caller must
 // serialize set access and source state writes across other objects. Validation
-// is an observation, not a filesystem lock. Run does not invoke this entry yet.
+// is an observation, not a filesystem lock. Run uses this same application core
+// while holding its own guard, after PrepareFollowResume.
 func (s *FileSource) FollowOpened(ctx context.Context, set *OpenedFollowSet, current FollowCurrent, sink source.Sink) error {
 	return s.followOpened(ctx, set, current, sink, waitForPoll, time.Now)
 }
@@ -56,6 +57,14 @@ func (s *FileSource) followOpenedWithOpener(ctx context.Context, set *OpenedFoll
 		return ErrSourceRunning
 	}
 	defer s.running.Unlock()
+	return s.applyOpened(ctx, set, current, sink, wait, now, open)
+}
+
+// The caller holds the FileSource execution guard throughout application.
+func (s *FileSource) applyOpened(ctx context.Context, set *OpenedFollowSet, current FollowCurrent, sink source.Sink, wait func(context.Context, time.Duration) error, now func() time.Time, open func(context.Context, string) (*os.File, Identity, error)) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	newCurrent := current.Status == FollowCurrentNew
 	missingCurrent := current.Status == FollowCurrentMissing
 	switch current.Status {
