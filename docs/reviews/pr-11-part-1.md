@@ -39,9 +39,12 @@ Garanties relues :
 
 Auditeur : tests ciblés FileSource sous Windows avec `-count=1`, diff propre.
 Coordinateur : tests FileSource et vet des sources sur la référence isolée réussis.
-Vérifications finales locales et CI du lot consignées dans docs/reprise.md.
-Les tests d'identité Linux et du vérificateur positif nécessitent l'exécution CI
-Linux ; la compilation seule sous Windows ne prouve pas leur résultat.
+Vérifications finales locales : go test ./..., go vet ./... et git diff --check
+réussis. [CI Linux du lot](https://github.com/Coubiac/mailtrace/actions/runs/37187398041)
+réussie sur `3fe6a7063f88f2c396e18b8a386ebf95a2cd2cc2` : Go 1.26.x/stable,
+tests/vet, détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
+Les tests d'identité Linux et du vérificateur positif y sont exécutés ; la
+compilation seule sous Windows ne prouverait pas leur résultat.
 
 ## Limites et suite
 

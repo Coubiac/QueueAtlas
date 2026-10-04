@@ -5,6 +5,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 41 : revue partielle FileSource (contrats, lecteur, ingestor et preuves de
+  reprise) terminée, sans blocage identifié. Rapport `docs/reviews/pr-11-part-1.md`.
+  Commit `3fe6a7063f88f2c396e18b8a386ebf95a2cd2cc2` publié, CI Linux réussie.
+  PR #11 reste en brouillon ; prochaine revue : sélection et registration.
 - Nom QueueAtlas, licence MIT et conception de phase 0 approuvés.
 - M1 : enveloppes syslog, parseurs Postfix, corpus synthétique et tests/fuzz.
   [PR #9](https://github.com/Coubiac/mailtrace/pull/9), branche
@@ -1717,7 +1721,7 @@ Windows non validées par bits Unix. Audit assisté par agents/données synthét
 pas de certification humaine. Débit, licences transitives, sauvegarde et rétention
 opérationnelles restent à traiter avant distribution. Revue FileSource encore à faire.
 
-## Lot 41 en cours : revue FileSource — contrats, lecteur et identité
+## Lot 41 terminé : revue FileSource — contrats, lecteur et identité
 
 Revue partielle de #11 sur 1968fc494c5191cf6ad8ea4cc9b11f792f2c85ea,
 coordinateur et auditeur agent indépendant dans le checkout isolé. Aucun blocage
@@ -1726,8 +1730,11 @@ anchor.go et resume.go. Contrats d'acquittement/retry et bornes de Record préci
 sans modification de comportement. Rapport docs/reviews/pr-11-part-1.md.
 Tests FileSource et vet sources réussis sur la référence isolée sous Windows ;
 auditeur : tests ciblés -count=1 et diff propre. Vérifications finales locales
-go test ./..., go vet ./... et git diff --check réussies. Publication et CI du lot
-à confirmer avant sa clôture. Aucun test nouveau sans défaut concret à reproduire.
+go test ./..., go vet ./... et git diff --check réussies. Commit du lot
+3fe6a7063f88f2c396e18b8a386ebf95a2cd2cc2 publié ; [CI Linux](https://github.com/Coubiac/mailtrace/actions/runs/37187398041)
+réussie : Go 1.26.x/stable, tests/vet, détecteur de courses FileSource et builds
+Linux amd64/arm64 sans CGO. Tests spécifiques d'identité Linux et de vérification
+positive exécutés par cette CI. Aucun test nouveau sans défaut concret à reproduire.
 
 La PR reste en brouillon : ce lot ne valide pas sélection, registration, chemins,
 rotation, reprise orchestrée/Run ni lifecycle SQLite v2. Preuves bornées/non
