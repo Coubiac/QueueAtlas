@@ -162,6 +162,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
   Le raccordement à Run reste le prochain lot.
+- Lot 36 FileSource : Run prépare/reprend l'ensemble persisté sous une seule garde,
+  PathStateReader requis et budgets configurés, commit
+  `ddf00f313195df21c8100833842180efe9dbfb74`, toujours dans la PR #11.
+  [CI démarrage Run](https://github.com/Coubiac/mailtrace/actions/runs/37178273467)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1518,9 +1524,9 @@ cause conservée sans double fermeture.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
-détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
-Dernier état Linux validé : lot 35, commit
-`bbbdc66c33547a1703d7dc81f8d32af2704500c9`, CI 37177688035.
+détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI démarrage Run](https://github.com/Coubiac/mailtrace/actions/runs/37178273467)
+Go 1.26.x/stable sur `ddf00f313195df21c8100833842180efe9dbfb74`.
 
 Limites : nil/zéro en suivi et lifecycle inconnu exigent encore une récupération
 explicite distincte. Métadonnées/pages et observations non atomiques, writer de
