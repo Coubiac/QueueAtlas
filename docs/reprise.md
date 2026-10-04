@@ -1071,7 +1071,7 @@ peut être manqué ; retiré ne signifie pas absence d'écritures ultérieures. 
 À la fin de ce lot, la reprise n'exploitait pas encore les marqueurs. Gzip/copytruncate/lacunes restent
 à développer, ainsi que la revue de sécurité indépendante déjà prévue.
 
-## Dernier lot terminé : candidats en suivi pour la reprise
+## Candidats en suivi pour la reprise
 
 `LoadFollowOrigins(ctx, sourceID, path, reader, limit)` réutilise le parcours
 complet et borné de `LoadPathOrigins` (budget de 1 à 1000 états). Après épuisement
@@ -1124,17 +1124,68 @@ Ce composant ne choisit pas le courant, n'ouvre aucun journal et n'écrit aucun 
 Localisation/revérification et raccordement à Run restent à développer, ainsi que
 gzip/copytruncate/lacunes et la revue de sécurité indépendante prévue.
 
-## Prochain petit lot : localiser les candidats en suivi sur disque
+## Dernier lot : localisation bornée des candidats en suivi
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Définir la
-résolution des candidats d'un ensemble `complete` avec la recherche bornée
-`SelectRotation` dans le répertoire du chemin configuré, incluant le fichier
-courant. Exiger un chemin unique par candidat, conserver les décisions
-absence/différence/preuves insuffisantes/ambiguïté/limite et interdire un résultat
-partiel utilisable. Budget explicite et gestion de capacité à préciser avant
-modification ; traiter seulement localisation et tests, sans descripteurs durables,
-ingestion, transition ni raccordement à Run. Ouverture/revérification puis démarrage
-seront des lots distincts.
+`LocateFollowOrigins(ctx, configuredPath, origins, entryLimit)` exige un ensemble
+`FollowOriginsComplete` de 1 ou 2 états en suivi, IDs non vides distincts et chemin
+enregistré exactement égal au chemin configuré. Toute l'entrée est validée avant
+accès disque ; `ErrInvalidFollowOrigins` est un diagnostic fixe. Les checkpoints
+optionnels sont copiés avant les recherches, sans modifier la provenance.
+
+`SelectRotation` est appelé séquentiellement dans le répertoire du chemin
+configuré absolu, incluant le fichier courant. Budget partagé de 1 à 2000 entrées
+examinées (`MaxFollowLocationEntries`), au plus 1000 par recherche et le reste du
+budget ; les entrées réexaminées pour un autre candidat comptent à nouveau.
+Budget épuisé avant le suivant : limite sans nouvelle recherche. L'entrée
+supplémentaire de lecture pour établir fin/limite reste celle du chercheur existant.
+
+`FollowLocations` expose `Locations` seulement si tous les candidats ont un
+chemin unique distinct (`unique`). Chaque élément conserve état/checkpoint et
+chemin localisé séparément. Deux origines sélectionnant le même chemin donnent
+`ambiguous`, sans résultat partiel. La première décision non unique est retournée
+dans l'ordre des candidats : `absent`, `different`, `insufficient`, `ambiguous`
+ou `limit_reached`, avec somme `Examined` mais aucun chemin utilisable. Erreur et
+annulation renvoient un résultat vide avec cause conservée. Aucun choix de
+courant ni chronologie déduite des IDs/dates/offsets.
+
+Tests portables : budget exact/épuisé avant second candidat/réduit pour le second,
+plafond par recherche, chaque décision bloquante après un premier chemin valide,
+entrée invalide/mélangée/dupliquée/trop grande refusée avant recherche ; erreur et
+annulation avant/après première/seconde recherche sans chemins partiels. Copies
+de métadonnées nil/zéro sans alias et ordre reçu conservé ; collision de chemin
+refusée. Tests Linux : un ou deux candidats, fichier courant et rotation renommée,
+états/checkpoints inchangés et aucun descripteur conservé ; absence, réécriture du
+second, checkpoint nil/zéro strict, hard links ambigus, deux origines sur un seul
+fichier et budget partagé dépassé, sans chemin partiel ni fuite de descripteurs.
+Tous les fichiers sont synthétiques, aucune migration/dépendance ajoutée.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
+des tests FileSource Linux amd64 sans CGO. Exécution Linux/détecteur de courses/
+builds : CI à confirmer après publication du commit de code.
+
+Limites : la vérification stricte et les exclusions du chercheur existant sont
+conservées (pas de replay zéro implicite, liens observés/gzip/non réguliers écartés,
+pas de récursion). Chaque recherche est une observation distincte et bornée,
+pas un snapshot global ; changements hors fenêtres restent sans preuve. Le
+répertoire courant du processus détermine une configuration relative à l'appel.
+Le namespace source reste garanti par le résultat/lecteur fourni, les états
+n'embarquant pas source ID. Sérialiser les écritures d'état jusqu'à application.
+Tous les descripteurs temporaires sont fermés ; les chemins renvoyés exigent
+réouverture et revérification. La capacité contrôlée porte seulement sur les
+candidats persistés ; un nouveau fichier courant devra aussi compter dans les
+deux descripteurs. Pas d'ingestion/transition ni raccordement à Run dans ce lot.
+Gzip/copytruncate/lacunes et revue de sécurité indépendante restent à développer.
+
+## Prochain petit lot : rouvrir et revérifier l'ensemble localisé
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Pour un
+ensemble entièrement `unique`, ouvrir les chemins avec `OpenLog` puis revérifier
+les états/checkpoints avec `NewIngestor`, sans lire de ligne ni écrire d'état.
+Définir la propriété/fermeture de l'ensemble de 1 ou 2 descripteurs avant modification.
+Remplacement/disparition/réécriture/annulation/échec du second : fermer toute
+ouverture déjà détenue et ne rendre aucun ensemble partiel. Tests de capacité,
+copies et fermeture ; sélection du courant et raccordement au scheduler/Run
+resteront des lots distincts.
 
 ## Suite à découper au fil des reprises
 

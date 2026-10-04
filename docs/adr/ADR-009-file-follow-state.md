@@ -55,8 +55,8 @@ inconnus avec `LoadFollowOrigins`, après parcours complet borné par chemin.
 Les lecteurs par identité et chemin exposent l'état dans la même page que le
 checkpoint. Les empreintes et checkpoints restent conservés lors d'un retrait.
 Le contrat, la migration, le Sink, l'acquisition et le retrait par FileSource sont
-implémentés ; préparation des candidats implémentée, localisation/vérification
-et raccordement à la reprise de Run restent à développer.
+implémentés ; préparation/localisation des candidats implémentées, ouverture
+avec revérification et raccordement à la reprise de Run restent à développer.
 
 ## Préparation des candidats de reprise
 
@@ -80,6 +80,36 @@ composant ne choisit pas le fichier courant, n'ouvre aucun journal, ne recherche
 aucune rotation et n'écrit aucun état. La capacité vérifiée porte sur les candidats
 persistés en suivi ; l'ensemble final des fichiers à ouvrir devra aussi respecter
 la capacité (notamment si le chemin courant est une nouvelle génération).
+
+## Localisation des candidats
+
+`LocateFollowOrigins` accepte un ensemble `complete` de 1 ou 2 origines en suivi
+du chemin configuré exact, IDs non vides distincts. Il valide tout l'ensemble
+avant accès disque et copie les checkpoints. Le répertoire est celui du chemin
+configuré résolu en absolu, incluant son fichier courant ; les origines restent
+inchangées dans le résultat.
+
+La recherche `SelectRotation` est séquentielle pour chaque candidat. Budget
+global explicite de 1 à `MaxFollowLocationEntries` (2000) entrées examinées, avec
+au plus `MaxRotationEntries` (1000) et le reste du budget pour chaque recherche.
+Une entrée examinée lors de deux recherches compte deux fois. Budget épuisé avant
+le candidat suivant : limite sans seconde recherche. Les exclusions, les pages
+bornées et la lecture d'une entrée supplémentaire pour établir la fin/limite
+restent celles de `SelectRotation`.
+
+Seul un chemin unique pour chaque candidat, distinct des autres chemins, rend
+l'ensemble `unique`. Deux origines localisées sur le même chemin donnent
+ambiguïté. La première décision non unique est conservée dans l'ordre des
+candidats (pas une priorité globale des causes), avec compte examiné mais aucun
+chemin partiel utilisable. Erreur ou annulation efface tout le résultat.
+La vérification est stricte, sans relecture zéro implicite ; les checkpoints nil
+ou zéro restent soumis à une décision de preuves insuffisantes.
+
+Tous les descripteurs temporaires sont fermés avant retour. Les chemins devront
+être rouverts et revérifiés avant utilisation ; aucun état, ingestion ou
+descripteur durable n'est modifié. L'ordre des recherches ne choisit pas le
+fichier courant. La capacité finale, incluant un éventuel nouveau courant, et
+le raccordement au démarrage restent des lots distincts.
 
 ## Limites
 
