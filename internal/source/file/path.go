@@ -31,8 +31,10 @@ type PathObservation struct {
 // including a dangling symlink, returns PathMissing without an error. Other
 // filesystem errors and nonregular targets return no usable observation.
 //
-// This performs one descriptor stat and one path stat, with no open, read, seek
-// or close. The caller retains ownership even on failure. The snapshots are
+// This performs one descriptor stat and one path snapshot, with no data read
+// or seek. On Windows the path snapshot opens and closes a temporary metadata
+// handle to capture file IDs immediately; elsewhere it uses os.Stat only.
+// The caller's descriptor is never closed, including on failure. The snapshots are
 // not atomic and do not lock the path against changes after observation.
 // Context is checked between calls; it cannot interrupt a filesystem syscall.
 func ObservePath(ctx context.Context, f *os.File, path string) (PathObservation, error) {
@@ -49,7 +51,7 @@ func ObservePath(ctx context.Context, f *os.File, path string) (PathObservation,
 	if err := ctx.Err(); err != nil {
 		return PathObservation{}, err
 	}
-	info, err := os.Stat(path)
+	info, err := statPath(path)
 	if ctxErr := ctx.Err(); ctxErr != nil {
 		return PathObservation{}, ctxErr
 	}

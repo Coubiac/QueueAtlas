@@ -1765,14 +1765,32 @@ insuffisante et arrêt, sans génération remplacée implicitement. Registration
 acquisition restent distinctes ; récupération unknown encore à cadrer.
 La PR reste en brouillon pour les parties restantes.
 
-## Prochain petit lot : revue FileSource — ouverture et observation du chemin
+## Lot 43 en cours : revue FileSource — ouverture et observation du chemin
 
-Reprendre sur #11 basée sur main. Troisième lot de revue : open*.go, path.go et
-source_path.go, vérifications du fichier régulier et de l'identité autour d'Open,
-remplacement/disparition du chemin, liens/FIFO et propriété du descripteur.
+Revue de 25447608b60b1f0c6abdf96c9a7d3abdd215b3f4, coordinateur et auditeur agent
+indépendant : open*.go, path.go et source_path.go. Défaut Windows reproduit : le
+FileInfo d'os.Stat charge ses IDs tardivement et peut accepter un remplacement
+contre le snapshot préouverture. Helper statPath corrigé : Windows metadata handle,
+File.Stat avec IDs chargés, fermeture avant retour ; autres plateformes os.Stat.
+Régression du remplacement et test réel de chemin long passent après correction.
+Job CI Windows ciblé ajouté. Rapport docs/reviews/pr-11-part-3.md.
+
+Relecture du patch sans autre blocage concret. Tests ciblés Windows -count=1 pour
+les deux relecteurs, go test ./..., go vet ./..., git diff --check et compilation
+des tests FileSource Linux amd64 sans CGO réussis localement. Publication et CI du
+correctif restent à confirmer ; dernier état publié validé : lot 42, 2544760.
+UNC distant/liens Windows non testés localement ; observations non atomiques et
+annulation entre syscalls restent des limites. Rotation/Run/lifecycle hors périmètre.
+
+## Prochain petit lot : revue FileSource — lecteurs d'état SQLite
+
+Reprendre sur #11 basée sur main. Quatrième lot de revue : internal/storage/sqlite/
+state.go, contrats OriginQuery/OriginPathQuery et tests correspondants, pages bornées,
+ordre/cursor, snapshot par page, checkpoints optionnels et isolation source/chemin.
 Auditeur indépendant en lecture seule ; ajouter uniquement les régressions des
-problèmes concrets. Rotation, reprise orchestrée/Run et lifecycle v2 restent des
-lots suivants ; ne pas déclarer toute #11 validée après cette troisième partie.
+problèmes concrets. Transitions/migration lifecycle v2, rotation et reprise
+orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11 validée après
+cette quatrième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 

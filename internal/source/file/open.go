@@ -21,6 +21,8 @@ var ErrPathChanged = errors.New("log path changed during open")
 // guarantee a nonblocking open during replacement. Context is checked between
 // filesystem calls; it does not interrupt a blocking filesystem syscall. These
 // observations do not lock the path against later changes or prove a generation.
+// Windows path snapshots use a temporary metadata handle to capture file IDs
+// immediately; each temporary handle is closed before its path snapshot returns.
 func OpenLog(ctx context.Context, path string) (*os.File, Identity, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, Identity{}, err
@@ -28,7 +30,7 @@ func OpenLog(ctx context.Context, path string) (*os.File, Identity, error) {
 	if path == "" {
 		return nil, Identity{}, errors.New("log path is required")
 	}
-	before, err := os.Stat(path)
+	before, err := statPath(path)
 	if err != nil {
 		return nil, Identity{}, err
 	}
@@ -64,7 +66,7 @@ func validateOpen(ctx context.Context, f *os.File, path string, before os.FileIn
 	if !id.SameFile(Identity{info: before}) {
 		return nil, Identity{}, ErrPathChanged
 	}
-	current, err := os.Stat(path)
+	current, err := statPath(path)
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			err = errors.Join(ErrPathChanged, err)
