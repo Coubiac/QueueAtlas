@@ -13,16 +13,20 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end sont fusionnés dans main (#9–13). Bibliothèque seule, sans CLI/service.
-Lot 69 : prévalidation du contenu normal développée/relue, ADR-011 ; publication/CI
-à vérifier avant clôture. Gzip dans un lot distinct.
+Lot 69 : prévalidation normale publiée/CI verte ; lot 70 gzip développé, ADR-011,
+revue sans blocage, publication/CI à vérifier. Manifest et ingestion dans des lots distincts.
 Critère de fin du chantier : métadonnées seulement à EOF réussi, refus bornés,
 gzip/CRC/ratio vérifiés, CI verte et PR cohérente fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 70 : InspectGzip développé/relu sans blocage, quatre tests gzip et trois normal
+  Windows, suite/vet/diff réussis après correctif no-progress d'en-tête.
+  Publication/CI à vérifier ; dernier état validé publié : lot 69.
 - Lot 69 : InspectPlain développé/relu sans blocage, trois tests Windows/suite/vet/diff
-  réussis. Publication/CI à vérifier. Pas d'importeur ou de gzip encore livré.
+  réussis. Publié `e5541f73d3738bdb5f48ded5c332f5193fb5d76c`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37243851152), PR #14.
 - Lot 68 terminé : [PR #13](https://github.com/Coubiac/mailtrace/pull/13) fusionnée
   avec tête `356f1d62e3575fff57862e69654fb1cf464d51c5`, CI 37243392217 verte.
   Main `df7e8a3076d27da4c28c3a8aa6c48e2cb7b4aa30` vérifié ;
@@ -2303,13 +2307,28 @@ suffixe partiel signalé explicitement sans prétendre complete. Pas de fermetur
 seek/parser/Sink/manifest. ADR-011 précise séparation et contraintes de suite.
 Trois tests Windows -count=1, suite/vet/diff réussis. Coordinateur a durci le test
 EOF : une erreur jointe à EOF conserve sa cause, sans digest réussi. Revue indépendante
-sans blocage, rapport import-preflight.md ; publication/CI à vérifier.
-Gzip et fichier régulier détenu non implémentés.
+sans blocage, rapport import-preflight.md. Publié `e5541f7`, PR #14 créée/attachée,
+CI 37243851152 verte. Fichier régulier détenu/importeur non implémentés.
+
+## Lot 70 : inspection gzip bornée et checksum
+
+Résultat attendu : tout membre gzip vérifié à EOF/CRC/taille, digest décompressé,
+budgets compressé/décompressé et ratio positifs, metadata zéro sur erreur/cancel.
+Implémenté via compress/gzip multistream et InspectPlain ; ratio division/reste
+sur output/input consommé sans overflow, read-ahead inclus, limite headers/input
+indépendante. Close du décodeur/cancel joint, input à caller, aucune ingestion.
+Quatre tests gzip et trois normal Windows -count=1, suite/vet/diff réussis.
+Défaut concret détecté : Reader(0,nil) bloquait gzip.NewReader/io.ReadFull ; test
+timeout10s échouant, limite100lecturesvides du compressedReader corrige, test passe.
+Ancien processus de test arrêté sur PID/commande vérifiés ; aucune exécution Linux
+ou publication de 70 constatée. Revue indépendante sans blocage ni test supplémentaire
+nécessaire identifié ; quatre tests gzip Windows réussis par auditeur, rapport intégré.
 
 ## Prochaine action concrète
 
-Publier/ouvrir la PR de prévalidation du lot 69 et vérifier CI.
-Lot 70 : gzip, ratio et checksum jusqu'à EOF, sans ingestion/manifest.
+Publier le lot 70 sur #14 et vérifier CI exacte.
+Lot 71 : synthèse prévalidation/CI/fusion, puis préparation de fichiers détenus
+et manifest d'import en lots distincts.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-preflight.
 

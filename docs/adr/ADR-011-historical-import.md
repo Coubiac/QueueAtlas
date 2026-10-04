@@ -1,7 +1,7 @@
 # ADR-011 — import historique borné et identité de contenu
 
-Statut : prévalidation normale développée au lot 69, contrat de suite retenu le
-5 octobre 2026. Importeur et manifest non encore implémentés.
+Statut : prévalidation normale lot 69 publiée/CI verte, gzip lot 70 développé,
+contrat de suite retenu le 5 octobre 2026. Importeur et manifest non implémentés.
 
 ## Décision et séparation des étapes
 
@@ -48,7 +48,31 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 
 ## Limites actuelles
 
-Seule la brique d'inspection normale existe. Pas encore d'ouverture de fichiers,
-gzip, import_run, ingestion, CLI, déduplication ni garantie de snapshot. Les tests
+Les briques d'inspection normale/gzip existent. Pas encore d'ouverture de fichiers,
+import_run, ingestion, CLI, déduplication ni garantie de snapshot. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
+
+## Prévalidation gzip du lot 70
+
+InspectGzip utilise compress/gzip en mode multistream par défaut : chaque membre
+et son trailer CRC/taille puis EOF final doivent réussir. Le digest porte seulement
+sur les octets décompressés, quel que soit le nom/en-tête, niveau ou recompression.
+Gzip vide valide rend le digest vide ; entrée compressée vide sans en-tête échoue.
+Suffixe partiel signalé comme dans InspectPlain. Pas de succès d'import implicite.
+
+GzipLimits exige trois limites entières positives : octets décompressés, octets
+compressés (en-têtes compris) et ratio maximum. Deux budgets indépendants jusqu'à
+limite+1 au niveau de leurs Reader, mémoire fixe ; les prélectures internes restent
+distinctes des octets livrés. Contrôle du ratio après chaque lecture décompressée
+sur les octets compressés consommés, prélecture comprise. Division/reste évitent
+le débordement d'une multiplication. Un préfixe trop expansif est refusé même si
+un membre ultérieur peu compressible aurait abaissé le ratio final.
+
+Le lecteur compressé vérifie contexte/budget/n valide et borne 100 lectures vides :
+la lecture d'en-tête gzip via io.ReadFull peut autrement boucler avant toute sortie.
+Le décodeur est fermé et sa cause jointe sur retour ; l'input reste à l'appelant.
+Erreurs/CRC/troncature/junk/limites/annulation ne rendent aucune métadonnée complète.
+Tests synthétiques : identité normal/gzip/recompression, membres successifs,
+second membre corrompu, CRC/taille/header/troncature/junk, budgets/ratio, contexte,
+reader invalide et sans progrès. Exécution CI à vérifier après publication.
