@@ -158,8 +158,10 @@ vers un fichier régulier suivent la même observation physique que `ObservePath
 
 Erreur, propriétaire fermé/invalide, chemin non régulier ou annulation : résultat
 vide, cause conservée et propriété des fichiers conservée pour nettoyage par
-l'appelant. Ni ouverture/lecture/seek/fermeture, consommation, changement de grâce,
-transition ni transfert. Les snapshots ne sont pas atomiques et `known` ne
+l'appelant. Aucune lecture de données/seek/fermeture des descripteurs détenus,
+consommation, changement de grâce, transition ni transfert. Sur Windows, un handle
+temporaire de métadonnées est ouvert puis fermé pour capturer les IDs du chemin.
+Les snapshots ne sont pas atomiques et `known` ne
 revalide ni checkpoint ni intégrité : contrôles de suivi restent nécessaires.
 Une nouvelle génération exigera ouverture vérifiée, acquisition et contrôle de
 capacité ; raccordement au démarrage reste un lot distinct.

@@ -30,8 +30,10 @@ type FollowCurrent struct {
 // carries no usable identity. Invalid/closed sets and filesystem errors return
 // no result. The caller keeps ownership, including on failure.
 //
-// Only metadata is inspected: no open/read/seek/close, normalization, transition
-// or scheduler transfer. All descriptors are checked, so an unusable second
+// Only metadata is inspected: no data reads/seeks, closure of owned descriptors,
+// normalization, transition or scheduler transfer. On Windows, a temporary
+// metadata handle is opened and closed to capture path IDs. All descriptors are
+// checked, so an unusable second
 // descriptor cannot be silently ignored. Checks are not atomic or proof of
 // checkpoint continuity. Serialize set use and source state writes until
 // application, and recheck the path when opening/adopting the current file.

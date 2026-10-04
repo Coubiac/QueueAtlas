@@ -11,8 +11,8 @@ seront réévaluées après sa fusion ; AD/OIDC reste après MVP.
 ## Avancement du jalon M2
 
 M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
-PR #11 développée et en revue ; lot 53 termine la revue de réouverture.
-Restent observation du courant, transfert, préparation/reprise orchestrée et Run,
+PR #11 développée et en revue ; lot 54 termine la revue d'observation du courant.
+Restent transfert, préparation/reprise orchestrée et Run,
 puis validation finale et fusion. Ces domaines seront traités en petits lots avec
 un résultat précis ; le numéro de lot compte aussi les revues et corrections.
 Critère de fin du chantier : chemins restants revus, défauts corrigés, CI verte et
@@ -21,6 +21,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 54 : ObserveCurrent relu sur `c7623d2`, sans blocage d'exécution ; commentaire
+  et ADR précisés pour les handles metadata Windows. Rapport partie 14, quatre tests
+  ciblés Windows réussis. Prochaine revue : transfert connu et refus missing.
 - Lot 53 : réouverture/propriété de l'ensemble localisé relues sur
   `a04afbb42fa93a678a4316017ba8b019f0a70894`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-13.md`, code inchangé et tests portables Windows
@@ -2067,15 +2070,24 @@ Limites : namespace garanti par l'appelant, écritures sérialisées, snapshots 
 atomiques ; propriétaire à ne pas copier/utiliser concurremment. Reprise persistante
 Linux seulement. PR reste en brouillon ; critère de fin et reste M2 indiqués en tête.
 
-## Prochain petit lot : revue FileSource — observation du courant
+## Lot 54 terminé : observation du courant
 
-Reprendre sur #11 basée sur main. Quatorzième partie : OpenedFollowSet.ObserveCurrent,
-inspection de tout l'ensemble avant comparaison au chemin absolu, origine/identité
-distinctes, décisions known/missing/new/capacity. Vérifier absence d'ouverture de
-troisième fichier, de consommation/écriture/transfert et conservation du propriétaire
-sur erreur/annulation. Auditeur indépendant en lecture seule ; régressions des défauts
-concrets. Transfert et préparation orchestrée/Run restent des lots suivants ; ne pas
-déclarer toute #11 validée après cette quatorzième partie.
+Référence c7623d21c63e3c2ba0d21dd0ddbd84564bd3b8df, coordinateur et auditeur indépendant.
+Pas de blocage d'exécution ; tous fichiers inspectés, known/missing/new/capacity et
+propriétaire préservé vérifiés. Commentaire/ADR précisés : handle metadata temporaire
+Windows, pas lecture de données/fermeture des fichiers détenus. Rapport partie 14.
+Quatre tests TestObserveCurrent* -count=1 et diff Windows réussis. Intégrations Linux
+relues et exécutées par CI de référence 37221250736 verte, pas localement. CI de
+publication sur PR #11. Limites : observations non atomiques, known sans preuve de
+continuité ; état/set sérialisés, décision à revérifier. PR toujours en brouillon.
+
+## Prochain petit lot : transfert connu et refus du courant absent
+
+Lot 55 / partie 15 : FollowOpened/applyOpened branches known/missing, recontrôle du
+chemin/origine/source, garde partagée, propriétaire conservé sur refus avant transfert,
+collection vidée avant scheduler, statut et nettoyage exclusif après transfert.
+Missing exige décision canonique et observation actualisée, sans attente/open/commit.
+Auditeur indépendant en lecture seule ; nouveau courant et préparation/Run séparés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
