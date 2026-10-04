@@ -359,7 +359,8 @@ de la lacune, aucune récupération automatique ni preuve atomique de continuit�
 
 ## Récupération explicite d'un courant inconnu — cadrage lot 61
 
-Décision de cadrage, pas encore implémentée. Ajouter une opération standalone
+Décision de cadrage ; seule la classification sans journal est implémentée au lot 62.
+Ajouter une opération standalone
 `FileSource.RecoverUnknownCurrent(ctx, originID, sink) error`. Son invocation et
 l'ID exact constituent une autorisation explicite de lifecycle, distincte de
 `ResumePolicy.AllowZeroCheckpoint`. Elle ne démarre aucun suivi ni lecture de ligne ;
@@ -405,6 +406,12 @@ application explicite et tests de crash/ACK, puis clôture. Tests utiles : limit
 concurrents avant disque, ID/copies, mismatch/missing, ACK perdu, annulation avant/après
 ACK, erreur Close après succès durable et refus de réactivation retired. Revue
 indépendante intégrée à chaque lot ; pas de modification du stockage nécessaire.
+
+LoadRecoveryOrigin implémenté : réutilise LoadPathOrigins entier, rend unknown ou
+following et copie de métadonnées uniquement pour une cible unique correspondante.
+Limit sans candidat ; invalid_state prioritaire sur conflict, cible retired/concurrents
+et ID discordant donnent conflict, aucune non-retired sans cible retired donne absent.
+Nil/zéro restent non vérifiés. Aucun accès journal ou écriture, aucun raccordement Run.
 
 ## Limites
 

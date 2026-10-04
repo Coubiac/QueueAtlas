@@ -13,14 +13,17 @@ dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
 
 M1 (parseurs), socle SQLite M2 et FileSource sont fusionnés dans main. PR #11 clôturée
 au lot 60, synthèse de 19 parties et CI de tête verte. Chantier suivant : récupération
-explicite d'un unknown courant unique, cadrage lot 61 dans ADR-009, puis classification,
-preuves/ouverture et application en lots distincts avec revue intégrée.
+explicite d'un unknown courant unique, cadrage lot 61 et classification lot 62 dans
+ADR-009, puis preuves/ouverture et application en lots distincts avec revue intégrée.
 Critère de fin : refus sûrs, preuves, transition seule et réessai/ACK vérifiés,
 CI verte et PR du chantier fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 62 : LoadRecoveryOrigin implémenté/relu indépendamment, trois tests ciblés
+  Windows, go test ./..., go vet ./... et diff réussis. Rapport PR #12 ; aucune
+  ouverture/preuve/transition encore. Prochaine : ouverture et preuves du courant.
 - Lot 60 terminé : [PR #11](https://github.com/Coubiac/mailtrace/pull/11) fusionnée
   dans main sur `27b9d98bba1f51749f10e8b9930e9c4da0302068`, après CI finale
   37222534218 verte sur `12eba5a`. Résultat GitHub et origin/main vérifiés.
@@ -29,7 +32,8 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 - Lot 61 terminé : contrat standalone RecoverUnknownCurrent cadré et relu
   indépendamment, aucun comportement encore implémenté. Branche
   `codex/m2-unknown-recovery` depuis ce main ; documentation/estimation mises à jour.
-  Diff propre ; CI de publication à consulter sur la PR du nouveau chantier.
+  Diff propre ; [CI de publication réussie](https://github.com/Coubiac/mailtrace/actions/runs/37241041999),
+  commit `51933e0d03f00ff7b3896f993cd7eaf22486c403`, PR #12 en brouillon.
 - Lot 59 : New/Run/configuration relus sur `c1782f7`, sans blocage concret.
   Deux tests portables Windows réussis, concurrence réservée Linux/CI verte.
   Rapport partie 19 ; code inchangé. Limite retired zéro explicitée dans ADR-009.
@@ -2180,15 +2184,23 @@ Acquittement perdu/annulation/fermeture sans compensation ; reader/Sink même st
 écritures sérialisées. Zéro lifecycle n'autorise pas implicitement son replay par Run.
 Pas d'implémentation ni nouveau test sur ce lot de cadrage. README/avancement mis à jour :
 quatre jalons restants, environ 50–90 lots après lot 60, M2 8–18, premier chantier 4–5.
-Diff propre ; CI de publication à vérifier sur la PR du chantier avant lot 62.
+Diff propre ; CI 37241041999 verte sur `51933e0`, PR #12 créée et attachée.
+
+## Lot 62 terminé : classification entière sans journal
+
+LoadRecoveryOrigin implémenté sur base `51933e0`, relu indépendamment sans blocage.
+Unique non-retired ID demandé, unknown/following seulement ; invalides, retired cible,
+concurrents/ID discordant et limite refusés sans candidat. Copies et nil/zéro bruts,
+erreurs/annulation résultat vide, aucune ouverture/écriture. Rapport docs/reviews/pr-12.md.
+Trois tests ciblés Windows, suite locale/vet/diff réussis ; CI de publication à vérifier
+sur #12. Limites reader/namespace et pages non atomiques, écritures à sérialiser.
 
 ## Prochaine action concrète
 
-Lot 62 : classifier sans accès journal un parcours complet LoadPathOrigins pour
-source/chemin/ID demandé. Accepter unique non-retired unknown ou following (réessai),
-refuser invalides, retired cible, ID discordant, concurrents et limites sans candidat.
-Copies détenues, erreurs/annulation zéro résultat, compte des retraités dans le budget.
-Tests portables utiles et revue intégrée ; ouverture/preuves/application séparées.
+Lot 63 : préparation interne possédant le courant ouvert, copie du candidat classé,
+preuves positif/zéro canonique non vide via VerifyCandidateWithPolicy puis PathSame,
+aucune lecture de ligne/Seek/écriture. Erreurs/annulation ferment tout ; propriétaire
+retourné opaque avec Close idempotent. Application et opération publique au lot suivant.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-unknown-recovery.
 
