@@ -98,7 +98,7 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `7b8f9d12d583228c7595674897a81572f364c046`, toujours dans la PR #11.
 - Vingt-cinquième lot FileSource (stockage) : ADR-009, état durable inconnu/en
   suivi/retiré, migration SQLite v2 et transitions attendues/idempotentes dans
-  `Sink.Commit`, toujours dans la PR #11.
+  `Sink.Commit`, commit `b30b8748a66eabbc14cc9f2cfe271615bef9dbbc`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -209,8 +209,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie : tests Linux (Go 1.26.x/stable), pagination/budget/alias et intégration
   SQLite sur 101 états, détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot état de suivi : `go test ./...`, `go vet ./...` et
-  compilation des tests SQLite Linux amd64 sans CGO réussis. Exécution Linux,
-  détecteur de courses FileSource et builds : CI à vérifier après publication.
+  compilation des tests SQLite Linux amd64 sans CGO réussis.
+  [CI état de suivi](https://github.com/Coubiac/mailtrace/actions/runs/37172442015)
+  réussie : tests Linux (Go 1.26.x/stable), migration v1/v2 et rollback des
+  transitions/checkpoints, détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
