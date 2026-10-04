@@ -4,29 +4,42 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Prévision après le lot 60 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
-50–90 petits lots jusqu'au MVP, dont 8–18 pour M2. PR #11 fusionnée après sept lots
-de clôture ; prochain chantier récupération explicite : environ 4–5 lots, inclus
-dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
+Prévision après le lot 65 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
+50–90 petits lots jusqu'au MVP, dont 8–16 pour M2. PR #12 fusionnée après cinq lots
+de récupération explicite ; chantier suivant start_at:end : environ trois lots,
+inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
 M1 (parseurs), socle SQLite M2 et FileSource sont fusionnés dans main. PR #11 clôturée
 au lot 60, synthèse de 19 parties et CI de tête verte. Chantier suivant : récupération
-explicite d'un unknown courant unique, cadrage lot 61 et classification lot 62 dans
-ADR-009, preuves/ouverture lot 63 et application lot 64 avec revue intégrée. Opération
-de bibliothèque développée, CI du lot 64 verte et synthèse finale lot 65 sans blocage.
-Publication/CI de clôture puis fusion de #12 restent à vérifier.
-Critère de fin : refus sûrs, preuves, transition seule et réessai/ACK vérifiés,
+explicite d'un unknown courant unique, lots 61–65, PR #12 fusionnée et CI main verte.
+Opération de bibliothèque seule, sans CLI/service. Lot 66 : capture bornée du
+départ initial à EOF et ADR-010 ; configuration/registration/Run développés au lot 67,
+CI du lot 67 verte et synthèse finale lot 68 sans blocage ; clôture/fusion à vérifier.
+Critère de fin : frontière initiale complète, historique explicitement ignoré,
+appends/reprises/rotations et réessai/ACK vérifiés,
 CI verte et PR du chantier fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
-- Lot 65 : synthèse indépendante sur `31520075b7fc9ad18a30c23ace1a7c3dd356d96b`,
-  aucun blocage identifié ; anciens composants/dépendances/CI inchangés, diff propre.
-  CI 37242113816 verte, Linux réellement exécuté ; clôture documentaire prête,
-  publication/CI finale et fusion attendues, pas encore constatées dans ce commit.
+- Lot 68 : synthèse indépendante sur `564ad5ae876636fce98316b928252b86e13f447d`
+  sans blocage, anciens composants hors intégration/deps/CI inchangés ; diff propre.
+  CI 37243261005 verte, nouveaux tests Linux/race/builds exécutés. Clôture documentaire
+  prête ; publication/CI finale puis fusion attendues, pas encore constatées ici.
+- Lot 67 : intégration initiale développée/relue sans blocage, tests portables/suite/vet/diff
+  Windows et compilation des tests Linux réussis. Publié `564ad5a`, CI Linux
+  37243261005 verte (tests, race, builds sans CGO et Windows chemins).
+- Lot 66 : capture privée d'EOF complet implémentée, trois tests portables Windows,
+  suite/vet/diff et revue indépendante réussis ; publié `daa35f1a5872bd1880e0ba471b009eef56598f2e`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37242844389), PR #13.
+  Run inchangé, aucun saut à EOF encore activable. Prochain : intégration initiale.
+- Lot 65 terminé : [PR #12](https://github.com/Coubiac/mailtrace/pull/12) fusionnée
+  avec tête `ca5db281d776e9e5c27874386212d78f520eedbc`, CI 37242452694 verte.
+  Main `69dfe6bb056e4de326f2d77fc8aaf3433c2bf8b3` vérifié ;
+  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37242571458),
+  vérifiée via API REST publique. Branche suivante `codex/m2-start-at-end` depuis main.
 - Lot 64 : RecoverUnknownCurrent développé/relu, test portable onze cas, suite/vet/diff
   et compilation Linux réussis. Application seule sans ingestion, ACK/réessai couvert
   par tests Linux exécutés en CI 37242113816 verte. Prochaine : validation/fusion #12.
@@ -2239,22 +2252,60 @@ refus retired et séparation lifecycle/replay zéro cohérents avec ADR-009.
 CI 37242113816 terminée avec succès : tests Linux, vet, race, builds sans CGO et
 Windows chemins. Diff propre ; pas de test relancé sans modification d'exécution.
 Rapport intégré complété et récupération unique retirée des travaux futurs.
-Ce commit prépare la clôture ; vérifier sa publication/CI avant ready et fusion.
+Clôture `ca5db281d776e9e5c27874386212d78f520eedbc` publiée, CI 37242452694 verte,
+ready puis fusion #12 avec tête attendue. Main `69dfe6b`/CI 37242571458 verte vérifiés.
+
+## Lot 66 : capture privée du départ initial à EOF
+
+Résultat attendu : une taille de descripteur capturée, ancre bornée de 4096 octets
+maximum sans Seek, LF final exigé, pas d'écriture ni lecture de lignes. Implémenté
+avec zéro vide canonique, append hors snapshot ignoré, EOF partiel refusé explicitement,
+erreurs/troncature/cancel sans résultat. ADR-010 définit le futur bootstrap initial
+sans historique, distinct des reprises et rotations ; ces chemins restent inchangés.
+Trois tests Windows -count=1, suite/vet/diff réussis. Test de fichier fermé adapté
+à l'erreur Stat Windows (invalid handle, pas fs.ErrClosed garanti). Revue indépendante
+sans blocage, rapport pr-13.md ; obligation vide→append depuis zéro précisée pour 67.
+Publié `daa35f1`, PR #13 créée/attachée, CI 37242844389 verte.
+
+## Lot 67 : départ initial end intégré
+
+Résultat attendu : Config.StartAt validé/copié, saut end seulement sur bootstrap
+sans historique de chemin et sélection physique absente, transaction origine/CP
+positif sans observation. Reprise/rotations et attente vide restent au bon offset.
+Implémenté : Examined de parcours Absent inclut retired ; end uniquement si zéro,
+retired/historique physique Different gardent beginning ; candidats/reprise inchangés.
+Après vide, mode local beginning avant prochain poll, pas de recapture du nouvel EOF.
+Trois tests ciblés Windows New/PrepareFollowResume, suite/vet/diff et compilation
+Linux sans CGO réussis. Cinq tests Linux relus par coordinateur et exécutés par CI :
+bootstrap/append/reprise, vide/append, partial/unknown, historique/rotation et ACK/erreurs.
+Revue indépendante sans blocage ni test supplémentaire nécessaire identifié ;
+rapport intégré pr-13.md. Publié `564ad5ae876636fce98316b928252b86e13f447d`,
+CI 37243261005 verte : tests Linux/race/builds et Windows chemins réellement exécutés.
+
+## Lot 68 : synthèse et clôture start_at:end
+
+Checkout isolé sur `564ad5a`, propre/diff propre. Revue indépendante : code identique
+aux revues 66–67, seul commentaire Run ajouté ensuite ; aucun blocage concret.
+ADR/rapport couvrent bootstrap seul, frontière complète, attente vide, reprise et
+rotation sans saut, ACK/erreurs. Critère de fin/suite future corrigés dans la reprise.
+CI 37243261005 verte sur référence exacte, trois jobs terminés avec succès. Aucun
+test relancé sans changement runtime. Ce commit prépare la clôture ; publication/CI
+finale requises avant ready et fusion attendue sur tête exacte.
 
 ## Prochaine action concrète
 
-Publier le lot 65, confirmer CI verte de tête, passer #12 ready/fusion sur tête
-exacte puis vérifier main. Lot suivant : cadrer le démarrage explicite start_at:end
-du suivi #4, avant l'import #5 ; revoir l'avancement après fusion.
+Publier le lot 68, vérifier CI de tête puis ready/fusion #13 et CI main.
+Lot 69 : cadrage de l'import #5 et validation bornée du contenu normal avant ingestion,
+sans mélanger source, stockage du manifest et interface dans un même lot.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-unknown-recovery.
+pour la tête publiée du nouveau chantier ; principal sur codex/m2-start-at-end.
 
 ## Suite à découper au fil des reprises
 
-1. Démarrage explicite start_at:end et compléments du suivi #4.
+1. Import historique normal, puis gzip dans un lot distinct.
 2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
    ensembles multiples ; diagnostics/compléments du suivi #4.
-3. Import historique normal, puis gzip dans un lot distinct.
+3. Application CLI/service et métriques au jalon adapté.
 
 Chaque demande de continuation traite par défaut un seul petit lot et actualise
 ce point de reprise avec le résultat et la prochaine action.

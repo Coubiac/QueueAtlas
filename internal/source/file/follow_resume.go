@@ -23,9 +23,10 @@ const (
 )
 
 type FollowResume struct {
-	Status  FollowResumeStatus
-	Opened  *OpenedFollowSet // caller-owned, only on Ready; must close or transfer
-	Current FollowCurrent    // Known/New only on Ready; reobserve before transfer
+	Status   FollowResumeStatus
+	Examined int              // complete path scan count on Absent, including retired history
+	Opened   *OpenedFollowSet // caller-owned, only on Ready; must close or transfer
+	Current  FollowCurrent    // Known/New only on Ready; reobserve before transfer
 }
 
 // PrepareFollowResume composes bounded lifecycle loading, whole-set location,
@@ -81,7 +82,7 @@ func prepareFollowResumeWithPolicy(ctx context.Context, identity source.Identity
 	}
 	switch origins.Status {
 	case FollowOriginsAbsent:
-		return FollowResume{Status: FollowResumeAbsent}, nil
+		return FollowResume{Status: FollowResumeAbsent, Examined: origins.Examined}, nil
 	case FollowOriginsUnknown:
 		return FollowResume{}, ErrUnknownFollowState
 	case FollowOriginsInvalidState:

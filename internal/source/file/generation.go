@@ -38,11 +38,22 @@ func EnsureGeneration(ctx context.Context, f *os.File, identity source.Identity,
 // EnsureGenerationWithPolicy can return a zero replay decision without writing
 // an origin or checkpoint. All other registration rules remain unchanged.
 func EnsureGenerationWithPolicy(ctx context.Context, f *os.File, identity source.Identity, reader source.StateReader, sink source.Sink, policy ResumePolicy) (GenerationStart, error) {
+	return ensureGenerationWithStart(ctx, f, identity, reader, sink, policy, StartAtBeginning)
+}
+
+// Only Run's bootstrap grants end after a complete path scan without history.
+// A physical selection with any history keeps the existing beginning/resume
+// rules, even if the configured path itself has no registered origin yet.
+func ensureGenerationWithStart(ctx context.Context, f *os.File, identity source.Identity, reader source.StateReader, sink source.Sink, policy ResumePolicy, startAt StartAt) (GenerationStart, error) {
 	if err := ctx.Err(); err != nil {
 		return GenerationStart{}, err
 	}
 	if identity.ID == "" || identity.Kind != "file" || identity.Name == "" || sink == nil {
 		return GenerationStart{}, errors.New("file source ID, name and sink are required")
+	}
+	mode, err := resolveStartAt(startAt)
+	if err != nil {
+		return GenerationStart{}, err
 	}
 	selection, err := SelectResumeWithPolicy(ctx, f, identity.ID, reader, policy)
 	if err != nil {
@@ -66,6 +77,18 @@ func EnsureGenerationWithPolicy(ctx context.Context, f *os.File, identity source
 	if f.Name() == "" {
 		return GenerationStart{}, errors.New("file path is required")
 	}
+	var anchor CheckpointAnchor
+	initialEnd := mode == StartAtEnd && selection.Status == SelectionAbsent
+	if initialEnd {
+		anchor, err = captureInitialEnd(ctx, f)
+		if err != nil {
+			return GenerationStart{}, err
+		}
+		if anchor.Offset == 0 {
+			result.WaitingForContent = true
+			return result, nil
+		}
+	}
 	prefix, err := CapturePrefix(f)
 	if err != nil {
 		return GenerationStart{}, err
@@ -77,9 +100,11 @@ func EnsureGenerationWithPolicy(ctx context.Context, f *os.File, identity source
 		result.WaitingForContent = true
 		return result, nil
 	}
-	anchor, err := CaptureAnchor(f, 0)
-	if err != nil {
-		return GenerationStart{}, err
+	if !initialEnd {
+		anchor, err = CaptureAnchor(f, 0)
+		if err != nil {
+			return GenerationStart{}, err
+		}
 	}
 	var token [16]byte
 	if _, err := rand.Read(token[:]); err != nil {
@@ -90,7 +115,7 @@ func EnsureGenerationWithPolicy(ctx context.Context, f *os.File, identity source
 		Device: id.Device, Inode: id.Inode, Fingerprint: prefix.String(),
 		FirstSeen: time.Now().UTC(),
 	}
-	position := source.Position{OriginID: origin.ID, Offset: 0, AnchorHash: anchor.String()}
+	position := source.Position{OriginID: origin.ID, Offset: anchor.Offset, AnchorHash: anchor.String()}
 	if err := ctx.Err(); err != nil {
 		return GenerationStart{}, err
 	}

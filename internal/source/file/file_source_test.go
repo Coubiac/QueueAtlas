@@ -35,7 +35,7 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 		return source.OriginPage{}, nil
 	})
 	path := filepath.Join(t.TempDir(), "not-created.log")
-	for _, kind := range []string{"ID", "kind", "name", "path", "reader", "normalizer", "interval short", "interval long", "grace short", "grace long", "origins negative", "origins high", "entries negative", "entries high"} {
+	for _, kind := range []string{"ID", "kind", "name", "path", "reader", "normalizer", "interval short", "interval long", "grace short", "grace long", "origins negative", "origins high", "entries negative", "entries high", "start mode"} {
 		cfg, stateReader, normalize := sourceConfig(path), source.StateReader(reader), Normalize(testNormalizer)
 		switch kind {
 		case "ID":
@@ -66,6 +66,8 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 			cfg.ResumeLimits.Entries = -1
 		case "entries high":
 			cfg.ResumeLimits.Entries = MaxFollowLocationEntries + 1
+		case "start mode":
+			cfg.StartAt = "unrecognized"
 		}
 		if s, err := New(cfg, stateReader, normalize); s != nil || err == nil {
 			t.Fatalf("invalid %s accepted", kind)
@@ -74,8 +76,17 @@ func TestNewFileSourceValidatesWithoutOpeningOrWriting(t *testing.T) {
 	cfg := sourceConfig(path)
 	cfg.PollInterval = 0
 	s, err := New(cfg, reader, testNormalizer)
-	if err != nil || s.ID() != cfg.Identity.ID || s.config.RotationGrace != DefaultRotationGrace || s.config.ResumeLimits != (FollowResumeLimits{Origins: MaxPathOrigins, Entries: MaxFollowLocationEntries}) {
+	if err != nil || s.ID() != cfg.Identity.ID || s.config.StartAt != StartAtBeginning || s.config.RotationGrace != DefaultRotationGrace || s.config.ResumeLimits != (FollowResumeLimits{Origins: MaxPathOrigins, Entries: MaxFollowLocationEntries}) {
 		t.Fatalf("valid config: %v, %v", s, err)
+	}
+	cfg.StartAt = StartAtEnd
+	endSource, err := New(cfg, reader, testNormalizer)
+	if err != nil || endSource.config.StartAt != StartAtEnd {
+		t.Fatal("end configuration rejected", err)
+	}
+	cfg.StartAt = StartAtBeginning
+	if endSource.config.StartAt != StartAtEnd {
+		t.Fatal("start mode was borrowed")
 	}
 	cfg.Identity.ID, cfg.Path = "changed", "changed.log"
 	if s.ID() != fileSourceIdentity().ID {

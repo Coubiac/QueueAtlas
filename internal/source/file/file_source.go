@@ -16,6 +16,7 @@ type Config struct {
 	Path          string
 	PollInterval  time.Duration // zero selects DefaultPollInterval
 	RotationGrace time.Duration // zero selects DefaultRotationGrace
+	StartAt       StartAt       // empty selects beginning; end only at a fresh bootstrap
 	ResumePolicy  ResumePolicy
 	ResumeLimits  FollowResumeLimits // each zero selects its bounded maximum
 }
@@ -68,6 +69,10 @@ func New(cfg Config, reader source.StateReader, normalize Normalize) (*FileSourc
 	if err != nil {
 		return nil, err
 	}
+	cfg.StartAt, err = resolveStartAt(cfg.StartAt)
+	if err != nil {
+		return nil, err
+	}
 	if cfg.ResumeLimits.Origins == 0 {
 		cfg.ResumeLimits.Origins = MaxPathOrigins
 	}
@@ -97,6 +102,10 @@ func (s *FileSource) ID() string { return s.config.Identity.ID }
 // absence of following states uses current-file startup; explicit zero policy
 // also permits one verified following generation at zero on the current path,
 // never unknown lifecycle or replay of multiple following generations.
+// StartAtEnd applies only to a bootstrap without any path/physical history, at
+// a complete LF boundary. A partial final line is refused. After waiting on an
+// initially empty file, appends are consumed from zero. Resumes and rotations
+// never inherit the initial end mode.
 // Reopened sets are closed on every failure, before or after scheduler transfer.
 // Run reopens and reconsiders an initially empty file after each cancellable
 // wait. Once a generation is usable, it follows all opened generations, retaining
@@ -133,15 +142,22 @@ func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 	if resume.Status != FollowResumeAbsent {
 		return ErrInvalidFollowOrigins
 	}
+	startAt := StartAtBeginning
+	if resume.Examined == 0 {
+		startAt = s.config.StartAt
+	}
 	for {
 		f, _, err := OpenLog(ctx, s.config.Path)
 		if err != nil {
 			return err
 		}
-		waiting, err := s.runOpened(ctx, f, sink)
+		waiting, err := s.runOpenedWithStart(ctx, f, sink, startAt)
 		if err != nil || !waiting {
 			return err
 		}
+		// An initially empty descriptor chose offset zero. Appends seen after
+		// waiting must be consumed, never recaptured as a new end to skip.
+		startAt = StartAtBeginning
 		if err := waitForPoll(ctx, s.config.PollInterval); err != nil {
 			return err
 		}
@@ -156,7 +172,11 @@ func (s *FileSource) runPreparedResume(ctx context.Context, resume FollowResume,
 }
 
 func (s *FileSource) runOpened(ctx context.Context, f *os.File, sink source.Sink) (waiting bool, err error) {
-	ingestor, waiting, err := s.prepareGeneration(ctx, f, sink)
+	return s.runOpenedWithStart(ctx, f, sink, StartAtBeginning)
+}
+
+func (s *FileSource) runOpenedWithStart(ctx context.Context, f *os.File, sink source.Sink, startAt StartAt) (waiting bool, err error) {
+	ingestor, waiting, err := s.prepareGenerationWithStart(ctx, f, sink, startAt)
 	if err != nil || waiting {
 		return waiting, errors.Join(err, f.Close())
 	}
@@ -164,7 +184,11 @@ func (s *FileSource) runOpened(ctx context.Context, f *os.File, sink source.Sink
 }
 
 func (s *FileSource) prepareGeneration(ctx context.Context, f *os.File, sink source.Sink) (*Ingestor, bool, error) {
-	start, err := EnsureGenerationWithPolicy(ctx, f, s.config.Identity, s.reader, sink, s.config.ResumePolicy)
+	return s.prepareGenerationWithStart(ctx, f, sink, StartAtBeginning)
+}
+
+func (s *FileSource) prepareGenerationWithStart(ctx context.Context, f *os.File, sink source.Sink, startAt StartAt) (*Ingestor, bool, error) {
+	start, err := ensureGenerationWithStart(ctx, f, s.config.Identity, s.reader, sink, s.config.ResumePolicy, startAt)
 	if err != nil {
 		return nil, false, err
 	}

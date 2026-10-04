@@ -115,7 +115,7 @@ func TestPrepareFollowResumeClassifiesBeforeFilesystem(t *testing.T) {
 				t.Fatal("unexpected state page count", calls)
 			}
 			if absent {
-				if err != nil || result != (FollowResume{Status: FollowResumeAbsent}) {
+				if err != nil || result != (FollowResume{Status: FollowResumeAbsent, Examined: len(states)}) {
 					t.Fatal("absent opened filesystem or returned a set", result, err)
 				}
 				return
