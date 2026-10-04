@@ -1534,15 +1534,54 @@ source à sérialiser ; aucune reprise copytruncate automatique. Gzip/lacunes et
 revue de sécurité indépendante restent à développer, aucune dépendance/migration
 ajoutée. Ce lot raccorde le redémarrage, sans interface ou corrélation ajoutée.
 
-## Prochain petit lot : diagnostic explicite d'une génération en suivi introuvable
+## Lot 37 : diagnostic de lacune de reprise
 
-Reprendre sur codex/m2-file-source, conserver PR #11. Distinguer une génération
-persistée en suivi introuvable au redémarrage d'une source sans historique ou d'un
-courant temporairement absent. Diagnostic de lacune fixe, sans marquer artificiellement
-retiré ou reprendre seulement les fichiers restants ; checkpoints/provenance conservés.
-Réutiliser les décisions de localisation existantes et tester le refus sans lecture
-du nouveau courant, puis la reprise lorsque l'archive synthétique est restaurée.
-La récupération explicite des checkpoints zéro/inconnus sera un lot séparé.
+PrepareFollowResume/Run associe ErrFollowResumeGap aux localisations terminées
+absent/different d'une génération persistée en suivi. FollowResumeGapError a un
+message fixe sans chemin/ID/offset/contenu et garde le ResumeDecisionError original
+accessible par errors.As. La classification ne change pas SelectRotation ou
+LocateFollowOrigins standalone ni les diagnostics unknown/capacité/missing.
+
+Sans historique (ou tout retiré) : absence complète, démarrage courant autorisé.
+Générations localisées mais courant absent : ErrCurrentMissing. Aucune génération
+vérifiée localisable : lacune de reprise ; pas de lecture du nouveau courant ni
+d'un sous-ensemble, reset ou retrait artificiel. Checkpoints/provenance/lifecycle
+conservés pour revérification après restauration. Insufficient/ambiguous/limit et
+erreurs filesystem ne sont pas convertis en lacune confirmée.
+
+Tests portables : seuls absent/different classifiés, message stable, codes originaux
+via errors.As, diagnostics insufficient/ambiguous/limit distincts et aucune confusion
+avec missing. Linux SQLite : archive conservée seule absente, premier/second de
+deux fichiers absent (y compris après première localisation réussie), courant
+disponible jamais ingéré pendant refus ; état inchangé, aucune normalisation/écriture,
+garde et FDs libérés. Archive synthétique déplacée hors du répertoire puis restaurée
+en conservant son inode : Run reprend les ajouts à offset 4/checkpoint 9 et provenance
+inchangée, nouveau courant seulement après ensemble complet revérifié. Distinction
+source neuve, courant missing après localisation et répertoire vidé avec état durable.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
+et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
+détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
+Dernier état Linux validé : lot 36, commit
+`ddf00f313195df21c8100833842180efe9dbfb74`, CI 37178273467.
+
+Limites : lacune de continuité vérifiable, pas preuve de suppression/perte ni
+quantification des messages manqués ; un fichier réécrit peut donner different.
+Budget et exclusions gzip/liens applicables, fenêtres/pages non atomiques. Diagnostic
+non persisté dans SQLite ; récupération explicite des états inconnus/zéro encore
+à développer. Pas de migration/dépendance ajoutée, revue indépendante encore requise.
+
+## Prochain petit lot : reprise zéro explicite d'une génération en suivi unique
+
+Reprendre sur codex/m2-file-source, conserver PR #11 et ADR-009. Appliquer une
+politique explicitement activée de reprise à zéro au cas limité d'une seule
+génération durable en suivi, courant physiquement concordant et checkpoint/ancre
+zéro canoniques avec préfixe non vide concordant. Réutiliser les vérificateurs de
+ResumePolicy, sans reset de provenance/checkpoint ni acquisition répétée. Mode
+strict inchangé ; refuser les ensembles multiples, les preuves nil/invalides, les
+inconnus de lifecycle et les divergences. Tester le scénario d'arrêt après acquisition
+avant première ligne, puis replay explicite et acquittement positif. La récupération
+des lifecycle inconnus et l'import gzip restent des lots distincts.
 
 ## Suite à découper au fil des reprises
 

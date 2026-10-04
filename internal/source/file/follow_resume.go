@@ -35,8 +35,11 @@ type FollowResume struct {
 // journal and does not itself start a fresh generation.
 //
 // Unknown/invalid lifecycle, capacity, limits and non-unique locations stop with
-// fixed diagnostics, never an implicit fallback or partial usable result. Missing
-// current stops with ErrCurrentMissing; a distinct third file stops with
+// fixed diagnostics, never an implicit fallback or partial usable result.
+// Unavailable verified generations (completed location scan Absent/Different)
+// yield ErrFollowResumeGap, retaining the precise ResumeDecisionError underneath.
+// Insufficient/ambiguous/limited scans and filesystem errors do not claim a gap.
+// Missing current stops with ErrCurrentMissing; a distinct third file stops with
 // ErrRotationCapacity before opening it. After reopening, every error/cancellation
 // closes the entire set and returns a zero result, joining cleanup errors.
 //
@@ -83,7 +86,7 @@ func prepareFollowResume(ctx context.Context, identity source.Identity, path str
 		return FollowResume{}, err
 	}
 	if locations.Status != SelectionUnique {
-		return FollowResume{}, &ResumeDecisionError{Status: locations.Status}
+		return FollowResume{}, followLocationError(locations.Status)
 	}
 	opened, err := OpenFollowLocations(ctx, identity, locations, normalize)
 	if err != nil {

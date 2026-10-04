@@ -293,6 +293,30 @@ courant missing au redémarrage bloque, tandis qu'une disparition pendant un sui
 déjà établi conserve le descripteur. Contrôles, pages et écritures non atomiques ;
 écritures d'état à sérialiser par source entre tous les objets.
 
+## Lacune de reprise d'une génération en suivi
+
+Dans PrepareFollowResume/Run, un parcours de localisation terminé sans génération
+vérifiée (SelectionAbsent ou SelectionDifferent) devient FollowResumeGapError.
+ErrFollowResumeGap identifie le diagnostic via errors.Is ; ResumeDecisionError
+reste accessible via errors.As avec son status absent/different. Message fixe
+sans ID d'origine, chemin, offsets ni contenu. Les sélections standalone gardent
+leurs résultats existants ; classification seulement pour un ensemble persisté
+en suivi, jamais pour un parcours lifecycle vide ou entièrement retiré.
+
+Ce diagnostic signifie continuité vérifiée indisponible dans le répertoire/budget
+observé. Il ne prouve ni suppression du fichier ni perte ou nombre de messages :
+un fichier présent mais réécrit peut aussi donner different. Gzip/liens/exclusions
+de recherche et fenêtres bornées restent applicables. Insufficient/ambiguous/limit
+ou erreur filesystem ne sont pas transformés en lacune confirmée ; leur cause
+reste distincte. Courant missing après localisation réussie reste ErrCurrentMissing.
+
+Arrêt sans lire le nouveau courant ou seulement les fichiers encore disponibles,
+sans reset, nouveau checkpoint/origine ni retrait artificiel. État durable et
+provenance conservés ; descripteurs temporaires de recherche fermés. Une restauration
+de la même archive, revérifiée à la reprise suivante, permet de reprendre ses ajouts
+depuis le checkpoint conservé avec le scheduler normal. Pas d'enregistrement durable
+de la lacune, aucune récupération automatique ni preuve atomique de continuité.
+
 ## Limites
 
 Le stockage n'observe ni descripteur, EOF, grâce ni empreinte : l'appelant justifie
