@@ -135,8 +135,9 @@ func Open(ctx context.Context, path string) (*Store, error) {
 
 func (s *Store) Close() error { return s.db.Close() }
 
-// Checkpoint returns a committed position. An absent position asks the source
-// to begin at byte zero unless its explicit configuration says otherwise.
+// Checkpoint returns a committed position. An absent position is distinct from
+// a committed offset zero; it supplies no evidence for an automatic restart.
+// The source must apply its explicit generation and resume policy.
 func (s *Store) Checkpoint(ctx context.Context, sourceID, originID string) (source.Position, bool, error) {
 	var p source.Position
 	err := s.db.QueryRowContext(ctx, `SELECT offset, anchor_hash FROM checkpoints WHERE source_id = ? AND generation_id = ?`, sourceID, originID).Scan(&p.Offset, &p.AnchorHash)

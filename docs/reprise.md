@@ -5,6 +5,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 44 : lecteurs d'état SQLite relus sur
+  `9007404264ba9b4a1a99a8563ce0fb9ab2155f40`, sans blocage d'exécution identifié.
+  Commentaire Checkpoint corrigé (absence distincte de zéro, sans reprise implicite).
+  Rapport `docs/reviews/pr-11-part-4.md`. Prochaine revue : migration/transitions v2.
 - Lot 43 : ouverture/observation relues et substitution Windows corrigée sur
   `cded0a87fd22f96220d3f519cb70b85f55f2cf3b`, CI Linux et nouveau job Windows verts.
   Rapport `docs/reviews/pr-11-part-3.md`. Prochaine revue : lecteurs d'état SQLite.
@@ -1788,15 +1792,35 @@ Consulter la PR #11 pour la CI de publication du point de reprise final.
 UNC distant/liens Windows non testés localement ; observations non atomiques et
 annulation entre syscalls restent des limites. Rotation/Run/lifecycle hors périmètre.
 
-## Prochain petit lot : revue FileSource — lecteurs d'état SQLite
+## Lot 44 terminé : revue FileSource — lecteurs d'état SQLite
 
-Reprendre sur #11 basée sur main. Quatrième lot de revue : internal/storage/sqlite/
-state.go, contrats OriginQuery/OriginPathQuery et tests correspondants, pages bornées,
-ordre/cursor, snapshot par page, checkpoints optionnels et isolation source/chemin.
-Auditeur indépendant en lecture seule ; ajouter uniquement les régressions des
-problèmes concrets. Transitions/migration lifecycle v2, rotation et reprise
-orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11 validée après
-cette quatrième partie.
+Référence 9007404264ba9b4a1a99a8563ce0fb9ab2155f40, coordinateur et auditeur agent
+indépendant : state.go, contrats de requête/page et tests de lecture. Aucun blocage
+concret d'exécution. Paramètres liés, scope source/identité/chemin, ordre/cursor,
+Limit+1 borné, snapshot par page et nil/zéro/positif vérifiés. Commentaire de
+Checkpoint corrigé : l'absence ne propose plus un redémarrage automatique à zéro.
+Rapport docs/reviews/pr-11-part-4.md, aucun comportement modifié ni test ajouté.
+
+Tests TestFileOrigins* sous Windows -count=1 réussis pour les deux relecteurs.
+TestLoadPathOriginsWithSQLiteAndReducedFinalPage -count=1 réussi pour le coordinateur,
+avec 101 origines et plafond 100 sans résultat partiel. git diff --check réussi.
+[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37202460211)
+verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
+et job Windows ciblé chemins. Consulter la PR #11 pour la CI du rapport publié.
+
+Limites : pages sans snapshot global, sérialisation des écritures de source requise ;
+nombre de résultats borné, taille des chaînes et coût SQL non mesurés. Corruption
+ou concurrence non injectées localement dans ce lot. Migration/transitions v2,
+rotation et Run encore à relire ; PR en brouillon.
+
+## Prochain petit lot : revue FileSource — migration et transitions SQLite v2
+
+Reprendre sur #11 basée sur main. Cinquième lot : migration v1 vers v2 avec données
+conservées inconnues, FollowTransition et Commit, idempotence, conflits de namespace/
+état et rollback de batch. Auditeur indépendant en lecture seule ; ajouter les
+régressions des défauts concrets. Acquisition/retrait par FileSource, rotation et
+reprise orchestrée/Run restent les lots suivants ; ne pas déclarer toute #11 validée
+après cette cinquième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
