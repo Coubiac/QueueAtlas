@@ -138,7 +138,7 @@ func TestRunResumeBlockersDoNotFallBackToCurrent(t *testing.T) {
 				want = ErrUnknownFollowState
 			case "following zero with explicit zero":
 				s.config.ResumePolicy.AllowZeroCheckpoint = true
-				status = SelectionInsufficient
+				status = SelectionDifferent // zero archive is not the configured current
 			case "missing":
 				if err := os.Remove(s.config.Path); err != nil {
 					t.Fatal(err)

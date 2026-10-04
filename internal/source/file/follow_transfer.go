@@ -30,6 +30,8 @@ var ErrCurrentMissing = errors.New("configured current log is missing at startup
 // descriptors, closing each once on retirement or return. Close on the emptied
 // set is harmless. Existing ingestors resume without registration/acquisition;
 // polling, grace, serial commits and checkpoint checks use the normal scheduler.
+// An explicitly prepared zero replay rechecks its retained prefix before transfer
+// and at scheduler polls until its first positive acknowledgement.
 // A new current is prepared/acquired after transfer, before consuming any line;
 // preparation errors close both files without inventing retirement. Empty new
 // files remain unregistered until content arrives, using normal polling.
@@ -109,6 +111,9 @@ func (s *FileSource) applyOpened(ctx context.Context, set *OpenedFollowSet, curr
 		return ErrCurrentMissing
 	}
 	opened := set.opened
+	if err := checkZeroReplayPrefixes(ctx, opened); err != nil {
+		return err
+	}
 	if newCurrent {
 		if err := checkOpenedSizes(ctx, opened); err != nil {
 			return err

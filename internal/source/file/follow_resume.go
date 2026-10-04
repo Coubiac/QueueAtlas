@@ -50,12 +50,25 @@ type FollowResume struct {
 // Ready does not make its current observation permanent. Run uses this preparation
 // with its configured budgets, then applies the result under its execution guard.
 func PrepareFollowResume(ctx context.Context, identity source.Identity, path string, reader source.PathStateReader, normalize Normalize, limits FollowResumeLimits) (FollowResume, error) {
-	return prepareFollowResume(ctx, identity, path, reader, normalize, limits, func(ctx context.Context, opened *OpenedFollowSet, path string) (FollowCurrent, error) {
+	return PrepareFollowResumeWithPolicy(ctx, identity, path, reader, normalize, limits, ResumePolicy{})
+}
+
+// PrepareFollowResumeWithPolicy permits explicit zero replay only for one known
+// following generation at the configured current path. Its physical identity,
+// nonempty prefix and canonical zero checkpoint must agree. It never searches
+// archives for zero replay or relaxes the strict whole-set path for other cases.
+// The retained prefix is rechecked before transfer and while still at zero.
+func PrepareFollowResumeWithPolicy(ctx context.Context, identity source.Identity, path string, reader source.PathStateReader, normalize Normalize, limits FollowResumeLimits, policy ResumePolicy) (FollowResume, error) {
+	return prepareFollowResumeWithPolicy(ctx, identity, path, reader, normalize, limits, policy, func(ctx context.Context, opened *OpenedFollowSet, path string) (FollowCurrent, error) {
 		return opened.ObserveCurrent(ctx, path)
 	})
 }
 
 func prepareFollowResume(ctx context.Context, identity source.Identity, path string, reader source.PathStateReader, normalize Normalize, limits FollowResumeLimits, observe func(context.Context, *OpenedFollowSet, string) (FollowCurrent, error)) (result FollowResume, err error) {
+	return prepareFollowResumeWithPolicy(ctx, identity, path, reader, normalize, limits, ResumePolicy{}, observe)
+}
+
+func prepareFollowResumeWithPolicy(ctx context.Context, identity source.Identity, path string, reader source.PathStateReader, normalize Normalize, limits FollowResumeLimits, policy ResumePolicy, observe func(context.Context, *OpenedFollowSet, string) (FollowCurrent, error)) (result FollowResume, err error) {
 	if err := ctx.Err(); err != nil {
 		return FollowResume{}, err
 	}
@@ -80,6 +93,9 @@ func prepareFollowResume(ctx context.Context, identity source.Identity, path str
 	case FollowOriginsComplete:
 	default:
 		return FollowResume{}, ErrInvalidFollowOrigins
+	}
+	if policy.AllowZeroCheckpoint && len(origins.States) == 1 && origins.States[0].Checkpoint != nil && origins.States[0].Checkpoint.Offset == 0 {
+		return prepareZeroFollowResume(ctx, identity, path, origins.States[0], normalize, observe)
 	}
 	locations, err := LocateFollowOrigins(ctx, path, origins, limits.Entries)
 	if err != nil {

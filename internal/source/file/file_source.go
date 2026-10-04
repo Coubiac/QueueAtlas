@@ -95,7 +95,8 @@ func (s *FileSource) ID() string { return s.config.Identity.ID }
 // Run requires PathStateReader and first prepares the persisted following set
 // with configured limits. Blocking decisions stop without fallback. A complete
 // absence of following states uses current-file startup; explicit zero policy
-// applies only there, never to unknown lifecycle or unverified following sets.
+// also permits one verified following generation at zero on the current path,
+// never unknown lifecycle or replay of multiple following generations.
 // Reopened sets are closed on every failure, before or after scheduler transfer.
 // Run reopens and reconsiders an initially empty file after each cancellable
 // wait. Once a generation is usable, it follows all opened generations, retaining
@@ -122,7 +123,7 @@ func (s *FileSource) Run(ctx context.Context, sink source.Sink) error {
 	if !ok {
 		return ErrPathStateReaderRequired
 	}
-	resume, err := PrepareFollowResume(ctx, s.config.Identity, s.config.Path, pathReader, s.normalize, s.config.ResumeLimits)
+	resume, err := PrepareFollowResumeWithPolicy(ctx, s.config.Identity, s.config.Path, pathReader, s.normalize, s.config.ResumeLimits, s.config.ResumePolicy)
 	if err != nil {
 		return err
 	}

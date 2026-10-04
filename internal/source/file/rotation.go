@@ -18,11 +18,12 @@ const MaxOpenGenerations = 2
 var ErrRotationCapacity = errors.New("file rotation descriptor capacity reached")
 
 type openedGeneration struct {
-	file      *os.File
-	identity  Identity
-	ingestor  *Ingestor // nil while a new empty file waits for content
-	eofSince  time.Time
-	eofOffset int64
+	file             *os.File
+	identity         Identity
+	ingestor         *Ingestor // nil while a new empty file waits for content
+	eofSince         time.Time
+	eofOffset        int64
+	zeroReplayPrefix *PrefixFingerprint // only an explicitly prepared zero replay
 }
 
 // followPath owns the initial descriptor and every successor, closing each once

@@ -57,7 +57,8 @@ checkpoint. Les empreintes et checkpoints restent conservés lors d'un retrait.
 Le contrat, la migration, le Sink, l'acquisition et le retrait par FileSource sont
 implémentés ; préparation/localisation et réouverture avec revérification des
 candidats, observation du courant, transfert au scheduler et reprise de Run
-implémentés. Récupération explicite des états inconnus/à zéro encore à développer.
+implémentés. Relecture zéro explicite limitée à une génération en suivi courante
+implémentée ; récupération des lifecycle inconnus encore à développer.
 
 ## Préparation des candidats de reprise
 
@@ -249,7 +250,8 @@ ErrUnknownFollowState, invalide via ErrInvalidFollowState, capacité via
 ErrRotationCapacity, limite via ResumeDecisionError/limit_reached. Aucune décision
 bloquante ne devient absence ou fallback. Localisation non unique : diagnostic de
 sélection conservé (absent/different/insufficient/ambiguous/limit_reached), résultat
-vide ; strict nil/zéro maintenu, sans appliquer AllowZeroCheckpoint.
+vide ; strict nil/zéro maintenu dans cette fonction. L'exception explicite pour
+une génération en suivi à zéro est décrite ci-dessous.
 
 Après réouverture vérifiée de tout l'ensemble, courant missing/capacity bloque et
 ferme tous les descripteurs sans état partiel. Erreur d'observation ou annulation
@@ -272,7 +274,8 @@ avec StateReader seul, mais Run impose ce contrat supplémentaire.
 
 Config.ResumeLimits est copié/validé par New : chaque champ zéro prend son maximum
 (1000 états, 2000 entrées partagées), valeurs négatives ou excessives refusées avant
-lecture/ouverture. Run appelle PrepareFollowResume avec ces budgets. Toute erreur
+lecture/ouverture. Run appelle PrepareFollowResumeWithPolicy avec ces budgets et
+Config.ResumePolicy. Toute erreur
 de préparation bloque. Un résultat ready utilise le cœur d'application commun avec
 FollowOpened sans réacquérir le verrou. Fermeture du propriétaire sur toute sortie
 avant transfert ; après transfert, propriétaire vide et nettoyage par scheduler.
@@ -284,14 +287,49 @@ vide. Aucune sélection bloquante n'est convertie en démarrage neuf. Unknown bl
 la reprise, même avec AllowZeroCheckpoint ; la localisation stricte d'un ensemble
 en suivi refuse aussi nil/zéro. La politique explicite de replay zéro reste applicable
 au démarrage courant sans ensemble en suivi, par exemple un courant explicitement
-retiré. La récupération d'un état inconnu ou en suivi à zéro exige une décision
-explicite distincte à développer ; aucun reclassement implicite de lifecycle.
+retiré. Une unique génération en suivi à zéro peut aussi être reprise dans les
+conditions ci-dessous. La récupération d'un état inconnu reste à développer ;
+aucun reclassement implicite de lifecycle.
 
 La reprise known/new suit aussi les ajouts tardifs des fichiers renommés. Ancres,
 polling/grâce/retrait durable et erreurs du Sink restent ceux du scheduler. Un
 courant missing au redémarrage bloque, tandis qu'une disparition pendant un suivi
 déjà établi conserve le descripteur. Contrôles, pages et écritures non atomiques ;
 écritures d'état à sérialiser par source entre tous les objets.
+
+## Relecture zéro explicite d'une génération en suivi unique
+
+PrepareFollowResume reste strict. PrepareFollowResumeWithPolicy autorise, seulement
+avec AllowZeroCheckpoint, un parcours lifecycle complet contenant exactement une
+génération en suivi, avec checkpoint présent à zéro. Les retirés restent écartés ;
+inconnus, états invalides et limites gardent leurs diagnostics bloquants.
+
+Cette branche ouvre uniquement le chemin courant configuré, sans recherche dans
+les archives. VerifyCandidateWithPolicy doit rendre restart_zero : identité physique
+concordante, préfixe non vide concordant et checkpoint/ancre zéro canoniques de la
+même origine. NewIngestor revérifie puis se positionne à zéro sans lire de ligne.
+Le courant observé doit toujours être connu et concordant. Courant absent :
+ErrCurrentMissing ; remplacement observé : ErrPathChanged ; preuve insuffisante ou
+divergente : ResumeDecisionError/insufficient ou different. Aucun diagnostic de
+lacune de recherche n'est inventé ici. Échec/annulation ferme l'ouverture, résultat
+vide ; ready fournit un seul propriétaire complet, sans écriture d'état.
+
+Le propriétaire conserve une copie du préfixe validé. Avant transfert et dans les
+contrôles du scheduler tant que le checkpoint acquitté reste zéro, le préfixe est
+revérifié par ReadAt (4096 octets au plus, sans seek). Divergence avant transfert
+conserve le propriétaire et les offsets ; après transfert, arrêt et fermeture par
+le scheduler. Dès le premier acquittement positif, les contrôles ordinaires de taille
+et d'ancre prennent le relais. Aucune registration/acquisition répétée, reset de
+checkpoint/provenance ni transition inventée. Un arrêt après acquisition avant
+première ligne peut ainsi relire explicitement depuis zéro, puis reprendre strictement
+ses futurs ajouts depuis le checkpoint positif.
+
+Les ensembles multiples avec checkpoint zéro, nil, anciennes empreintes vides,
+preuves invalides, fichiers divergents et lifecycle inconnus restent bloqués. La
+relecture explicite ne prouve pas une continuité par ancre positive. Préfixes bornés,
+lectures et écritures non atomiques : une modification hors fenêtre ou entre deux
+contrôles peut échapper à la vérification. Les fonctions de localisation/réouverture
+standalone gardent leur politique stricte.
 
 ## Lacune de reprise d'une génération en suivi
 

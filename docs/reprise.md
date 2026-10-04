@@ -174,6 +174,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI lacune de reprise](https://github.com/Coubiac/mailtrace/actions/runs/37178727644)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+- Lot 38 FileSource : reprise zéro explicite d'une seule génération en suivi
+  courante, préfixe revérifié avant transfert et tant que l'acquittement reste zéro.
+  Contrôles locaux réussis ; CI Linux à confirmer avant clôture du lot.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1577,17 +1580,51 @@ Budget et exclusions gzip/liens applicables, fenêtres/pages non atomiques. Diag
 non persisté dans SQLite ; récupération explicite des états inconnus/zéro encore
 à développer. Pas de migration/dépendance ajoutée, revue indépendante encore requise.
 
-## Prochain petit lot : reprise zéro explicite d'une génération en suivi unique
+## Lot 38 : reprise zéro explicite d'une génération en suivi unique
 
-Reprendre sur codex/m2-file-source, conserver PR #11 et ADR-009. Appliquer une
-politique explicitement activée de reprise à zéro au cas limité d'une seule
-génération durable en suivi, courant physiquement concordant et checkpoint/ancre
-zéro canoniques avec préfixe non vide concordant. Réutiliser les vérificateurs de
-ResumePolicy, sans reset de provenance/checkpoint ni acquisition répétée. Mode
-strict inchangé ; refuser les ensembles multiples, les preuves nil/invalides, les
-inconnus de lifecycle et les divergences. Tester le scénario d'arrêt après acquisition
-avant première ligne, puis replay explicite et acquittement positif. La récupération
-des lifecycle inconnus et l'import gzip restent des lots distincts.
+Résultat attendu : reprendre explicitement après acquisition durable mais avant
+première ligne, sans reset ni acquisition répétée. PrepareFollowResume reste strict ;
+PrepareFollowResumeWithPolicy et Run avec Config.ResumePolicy.AllowZeroCheckpoint
+autorisent seulement un parcours complet donnant une seule génération en suivi avec
+checkpoint zéro présent. Ouverture du chemin courant uniquement, identité physique,
+préfixe non vide et ancre zéro canonique revérifiés. Archives zéro non recherchées ;
+ensembles multiples/nil/invalides/unknown restent bloqués. Tout échec ferme l'ouverture,
+sans résultat partiel, normalisation, écriture ou transition de lifecycle.
+
+Le propriétaire retient une copie du préfixe validé, revérifiée sans seek avant
+transfert et au polling tant que le checkpoint acquitté reste zéro. Divergence avant
+transfert conserve le propriétaire/offsets ; après transfert, arrêt avec fermeture.
+Premier acquittement positif : contrôles habituels d'ancre et de taille. Diagnostic
+different sans lacune de recherche inventée ; courant absent reste ErrCurrentMissing.
+
+Tests : recontrôle portable du préfixe sans consommation/seek et passage à l'ancre
+positive ; Linux SQLite, arrêt réellement après acquisition avant lecture, refus strict
+sans mutation, replay explicite avec provenance conservée/checkpoint 5, puis reprise
+stricte de l'ajout à offset 5/checkpoint 11 sans registration/acquisition répétées.
+Préparation seule sans lecture/écriture, refus nil/ancre invalide/préfixe vide/unknown/
+ensemble multiple/réécriture/remplacement/missing, annulation et remplacement durant
+observation avec fermeture ; réécriture après ready refusée avant transfert, propriété
+conservée. Ancien test d'archive zéro distincte du courant reste bloquant (different).
+
+Vérifications locales réussies : go test ./..., go vet ./..., git diff --check,
+compilation des tests FileSource Linux amd64 sans CGO. Tests Linux, détecteur de
+courses et builds Linux amd64/arm64 à confirmer par CI sur le commit publié.
+
+Limites : politique explicitement opt-in, pas preuve de continuité par ancre positive
+à zéro ; préfixe borné à 4096 octets et contrôles/pages non atomiques. Anciennes
+empreintes vides et lifecycle inconnus restent non récupérés. Pas de migration ni
+dépendance ajoutée ; revue indépendante toujours requise. Les relances entre le lot
+37 et ce lot n'avaient produit aucun nouveau commit ; le travail effectif et les
+vérifications de cette reprise sont décrits ici.
+
+## Prochain petit lot : cadrer la récupération explicite d'un lifecycle inconnu
+
+Reprendre sur codex/m2-file-source et PR #11. Définir une politique distincte pour
+l'arrêt entre registration et acquisition (état unknown), sans laisser AllowZeroCheckpoint
+reclasser implicitement le lifecycle. Préciser le cas unique courant vérifiable,
+les refus et la transition attendue ; consigner la décision dans ADR-009 avant
+implémentation. Le support d'ensembles inconnus multiples et l'import gzip restent
+des lots séparés.
 
 ## Suite à découper au fil des reprises
 
