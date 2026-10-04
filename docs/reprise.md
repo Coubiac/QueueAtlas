@@ -5,11 +5,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
-- Lot 51 en vérification : substitutions Windows du répertoire et des entrées
+- Lot 51 terminé : substitutions Windows du répertoire et des entrées
   aux IDs différés corrigées dans SelectRotation/checkRotationEntry. Deux
   régressions échouant avant puis passant après, cas inchangé réussi, patch relu
-  indépendamment, tests/vet Windows et compilation Linux réussis. CI à confirmer.
-  Rapport `docs/reviews/pr-11-part-11.md`. Dernière tête publiée validée : `dcc1455`.
+  indépendamment, tests/vet Windows et compilation Linux réussis. Correctif
+  `de81c4e` publié, CI 37220202856 verte avec les trois nouveaux tests Windows.
+  Rapport `docs/reviews/pr-11-part-11.md`. Prochaine revue : LocateFollowOrigins.
 - Lot 50 : classification des états durables de reprise relue sur
   `848aa0694591e735ff9153d43b68e404aa8c8582`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-10.md`, code inchangé. Tests ciblés et intégration
@@ -1976,7 +1977,7 @@ Limites : filtrage source assuré par le lecteur, pages sans snapshot global et
 écritures sérialisées ; métadonnées encore non vérifiées, pas de preuve de présence
 ou de reprise sûre. Taille des chaînes/coût SQL non mesurés. PR reste en brouillon.
 
-## Lot 51 en vérification : recherche de rotation
+## Lot 51 terminé : recherche de rotation
 
 Référence initiale dcc1455c1978ebd3431366f908599748e685de7d. Reprise après quota,
 aucun changement laissé par l'interruption. Scan/pages/budget/exclusions/preuves,
@@ -1990,18 +1991,22 @@ Régressions Windows échouant avant, passant après ; entrée inchangée éligi
 diagnostic de preuve physique indisponible conservé. Tests ciblés, go test ./...,
 go vet ./..., git diff --check et compilation des tests Linux sans CGO réussis.
 Patch relu indépendamment sans blocage restant ; job Windows étendu aux régressions.
-Rapport docs/reviews/pr-11-part-11.md. CI du correctif à confirmer ; dernier état
-publié validé dcc1455, CI 37205110566 verte avant ce correctif.
+Rapport docs/reviews/pr-11-part-11.md. Correctif publié
+de81c4e86fc3deab0692bf471ae5ffeb6aa8f6b9 et
+[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37220202856) :
+tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO et
+job Windows étendu exécutant les trois nouveaux tests. Consulter la PR #11 pour
+la CI de publication de cette clôture documentaire.
 
 Limites : fallback Windows simulé, pas de test réel sur autre filesystem ; identité
 acquise au chargement, erreurs natives SameFile masquées/refus sûr. Aucun faux unique
 Windows démontré, reprise persistante toujours Linux seulement. Snapshots non atomiques,
 chemin à rouvrir/revérifier. PR reste en brouillon.
 
-## Prochaine action : confirmer la CI du lot 51, puis localiser l'ensemble en suivi
+## Prochain petit lot : revue FileSource — localisation de l'ensemble en suivi
 
-Clore le lot 51 après publication et CI verte du correctif. Ensuite, douzième partie :
-LocateFollowOrigins et tests, validation de l'ensemble avant disque, budget partagé
+Reprendre sur #11 basée sur main. Douzième partie : LocateFollowOrigins et tests,
+validation de l'ensemble avant disque, budget partagé
 entre scans, chemins uniques/distincts seulement si tous les candidats sont localisés,
 première décision bloquante sans chemins partiels, copies et fermeture sur erreur.
 Auditeur indépendant en lecture seule ; régressions des défauts concrets.
