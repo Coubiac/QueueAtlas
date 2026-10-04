@@ -11,8 +11,8 @@ seront réévaluées après sa fusion ; AD/OIDC reste après MVP.
 ## Avancement du jalon M2
 
 M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
-PR #11 développée et en revue ; lot 54 termine la revue d'observation du courant.
-Restent transfert, préparation/reprise orchestrée et Run,
+PR #11 développée et en revue ; lot 55 termine le transfert connu et le refus missing.
+Restent nouveau courant, préparation/reprise orchestrée et Run,
 puis validation finale et fusion. Ces domaines seront traités en petits lots avec
 un résultat précis ; le numéro de lot compte aussi les revues et corrections.
 Critère de fin du chantier : chemins restants revus, défauts corrigés, CI verte et
@@ -21,6 +21,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 55 : transfert known et refus missing relus sur `8bcc1a7`, sans blocage concret.
+  Cinq tests portables Windows réussis, intégrations Linux relues/CI de référence
+  verte. Rapport partie 15 ; code inchangé. Prochaine revue : nouveau courant.
 - Lot 54 : ObserveCurrent relu sur `c7623d2`, sans blocage d'exécution ; commentaire
   et ADR précisés pour les handles metadata Windows. Rapport partie 14, quatre tests
   ciblés Windows réussis. Prochaine revue : transfert connu et refus missing.
@@ -2081,13 +2084,22 @@ relues et exécutées par CI de référence 37221250736 verte, pas localement. C
 publication sur PR #11. Limites : observations non atomiques, known sans preuve de
 continuité ; état/set sérialisés, décision à revérifier. PR toujours en brouillon.
 
-## Prochain petit lot : transfert connu et refus du courant absent
+## Lot 55 terminé : transfert connu et refus du courant absent
 
-Lot 55 / partie 15 : FollowOpened/applyOpened branches known/missing, recontrôle du
-chemin/origine/source, garde partagée, propriétaire conservé sur refus avant transfert,
-collection vidée avant scheduler, statut et nettoyage exclusif après transfert.
-Missing exige décision canonique et observation actualisée, sans attente/open/commit.
-Auditeur indépendant en lecture seule ; nouveau courant et préparation/Run séparés.
+Référence `8bcc1a7bd137155248235cefbec3477b81bcd9cd`, coordinateur et auditeur
+indépendant : pas de blocage concret. Propriété conservée avant transfert, collection
+vidée avant scheduler/cleanup exclusif ; missing canonique reobservé sans ingestion,
+attente ou écriture. Rapport partie 15. Cinq tests ciblés Windows réussis ; intégrations
+Linux relues et exécutées par CI 37221589000 verte, pas localement. Code inchangé,
+diff propre ; CI de publication sur #11. Fenêtres d'annulation avant/après transfert
+relues sans injection ciblée ; snapshots non atomiques, état/set sérialisés requis.
+
+## Prochain petit lot : nouveau courant au transfert
+
+Lot 56 / partie 16 : branche new de applyOpened et prepareNewAndFollow, capacité
+avant open, taille/ancre de l'ancien, identité et cleanup temporaire avant transfert,
+préparation/acquisition avant consommation après transfert, vide puis append.
+Auditeur indépendant en lecture seule ; préparation orchestrée/zéro/Run séparés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
