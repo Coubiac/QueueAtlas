@@ -5,6 +5,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 47 : retrait durable après EOF et délai de grâce relu sur
+  `f468a7ad6e2327be58ce0c074b29b1491a03fed3`, sans blocage concret identifié.
+  Rapport `docs/reviews/pr-11-part-7.md`, code inchangé et tests portables réussis.
+  Prochaine revue : sélection du courant et ouverture des successeurs aux polls.
 - Lot 46 : acquisition par FileSource avant première ligne relue sur
   `55c820b0ae31387506a1754e97ec8d0edfa40762`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-6.md`, code inchangé. Prochaine revue : retrait/grâce.
@@ -1864,15 +1868,36 @@ sérialisées requis, filesystem/acquisition non atomiques. Registration/acquisi
 distinctes ; unknown ou zéro peuvent demander une décision explicite à la reprise.
 Retrait/grâce, rotation et reprise globale encore à relire ; PR en brouillon.
 
-## Prochain petit lot : revue FileSource — retrait durable et grâce
+## Lot 47 terminé : revue FileSource — retrait durable et grâce
 
-Reprendre sur #11 basée sur main. Septième partie : grace.go et tests de retrait,
-EOF stable/grâce, protections courant/partiels/pending, ajout tardif renouvelant
-la grâce, transition acquittée avant fermeture/libération de capacité et sorties
-en erreur/annulation sans faux retrait ni double fermeture. Auditeur indépendant
-en lecture seule ; ajouter les régressions des défauts concrets. Rotation et reprise
-orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11 validée après
-cette septième partie.
+Référence f468a7ad6e2327be58ce0c074b29b1491a03fed3, coordinateur et auditeur agent
+indépendant : grace.go, tests grace/retirement et appels du scheduler nécessaires
+au retrait et au nettoyage. Aucun blocage concret identifié. EOF stable, protection
+courant/partiels/pending, renouvellement après ajout, transition seule acquittée
+avant fermeture/libération et erreurs/annulation/Close relus. Rapport
+docs/reviews/pr-11-part-7.md, code inchangé et aucun nouveau test.
+
+Coordinateur et auditeur : les trois tests portables TestGrace* -count=1 réussis
+sous Windows. git diff --check réussi, checkout isolé propre.
+[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37203460955)
+verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
+et job Windows chemins. Intégrations Linux grâce/erreurs/cleanup relues et exécutées
+par cette CI, pas localement sous Windows. Consulter la PR #11 pour la CI du rapport.
+
+Limites : Sink durable et écritures sérialisées requis ; dernier contrôle, retrait
+et fermeture non atomiques, ajout après contrôle potentiellement manqué. Pas de
+crash réel injecté. Rotation globale, ordonnancement et reprise orchestrée/Run
+encore à relire ; PR en brouillon.
+
+## Prochain petit lot : revue FileSource — courant et successeurs aux polls
+
+Reprendre sur #11 basée sur main. Huitième partie : poll dans rotation.go, contrôles
+des générations avant changement, chemin identique/absent/remplacé, descripteur
+conservé redevenant courant, ouverture/vérification d'un successeur, plafond de deux
+descripteurs et propriété sur erreur. Auditeur indépendant en lecture seule ;
+ajouter les régressions des défauts concrets. Ordonnancement des lectures/polls et
+reprise orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11 validée
+après cette huitième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
