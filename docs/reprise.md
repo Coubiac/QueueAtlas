@@ -11,8 +11,8 @@ seront réévaluées après sa fusion ; AD/OIDC reste après MVP.
 ## Avancement du jalon M2
 
 M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
-PR #11 développée et relue ; lot 59 termine la configuration et le démarrage Run.
-Restent validation finale et fusion. Ces étapes seront traitées en petits lots avec
+PR #11 développée et relue ; lot 60 clôt la synthèse des 19 parties.
+Restent CI de publication et fusion sur la tête exacte. Ces étapes gardent
 un résultat précis ; le numéro de lot compte aussi les revues et corrections.
 Critère de fin du chantier : chemins restants revus, défauts corrigés, CI verte et
 PR #11 fusionnée. M2 inclut ensuite les décisions de récupération encore ouvertes
@@ -20,6 +20,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 60 : synthèse finale sur `ba1a20e`, tous composants couverts, aucun blocage
+  identifié restant ; CI 37222381679 verte. Rapport final `docs/reviews/pr-11.md`.
+  Attendre la CI du commit de clôture, puis rendre prête et fusionner sur sa tête exacte.
 - Lot 59 : New/Run/configuration relus sur `c1782f7`, sans blocage concret.
   Deux tests portables Windows réussis, concurrence réservée Linux/CI verte.
   Rapport partie 19 ; code inchangé. Limite retired zéro explicitée dans ADR-009.
@@ -2149,11 +2152,21 @@ pas preuve retenue aux polls (branche following seule). Contrat actuel, pas bloc
 de cette revue ; extension à traiter séparément. État sérialisé, observations bornées
 non atomiques. PR encore en brouillon.
 
-## Prochain petit lot : validation finale et fusion FileSource
+## Lot 60 : revue finale terminée, publication/fusion à vérifier
 
-Lot 60 : synthèse des 19 parties, vérification absence de blocages/code non relu,
-CI verte de la tête exacte, passage prêt et fusion #11. Conserver les limites et
-travaux M2 différés ; réévaluer avancement après fusion avant récupération unknown.
+Référence `ba1a20eaba5c72a02304c404e34bc46b925ea501`, coordinateur et auditeur :
+tous composants couverts par 19 rapports, aucun blocage identifié restant, correctifs
+Windows/quantum relus et CI consignées. Rapport final `docs/reviews/pr-11.md`.
+CI de référence 37222381679 verte ; diff/checkout isolé propres, aucun rerun sans
+risque nouveau. Dernier état d'exécution validé : cette référence. Clôture documentaire
+publiée ensuite ; sa CI doit réussir avant ready/fusion expected_head_sha.
+Vérifier GitHub, résultat de fusion et CI main ; ne pas supposer la PR déjà fusionnée.
+Limites et travaux M2 différés conservés ; audit assisté par agents.
+
+## Prochaine action concrète
+
+Achever la publication/fusion du lot 60, vérifier main, puis lot 61 : cadrage de la
+récupération explicite d'un unknown courant unique et estimation après fusion.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
