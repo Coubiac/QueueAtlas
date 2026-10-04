@@ -53,6 +53,11 @@ func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingest
 	opened[0].identity = id
 	active := opened[0]
 	poll := func() error {
+		// Diagnose observed shrink before retiring any descriptor or switching
+		// generations, including retained files and unacknowledged partial bytes.
+		if err := checkOpenedSizes(ctx, opened); err != nil {
+			return err
+		}
 		observation, err := s.observePath(ctx, active.file)
 		if err != nil {
 			return err

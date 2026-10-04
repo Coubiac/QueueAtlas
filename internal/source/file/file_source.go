@@ -30,8 +30,8 @@ func (e *ResumeDecisionError) Error() string {
 
 // FileSource orchestrates startup and switches to an observed regular replacement.
 // It follows both opened generations, including late writes to a retained file.
-// Retained files expire after stable EOF and a grace period. Live truncation
-// detection is not implemented yet.
+// Retained files expire after stable EOF and a grace period. Polling stops with
+// ErrFileTruncated if an opened file is shorter than its consumed offset.
 // The caller must serialize state writes for its source ID across all objects;
 // Run guards only this object.
 // The object must not be copied after use. Dependencies must support context.

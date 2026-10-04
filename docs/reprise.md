@@ -77,6 +77,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   y compris sous flux continu, et attente limitée au temps restant avant contrôle,
   dans `rotation.go`, commit
   `311fe756a5dfd25b14ad4a78dfe4a19f2a809ab8`, toujours dans la PR #11.
+- Vingtième lot FileSource : diagnostic fixe de diminution observée sous l'offset
+  consommé, incluant les lignes partielles et les fichiers conservés, dans
+  `internal/source/file/truncation.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -161,6 +164,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI flux continu](https://github.com/Coubiac/mailtrace/actions/runs/37163133260)
   réussie, incluant attente restante, rotation avant EOF, expiration en progression,
   Sink EOF prioritaire, détecteur de courses et builds Linux sans CGO.
+- Validation locale du lot troncature : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Exécution réelle
+  des scénarios Linux et détecteur de courses : CI à vérifier après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -664,7 +670,7 @@ n'est pas détectée ici. Pas de détection de troncature, diagnostic de lacune 
 recherche d'archives après redémarrage. Une ligne partielle protégée peut maintenir
 la capacité occupée et provoquer `ErrRotationCapacity`. Pas de migration ou dépendance.
 
-## Dernier lot terminé : polling pendant un flux continu
+## Polling pendant un flux continu
 
 Après le contrôle initial, une échéance est fixée à `PollInterval`. Entre les
 passages équitables de lecture, si elle est atteinte, contrôler le chemin et
@@ -693,16 +699,45 @@ filesystem restent non atomiques avec les écritures. Pas de détection de tronc
 diagnostic de lacune ou recherche d'archives après redémarrage. Pas de migration
 ou dépendance ajoutée.
 
-## Prochain petit lot : diagnostiquer une troncature observée
+## Dernier lot terminé : diagnostic de troncature observée
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et consulter l'issue #4,
-ADR-003 et la section rotation du cadrage. Au polling, examiner les tailles des
-descripteurs ouverts ; une taille inférieure au dernier offset consommé par
-l'ingesteur (y compris les octets d'une ligne partielle) doit arrêter le suivi avec
-un diagnostic fixe, sans reset à zéro ni nouvelle origine implicite. Tester le
-fichier courant et un fichier conservé, le cas partiel au-delà du checkpoint, les
-checkpoints inchangés et les append normaux. La récupération copytruncate, les
-réécritures ayant déjà retrouvé une taille suffisante et les lacunes restent séparées.
+Avant l'observation du chemin, l'expiration ou la bascule, chaque polling contrôle
+les tailles des deux descripteurs au maximum. Une taille inférieure à l'offset
+réellement consommé par `LineReader` arrête le suivi avec `ErrFileTruncated`, dont
+le texte fixe ne contient ni chemin ni contenu de journal. L'offset inclut les
+octets d'une ligne partielle, même surdimensionnée ; il exclut les octets en avance
+dans le tampon et n'est pas limité au checkpoint acquitté.
+
+Le contrôle ne déplace pas la lecture et ne modifie aucune origine ni checkpoint.
+Le scheduler ferme les descripteurs à la sortie. Les lignes déjà acquittées restent
+persistées ; aucun reset à zéro, nouvelle origine ou réessai automatique. Les
+erreurs de stat et l'annulation gardent leur cause.
+
+Tests locaux : troncature du courant après ligne complète ou partiel (taille encore
+supérieure au checkpoint), partiel surdimensionné, checkpoint acquitté inchangé et
+fermeture ; offset consommé distinct de la lecture anticipée sans seek/close ;
+annulation et erreur de stat ; append complétant normalement un partiel. Test Linux
+avec SQLite et horloge contrôlée : troncature du fichier conservé à l'échéance de
+grâce et troisième rotation simultanée, arrêt avant expiration/enregistrement du
+troisième, checkpoints distincts 6/7 inchangés et tous les descripteurs fermés.
+
+Limites : contrôle seulement au polling entre passages ; une lecture, normalisation
+ou transaction lente peut le retarder. Stat et écritures restent non atomiques.
+Une troncature suivie d'une croissance suffisante avant le contrôle, une réécriture
+de taille identique ou les changements d'octets encore non consommés échappent à ce
+diagnostic. La récupération copytruncate et le diagnostic de lacunes restent à
+développer. Pas de migration ou dépendance ajoutée.
+
+## Prochain petit lot : contrôler l'ancre acquittée pendant le suivi
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11. Au polling, après le
+contrôle de taille, vérifier la fenêtre bornée de l'ancre du dernier checkpoint
+positif acquitté de chaque descripteur. Une non-correspondance observée doit arrêter
+avec un diagnostic fixe, sans reset ni création d'origine. Tester réécriture de
+taille identique/croissance suffisante dans la fenêtre, courant et fichier conservé,
+append normal, checkpoint zéro sans preuve et checkpoints inchangés. Déclarer
+explicitement la limite hors fenêtre et les races filesystem. La récupération
+copytruncate, la recherche d'archives et les lacunes restent des lots séparés.
 
 ## Suite à découper au fil des reprises
 
