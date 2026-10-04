@@ -5,6 +5,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 50 : classification des états durables de reprise relue sur
+  `848aa0694591e735ff9153d43b68e404aa8c8582`, sans blocage concret identifié.
+  Rapport `docs/reviews/pr-11-part-10.md`, code inchangé. Tests ciblés et intégration
+  SQLite réussis sous Windows. Prochaine revue : recherche de rotation SelectRotation.
 - Lot 49 terminé : starvation sur ligne partielle très longue corrigée
   dans le scheduler (budget 64 Kio par génération/passage). Régression échouant
   avant puis passant après ; relecture indépendante, tests/vet Windows et
@@ -1947,15 +1951,35 @@ clôture documentaire.
 Limites : budget en octets, pas en temps ; syscalls/normaliseur/Sink peuvent retarder
 un passage. Aucun benchmark/crash réel ajouté. PR reste en brouillon.
 
-## Prochain petit lot : revue FileSource — classification des états de reprise
+## Lot 50 terminé : classification des états durables de reprise
 
-Reprendre sur #11 basée sur main. Dixième partie : LoadFollowOrigins et tests,
-classement après parcours complet par
-chemin, retired écarté, unknown/invalide/capacité/limite refusés sans candidats
-partiels, copies et checkpoints nil/zéro conservés. Auditeur indépendant en lecture
-seule ; régressions des défauts concrets. Recherche/réouverture/transfert et
-préparation orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11
-validée après cette dixième partie.
+Référence 848aa0694591e735ff9153d43b68e404aa8c8582, coordinateur et auditeur agent
+indépendant : LoadFollowOrigins et dépendance LoadPathOrigins. Aucun blocage concret
+identifié. Classement après parcours complet, retired écartés, priorités invalid >
+unknown > capacity, absence de candidats partiels sur refus/limite/erreur/annulation,
+copies et nil/zéro distincts relus. Rapport docs/reviews/pr-11-part-10.md, code inchangé.
+
+Coordinateur : TestLoadFollowOrigins* -count=1 ; auditeur : ces tests et
+TestLoadPathOrigins*, intégration SQLite incluse, réussis sous Windows. 101 états
+dont 99 retired et deux following, limite 100 refusée, isolation source et aucune
+mutation vérifiées. git diff --check réussi, checkout isolé propre.
+[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37204843549)
+verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
+et Windows chemins. Consulter la PR #11 pour la CI de publication du rapport.
+
+Limites : filtrage source assuré par le lecteur, pages sans snapshot global et
+écritures sérialisées ; métadonnées encore non vérifiées, pas de preuve de présence
+ou de reprise sûre. Taille des chaînes/coût SQL non mesurés. PR reste en brouillon.
+
+## Prochain petit lot : revue FileSource — recherche de rotation
+
+Reprendre sur #11 basée sur main. Onzième partie : SelectRotation et tests, scan non
+récursif paginé, exclusions gzip/liens/non réguliers, budgets incluant exclusions,
+preuves strictes et absence de chemin partiel sur refus/erreur/annulation. Vérifier
+ambiguïté et fermeture des descripteurs temporaires. Auditeur indépendant en lecture
+seule ; régressions des défauts concrets. Localisation de l'ensemble, réouverture/
+transfert et préparation orchestrée/Run restent des lots suivants ; ne pas déclarer
+toute #11 validée après cette onzième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
