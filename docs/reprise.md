@@ -90,7 +90,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   commit `f5e50894b4c9fe1e0efb9757f3545baaed9a2756`, toujours dans la PR #11.
 - Vingt-troisième lot FileSource : contrat `source.PathStateReader` et lecture
   SQLite des origines/checkpoints filtrés par source et chemin exact dans
-  `internal/storage/sqlite/state.go`, toujours dans la PR #11.
+  `internal/storage/sqlite/state.go`, commit
+  `61c59f763f9499119d56285e3af299b6f4c99de3`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -191,8 +192,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie : tests Linux (Go 1.26.x/stable), renommage/preuves/exclusions/fermeture,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot lecture par chemin : `go test ./...`, `go vet ./...` et
-  compilation des tests SQLite Linux amd64 sans CGO réussis. Exécution Linux,
-  détecteur de courses FileSource et builds : CI à vérifier après publication.
+  compilation des tests SQLite Linux amd64 sans CGO réussis.
+  [CI lecture par chemin](https://github.com/Coubiac/mailtrace/actions/runs/37171180557)
+  réussie : tests Linux (Go 1.26.x/stable), pagination/isolation/littéraux SQL,
+  détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
