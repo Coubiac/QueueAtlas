@@ -138,6 +138,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI courant](https://github.com/Coubiac/mailtrace/actions/runs/37175634122)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous. PR #11.
+- Lot 32 FileSource : `FileSource.FollowOpened`, transfert d'un ensemble rouvert
+  avec courant connu au scheduler commun, commit
+  `dbf85d443adf0194d4f40a73e5e4552b08450b5a`, toujours dans la PR #11.
+  [CI transfert](https://github.com/Coubiac/mailtrace/actions/runs/37176322112)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1332,9 +1338,9 @@ courant toujours en suivi, annulation et absence de fuite/double fermeture.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
-détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
-Dernier état Linux validé : lot 31, commit
-`3f3d72704c658e6fd03accd96883420a2be34f47`, CI 37175634122.
+détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI transfert](https://github.com/Coubiac/mailtrace/actions/runs/37176322112)
+Go 1.26.x/stable sur `dbf85d443adf0194d4f40a73e5e4552b08450b5a`.
 
 Limites : ce transfert exige un courant connu ; décisions missing/new/capacity
 refusées avant transfert. Pas de verrou ni snapshot atomique : les contrôles de
