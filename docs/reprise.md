@@ -132,6 +132,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI réouverture](https://github.com/Coubiac/mailtrace/actions/runs/37175078596)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+- Lot 31 FileSource : `OpenedFollowSet.ObserveCurrent`, courant identifié par
+  métadonnées physiques, absence/nouvelle génération/capacité explicites sans
+  modification des fichiers détenus, commit `3f3d72704c658e6fd03accd96883420a2be34f47`.
+  [CI courant](https://github.com/Coubiac/mailtrace/actions/runs/37175634122)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous. PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1247,7 +1253,7 @@ candidats rouverts ; un nouveau fichier courant devra aussi compter. Propriété
 et fermeture explicites, mais sélection du courant/transfert/scheduler/Run restent
 à raccorder ; gzip/copytruncate/lacunes et revue de sécurité indépendante aussi.
 
-## Dernier lot : observer le courant parmi les fichiers rouverts
+## Dernier lot terminé : observer le courant parmi les fichiers rouverts
 
 `OpenedFollowSet.ObserveCurrent(ctx, absolutePath)` exige un propriétaire valide
 non vide de 1 ou 2 fichiers, IDs d'origine distincts. Il inspecte tous les fichiers
@@ -1284,8 +1290,10 @@ conservée, boucle de lien et FIFO sans ouverture ni perte de propriété. Donn�
 synthétiques, aucune migration/dépendance ajoutée.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
-des tests FileSource Linux amd64 sans CGO. Exécution Linux/détecteur de courses/
-builds : CI à confirmer après publication du commit de code.
+des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
+et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI courant](https://github.com/Coubiac/mailtrace/actions/runs/37175634122)
+Go 1.26.x/stable sur `3f3d72704c658e6fd03accd96883420a2be34f47`.
 
 Limites : snapshots de métadonnées successifs, pas de verrou ni preuve de
 checkpoint/intégrité. `known` signifie même fichier physique observé, pas mêmes
