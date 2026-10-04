@@ -14,6 +14,7 @@ const maxEmptyReads = 100
 
 var ErrByteLimit = errors.New("import content byte limit exceeded")
 var ErrInvalidReader = errors.New("invalid import content reader result")
+var ErrInvalidWriter = errors.New("invalid import content writer result")
 
 // ContentInfo describes the whole stream, including all separators and a
 // possible unterminated suffix. TrailingPartial must be handled explicitly by
@@ -31,6 +32,25 @@ type ContentInfo struct {
 // and a regular-file input. A blocking Reader cannot be interrupted by this loop.
 // No seeking, line parsing, Sink call, checkpoint or manifest update occurs.
 func InspectPlain(ctx context.Context, input io.Reader, maxBytes int64) (ContentInfo, error) {
+	return inspectContent(ctx, input, maxBytes, nil)
+}
+
+// CopyPlain writes the inspected bytes during the same pass that computes the
+// digest. Neither input nor output is closed. Any error discards metadata but
+// may leave a partial output; the caller must discard it before any ingestion.
+// Writes are never retried. Readers/writers must honor their io contracts and
+// must not be used concurrently with this operation.
+func CopyPlain(ctx context.Context, input io.Reader, output io.Writer, maxBytes int64) (ContentInfo, error) {
+	if err := ctx.Err(); err != nil {
+		return ContentInfo{}, err
+	}
+	if output == nil {
+		return ContentInfo{}, errors.New("import copy output is required")
+	}
+	return inspectContent(ctx, input, maxBytes, output)
+}
+
+func inspectContent(ctx context.Context, input io.Reader, maxBytes int64, output io.Writer) (ContentInfo, error) {
 	if err := ctx.Err(); err != nil {
 		return ContentInfo{}, err
 	}
@@ -62,6 +82,22 @@ func InspectPlain(ctx context.Context, input io.Reader, maxBytes int64) (Content
 		}
 		if n > 0 {
 			_, _ = hash.Write(buffer[:n])
+			if output != nil {
+				readFailure := err
+				if readFailure == io.EOF {
+					readFailure = nil // a clean EOF is not a failure to join
+				}
+				written, writeErr := output.Write(buffer[:n])
+				if written < 0 || written > n {
+					return ContentInfo{}, errors.Join(ErrInvalidWriter, writeErr, ctx.Err(), readFailure)
+				}
+				if writeErr != nil || ctx.Err() != nil {
+					return ContentInfo{}, errors.Join(writeErr, ctx.Err(), readFailure)
+				}
+				if written != n {
+					return ContentInfo{}, errors.Join(io.ErrShortWrite, readFailure)
+				}
+			}
 			info.Bytes += int64(n)
 			info.TrailingPartial = buffer[n-1] != '\n'
 			emptyReads = 0

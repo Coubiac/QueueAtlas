@@ -1,7 +1,7 @@
 # ADR-011 — import historique borné et identité de contenu
 
-Statut : prévalidation normale/gzip lots 69–70 publiée/CI verte, synthèse lot 71
-sans blocage ; clôture/fusion à vérifier. Importeur et manifest non implémentés.
+Statut : prévalidation normale/gzip lots 69–71 fusionnée, copie vers writer lot 72
+développée/relue. Fichier privé détenu, importeur et manifest non implémentés.
 
 ## Décision et séparation des étapes
 
@@ -49,7 +49,7 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 
 ## Limites actuelles
 
-Les briques d'inspection normale/gzip existent. Pas encore d'ouverture de fichiers,
+Les briques d'inspection/copie normale/gzip existent. Pas encore d'ouverture de fichiers,
 import_run, ingestion, CLI, déduplication ni garantie de snapshot. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
@@ -78,3 +78,20 @@ Tests synthétiques : identité normal/gzip/recompression, membres successifs,
 second membre corrompu, CRC/taille/header/troncature/junk, budgets/ratio, contexte,
 reader invalide et sans progrès. Exécution Linux vérifiée par CI 37244378495 verte
 sur `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`.
+
+## Copie pendant inspection du lot 72
+
+CopyPlain/CopyGzip écrivent vers un io.Writer fourni les mêmes octets utilisés pour
+le digest, au même passage, y compris séparateurs/suffixe. Pour gzip, seuls les
+octets décompressés sont copiés, tous les CRC restent requis. Budget contrôlé avant
+Write ; aucune copie d'octets au-delà du budget. Pas de fermeture ou de seek.
+
+Une sortie peut être partielle, voire contenir tout un payload CRC invalide, avant
+l'erreur finale : le caller doit la jeter, sans ingestion. Writer nil refusé avant
+lecture ; n invalide/short write/erreur/cancel échouent sans metadata et sans retry.
+Si lecture et écriture échouent au même appel, leurs causes sont jointes, sauf EOF
+exact qui reste un succès de lecture. Contrats io et usage exclusif requis.
+Deadline entre lectures/écritures, sans interruption d'un syscall bloquant.
+
+Ce mécanisme prépare la copie privée détenue du prochain lot ; une simple sortie
+io.Writer n'est pas encore un fichier privé, ni un snapshot de l'entrée originale.
