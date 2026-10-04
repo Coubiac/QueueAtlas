@@ -15,15 +15,19 @@ M1 (parseurs), socle SQLite M2 et FileSource sont fusionnés dans main. PR #11 c
 au lot 60, synthèse de 19 parties et CI de tête verte. Chantier suivant : récupération
 explicite d'un unknown courant unique, lots 61–65, PR #12 fusionnée et CI main verte.
 Opération de bibliothèque seule, sans CLI/service. Lot 66 : capture bornée du
-départ initial à EOF et ADR-010 ; configuration/registration/Run au prochain lot.
+départ initial à EOF et ADR-010 ; configuration/registration/Run développés au lot 67,
+revue et CI de publication à compléter avant validation/fusion du chantier.
 Critère de fin : refus sûrs, preuves, transition seule et réessai/ACK vérifiés,
 CI verte et PR du chantier fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 67 : intégration initiale développée/relue sans blocage, tests portables/suite/vet/diff
+  Windows et compilation des tests Linux réussis. Publication et CI Linux à vérifier.
 - Lot 66 : capture privée d'EOF complet implémentée, trois tests portables Windows,
-  suite/vet/diff et revue indépendante réussis ; publication/CI à vérifier.
+  suite/vet/diff et revue indépendante réussis ; publié `daa35f1a5872bd1880e0ba471b009eef56598f2e`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37242844389), PR #13.
   Run inchangé, aucun saut à EOF encore activable. Prochain : intégration initiale.
 - Lot 65 terminé : [PR #12](https://github.com/Coubiac/mailtrace/pull/12) fusionnée
   avec tête `ca5db281d776e9e5c27874386212d78f520eedbc`, CI 37242452694 verte.
@@ -2259,12 +2263,27 @@ sans historique, distinct des reprises et rotations ; ces chemins restent inchan
 Trois tests Windows -count=1, suite/vet/diff réussis. Test de fichier fermé adapté
 à l'erreur Stat Windows (invalid handle, pas fs.ErrClosed garanti). Revue indépendante
 sans blocage, rapport pr-13.md ; obligation vide→append depuis zéro précisée pour 67.
+Publié `daa35f1`, PR #13 créée/attachée, CI 37242844389 verte.
+
+## Lot 67 : départ initial end intégré
+
+Résultat attendu : Config.StartAt validé/copié, saut end seulement sur bootstrap
+sans historique de chemin et sélection physique absente, transaction origine/CP
+positif sans observation. Reprise/rotations et attente vide restent au bon offset.
+Implémenté : Examined de parcours Absent inclut retired ; end uniquement si zéro,
+retired/historique physique Different gardent beginning ; candidats/reprise inchangés.
+Après vide, mode local beginning avant prochain poll, pas de recapture du nouvel EOF.
+Trois tests ciblés Windows New/PrepareFollowResume, suite/vet/diff et compilation
+Linux sans CGO réussis. Cinq tests Linux relus par coordinateur, exécution CI à faire :
+bootstrap/append/reprise, vide/append, partial/unknown, historique/rotation et ACK/erreurs.
+Revue indépendante sans blocage ni test supplémentaire nécessaire identifié ;
+rapport intégré pr-13.md. Publication/CI Linux à vérifier avant clôture du chantier.
 
 ## Prochaine action concrète
 
-Publier le lot 66, ouvrir la PR du chantier et vérifier sa CI.
-Lot 67 : configuration start_at:end, preuve d'absence historique, registration/Run
-initials avec tests SQLite Linux ; aucune application aux reprises/rotations.
+Publier le lot 67 sur la PR #13 et vérifier sa CI,
+dont nouvelles intégrations Linux. Lot 68 : synthèse du chantier, CI de tête,
+ready/fusion exacte et main, puis cadrage de l'import #5.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-start-at-end.
 
