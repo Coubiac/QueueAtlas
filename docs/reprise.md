@@ -5,6 +5,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 42 : sélection et registration initiale relues, sans blocage identifié,
+  sur `c8a5b46a03289819f4b5d53208b94dd8377ee0a5`. Rapport
+  `docs/reviews/pr-11-part-2.md`, code inchangé. Tests ciblés Windows réussis et
+  CI Linux de cette référence verte. Prochaine revue : ouverture/observation du chemin.
 - Lot 41 : revue partielle FileSource (contrats, lecteur, ingestor et preuves de
   reprise) terminée, sans blocage identifié. Rapport `docs/reviews/pr-11-part-1.md`.
   Commit `3fe6a7063f88f2c396e18b8a386ebf95a2cd2cc2` publié, CI Linux réussie.
@@ -1740,14 +1744,35 @@ La PR reste en brouillon : ce lot ne valide pas sélection, registration, chemin
 rotation, reprise orchestrée/Run ni lifecycle SQLite v2. Preuves bornées/non
 atomiques et sérialisation requise restent des limites explicites du contrat.
 
-## Prochain petit lot : revue FileSource — décision de génération
+## Lot 42 terminé : revue FileSource — décision de génération
 
-Reprendre sur #11 désormais basée sur main. Deuxième lot de revue : selection.go et
-generation.go, décision unique sur candidats paginés, refus d'ambiguïté et
-registration initiale acquittée. Auditeur indépendant en lecture seule ; utiliser
-les tests déjà consignés et ajouter uniquement les régressions des problèmes
-concrets. Chemins, rotation, reprise orchestrée/Run et lifecycle v2 seront revus
-dans les lots suivants ; ne pas déclarer toute #11 validée après ce deuxième lot.
+Référence c8a5b46a03289819f4b5d53208b94dd8377ee0a5, coordinateur et auditeur agent
+indépendant en lecture seule. Aucun blocage concret trouvé dans selection.go et
+generation.go : scan paginé borné, unicité/refus, copies, registration acquittée,
+attente sur fichier vide et politique zéro explicite. Rapport
+docs/reviews/pr-11-part-2.md. Code inchangé, aucun test ajouté sans défaut concret.
+
+Tests portables ciblés Windows -count=1 réussis pour les deux relecteurs.
+[CI Linux de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37187511562)
+réussie : Go 1.26.x/stable, tests/vet, détecteur de courses FileSource et builds
+amd64/arm64 sans CGO, incluant tests Linux de génération et preuves réelles.
+Consulter la PR #11 pour le résultat de la CI du commit documentaire publié.
+
+Limites : écritures à sérialiser sur toute la décision, captures non atomiques,
+pas de batch pending conservé pour retry automatique de registration. Une réponse
+perdue peut laisser une origine durable à checkpoint zéro ; décision stricte
+insuffisante et arrêt, sans génération remplacée implicitement. Registration et
+acquisition restent distinctes ; récupération unknown encore à cadrer.
+La PR reste en brouillon pour les parties restantes.
+
+## Prochain petit lot : revue FileSource — ouverture et observation du chemin
+
+Reprendre sur #11 basée sur main. Troisième lot de revue : open*.go, path.go et
+source_path.go, vérifications du fichier régulier et de l'identité autour d'Open,
+remplacement/disparition du chemin, liens/FIFO et propriété du descripteur.
+Auditeur indépendant en lecture seule ; ajouter uniquement les régressions des
+problèmes concrets. Rotation, reprise orchestrée/Run et lifecycle v2 restent des
+lots suivants ; ne pas déclarer toute #11 validée après cette troisième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
