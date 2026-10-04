@@ -26,6 +26,13 @@ type StateReader interface {
 	Checkpoint(ctx context.Context, sourceID, originID string) (Position, bool, error)
 }
 
+// PathStateReader supplies persisted candidates for restart planning, without
+// requiring an observed physical identity. It does not choose which generation
+// to resume or prove that an origin can still be found on disk.
+type PathStateReader interface {
+	FileOriginsByPath(ctx context.Context, query OriginPathQuery) (OriginPage, error)
+}
+
 const MaxOriginPageSize = 100
 
 // OriginQuery selects one source's physical file identity. Limit must be in
@@ -35,6 +42,18 @@ type OriginQuery struct {
 	SourceID string
 	Device   string
 	Inode    string
+	AfterID  string
+	Limit    int
+}
+
+// OriginPathQuery filters by nonempty source ID and exact stored path. Paths are
+// not normalized, case-folded or interpreted as patterns. Limit and AfterID have
+// the same bounds and exclusive ID ordering as OriginQuery; a cursor need not
+// identify an existing row. ID ordering is not generation chronology. Pages do
+// not form a global snapshot when state changes between calls.
+type OriginPathQuery struct {
+	SourceID string
+	Path     string
 	AfterID  string
 	Limit    int
 }

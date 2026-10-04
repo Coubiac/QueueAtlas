@@ -88,6 +88,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Vingt-deuxième lot FileSource : sélection bornée d'une rotation accessible pour
   une origine/checkpoint fournis, dans `internal/source/file/rotation_search.go`,
   commit `f5e50894b4c9fe1e0efb9757f3545baaed9a2756`, toujours dans la PR #11.
+- Vingt-troisième lot FileSource : contrat `source.PathStateReader` et lecture
+  SQLite des origines/checkpoints filtrés par source et chemin exact dans
+  `internal/storage/sqlite/state.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -187,6 +190,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI recherche de rotation](https://github.com/Coubiac/mailtrace/actions/runs/37170755564)
   réussie : tests Linux (Go 1.26.x/stable), renommage/preuves/exclusions/fermeture,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
+- Validation locale du lot lecture par chemin : `go test ./...`, `go vet ./...` et
+  compilation des tests SQLite Linux amd64 sans CGO réussis. Exécution Linux,
+  détecteur de courses FileSource et builds : CI à vérifier après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -783,7 +789,7 @@ polling ; des lignes déjà acquittées ne sont pas annulées. La récupération
 copytruncate et le diagnostic des lacunes restent à développer. Pas de migration
 ou dépendance ajoutée.
 
-## Dernier lot terminé : sélection d'une rotation accessible pour un état fourni
+## Sélection d'une rotation accessible pour un état fourni
 
 `SelectRotation(ctx, directory, state, limit)` recherche un état fourni dans un
 répertoire fourni, résolu en chemin absolu. Le budget explicite va de 1 à
@@ -826,15 +832,51 @@ interrompre un syscall bloqué ; les limites d'ouverture non Linux restent celle
 d'`OpenLog`. Pas de sélection d'états persistés au démarrage, raccordement à `Run`,
 récupération copytruncate ou diagnostic de lacunes. Pas de migration/dépendance.
 
-## Prochain petit lot : lire les origines enregistrées pour un chemin
+## Dernier lot terminé : lecture des origines enregistrées pour un chemin
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11. Ajouter un contrat de
-lecture paginée filtré par source ID et chemin exact, puis son implémentation SQLite
-avec checkpoint optionnel dans chaque résultat. Valider arguments/budget/curseur,
-séparation des sources et chemins, pagination sans perte, checkpoints absents/zéro/
-positifs et annulation. Ce lot concerne la lecture d'état ; la sélection des états
-à rechercher et leur raccordement à `SelectRotation`/`Run` viendront ensuite. Les
-archives gzip et la récupération copytruncate restent séparées.
+`source.PathStateReader.FileOriginsByPath(ctx, source.OriginPathQuery)` fournit les
+origines d'une source dont le chemin stocké est exactement égal au chemin demandé,
+avec checkpoint optionnel. Ce contrat distinct complète le lecteur par identité
+physique, sans imposer cette capacité aux lecteurs existants. ID de source et
+chemin doivent être non vides ; `Limit` vaut de 1 à `MaxOriginPageSize` (100).
+`AfterID` est un curseur exclusif dans l'ordre lexicographique des IDs ; vide au
+départ, il peut ensuite être un ID absent. `NextID` termine le parcours lorsqu'il
+est vide. Les chemins ne sont ni normalisés, ni comparés sans casse, ni traités
+comme motifs ; Source, Path et curseur sont des paramètres SQL liés.
+
+SQLite joint origines et checkpoints dans une seule requête par page, avec une
+ligne supplémentaire pour détecter la suite. Les deux lecteurs partagent le
+décodage des pages et exploitent le schéma existant, notamment l'index source/chemin.
+Les métadonnées sont rendues telles quelles, y compris une identité physique vide
+ou des empreintes non validées. Un checkpoint absent reste nil ; zéro reste présent.
+Aucune écriture d'origine/checkpoint, migration ou dépendance ajoutée.
+
+Tests locaux : réouverture SQLite, pages de taille 1 sans perte, ordre par ID malgré
+FirstSeen inversés, origines du même chemin avec identités physiques différentes
+ou vides, checkpoint absent/zéro/positif, isolation des sources et chemins proches
+(casse, normalisation ou caractères de motif), valeurs littérales SQL dans source,
+chemin et curseur, curseur exclusif absent/après la fin, borne maximale, arguments
+invalides et annulation sans résultat partiel. Les tests existants du lecteur par
+identité physique passent après mutualisation du décodage.
+
+Limites : une page est un snapshot de requête ; des pages successives ne constituent
+pas un snapshot global si l'état change. L'ordre des IDs n'est pas une chronologie
+et ne sélectionne aucune génération active. Le chemin représente la dernière
+métadonnée enregistrée, pas une preuve d'emplacement actuel sur disque. Les résultats
+ne valident pas identité/préfixe/ancre et ne déclenchent aucune recherche de rotation.
+La reprise automatique, gzip et la récupération copytruncate restent à développer.
+
+## Prochain petit lot : valider et borner le parcours des états par chemin
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11. Ajouter un composant de
+lecture bornée via `PathStateReader` : contrôler tailles de pages, chemin exact,
+ordre des IDs et progression des curseurs ; recopier les états/checkpoints seulement
+après parcours terminé. Budget total explicite, résultat inexploitable sur limite,
+erreur ou annulation. Tester plusieurs pages, absence, limite, pages incohérentes
+et absence d'alias sur les checkpoints. Ce composant prépare les candidats sans
+choisir une génération active par ID/date et sans ouvrir de fichier ni écrire
+SQLite. Le raccordement à la recherche et la distinction entre générations encore
+suivies et historique restent à traiter avant une reprise automatique sûre.
 
 ## Suite à découper au fil des reprises
 
