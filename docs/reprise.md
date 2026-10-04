@@ -5,6 +5,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 48 : courant et successeurs aux polls relus sur
+  `82635d7e27fa3da5447a6e23fd27925a82f417aa`, sans blocage concret identifié.
+  Rapport `docs/reviews/pr-11-part-8.md`, code inchangé et tests portables réussis.
+  Prochaine revue : ordonnancement des lectures et polls sous flux continu.
 - Lot 47 : retrait durable après EOF et délai de grâce relu sur
   `f468a7ad6e2327be58ce0c074b29b1491a03fed3`, sans blocage concret identifié.
   Rapport `docs/reviews/pr-11-part-7.md`, code inchangé et tests portables réussis.
@@ -1889,15 +1893,38 @@ et fermeture non atomiques, ajout après contrôle potentiellement manqué. Pas 
 crash réel injecté. Rotation globale, ordonnancement et reprise orchestrée/Run
 encore à relire ; PR en brouillon.
 
-## Prochain petit lot : revue FileSource — courant et successeurs aux polls
+## Lot 48 terminé : revue FileSource — courant et successeurs aux polls
 
-Reprendre sur #11 basée sur main. Huitième partie : poll dans rotation.go, contrôles
-des générations avant changement, chemin identique/absent/remplacé, descripteur
-conservé redevenant courant, ouverture/vérification d'un successeur, plafond de deux
-descripteurs et propriété sur erreur. Auditeur indépendant en lecture seule ;
-ajouter les régressions des défauts concrets. Ordonnancement des lectures/polls et
-reprise orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11 validée
-après cette huitième partie.
+Référence 82635d7e27fa3da5447a6e23fd27925a82f417aa, coordinateur et auditeur agent
+indépendant : poll dans rotation.go, taille/ancre, observation, courant/successeur,
+capacité et propriété sur erreur. Aucun blocage concret identifié. Contrôles avant
+bascule/retrait, same/missing, retour du retenu avec son ingestor, plafond avant
+OpenLog, comparaison à l'observation et nettoyage relus. Rapport
+docs/reviews/pr-11-part-8.md, code inchangé et aucun nouveau test.
+
+Coordinateur : tests SourcePathFollow, PollStopsOnCurrent, SizeCheck et LiveAnchor
+-count=1 réussis sous Windows ; auditeur : tests portables observation/suivi du
+chemin/tailles/ancres réussis. git diff --check réussi, checkout isolé propre.
+[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37203882023)
+verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
+et job Windows chemins. Intégrations Linux rotation/capacité/retour/erreurs/contrôles
+relues et exécutées par cette CI, pas localement sous Windows. Consulter la PR #11
+pour la CI du rapport.
+
+Limites : contrôles/ouvertures non atomiques, preuves bornées, pas d'injection locale
+du changement entre observation et ouverture. Plafond de générations, pas tous les
+handles du processus. Ordonnancement et reprise orchestrée/Run encore à relire ;
+PR en brouillon.
+
+## Prochain petit lot : revue FileSource — ordonnancement des lectures et polls
+
+Reprendre sur #11 basée sur main. Neuvième partie : boucle de suivi dans rotation.go,
+une ligne par génération et par passage, progression conjointe/partiels, attente
+seulement sans progrès et échéance des polls sous flux continu. Vérifier les erreurs
+du lecteur/Sink (dont EOF avec pending), annulation, absence de réessai automatique
+et nettoyage. Auditeur indépendant en lecture seule ; ajouter les régressions des
+défauts concrets. Reprise orchestrée/Run restent des lots suivants ; ne pas déclarer
+toute #11 validée après cette neuvième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
