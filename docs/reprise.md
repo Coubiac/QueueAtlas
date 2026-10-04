@@ -3,6 +3,11 @@
 Mis à jour le 4 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
+Vue des jalons et estimation des lots restants : [avancement](avancement.md).
+Prévision au lot 53 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
+60–100 petits lots jusqu'au MVP, dont 6–8 pour clôturer la PR #11. Ces fourchettes
+seront réévaluées après sa fusion ; AD/OIDC reste après MVP.
+
 ## Avancement du jalon M2
 
 M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
