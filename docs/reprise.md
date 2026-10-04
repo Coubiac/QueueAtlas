@@ -14,8 +14,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Socle M2 : migration SQLite v1, contrat `Source`/`Sink`, insertion idempotente
   des observations et commit atomique des checkpoints.
   [PR #10](https://github.com/Coubiac/mailtrace/pull/10), branche
-  `codex/m2-sqlite-storage`, dernier commit de code
-  `34478635265c8001b4f0d2e8f42485b380f5060f`.
+  `codex/m2-sqlite-storage`, relue et corrigée sur
+  `463d767418cb366b87aaf983530a42da6bba2f35`, tête finale
+  `44e54f7b3b551ec5d073a616b18a67842026ad76`. Fusionnée dans main le 4 octobre,
+  commit `69ab91e6a830914102ac96f4b9434be89f5702e6`.
 - Premier lot FileSource : lecteur de lignes borné dans
   `internal/source/file/reader.go`, commit
   `dfacfa20575529b421d7a6f0dedef8e7f476ddcc`.
@@ -185,8 +187,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Lot 39 : revue/correctif/clôture de M1. PR #9 fusionnée après revue coordinateur,
   audit par un agent indépendant et CI réussie ; voir docs/reviews/pr-9.md.
   Le correctif est intégré aux branches #10 et #11 en respectant leur dépendance.
-- PR #10 et #11 restent en brouillon. #10 cible maintenant main, #11 cible #10.
-  La prochaine revue porte sur SQLite (#10), sans attendre la fin de FileSource.
+- Lot 40 : revue/correctifs/clôture SQLite v1, après audit indépendant et CI.
+  PR #10 fusionnée ; correctifs intégrés à FileSource, revue détaillée ci-dessous.
+- Seule PR #11 reste en brouillon et cible désormais main. La revue FileSource
+  commence par contrats/lecteur/identité, en lots courts, avant clôture d'ensemble.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
   [CI du commit de code](https://github.com/Coubiac/mailtrace/actions/runs/37142141635)
   réussie, incluant les builds Linux amd64/arm64 sans CGO.
@@ -1668,15 +1672,56 @@ M1 ne livre pas encore de service/paquet installable. Revues sécurité SQLite e
 FileSource encore à faire ; main local aligné sur origin/main, branches dépendantes
 conservées. Aucun merge de #10/#11 ni nouveau comportement de source dans ce lot.
 
-## Prochain petit lot : revue et clôture de la PR #10
+## Lot 40 : revue et fusion de la PR #10
 
-Reprendre par la PR SQLite #10, désormais basée sur main et contenant le correctif
-M1. Relire contrats Source/Sink, migration v1, transactions/idempotence, permissions
-et limites, avec audit indépendant prévu au cadrage ; corriger uniquement les
-problèmes concrets, vérifier la tête publiée puis clôturer/fusionner si sans blocage.
-Conserver la dépendance de #11 et reporter sa revue complète dans un lot distinct.
-Réutiliser le checkout géré propre `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`,
-actuellement sur codex/m2-sqlite-storage ; le checkout principal reste sur #11.
+Revue coordinateur et audit agent indépendant du commit SQLite v1 exact
+6b861179f915917aae5f8c7452194e939b93681e, hors FileSource/schéma v2. Deux P2
+reproduits via Open/Commit avant correctif : table étrangère sqliteApp/vue seule
+admises par un comptage incomplet, et dates RFC5424 hors plage int64 nanosecondes
+indexées comme un faux instant. Version négative modifiait aussi WAL avant refus.
+
+Correctifs : comptage de tous objets utilisateur avec préfixe sqlite_ littéral,
+avant WAL et dans migration ; refus des versions négatives ; aller-retour exact
+des dates avant projection UTC, sinon NULL avec métadonnées intactes et acquittement
+normal du record/checkpoint. Open contrôle fichiers réguliers et sidecars Unix
+privés (-wal/-shm/-journal) avant connexion ; contexte déjà annulé sans création.
+ReadAt/FirstSeen restent des instants actuels fournis par les sources internes.
+
+Tests des bornes int64, voisins ±1ns et années 0001/9999, refus foreign/négatif sans
+mutation, fichiers neufs privés, WAL préexistant conservé 0644 par le pilote puis
+refusé par Open, SHM/journal trop ouverts, FIFO et annulation. Relecture indépendante
+sans blocage concret restant. Rapport docs/reviews/pr-10.md et revue COMMENT GitHub,
+sans prétendre à une approbation humaine externe.
+
+go test ./..., go vet ./..., git diff --check, builds Linux amd64/arm64 sans CGO
+et compilation des tests SQLite Linux réussis localement. [CI du correctif](https://github.com/Coubiac/mailtrace/actions/runs/37186524966)
+réussie sur 463d767418cb366b87aaf983530a42da6bba2f35, incluant tous les tests Unix.
+[CI finale de PR](https://github.com/Coubiac/mailtrace/actions/runs/37186639855)
+réussie sur 44e54f7b3b551ec5d073a616b18a67842026ad76 (Go 1.26.x/stable,
+tests/vet/builds Linux). PR sortie du brouillon puis fusion avec SHA de tête attendu,
+merge 69ab91e6a830914102ac96f4b9434be89f5702e6 dans main.
+
+PR #11 reciblée vers main. Merge de main dans FileSource : code fusionné sans
+conflit, historique détaillé de ce point de reprise conservé pour résoudre le seul
+conflit documentaire. Schéma v2/état de suivi restent propres à #11 ; aucune
+modification du schéma v1 ni dépendance. Vérifications d'intégration et CI à confirmer
+avant clôture de ce lot. Les branches #9/#10 sont conservées.
+
+Limites : parent du fichier à protéger, contrôles filesystem non atomiques, ACL
+Windows non validées par bits Unix. Audit assisté par agents/données synthétiques,
+pas de certification humaine. Débit, licences transitives, sauvegarde et rétention
+opérationnelles restent à traiter avant distribution. Revue FileSource encore à faire.
+
+## Prochain petit lot : revue FileSource — contrats, lecteur et identité
+
+Reprendre sur #11 désormais basée sur main. Premier lot de revue : contrat Source/
+Sink et bornes de Record, lecteur de lignes/fragments, offsets et normalisation,
+identité/préfixe/ancre et vérification de candidats. Auditeur indépendant en lecture
+seule ; utiliser les tests déjà consignés et ajouter uniquement les régressions des
+problèmes concrets. La rotation, reprise orchestrée/Run et lifecycle v2 seront revus
+dans les lots suivants ; ne pas déclarer toute #11 validée après ce premier lot.
+Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
+pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
 Après ces clôtures, reprendre le cadrage de récupération d'un lifecycle inconnu :
 politique distincte pour l'arrêt entre registration et acquisition, sans laisser

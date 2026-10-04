@@ -21,7 +21,7 @@ func preflight(ctx context.Context, db *sql.DB) error {
 	}
 	if version == 0 {
 		var existing int
-		if err := db.QueryRowContext(ctx, `SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`).Scan(&existing); err != nil {
+		if err := db.QueryRowContext(ctx, `SELECT count(*) FROM sqlite_master WHERE name NOT GLOB 'sqlite_*'`).Scan(&existing); err != nil {
 			return err
 		}
 		if existing != 0 {
@@ -201,7 +201,7 @@ func migrate(ctx context.Context, db *sql.DB, nowNS int64) error {
 	}
 	if version == 0 {
 		var existing int
-		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`).Scan(&existing); err != nil {
+		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM sqlite_master WHERE name NOT GLOB 'sqlite_*'`).Scan(&existing); err != nil {
 			return err
 		}
 		if existing != 0 {
