@@ -99,6 +99,15 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 - Vingt-cinquième lot FileSource (stockage) : ADR-009, état durable inconnu/en
   suivi/retiré, migration SQLite v2 et transitions attendues/idempotentes dans
   `Sink.Commit`, commit `b30b8748a66eabbc14cc9f2cfe271615bef9dbbc`, toujours dans la PR #11.
+- Vingt-sixième lot FileSource : acquisition durable après vérification et avant
+  consommation de ligne, reprise d'un acquittement existant/réacquisition explicite,
+  arrêt sur erreur sans déplacement de checkpoint dans `file_source.go`, commit
+  `f1794ab23aaa42aae2ba4fefdbd2884cb908abda`. Fixtures de date corrigées dans
+  `f10ea5e0b16d6b9d5a65ee16b35cd3795e1fb2db`, toujours dans la PR #11.
+- Validation du lot acquisition : contrôles locaux et
+  [CI](https://github.com/Coubiac/mailtrace/actions/runs/37173188977) réussis sur
+  `f10ea5e0b16d6b9d5a65ee16b35cd3795e1fb2db`, incluant tests Linux, détecteur de
+  courses FileSource et builds Linux amd64/arm64 sans CGO.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -963,7 +972,7 @@ d'écritures futures. Le scheduler ne publie encore aucune transition : ses orig
 restent inconnues et la reprise automatique n'exploite pas encore ce champ. Gzip,
 copytruncate et diagnostic de lacunes restent à développer.
 
-## Dernier lot : acquisition acquittée par FileSource
+## Dernier lot terminé : acquisition acquittée par FileSource
 
 `prepareGeneration` attend désormais le Sink après décision et vérification par
 `NewIngestor`, avant toute consommation de ligne. Origines inconnues/neuves et
@@ -991,11 +1000,13 @@ et erreur au polling adaptés pour distinguer transition et record. Tests portab
 de l'état invalide, de l'acquittement déjà présent et de l'annulation préalable.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
-des tests FileSource Linux amd64 sans CGO. Exécution des nouveaux cas Linux et
-détecteur de courses : CI du commit de code à confirmer après publication.
+des tests FileSource Linux amd64 sans CGO. Exécution des nouveaux cas Linux,
+détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI](https://github.com/Coubiac/mailtrace/actions/runs/37173188977) Go 1.26.x/stable
+du commit `f10ea5e0b16d6b9d5a65ee16b35cd3795e1fb2db`.
 Premier passage CI `37173131616` : échec de l'assertion de provenance des nouveaux
 tests d'erreur, dû à une date zéro du helper hors plage UnixNano. Fixtures du lot
-corrigées avec une date synthétique représentable ; nouvelle CI à confirmer.
+corrigées avec une date synthétique représentable ; nouvelle CI réussie ci-dessus.
 
 Limites : enregistrement initial et acquisition sont deux transactions. Un échec
 après enregistrement ou un arrêt avant le premier record conserve le checkpoint
