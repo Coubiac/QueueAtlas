@@ -16,15 +16,21 @@ au lot 60, synthèse de 19 parties et CI de tête verte. Chantier suivant : réc
 explicite d'un unknown courant unique, lots 61–65, PR #12 fusionnée et CI main verte.
 Opération de bibliothèque seule, sans CLI/service. Lot 66 : capture bornée du
 départ initial à EOF et ADR-010 ; configuration/registration/Run développés au lot 67,
-revue et CI de publication à compléter avant validation/fusion du chantier.
-Critère de fin : refus sûrs, preuves, transition seule et réessai/ACK vérifiés,
+CI du lot 67 verte et synthèse finale lot 68 sans blocage ; clôture/fusion à vérifier.
+Critère de fin : frontière initiale complète, historique explicitement ignoré,
+appends/reprises/rotations et réessai/ACK vérifiés,
 CI verte et PR du chantier fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 68 : synthèse indépendante sur `564ad5ae876636fce98316b928252b86e13f447d`
+  sans blocage, anciens composants hors intégration/deps/CI inchangés ; diff propre.
+  CI 37243261005 verte, nouveaux tests Linux/race/builds exécutés. Clôture documentaire
+  prête ; publication/CI finale puis fusion attendues, pas encore constatées ici.
 - Lot 67 : intégration initiale développée/relue sans blocage, tests portables/suite/vet/diff
-  Windows et compilation des tests Linux réussis. Publication et CI Linux à vérifier.
+  Windows et compilation des tests Linux réussis. Publié `564ad5a`, CI Linux
+  37243261005 verte (tests, race, builds sans CGO et Windows chemins).
 - Lot 66 : capture privée d'EOF complet implémentée, trois tests portables Windows,
   suite/vet/diff et revue indépendante réussis ; publié `daa35f1a5872bd1880e0ba471b009eef56598f2e`,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37242844389), PR #13.
@@ -34,10 +40,6 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
   Main `69dfe6bb056e4de326f2d77fc8aaf3433c2bf8b3` vérifié ;
   [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37242571458),
   vérifiée via API REST publique. Branche suivante `codex/m2-start-at-end` depuis main.
-- Lot 65 : synthèse indépendante sur `31520075b7fc9ad18a30c23ace1a7c3dd356d96b`,
-  aucun blocage identifié ; anciens composants/dépendances/CI inchangés, diff propre.
-  CI 37242113816 verte, Linux réellement exécuté ; clôture documentaire prête,
-  publication/CI finale et fusion attendues, pas encore constatées dans ce commit.
 - Lot 64 : RecoverUnknownCurrent développé/relu, test portable onze cas, suite/vet/diff
   et compilation Linux réussis. Application seule sans ingestion, ACK/réessai couvert
   par tests Linux exécutés en CI 37242113816 verte. Prochaine : validation/fusion #12.
@@ -2274,25 +2276,36 @@ Implémenté : Examined de parcours Absent inclut retired ; end uniquement si z�
 retired/historique physique Different gardent beginning ; candidats/reprise inchangés.
 Après vide, mode local beginning avant prochain poll, pas de recapture du nouvel EOF.
 Trois tests ciblés Windows New/PrepareFollowResume, suite/vet/diff et compilation
-Linux sans CGO réussis. Cinq tests Linux relus par coordinateur, exécution CI à faire :
+Linux sans CGO réussis. Cinq tests Linux relus par coordinateur et exécutés par CI :
 bootstrap/append/reprise, vide/append, partial/unknown, historique/rotation et ACK/erreurs.
 Revue indépendante sans blocage ni test supplémentaire nécessaire identifié ;
-rapport intégré pr-13.md. Publication/CI Linux à vérifier avant clôture du chantier.
+rapport intégré pr-13.md. Publié `564ad5ae876636fce98316b928252b86e13f447d`,
+CI 37243261005 verte : tests Linux/race/builds et Windows chemins réellement exécutés.
+
+## Lot 68 : synthèse et clôture start_at:end
+
+Checkout isolé sur `564ad5a`, propre/diff propre. Revue indépendante : code identique
+aux revues 66–67, seul commentaire Run ajouté ensuite ; aucun blocage concret.
+ADR/rapport couvrent bootstrap seul, frontière complète, attente vide, reprise et
+rotation sans saut, ACK/erreurs. Critère de fin/suite future corrigés dans la reprise.
+CI 37243261005 verte sur référence exacte, trois jobs terminés avec succès. Aucun
+test relancé sans changement runtime. Ce commit prépare la clôture ; publication/CI
+finale requises avant ready et fusion attendue sur tête exacte.
 
 ## Prochaine action concrète
 
-Publier le lot 67 sur la PR #13 et vérifier sa CI,
-dont nouvelles intégrations Linux. Lot 68 : synthèse du chantier, CI de tête,
-ready/fusion exacte et main, puis cadrage de l'import #5.
+Publier le lot 68, vérifier CI de tête puis ready/fusion #13 et CI main.
+Lot 69 : cadrage de l'import #5 et validation bornée du contenu normal avant ingestion,
+sans mélanger source, stockage du manifest et interface dans un même lot.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-start-at-end.
 
 ## Suite à découper au fil des reprises
 
-1. Démarrage explicite start_at:end et compléments du suivi #4.
+1. Import historique normal, puis gzip dans un lot distinct.
 2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
    ensembles multiples ; diagnostics/compléments du suivi #4.
-3. Import historique normal, puis gzip dans un lot distinct.
+3. Application CLI/service et métriques au jalon adapté.
 
 Chaque demande de continuation traite par défaut un seul petit lot et actualise
 ce point de reprise avec le résultat et la prochaine action.

@@ -1,7 +1,8 @@
 # ADR-010 — départ initial explicite en fin de fichier
 
 Statut : contrat retenu le 5 octobre 2026 ; capture implémentée au lot 66,
-intégration configuration/registration/Run développée au lot 67, CI/fusion à vérifier.
+intégration configuration/registration/Run développée au lot 67, CI verte et revue
+finale lot 68 sans blocage ; publication/fusion de clôture à vérifier.
 
 ## Décision
 
