@@ -11,8 +11,8 @@ seront réévaluées après sa fusion ; AD/OIDC reste après MVP.
 ## Avancement du jalon M2
 
 M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
-PR #11 développée et en revue ; lot 55 termine le transfert connu et le refus missing.
-Restent nouveau courant, préparation/reprise orchestrée et Run,
+PR #11 développée et en revue ; lot 56 termine le nouveau courant au transfert.
+Restent préparation/reprise orchestrée, zéro/lacune et Run,
 puis validation finale et fusion. Ces domaines seront traités en petits lots avec
 un résultat précis ; le numéro de lot compte aussi les revues et corrections.
 Critère de fin du chantier : chemins restants revus, défauts corrigés, CI verte et
@@ -21,6 +21,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 56 : nouveau courant et préparation après transfert relus sur `c5e928f`, sans
+  blocage identifié. Test portable Windows (huit sous-cas) réussi ; intégrations
+  Linux relues/CI verte. Rapport partie 16, code inchangé. Prochaine : PrepareFollowResume.
 - Lot 55 : transfert known et refus missing relus sur `8bcc1a7`, sans blocage concret.
   Cinq tests portables Windows réussis, intégrations Linux relues/CI de référence
   verte. Rapport partie 15 ; code inchangé. Prochaine revue : nouveau courant.
@@ -2094,12 +2097,22 @@ Linux relues et exécutées par CI 37221589000 verte, pas localement. Code incha
 diff propre ; CI de publication sur #11. Fenêtres d'annulation avant/après transfert
 relues sans injection ciblée ; snapshots non atomiques, état/set sérialisés requis.
 
-## Prochain petit lot : nouveau courant au transfert
+## Lot 56 terminé : nouveau courant au transfert
 
-Lot 56 / partie 16 : branche new de applyOpened et prepareNewAndFollow, capacité
-avant open, taille/ancre de l'ancien, identité et cleanup temporaire avant transfert,
-préparation/acquisition avant consommation après transfert, vide puis append.
-Auditeur indépendant en lecture seule ; préparation orchestrée/zéro/Run séparés.
+Référence `c5e928fb762e7445c67f16ea57557e5c5bc2c1ca`, coordinateur et auditeur :
+aucun blocage identifié, capacité/preuves avant open, identité/cleanup temporaire,
+propriété complète après transfert, préparation/acquisition avant ligne et courant
+vide différé. Rapport partie 16. Test portable huit sous-cas Windows réussi ; Linux
+relu et exécuté par CI 37221815044 verte, pas localement. Code inchangé ; CI de
+publication sur #11. Snapshots non atomiques, unknown après registration sans
+acquisition reste bloquant, écritures/set sérialisés. PR en brouillon.
+
+## Prochain petit lot : préparation orchestrée stricte
+
+Lot 57 / partie 17 : PrepareFollowResume (politique stricte), validation/budgets,
+composition entière sans fallback, propriété du résultat Ready et cleanup sur
+erreur/annulation après réouverture. Auditeur indépendant en lecture seule ;
+politique zéro/diagnostic lacune et Run séparés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
