@@ -85,6 +85,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   checkpoint positif acquitté, diagnostic fixe de non-correspondance et arrêt,
   dans `internal/source/file/live_anchor.go`, commit
   `5fee37fd45ab9848d64e5e3f333505ff7f1acc29`, toujours dans la PR #11.
+- Vingt-deuxième lot FileSource : sélection bornée d'une rotation accessible pour
+  une origine/checkpoint fournis, dans `internal/source/file/rotation_search.go`,
+  toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -179,6 +182,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI ancre en suivi](https://github.com/Coubiac/mailtrace/actions/runs/37164079280)
   réussie : tests sur Linux (Go 1.26.x/stable), checkpoints SQLite conservés,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
+- Validation locale du lot recherche de rotation : `go test ./...`, `go vet ./...`
+  et compilation des tests FileSource Linux amd64 sans CGO réussis. Exécution Linux,
+  détecteur de courses et builds : CI à vérifier après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -740,7 +746,7 @@ de taille identique ou les changements d'octets encore non consommés échappent
 diagnostic. La récupération copytruncate et le diagnostic de lacunes restent à
 développer. Pas de migration ou dépendance ajoutée.
 
-## Dernier lot terminé : contrôle de l'ancre acquittée pendant le suivi
+## Contrôle de l'ancre acquittée pendant le suivi
 
 Chaque polling vérifie d'abord les tailles, puis l'ancre du dernier checkpoint
 positif acquitté de chaque descripteur, avant observation du chemin, expiration ou
@@ -775,18 +781,58 @@ polling ; des lignes déjà acquittées ne sont pas annulées. La récupération
 copytruncate et le diagnostic des lacunes restent à développer. Pas de migration
 ou dépendance ajoutée.
 
-## Prochain petit lot : sélectionner une rotation accessible pour un état fourni
+## Dernier lot terminé : sélection d'une rotation accessible pour un état fourni
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et le cadrage ADR-003.
-Préparer un composant de recherche bornée, dans un répertoire fourni, d'un fichier
-régulier non compressé correspondant à une origine/checkpoint fournis. Parcours
-non récursif, budget explicite de candidats, validation par identité physique,
-préfixe et ancre existants ; décision exploitable uniquement après parcours
-terminé et correspondance unique. Tester renommage, absence, ambiguïté/preuves
-insuffisantes, limite, erreur/annulation et fermeture des descripteurs temporaires.
-Ce lot ne relance pas l'ingestion et ne modifie pas SQLite. Le choix des états
-persistés au démarrage, le raccordement à `Run`, gzip et la récupération
-copytruncate restent à découper ensuite.
+`SelectRotation(ctx, directory, state, limit)` recherche un état fourni dans un
+répertoire fourni, résolu en chemin absolu. Le budget explicite va de 1 à
+`MaxRotationEntries` (1000) et compte toutes les entrées, y compris celles ignorées.
+Les pages contiennent au maximum 32 entrées ; une entrée supplémentaire non
+vérifiée permet de distinguer la fin exacte du budget d'un parcours incomplet.
+Les sous-répertoires, liens symboliques observés, autres fichiers non réguliers,
+noms `.gz` (casse ignorée) et signatures gzip sont écartés. Aucun parcours récursif
+ou décodage d'archive. Le répertoire et au maximum un candidat sont ouverts ensemble.
+
+Chaque candidat régulier passe par `OpenLog`, comparaison avec les métadonnées
+observées de l'entrée, puis `VerifyCandidate` strict : identité physique, préfixe,
+ancre et frontière LF. L'appelant fournit un état de sa source. Un checkpoint zéro
+reste sans preuve suffisante. `RotationSelection` donne statut fixe et nombre
+d'entrées examinées ; `Path` n'est renseigné que pour `unique`, après parcours
+terminé avec exactement une correspondance et aucune preuve insuffisante. Deux
+liens physiques concordants sont deux chemins ambigus. Les statuts `absent`,
+`different`, `insufficient`, `ambiguous` et `limit_reached` ne donnent aucun chemin.
+
+Erreurs et annulation suppriment tout résultat partiel. Tous les descripteurs
+temporaires sont fermés avant retour, y compris sur échec. Origines/checkpoints
+fournis restent inchangés ; ce composant n'appelle ni Sink ni SQLite et ne relance
+pas l'ingestion. Le chemin sélectionné doit être rouvert et revérifié par son futur
+utilisateur. Aucun état utilisable n'est conservé sous forme de descripteur ouvert.
+
+Tests locaux : unicité après épuisement, budget exact et dépassement après match,
+entrées ignorées comptées, pages bornées, absence/différence/insuffisance/ambiguïté,
+erreur après correspondance, annulation, pages invalides et configuration/répertoire.
+Tests Linux : renommage puis append tardif avec nouveau fichier au chemin original,
+preuve positive sélectionnée, checkpoint/origine inchangés, hard links ambigus,
+checkpoint zéro, préfixe modifié, exclusions gzip/lien/sous-répertoire, budget,
+entrée disparue ou remplacée et fermeture des descripteurs de fichiers/répertoire.
+
+Limites : pas de snapshot atomique des pages, métadonnées ou empreintes ; des
+mutations concurrentes du répertoire peuvent cacher une entrée. L'identité
+persistable reste disponible sur Linux ; les fenêtres ne prouvent pas l'ensemble
+des octets. Les signatures gzip sont seulement exclues, les autres formats sont
+traités comme octets bruts. Context est vérifié entre appels filesystem, sans
+interrompre un syscall bloqué ; les limites d'ouverture non Linux restent celles
+d'`OpenLog`. Pas de sélection d'états persistés au démarrage, raccordement à `Run`,
+récupération copytruncate ou diagnostic de lacunes. Pas de migration/dépendance.
+
+## Prochain petit lot : lire les origines enregistrées pour un chemin
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11. Ajouter un contrat de
+lecture paginée filtré par source ID et chemin exact, puis son implémentation SQLite
+avec checkpoint optionnel dans chaque résultat. Valider arguments/budget/curseur,
+séparation des sources et chemins, pagination sans perte, checkpoints absents/zéro/
+positifs et annulation. Ce lot concerne la lecture d'état ; la sélection des états
+à rechercher et leur raccordement à `SelectRotation`/`Run` viendront ensuite. Les
+archives gzip et la récupération copytruncate restent séparées.
 
 ## Suite à découper au fil des reprises
 
