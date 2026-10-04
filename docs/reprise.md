@@ -5,6 +5,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 45 : migration SQLite v2 et transitions durables relues sur
+  `a0c0d13319a27c38ffad8054cc6b081fbec76299`, sans blocage concret identifié.
+  Rapport `docs/reviews/pr-11-part-5.md`, tests ciblés Windows réussis, code inchangé.
+  Prochaine revue : acquisition par FileSource avant première ligne.
 - Lot 44 : lecteurs d'état SQLite relus sur
   `9007404264ba9b4a1a99a8563ce0fb9ab2155f40`, sans blocage d'exécution identifié.
   Commentaire Checkpoint corrigé (absence distincte de zéro, sans reprise implicite).
@@ -1813,14 +1817,35 @@ nombre de résultats borné, taille des chaînes et coût SQL non mesurés. Corr
 ou concurrence non injectées localement dans ce lot. Migration/transitions v2,
 rotation et Run encore à relire ; PR en brouillon.
 
-## Prochain petit lot : revue FileSource — migration et transitions SQLite v2
+## Lot 45 terminé : revue FileSource — migration et transitions SQLite v2
 
-Reprendre sur #11 basée sur main. Cinquième lot : migration v1 vers v2 avec données
-conservées inconnues, FollowTransition et Commit, idempotence, conflits de namespace/
-état et rollback de batch. Auditeur indépendant en lecture seule ; ajouter les
-régressions des défauts concrets. Acquisition/retrait par FileSource, rotation et
-reprise orchestrée/Run restent les lots suivants ; ne pas déclarer toute #11 validée
-après cette cinquième partie.
+Référence a0c0d13319a27c38ffad8054cc6b081fbec76299, coordinateur et auditeur agent
+indépendant : migration v2, FollowTransition, validation et Commit. Aucun blocage
+concret identifié. V1 conservée unknown, DDL/historique/version atomiques, paires
+valides, namespace/état attendu ou cible idempotente, refus et rollback du batch
+vérifiés. Rapport docs/reviews/pr-11-part-5.md, code inchangé et aucun nouveau test
+sans défaut concret à reproduire.
+
+Coordinateur : TestFollow(Transitions|StateMigration) -count=1 ; auditeur : TestFollow*
+-count=1, réussis sous Windows. git diff --check réussi, checkout isolé propre.
+[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37202826203)
+verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
+et job Windows chemins. Consulter la PR #11 pour la CI de publication du rapport.
+
+Limites ADR-009 maintenues : justification filesystem à la source, écritures/réessais
+sérialisés par source, pas d'époque de propriétaire ni protection ABA. Pas de crash
+réel/concurrence/corruption injectés ; historique non équivalent à validation exhaustive
+du schéma. Open/WAL hors transaction de migration. Acquisition/retrait FileSource,
+rotation et orchestration encore à relire ; PR en brouillon.
+
+## Prochain petit lot : revue FileSource — acquisition avant première ligne
+
+Reprendre sur #11 basée sur main. Sixième partie : préparation et acquisition de
+génération par FileSource avant normalisation/consommation, unknown/following/retired,
+réacquisition justifiée, erreurs/EOF/annulation et propriété des descripteurs.
+Auditeur indépendant en lecture seule ; ajouter les régressions des défauts concrets.
+Retrait durable/grâce, rotation et reprise orchestrée/Run restent des lots suivants.
+Ne pas déclarer toute #11 validée après cette sixième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
