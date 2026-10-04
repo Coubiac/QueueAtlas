@@ -919,7 +919,7 @@ active. ID/date ne servent pas à déduire une chronologie. Ce composant n'ouvre
 journal et n'écrit aucun état. Pas de migration ou dépendance ajoutée. Le
 raccordement à la recherche/reprise, gzip et copytruncate restent à développer.
 
-## Dernier lot terminé : état durable du suivi des générations (stockage)
+## État durable du suivi des générations (stockage)
 
 ADR-009 consigne la distinction durable entre inconnu (0), en suivi (1) et retiré
 (2), exposée par `OriginState.FollowState`. La migration v2 ajoute une colonne
@@ -963,15 +963,53 @@ d'écritures futures. Le scheduler ne publie encore aucune transition : ses orig
 restent inconnues et la reprise automatique n'exploite pas encore ce champ. Gzip,
 copytruncate et diagnostic de lacunes restent à développer.
 
-## Prochain petit lot : acquitter l'acquisition d'une génération par FileSource
+## Dernier lot : acquisition acquittée par FileSource
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Après décision
-de génération et vérification de l'ingesteur, publier une transition explicite
-vers en suivi et attendre le Sink avant de consommer la première ligne. Couvrir
-origine neuve, reprise positive, acquisition déjà acquittée, réacquisition retirée,
-fichier vide encore non enregistré, erreur/conflit/annulation du Sink et fermeture
-sans lecture supplémentaire. Conserver checkpoints et identité. Le retrait à EOF
-stable/grâce sera un lot séparé, puis la reprise exploitera ces marqueurs.
+`prepareGeneration` attend désormais le Sink après décision et vérification par
+`NewIngestor`, avant toute consommation de ligne. Origines inconnues/neuves et
+retirées : batch de transition uniquement vers en suivi, sans record, origine ni
+checkpoint. L'état déjà en suivi réutilise son acquittement durable, sans commit
+superflu. État invalide : `ErrInvalidFollowState`, diagnostic fixe. Le même chemin
+est utilisé au démarrage et pour les successeurs de rotation. Fichier vide non
+enregistré : attente sans acquisition. Le composant `EnsureGeneration` seul garde
+son contrat d'enregistrement/reprise sans transition.
+
+Erreur du Sink, y compris EOF, conflit ou annulation : arrêt sans première ligne
+ni réessai, fermeture de tous les descripteurs détenus. Annulation après le commit
+d'acquisition : état en suivi conservé, sans consommation. Aucun retrait n'est
+inventé à la sortie. Provenance et checkpoint sont conservés.
+
+Tests : nouvel enregistrement, reprise positive, état déjà en suivi et réacquisition
+retirée, relecture zéro explicite ; position physique au checkpoint et normalisation
+encore absente au commit d'acquisition, état durable vérifié avant le premier record,
+provenance/checkpoint identiques de part et d'autre de la transition. Erreur, EOF,
+conflit injecté et annulation avant/après acquittement sans lecture ni déplacement
+du checkpoint, fermeture du descripteur ; préfixe modifié après enregistrement
+refusé avant acquisition ; échec d'acquisition du successeur ferme les descripteurs
+sans réessai. Tests existants fichier vide conservés ; callbacks de relecture zéro
+et erreur au polling adaptés pour distinguer transition et record. Tests portables
+de l'état invalide, de l'acquittement déjà présent et de l'annulation préalable.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
+des tests FileSource Linux amd64 sans CGO. Exécution des nouveaux cas Linux et
+détecteur de courses : CI du commit de code à confirmer après publication.
+
+Limites : enregistrement initial et acquisition sont deux transactions. Un échec
+après enregistrement ou un arrêt avant le premier record conserve le checkpoint
+zéro ; sa reprise reste soumise à la politique explicite `AllowZeroCheckpoint`.
+Vérification bornée avec lectures de métadonnées avant acquisition, sans preuve
+atomique face aux écritures concurrentes. Écritures d'état à sérialiser par source ;
+pas d'époque de propriétaire. Le retrait durable à EOF/grâce et l'exploitation
+de ces états à la reprise restent à développer ; gzip/copytruncate/lacunes aussi.
+
+## Prochain petit lot : acquitter le retrait à EOF stable/grâce
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Pour une
+génération ancienne admissible à expiration, publier en suivi → retiré après les
+contrôles d'EOF/grâce et attendre le Sink avant fermeture/libération de capacité.
+Couvrir conservation du checkpoint, partiel/pending/ajout tardif, erreur/conflit
+et annulation sans faux retrait ; traiter la fermeture après acquittement. La
+reprise exploitant ces marqueurs reste un lot ultérieur.
 
 ## Suite à découper au fil des reprises
 

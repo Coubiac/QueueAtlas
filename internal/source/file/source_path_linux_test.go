@@ -137,7 +137,10 @@ func TestRunOpenedStopsOnPathPollErrorAndClosesDescriptor(t *testing.T) {
 			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 			defer cancel()
 			commits := 0
-			waiting, err := s.runOpened(ctx, f, sinkFunc(func(context.Context, source.Batch) error {
+			waiting, err := s.runOpened(ctx, f, sinkFunc(func(_ context.Context, b source.Batch) error {
+				if len(b.Records) == 0 {
+					return nil
+				}
 				commits++
 				if err := os.Rename(path, path+".1"); err != nil {
 					return err

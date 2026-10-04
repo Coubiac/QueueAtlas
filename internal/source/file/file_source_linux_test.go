@@ -177,6 +177,9 @@ func TestFileSourceAppliesExplicitZeroReplayPolicy(t *testing.T) {
 	defer cancel()
 	commits := 0
 	err = s.Run(ctx, sinkFunc(func(ctx context.Context, b source.Batch) error {
+		if len(b.FollowTransitions) > 0 {
+			return store.Commit(ctx, b)
+		}
 		commits++
 		if len(b.Origins) != 0 || len(b.Records) != 1 || b.Records[0].OriginID != state.Origin.ID || b.Records[0].Start != 0 || string(b.Records[0].Raw) != "seed\n" {
 			t.Fatalf("zero replay batch: %+v", b)

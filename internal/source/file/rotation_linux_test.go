@@ -193,7 +193,7 @@ func TestRotationCapacityStopsBeforeOpeningThirdDistinctFile(t *testing.T) {
 }
 
 func TestRotationSinkFailureClosesSuccessorWithoutRetry(t *testing.T) {
-	for _, kind := range []string{"registration", "record", "cancel after registration"} {
+	for _, kind := range []string{"registration", "acquisition", "record", "cancel after registration"} {
 		t.Run(kind, func(t *testing.T) {
 			f, path := testRegularFile(t, "first\n")
 			s, store := rotationSource(t, path)
@@ -206,7 +206,7 @@ func TestRotationSinkFailureClosesSuccessorWithoutRetry(t *testing.T) {
 			boom := errors.New("successor sink failure")
 			failures, waits := 0, 0
 			err = s.followPath(ctx, f, r, sinkFunc(func(ctx context.Context, b source.Batch) error {
-				if kind == "registration" && len(b.Origins) > 0 || kind == "record" && len(b.Records) > 0 && string(b.Records[0].Raw) == "second\n" {
+				if kind == "registration" && len(b.Origins) > 0 || kind == "acquisition" && len(b.FollowTransitions) > 0 || kind == "record" && len(b.Records) > 0 && string(b.Records[0].Raw) == "second\n" {
 					failures++
 					return boom
 				}

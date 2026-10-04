@@ -27,15 +27,24 @@ Une erreur annule l'ensemble du batch. Un batch sans transition conserve l'état
 
 ## Conséquences
 
-Le futur scheduler devra déclarer une acquisition après vérification du fichier et
-acquitter un retrait après EOF stable/grâce, avant de fermer le descripteur. Un
-arrêt, une annulation ou une erreur de suivi ne devra pas inventer un retrait.
+FileSource déclare une acquisition après la décision de génération et la
+vérification par `NewIngestor`, avant de consommer une ligne. Le batch change
+uniquement l'état vers en suivi ; provenance et checkpoint restent inchangés.
+Un état déjà en suivi réutilise son acquittement durable, sans transition vers
+lui-même. Une génération retirée sélectionnée explicitement est revérifiée avant
+réacquisition. Erreur du Sink (y compris EOF), conflit ou annulation arrête la
+source sans consommer de ligne et ferme les descripteurs. Une annulation après
+acquittement laisse l'état en suivi.
+
+Le scheduler devra encore acquitter un retrait après EOF stable/grâce, avant de
+fermer le descripteur. Un arrêt, une annulation ou une erreur de suivi ne devra pas
+inventer un retrait.
 La reprise devra distinguer les états connus de ceux restés inconnus.
 
 Les lecteurs par identité et chemin exposent l'état dans la même page que le
 checkpoint. Les empreintes et checkpoints restent conservés lors d'un retrait.
-Le présent lot implémente le contrat, la migration et le Sink ; publication par le
-scheduler et reprise automatique restent des lots distincts.
+Le contrat, la migration, le Sink et l'acquisition par FileSource sont implémentés ;
+le retrait par le scheduler et la reprise automatique restent des lots distincts.
 
 ## Limites
 
@@ -45,3 +54,9 @@ réacquisition exige une vérification explicite sans reset de checkpoint. Un se
 écrivain doit sérialiser acquisition, retrait et réessais pour une source ; ce
 protocole ne comporte pas d'époque de propriétaire ou de protection contre des
 réessais obsolètes après un cycle complet de réacquisition.
+
+L'enregistrement initial (origine/checkpoint zéro) précède l'acquisition dans une
+transaction distincte. Si l'acquisition échoue ou si aucune première ligne n'est
+acquittée, le checkpoint reste zéro ; la reprise exige toujours la politique
+explicite `AllowZeroCheckpoint`. Les lectures de métadonnées nécessaires à la
+vérification précèdent l'acquisition ; aucune ligne n'est consommée avant elle.

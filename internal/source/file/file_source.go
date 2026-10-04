@@ -21,6 +21,8 @@ type Config struct {
 
 var ErrSourceRunning = errors.New("file source is already running")
 
+var ErrInvalidFollowState = errors.New("invalid file generation follow state")
+
 // ResumeDecisionError contains a fixed diagnostic status, never log content.
 type ResumeDecisionError struct{ Status SelectionStatus }
 
@@ -30,6 +32,7 @@ func (e *ResumeDecisionError) Error() string {
 
 // FileSource orchestrates startup and switches to an observed regular replacement.
 // It follows both opened generations, including late writes to a retained file.
+// Each verified generation is acquired durably before consuming its first line.
 // Retained files expire after stable EOF and a grace period. Polling stops with
 // ErrFileTruncated if an opened file is shorter than its consumed offset.
 // ErrCheckpointChanged diagnoses a mismatch in its last acknowledged anchor
@@ -129,5 +132,36 @@ func (s *FileSource) prepareGeneration(ctx context.Context, f *os.File, sink sou
 		return nil, false, &ResumeDecisionError{Status: start.Selection}
 	}
 	ingestor, err := NewIngestor(ctx, f, s.config.Identity, *start.State, s.normalize)
-	return ingestor, false, err
+	if err != nil {
+		return nil, false, err
+	}
+	if err := s.acquireGeneration(ctx, *start.State, sink); err != nil {
+		return nil, false, err
+	}
+	return ingestor, false, nil
+}
+
+// Acquisition changes only follow state; it preserves provenance and checkpoint.
+// An already-following generation reuses its durable acknowledgement. Retired
+// generations can be explicitly reacquired only after NewIngestor verifies them.
+func (s *FileSource) acquireGeneration(ctx context.Context, state source.OriginState, sink source.Sink) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	switch state.FollowState {
+	case source.FollowFollowing:
+		return nil
+	case source.FollowUnknown, source.FollowRetired:
+	default:
+		return ErrInvalidFollowState
+	}
+	if err := sink.Commit(ctx, source.Batch{
+		Source: s.config.Identity,
+		FollowTransitions: []source.FollowTransition{{
+			OriginID: state.Origin.ID, From: state.FollowState, To: source.FollowFollowing,
+		}},
+	}); err != nil {
+		return err
+	}
+	return ctx.Err()
 }
