@@ -1704,8 +1704,13 @@ merge 69ab91e6a830914102ac96f4b9434be89f5702e6 dans main.
 PR #11 reciblée vers main. Merge de main dans FileSource : code fusionné sans
 conflit, historique détaillé de ce point de reprise conservé pour résoudre le seul
 conflit documentaire. Schéma v2/état de suivi restent propres à #11 ; aucune
-modification du schéma v1 ni dépendance. Vérifications d'intégration et CI à confirmer
-avant clôture de ce lot. Les branches #9/#10 sont conservées.
+modification du schéma v1 ni dépendance. go test ./..., go vet ./... et git diff
+--check réussis après intégration. [CI FileSource intégrée](https://github.com/Coubiac/mailtrace/actions/runs/37186772554)
+réussie sur bcda85b0e4b80f30d67a44b9bc6145d1753f3346 : Go 1.26.x/stable,
+tests Linux, détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
+Arbre de main identique à la tête SQLite revue ; [CI main](https://github.com/Coubiac/mailtrace/actions/runs/37186695880)
+réussie sur 69ab91e6a830914102ac96f4b9434be89f5702e6. Lot terminé et publié,
+descriptions des PR actualisées. Les branches #9/#10 sont conservées.
 
 Limites : parent du fichier à protéger, contrôles filesystem non atomiques, ACL
 Windows non validées par bits Unix. Audit assisté par agents/données synthétiques,
