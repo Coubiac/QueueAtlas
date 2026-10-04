@@ -359,8 +359,8 @@ de la lacune, aucune récupération automatique ni preuve atomique de continuit�
 
 ## Récupération explicite d'un courant inconnu — cadrage lot 61
 
-Décision de cadrage ; classification et préparation des preuves implémentées aux lots 62–63.
-Ajouter une opération standalone
+Décision de cadrage implémentée aux lots 62–64 : classification, preuves et opération
+standalone
 `FileSource.RecoverUnknownCurrent(ctx, originID, sink) error`. Son invocation et
 l'ID exact constituent une autorisation explicite de lifecycle, distincte de
 `ResumePolicy.AllowZeroCheckpoint`. Elle ne démarre aucun suivi ni lecture de ligne ;
@@ -416,7 +416,10 @@ Nil/zéro restent non vérifiés. Aucun accès journal ou écriture, aucun racco
 prepareRecoveryCurrent privé implémenté : valide/copie le candidat, possède le courant
 ouvert, vérifie Match/RestartZero et PathSame/identité avant retour ; aucune ligne,
 Seek ou mutation. Échec/annulation ferme et joint les causes, propriétaire opaque
-à Close idempotent. Opération publique et application de transition restent à faire.
+à Close idempotent. RecoverUnknownCurrent public implémenté au lot 64 : sous garde
+partagée, compose scan/preuves puis transition seule ou retry following sans Commit,
+cleanup avant libération. LastPathStatus et provenance/checkpoint conservés ; Run
+et sa politique stricte inchangés. Erreurs/ACK perdus/cancel sans compensation.
 
 ## Limites
 

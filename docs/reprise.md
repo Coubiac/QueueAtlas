@@ -14,13 +14,17 @@ dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
 M1 (parseurs), socle SQLite M2 et FileSource sont fusionnés dans main. PR #11 clôturée
 au lot 60, synthèse de 19 parties et CI de tête verte. Chantier suivant : récupération
 explicite d'un unknown courant unique, cadrage lot 61 et classification lot 62 dans
-ADR-009, preuves/ouverture lot 63, puis application avec revue intégrée.
+ADR-009, preuves/ouverture lot 63 et application lot 64 avec revue intégrée. Opération
+de bibliothèque développée ; CI de tête et clôture/fusion de #12 restent à faire.
 Critère de fin : refus sûrs, preuves, transition seule et réessai/ACK vérifiés,
 CI verte et PR du chantier fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 64 : RecoverUnknownCurrent développé/relu, test portable onze cas, suite/vet/diff
+  et compilation Linux réussis. Application seule sans ingestion, ACK/réessai couvert
+  par tests Linux à exécuter en CI de publication. Prochaine : validation/fusion #12.
 - Lot 63 : préparation privée du courant/propriétaire/preuves implémentée et relue,
   deux tests ciblés Windows, suite/vet/diff/compilation Linux réussis ; CI à vérifier.
   Aucune application ou opération publique. Prochaine : RecoverUnknownCurrent.
@@ -2206,16 +2210,25 @@ indépendante sans blocage. Copie avant open, preuve positif/zéro canonique pui
 PathSame/identité, propriétaire immédiat, cleanup errors/cancel joints. Aucun Seek,
 ligne ou état écrit, retour possédé/Close idempotent. Rapport PR #12.
 Deux tests ciblés Windows, suite locale/vet/diff et compilation Linux réussis.
-Linux relu, exécution/race/builds à vérifier par CI après publication ; pas exécuté
-localement. Limites preuves bornées et observations non atomiques, état sérialisé.
+Linux relu, exécution/race/builds vérifiés par CI 37241721021 verte sur `daa7b05` ;
+pas exécuté localement. Limites preuves bornées/observations non atomiques, état sérialisé.
+
+## Lot 64 terminé : récupération explicite et transition seule
+
+Base `daa7b05`, opération public RecoverUnknownCurrent implémentée, revue indépendante
+sans blocage. Garde jusqu'après cleanup, scan/preuves puis unique unknown→following,
+retry following sans Commit, retired refusé ; statut/CP/provenance conservés et aucune
+ingestion. Sink errors/EOF/ACK perdu sans retry/compensation ; annulation avant/aprèsACK.
+Rapport PR #12. Test portable onze cas, suite Windows/vet/diff/compilation Linux réussis.
+Linux relu (SQLite, ACK/cancel/Close/retry/zero strict), exécution par CI de publication
+à vérifier avant lot65. Reader/Sink même stockage, écritures sérialisées, preuves non
+atomiques. Opération bibliothèque, pas de CLI/service/récupération multiple/archives.
 
 ## Prochaine action concrète
 
-Lot 64 : FileSource.RecoverUnknownCurrent public sous garde partagée, composition
-classification/preuves puis unknown→following seule ; following retry revérifié
-sans Commit. Pas ingestion/Seek/checkpoint/status changé. Erreurs Sink/ACK perdu,
-annulation avant/après ACK, Close en erreur et cible retired refusée à tester ;
-reader/Sink même stockage et écritures sérialisées. Clôture/fusion ensuite.
+Lot 65 : confirmer CI verte de tête (tests Linux réellement exécutés), synthèse
+des trois comportements et diff depuis revue, passer #12 ready/fusion sur tête
+exacte puis vérifier main. Revoir avancement et prochain périmètre M2 (#4/#5) après fusion.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-unknown-recovery.
 
