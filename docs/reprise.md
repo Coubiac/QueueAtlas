@@ -81,6 +81,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   consommé, incluant les lignes partielles et les fichiers conservés, dans
   `internal/source/file/truncation.go`, commit
   `765e0b13e2483631208fc3ff9de613a72e9c2afb`, toujours dans la PR #11.
+- Vingt-et-unième lot FileSource : contrôle au polling de l'ancre du dernier
+  checkpoint positif acquitté, diagnostic fixe de non-correspondance et arrêt,
+  dans `internal/source/file/live_anchor.go`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -170,6 +173,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI troncature](https://github.com/Coubiac/mailtrace/actions/runs/37163693457)
   réussie : tests sur Linux (Go 1.26.x/stable), checkpoints SQLite conservés,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
+- Validation locale du lot ancre en suivi : `go test ./...`, `go vet ./...` et
+  compilation des tests FileSource Linux amd64 sans CGO réussis. Exécution Linux,
+  détecteur de courses et builds : CI à vérifier après publication.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
@@ -702,7 +708,7 @@ filesystem restent non atomiques avec les écritures. Pas de détection de tronc
 diagnostic de lacune ou recherche d'archives après redémarrage. Pas de migration
 ou dépendance ajoutée.
 
-## Dernier lot terminé : diagnostic de troncature observée
+## Diagnostic de troncature observée
 
 Avant l'observation du chemin, l'expiration ou la bascule, chaque polling contrôle
 les tailles des deux descripteurs au maximum. Une taille inférieure à l'offset
@@ -731,16 +737,53 @@ de taille identique ou les changements d'octets encore non consommés échappent
 diagnostic. La récupération copytruncate et le diagnostic de lacunes restent à
 développer. Pas de migration ou dépendance ajoutée.
 
-## Prochain petit lot : contrôler l'ancre acquittée pendant le suivi
+## Dernier lot terminé : contrôle de l'ancre acquittée pendant le suivi
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11. Au polling, après le
-contrôle de taille, vérifier la fenêtre bornée de l'ancre du dernier checkpoint
-positif acquitté de chaque descripteur. Une non-correspondance observée doit arrêter
-avec un diagnostic fixe, sans reset ni création d'origine. Tester réécriture de
-taille identique/croissance suffisante dans la fenêtre, courant et fichier conservé,
-append normal, checkpoint zéro sans preuve et checkpoints inchangés. Déclarer
-explicitement la limite hors fenêtre et les races filesystem. La récupération
-copytruncate, la recherche d'archives et les lacunes restent des lots séparés.
+Chaque polling vérifie d'abord les tailles, puis l'ancre du dernier checkpoint
+positif acquitté de chaque descripteur, avant observation du chemin, expiration ou
+bascule. Le contrôle relit par `ReadAt` au maximum 4096 octets par fichier, jusqu'au
+checkpoint, sans déplacer la lecture. Il utilise `Ingestor.Position()`, pas le
+buffer de queue enrichi par les octets partiels ou un batch non acquitté.
+
+Une non-correspondance observée arrête avec `ErrCheckpointChanged`, diagnostic fixe
+sans chemin ou contenu de journal. Le scheduler ferme ses descripteurs ; les
+checkpoints et origines restent conservés, sans reset ou nouvelle origine implicite.
+Un checkpoint à zéro ou une génération non enregistrée n'a pas de fenêtre à
+contrôler et est ignoré, sans prétendre vérifier son contenu. Une ancre malformée
+ou incohérente produit une erreur fixe distincte ; annulation et erreurs filesystem
+gardent leur cause. Une diminution observée au contrôle de taille reste prioritaire.
+
+Tests locaux : réécriture du courant à taille identique ou troncature puis
+recroissance avant polling, avec partiel au-delà du checkpoint ; arrêt, checkpoint
+inchangé et fermeture. Fenêtre bornée malgré tail partiel, modifications hors
+fenêtre ignorées, position physique inchangée, checkpoint zéro/génération absente,
+ancre malformée/incohérente, annulation et erreur de stat. Les tests existants
+d'append et de troncature passent avec le nouveau contrôle. Test Linux avec SQLite
+et horloge contrôlée : réécriture du fichier conservé à la grâce et troisième
+rotation simultanée, arrêt avant expiration/enregistrement, checkpoints distincts
+6/7 inchangés et fermeture de tous les descripteurs.
+
+Limites : fenêtre bornée au dernier checkpoint acquitté ; une réécriture hors
+fenêtre, des octets partiels/non acquittés ou un contenu rétabli avant vérification
+peut échapper au contrôle. Il ne détermine pas la cause de la non-correspondance
+et ne prouve pas l'intégrité du fichier entier. Les stat/lectures ne sont pas
+atomiques avec les écritures. Une transaction/lecture lente peut retarder le
+polling ; des lignes déjà acquittées ne sont pas annulées. La récupération
+copytruncate et le diagnostic des lacunes restent à développer. Pas de migration
+ou dépendance ajoutée.
+
+## Prochain petit lot : sélectionner une rotation accessible pour un état fourni
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et le cadrage ADR-003.
+Préparer un composant de recherche bornée, dans un répertoire fourni, d'un fichier
+régulier non compressé correspondant à une origine/checkpoint fournis. Parcours
+non récursif, budget explicite de candidats, validation par identité physique,
+préfixe et ancre existants ; décision exploitable uniquement après parcours
+terminé et correspondance unique. Tester renommage, absence, ambiguïté/preuves
+insuffisantes, limite, erreur/annulation et fermeture des descripteurs temporaires.
+Ce lot ne relance pas l'ingestion et ne modifie pas SQLite. Le choix des états
+persistés au démarrage, le raccordement à `Run`, gzip et la récupération
+copytruncate restent à découper ensuite.
 
 ## Suite à découper au fil des reprises
 

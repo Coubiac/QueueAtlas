@@ -58,6 +58,9 @@ func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingest
 		if err := checkOpenedSizes(ctx, opened); err != nil {
 			return err
 		}
+		if err := checkOpenedAnchors(ctx, opened); err != nil {
+			return err
+		}
 		observation, err := s.observePath(ctx, active.file)
 		if err != nil {
 			return err

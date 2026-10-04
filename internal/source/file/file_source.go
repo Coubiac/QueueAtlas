@@ -32,6 +32,8 @@ func (e *ResumeDecisionError) Error() string {
 // It follows both opened generations, including late writes to a retained file.
 // Retained files expire after stable EOF and a grace period. Polling stops with
 // ErrFileTruncated if an opened file is shorter than its consumed offset.
+// ErrCheckpointChanged diagnoses a mismatch in its last acknowledged anchor
+// window. Neither check proves that all previously consumed bytes are unchanged.
 // The caller must serialize state writes for its source ID across all objects;
 // Run guards only this object.
 // The object must not be copied after use. Dependencies must support context.
