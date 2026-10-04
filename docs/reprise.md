@@ -19,7 +19,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   La CI de la tête publiée et le statut final de fusion sont consignés dans la PR.
 - Validation locale du correctif : `go test ./...`, `go vet ./...`, `git diff --check`,
   builds Linux amd64/arm64 sans CGO et compilation des tests SQLite Linux réussis.
-  Permissions Unix et FIFO nécessitent la CI Linux avant clôture.
+  Permissions Unix et FIFO confirmées par la
+  [CI du correctif](https://github.com/Coubiac/mailtrace/actions/runs/37186524966)
+  Go 1.26.x/stable sur `463d767418cb366b87aaf983530a42da6bba2f35`.
 - Le chantier FileSource est dans la [PR #11](https://github.com/Coubiac/mailtrace/pull/11),
   avec un [point de reprise détaillé](https://github.com/Coubiac/mailtrace/blob/codex/m2-file-source/docs/reprise.md).
 - AD et fournisseur OIDC externe, dont Keycloak :
