@@ -120,6 +120,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI candidats en suivi](https://github.com/Coubiac/mailtrace/actions/runs/37174070307)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+- Vingt-neuvième lot FileSource : `LocateFollowOrigins`, localisation de l'ensemble
+  en suivi avec budget partagé et aucun chemin partiel utilisable, commit
+  `10885fd205025ede06eb0be25a3cc3dd15279a0e`, toujours dans la PR #11.
+  [CI localisation](https://github.com/Coubiac/mailtrace/actions/runs/37174564943)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1124,7 +1130,7 @@ Ce composant ne choisit pas le courant, n'ouvre aucun journal et n'écrit aucun 
 Localisation/revérification et raccordement à Run restent à développer, ainsi que
 gzip/copytruncate/lacunes et la revue de sécurité indépendante prévue.
 
-## Dernier lot : localisation bornée des candidats en suivi
+## Dernier lot terminé : localisation bornée des candidats en suivi
 
 `LocateFollowOrigins(ctx, configuredPath, origins, entryLimit)` exige un ensemble
 `FollowOriginsComplete` de 1 ou 2 états en suivi, IDs non vides distincts et chemin
@@ -1160,8 +1166,10 @@ fichier et budget partagé dépassé, sans chemin partiel ni fuite de descripteu
 Tous les fichiers sont synthétiques, aucune migration/dépendance ajoutée.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
-des tests FileSource Linux amd64 sans CGO. Exécution Linux/détecteur de courses/
-builds : CI à confirmer après publication du commit de code.
+des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
+et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI localisation](https://github.com/Coubiac/mailtrace/actions/runs/37174564943)
+Go 1.26.x/stable sur `10885fd205025ede06eb0be25a3cc3dd15279a0e`.
 
 Limites : la vérification stricte et les exclusions du chercheur existant sont
 conservées (pas de replay zéro implicite, liens observés/gzip/non réguliers écartés,
