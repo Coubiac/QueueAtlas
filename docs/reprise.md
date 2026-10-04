@@ -5,6 +5,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 ## État validé
 
+- Lot 52 : localisation de l'ensemble en suivi relue sur
+  `e95f84ecc53096bd8af11d67356bf78075f9a103`, sans blocage concret identifié.
+  Rapport `docs/reviews/pr-11-part-12.md`, code inchangé et tests ciblés Windows
+  réussis. Prochaine revue : réouverture/propriété de l'ensemble localisé.
 - Lot 51 terminé : substitutions Windows du répertoire et des entrées
   aux IDs différés corrigées dans SelectRotation/checkRotationEntry. Deux
   régressions échouant avant puis passant après, cas inchangé réussi, patch relu
@@ -2003,15 +2007,36 @@ acquise au chargement, erreurs natives SameFile masquées/refus sûr. Aucun faux
 Windows démontré, reprise persistante toujours Linux seulement. Snapshots non atomiques,
 chemin à rouvrir/revérifier. PR reste en brouillon.
 
-## Prochain petit lot : revue FileSource — localisation de l'ensemble en suivi
+## Lot 52 terminé : localisation de l'ensemble en suivi
 
-Reprendre sur #11 basée sur main. Douzième partie : LocateFollowOrigins et tests,
-validation de l'ensemble avant disque, budget partagé
-entre scans, chemins uniques/distincts seulement si tous les candidats sont localisés,
-première décision bloquante sans chemins partiels, copies et fermeture sur erreur.
-Auditeur indépendant en lecture seule ; régressions des défauts concrets.
-Réouverture/transfert et préparation orchestrée/Run restent des lots suivants ;
-ne pas déclarer toute #11 validée après cette douzième partie.
+Référence e95f84ecc53096bd8af11d67356bf78075f9a103, coordinateur et auditeur agent
+indépendant : LocateFollowOrigins et tests. Aucun blocage concret identifié.
+Validation/copie complète avant recherche, budget partagé et plafond par scan,
+première décision bloquante sans chemins partiels, collision, nil/zéro, causes
+erreurs/annulation et propriété temporaire relus. Rapport docs/reviews/pr-11-part-12.md,
+code inchangé et aucun nouveau test.
+
+Coordinateur et auditeur : quatre tests portables TestLocateFollowOrigins* -count=1
+réussis sous Windows. git diff --check réussi, checkout isolé propre. Intégrations
+Linux localisation réelle/1–2 fichiers/refus/limite/fermeture relues et exécutées par
+la [CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37220323146),
+pas localement sous Windows. CI verte : tests/vet Linux Go 1.26.x/stable, race FileSource,
+builds amd64/arm64 sans CGO et Windows chemins. Consulter la PR #11 pour la CI du rapport.
+
+Limites : namespace fourni par l'appelant, écritures sérialisées, recherches non
+atomiques et preuves bornées, chemins à rouvrir/revérifier. Budget d'entrées examinées,
+pas de temps réel. Reprise persistante Linux seulement. PR reste en brouillon.
+
+## Prochain petit lot : revue FileSource — réouverture de l'ensemble localisé
+
+Reprendre sur #11 basée sur main. Treizième partie : OpenFollowLocations et
+OpenedFollowSet, validation/copies avant disque, ouverture de 1–2 fichiers puis
+vérification stricte sans consommation, collision physique et propriété/Close
+idempotent. Refus/erreur/annulation doivent fermer toutes les ouvertures sans
+ensemble partiel, avec causes et erreurs de nettoyage conservées. Auditeur indépendant
+en lecture seule ; régressions des défauts concrets. Observation/transfert et
+préparation orchestrée/Run restent des lots suivants ; ne pas déclarer toute #11
+validée après cette treizième partie.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 
