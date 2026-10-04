@@ -170,7 +170,7 @@ ensemble valide, nouvelle observation du chemin et concordance OriginID/identit�
 physique avec la décision fournie ; identité de source complète de chaque
 ingesteur égale à la configuration. Toute erreur conserve le propriétaire et son
 statut de chemin. Une décision devenue obsolète retourne `ErrPathChanged`.
-Les décisions missing/new/capacity exigent encore un traitement distinct.
+Les décisions missing/capacity restent refusées ; new est traité ci-dessous.
 
 La collection du propriétaire est vidée avant remise au scheduler commun. Son
 Close devient inoffensif. Le scheduler possède seul les descripteurs : contrôle
@@ -187,6 +187,31 @@ transfert, une disparition du chemin conserve le dernier courant observé selon
 le suivi existant ; elle ne justifie pas une décision missing au démarrage.
 Les accès au propriétaire et écritures de namespace restent à sérialiser.
 Run ne lance pas encore le pipeline de reprise des ensembles persistés.
+
+## Nouveau courant avec une génération conservée
+
+`FollowOpened` accepte aussi `new_generation`, sans OriginID, avec un seul fichier
+dans l'ensemble. Deux fichiers déjà détenus provoquent ErrRotationCapacity avant
+toute ouverture. Nouvelle observation du chemin et concordance du snapshot,
+identités de source, tailles/ancres de l'ancien sont vérifiées avant ouverture.
+OpenLog vérifie le chemin/descripteur et l'identité doit encore correspondre au
+snapshot observé. Refus, erreur d'ouverture, remplacement observé ou annulation
+avant transfert : ancien propriétaire conservé, éventuel nouveau descripteur fermé.
+
+Après ouverture vérifiée, collection du propriétaire vidée et statut réinitialisé.
+La préparation de la nouvelle génération réutilise décision/verification/acquisition
+existantes, avant toute ligne des deux fichiers. Échec, EOF du Sink ou annulation
+ferme les deux fichiers, sans retrait inventé ni avancement de checkpoint de l'ancien.
+Un nouvel enregistrement peut déjà être durable à offset zéro ; acquisition et
+enregistrement restent deux transactions, et une annulation après acquittement
+conserve l'état en suivi. La politique stricte de reprise zéro demeure applicable.
+
+Un fichier neuf vide reste détenu comme courant sans origine/checkpoint/acquisition.
+Le scheduler attend ses ajouts tout en lisant l'ancien, puis prépare/acquiert le
+nouveau avant sa première ligne. Les ingesteurs anciens ne sont pas réenregistrés.
+Suivi conjoint, contrôles périodiques, grâce et capacité restent ceux du scheduler.
+Les contrôles ne sont pas atomiques ; un remplacement supplémentaire après transfert
+peut arrêter à capacité pleine. Aucun raccordement du pipeline à Run dans ce lot.
 
 ## Limites
 

@@ -1349,16 +1349,54 @@ le courant déjà observé selon le scheduler existant. Run n'utilise pas encore
 pipeline de reprise d'ensembles persistés. Pas de migration/dépendance ajoutée ;
 gzip/copytruncate/lacunes et revue de sécurité indépendante restent à développer.
 
-## Prochain petit lot : ajouter un nouveau courant à un ensemble conservé
+## Lot 33 : nouveau courant avec une génération conservée
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Traiter la
-décision `new_generation` avec un seul fichier rouvert : vérifier la capacité
-avant ouverture, recontrôler le nouveau chemin/descripteur et préparer/acquérir
-la nouvelle génération avant consommation. Définir la propriété et le nettoyage
-sur chaque erreur, puis utiliser le scheduler commun avec les deux générations.
-Tester les ajouts de l'ancien, les erreurs/annulations et le refus d'une troisième
-ouverture. Le raccordement complet depuis Run et la politique missing seront des
-lots distincts.
+`FollowOpened` accepte désormais `new_generation`, sans OriginID et avec un seul
+fichier conservé. Deux fichiers détenus : ErrRotationCapacity avant toute ouverture.
+Nouvelle observation du chemin et concordance physique, identités de source et
+taille/ancre de l'ancien vérifiées ; ouverture OpenLog puis concordance avec le
+snapshot courant. Les refus avant transfert gardent l'ancien propriétaire/statut,
+et ferment le nouveau descripteur temporaire s'il a été ouvert.
+
+Après ouverture vérifiée : collection vidée, statut réinitialisé, préparation/
+acquisition du nouveau avant toute consommation des deux fichiers. Erreur/EOF du
+Sink/annulation ferme les deux, sans retrait inventé ni avancement du checkpoint
+ancien. Puis scheduler commun, ancien ingesteur réutilisé sans réenregistrement.
+Nouveau courant vide conservé sans origine/acquisition jusqu'au contenu, pendant
+que le scheduler continue à lire l'ancien.
+
+Tests portables : capacité avant open, décision périmée, source incohérente,
+ancien réécrit/tronqué, erreur d'ouverture, identité remplacée entre observation
+et ouverture, annulation après ouverture : propriétaire/positions/statut conservés,
+aucune écriture et fermeture des seuls fichiers temporaires. Tests Linux avec
+localisation/réouverture et SQLite : courant neuf ou vide puis append, ajout tardif
+ancien sans replay, acquisition avant première ligne, checkpoints distincts ;
+échec d'enregistrement/acquisition, EOF, annulation avant/après ack et checkpoint
+zéro insuffisant, sans consommation/retrait ni fuite/double fermeture.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
+et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
+détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
+Dernier état Linux validé : lot 32, commit
+`dbf85d443adf0194d4f40a73e5e4552b08450b5a`, CI 37176322112.
+
+Limites : enregistrement/acquisition distincts ; un échec après enregistrement
+laisse un checkpoint zéro et exige une décision de reprise explicite. Annulation
+après acquisition conserve l'état durable en suivi. Vérifications non atomiques :
+nouvelle rotation après transfert peut bloquer à capacité pleine. Missing au
+démarrage reste refusé, sans courant inventé ; pipeline encore absent de Run.
+Aucune migration/dépendance ajoutée. Gzip/copytruncate/lacunes et revue de sécurité
+indépendante restent à développer.
+
+## Prochain petit lot : décider explicitement une absence du courant au démarrage
+
+Reprendre sur `codex/m2-file-source`, conserver PR #11 et ADR-009. Définir le
+comportement `missing` pour un ensemble rouvert au démarrage : diagnostic fixe
+exploitable et conservation de propriété, sans choisir arbitrairement l'ancien
+comme courant. Tester absence puis réapparition/reprise par une nouvelle décision,
+avec positions/état durable conservés. Le raccordement à Run des helpers bornés
+existants sera ensuite un lot distinct, avec garde d'exécution et gestion des
+décisions insuffisantes/inconnues/capacité sans fallback implicite.
 
 ## Suite à découper au fil des reprises
 
