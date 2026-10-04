@@ -11,9 +11,8 @@ seront réévaluées après sa fusion ; AD/OIDC reste après MVP.
 ## Avancement du jalon M2
 
 M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
-PR #11 développée et en revue ; lot 58 termine la politique zéro et les lacunes.
-Restent Run,
-puis validation finale et fusion. Ces domaines seront traités en petits lots avec
+PR #11 développée et relue ; lot 59 termine la configuration et le démarrage Run.
+Restent validation finale et fusion. Ces étapes seront traitées en petits lots avec
 un résultat précis ; le numéro de lot compte aussi les revues et corrections.
 Critère de fin du chantier : chemins restants revus, défauts corrigés, CI verte et
 PR #11 fusionnée. M2 inclut ensuite les décisions de récupération encore ouvertes
@@ -21,6 +20,10 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 59 : New/Run/configuration relus sur `c1782f7`, sans blocage concret.
+  Deux tests portables Windows réussis, concurrence réservée Linux/CI verte.
+  Rapport partie 19 ; code inchangé. Limite retired zéro explicitée dans ADR-009.
+  Prochaine étape : synthèse finale, CI de tête, prêt et fusion #11.
 - Lot 58 : zéro following courant unique et diagnostic gap relus sur `4e2c1fa`,
   exécution inchangée au lot 57. Deux tests ciblés Windows réussis, CI Linux verte.
   Rapport partie 18 ; code inchangé. Prochaine revue : New/Run/configuration.
@@ -2133,12 +2136,24 @@ Rapport partie 18. Deux tests Windows réussis, Linux relu/CI 37221985374 verte 
 lot 57 documentaire sans changement d'exécution/CI 37222118286 verte. Publication
 sur #11 ; snapshots/preuves bornés, état sérialisé. PR en brouillon.
 
-## Prochain petit lot : configuration et démarrage Run
+## Lot 59 terminé : configuration et démarrage Run
 
-Lot 59 / partie 19 : New/Run, PathStateReader/budgets explicites, garde unique,
-fallback absent complet seulement, statut et cleanup avant/après transfert,
-attente du courant vide avec fermeture/réouverture et arrêt des erreurs Sink.
-Auditeur indépendant en lecture seule ; synthèse finale/fusion au lot suivant.
+Référence `c1782f7fab72555ddf3e0d490ce1f92e2ff0bf7c`, coordinateur et auditeur :
+aucun blocage concret. Config copiée/bornée, lecteur PathStateReader explicite,
+garde unique, fallback seulement absent complet, cleanup complet avant/après
+transfert, attente vide avec fermeture/réouverture, erreurs Sink sans retry.
+Rapport partie 19. New/RunOpened réussis Windows ; concurrent skipped Windows et
+exécuté par CI Linux 37222118286 verte, comme les intégrations relues. Code inchangé,
+publication sur #11. ADR précise retired zéro : préfixe vérifié avant acquisition,
+pas preuve retenue aux polls (branche following seule). Contrat actuel, pas blocage
+de cette revue ; extension à traiter séparément. État sérialisé, observations bornées
+non atomiques. PR encore en brouillon.
+
+## Prochain petit lot : validation finale et fusion FileSource
+
+Lot 60 : synthèse des 19 parties, vérification absence de blocages/code non relu,
+CI verte de la tête exacte, passage prêt et fusion #11. Conserver les limites et
+travaux M2 différés ; réévaluer avancement après fusion avant récupération unknown.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
 

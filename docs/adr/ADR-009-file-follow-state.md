@@ -378,3 +378,10 @@ acquittée, le checkpoint reste zéro ; la reprise exige une décision explicite
 lifecycle ainsi que la politique `AllowZeroCheckpoint` lorsqu'elle est applicable.
 Run ne contourne pas un état inconnu/en suivi insuffisant. Les métadonnées de
 vérification précèdent l'acquisition ; aucune ligne n'est consommée avant elle.
+
+La preuve de préfixe conservée jusqu'au premier checkpoint positif concerne la
+branche dédiée following à zéro. Un courant retired repris à zéro par le démarrage
+Absent est vérifié par NewIngestor avant acquisition, sans preuve de préfixe
+retenue aux polls. Une réécriture entre vérification/acquisition et consommation
+peut donc échapper aux contrôles de ce cas. Étendre la preuve persistante à ce
+démarrage est un comportement distinct, non livré par cette PR.
