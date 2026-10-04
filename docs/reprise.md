@@ -176,7 +176,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Lot 38 FileSource : reprise zéro explicite d'une seule génération en suivi
   courante, préfixe revérifié avant transfert et tant que l'acquittement reste zéro.
-  Contrôles locaux réussis ; CI Linux à confirmer avant clôture du lot.
+  Commit `a56bf17815510eb48e1d2562e44055c62c1f7132`, dans la PR #11.
+  [CI reprise zéro](https://github.com/Coubiac/mailtrace/actions/runs/37185193175)
+  réussie : tests Linux Go 1.26.x/stable, détecteur de courses FileSource et builds
+  Linux amd64/arm64 sans CGO ; contrôles locaux également réussis.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1607,8 +1610,10 @@ observation avec fermeture ; réécriture après ready refusée avant transfert,
 conservée. Ancien test d'archive zéro distincte du courant reste bloquant (different).
 
 Vérifications locales réussies : go test ./..., go vet ./..., git diff --check,
-compilation des tests FileSource Linux amd64 sans CGO. Tests Linux, détecteur de
-courses et builds Linux amd64/arm64 à confirmer par CI sur le commit publié.
+compilation des tests FileSource Linux amd64 sans CGO. Tests Linux Go 1.26.x/stable,
+détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO confirmés
+réussis par la [CI reprise zéro](https://github.com/Coubiac/mailtrace/actions/runs/37185193175)
+sur `a56bf17815510eb48e1d2562e44055c62c1f7132`. Lot terminé et publié.
 
 Limites : politique explicitement opt-in, pas preuve de continuité par ancre positive
 à zéro ; préfixe borné à 4096 octets et contrôles/pages non atomiques. Anciennes
