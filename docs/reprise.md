@@ -79,7 +79,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   `311fe756a5dfd25b14ad4a78dfe4a19f2a809ab8`, toujours dans la PR #11.
 - Vingtième lot FileSource : diagnostic fixe de diminution observée sous l'offset
   consommé, incluant les lignes partielles et les fichiers conservés, dans
-  `internal/source/file/truncation.go`, toujours dans la PR #11.
+  `internal/source/file/truncation.go`, commit
+  `765e0b13e2483631208fc3ff9de613a72e9c2afb`, toujours dans la PR #11.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -165,8 +166,10 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   réussie, incluant attente restante, rotation avant EOF, expiration en progression,
   Sink EOF prioritaire, détecteur de courses et builds Linux sans CGO.
 - Validation locale du lot troncature : `go test ./...`, `go vet ./...` et
-  compilation des tests FileSource Linux amd64 sans CGO réussis. Exécution réelle
-  des scénarios Linux et détecteur de courses : CI à vérifier après publication.
+  compilation des tests FileSource Linux amd64 sans CGO réussis.
+  [CI troncature](https://github.com/Coubiac/mailtrace/actions/runs/37163693457)
+  réussie : tests sur Linux (Go 1.26.x/stable), checkpoints SQLite conservés,
+  détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
   [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
 
