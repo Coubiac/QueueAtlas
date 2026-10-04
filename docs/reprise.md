@@ -1,28 +1,51 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 4 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Prévision au lot 53 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
-60–100 petits lots jusqu'au MVP, dont 6–8 pour clôturer la PR #11. Ces fourchettes
-seront réévaluées après sa fusion ; AD/OIDC reste après MVP.
+Prévision après le lot 60 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
+50–90 petits lots jusqu'au MVP, dont 8–18 pour M2. PR #11 fusionnée après sept lots
+de clôture ; prochain chantier récupération explicite : environ 4–5 lots, inclus
+dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
-M1 (parseurs) et socle SQLite M2 fusionnés dans main. Chantier actuel : FileSource,
-PR #11 développée et relue ; lot 60 clôt la synthèse des 19 parties.
-Restent CI de publication et fusion sur la tête exacte. Ces étapes gardent
-un résultat précis ; le numéro de lot compte aussi les revues et corrections.
-Critère de fin du chantier : chemins restants revus, défauts corrigés, CI verte et
-PR #11 fusionnée. M2 inclut ensuite les décisions de récupération encore ouvertes
+M1 (parseurs), socle SQLite M2 et FileSource sont fusionnés dans main. PR #11 clôturée
+au lot 60, synthèse de 19 parties et CI de tête verte. Chantier suivant : récupération
+explicite d'un unknown courant unique, cadrage lot 61 et classification lot 62 dans
+ADR-009, preuves/ouverture lot 63 et application lot 64 avec revue intégrée. Opération
+de bibliothèque développée, CI du lot 64 verte et synthèse finale lot 65 sans blocage.
+Publication/CI de clôture puis fusion de #12 restent à vérifier.
+Critère de fin : refus sûrs, preuves, transition seule et réessai/ACK vérifiés,
+CI verte et PR du chantier fusionnée. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
-- Lot 60 : synthèse finale sur `ba1a20e`, tous composants couverts, aucun blocage
-  identifié restant ; CI 37222381679 verte. Rapport final `docs/reviews/pr-11.md`.
-  Attendre la CI du commit de clôture, puis rendre prête et fusionner sur sa tête exacte.
+- Lot 65 : synthèse indépendante sur `31520075b7fc9ad18a30c23ace1a7c3dd356d96b`,
+  aucun blocage identifié ; anciens composants/dépendances/CI inchangés, diff propre.
+  CI 37242113816 verte, Linux réellement exécuté ; clôture documentaire prête,
+  publication/CI finale et fusion attendues, pas encore constatées dans ce commit.
+- Lot 64 : RecoverUnknownCurrent développé/relu, test portable onze cas, suite/vet/diff
+  et compilation Linux réussis. Application seule sans ingestion, ACK/réessai couvert
+  par tests Linux exécutés en CI 37242113816 verte. Prochaine : validation/fusion #12.
+- Lot 63 : préparation privée du courant/propriétaire/preuves implémentée et relue,
+  deux tests ciblés Windows, suite/vet/diff/compilation Linux réussis ; CI à vérifier.
+  Aucune application ou opération publique. Prochaine : RecoverUnknownCurrent.
+- Lot 62 : LoadRecoveryOrigin implémenté/relu indépendamment, trois tests ciblés
+  Windows, go test ./..., go vet ./... et diff réussis. Rapport PR #12 ; aucune
+  ouverture/preuve/transition encore. Prochaine : ouverture et preuves du courant.
+- Lot 60 terminé : [PR #11](https://github.com/Coubiac/mailtrace/pull/11) fusionnée
+  dans main sur `27b9d98bba1f51749f10e8b9930e9c4da0302068`, après CI finale
+  37222534218 verte sur `12eba5a`. Résultat GitHub et origin/main vérifiés.
+  [CI main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37222669898),
+  vérifiée via l'API REST publique (le connecteur ne listait pas le run push).
+- Lot 61 terminé : contrat standalone RecoverUnknownCurrent cadré et relu
+  indépendamment, aucun comportement encore implémenté. Branche
+  `codex/m2-unknown-recovery` depuis ce main ; documentation/estimation mises à jour.
+  Diff propre ; [CI de publication réussie](https://github.com/Coubiac/mailtrace/actions/runs/37241041999),
+  commit `51933e0d03f00ff7b3896f993cd7eaf22486c403`, PR #12 en brouillon.
 - Lot 59 : New/Run/configuration relus sur `c1782f7`, sans blocage concret.
   Deux tests portables Windows réussis, concurrence réservée Linux/CI verte.
   Rapport partie 19 ; code inchangé. Limite retired zéro explicitée dans ADR-009.
@@ -2152,36 +2175,86 @@ pas preuve retenue aux polls (branche following seule). Contrat actuel, pas bloc
 de cette revue ; extension à traiter séparément. État sérialisé, observations bornées
 non atomiques. PR encore en brouillon.
 
-## Lot 60 : revue finale terminée, publication/fusion à vérifier
+## Lot 60 terminé : revue finale et fusion FileSource
 
 Référence `ba1a20eaba5c72a02304c404e34bc46b925ea501`, coordinateur et auditeur :
 tous composants couverts par 19 rapports, aucun blocage identifié restant, correctifs
 Windows/quantum relus et CI consignées. Rapport final `docs/reviews/pr-11.md`.
 CI de référence 37222381679 verte ; diff/checkout isolé propres, aucun rerun sans
-risque nouveau. Dernier état d'exécution validé : cette référence. Clôture documentaire
-publiée ensuite ; sa CI doit réussir avant ready/fusion expected_head_sha.
-Vérifier GitHub, résultat de fusion et CI main ; ne pas supposer la PR déjà fusionnée.
-Limites et travaux M2 différés conservés ; audit assisté par agents.
+risque nouveau. Clôture `12eba5a0a45520298691c101ec6f1f1e08c0d145` publiée,
+CI 37222534218 verte puis ready et fusion avec tête attendue. PR #11 merged,
+main `27b9d98bba1f51749f10e8b9930e9c4da0302068` vérifiés ; CI push main
+37222669898 verte (API REST, connecteur sans ce run). Limites et travaux M2
+différés conservés ; audit assisté par agents, sans certification externe.
+
+## Lot 61 terminé : cadrage de récupération explicite
+
+Contrat ADR-009 relu indépendamment : RecoverUnknownCurrent standalone, ID exact,
+garde partagée, scan entier borné, unique non-retired unknown ou following idempotent,
+preuves courant positif/zéro canonique puis PathSame, transition seule sans ingestion.
+Acquittement perdu/annulation/fermeture sans compensation ; reader/Sink même stockage,
+écritures sérialisées. Zéro lifecycle n'autorise pas implicitement son replay par Run.
+Pas d'implémentation ni nouveau test sur ce lot de cadrage. README/avancement mis à jour :
+quatre jalons restants, environ 50–90 lots après lot 60, M2 8–18, premier chantier 4–5.
+Diff propre ; CI 37241041999 verte sur `51933e0`, PR #12 créée et attachée.
+
+## Lot 62 terminé : classification entière sans journal
+
+LoadRecoveryOrigin implémenté sur base `51933e0`, relu indépendamment sans blocage.
+Unique non-retired ID demandé, unknown/following seulement ; invalides, retired cible,
+concurrents/ID discordant et limite refusés sans candidat. Copies et nil/zéro bruts,
+erreurs/annulation résultat vide, aucune ouverture/écriture. Rapport docs/reviews/pr-12.md.
+Trois tests ciblés Windows, suite locale/vet/diff réussis ; CI de publication à vérifier
+sur #12 : 37241340339 verte sur `f0067dd74f2d63f8d52ea096c6264f54b1fa3cb6`.
+Limites reader/namespace et pages non atomiques, écritures à sérialiser.
+
+## Lot 63 terminé : préparation du courant et preuves
+
+Base `f0067dd`, helper privé prepareRecoveryCurrent/Close opaque implémentés, revue
+indépendante sans blocage. Copie avant open, preuve positif/zéro canonique puis
+PathSame/identité, propriétaire immédiat, cleanup errors/cancel joints. Aucun Seek,
+ligne ou état écrit, retour possédé/Close idempotent. Rapport PR #12.
+Deux tests ciblés Windows, suite locale/vet/diff et compilation Linux réussis.
+Linux relu, exécution/race/builds vérifiés par CI 37241721021 verte sur `daa7b05` ;
+pas exécuté localement. Limites preuves bornées/observations non atomiques, état sérialisé.
+
+## Lot 64 terminé : récupération explicite et transition seule
+
+Base `daa7b05`, opération public RecoverUnknownCurrent implémentée, revue indépendante
+sans blocage. Garde jusqu'après cleanup, scan/preuves puis unique unknown→following,
+retry following sans Commit, retired refusé ; statut/CP/provenance conservés et aucune
+ingestion. Sink errors/EOF/ACK perdu sans retry/compensation ; annulation avant/aprèsACK.
+Rapport PR #12. Test portable onze cas, suite Windows/vet/diff/compilation Linux réussis.
+Linux relu (SQLite, ACK/cancel/Close/retry/zero strict), exécution par
+CI 37242113816 verte sur `31520075b7fc9ad18a30c23ace1a7c3dd356d96b`.
+Reader/Sink même stockage, écritures sérialisées, preuves non
+atomiques. Opération bibliothèque, pas de CLI/service/récupération multiple/archives.
+
+## Lot 65 : synthèse et clôture de récupération explicite
+
+Revue indépendante du checkout publié `31520075` : les huit fichiers recovery*.go
+correspondent aux lots relus 62–64, anciens composants/dépendances/workflow inchangés.
+Aucun blocage identifié ; classifications/preuves/transition seule, réessai following,
+refus retired et séparation lifecycle/replay zéro cohérents avec ADR-009.
+CI 37242113816 terminée avec succès : tests Linux, vet, race, builds sans CGO et
+Windows chemins. Diff propre ; pas de test relancé sans modification d'exécution.
+Rapport intégré complété et récupération unique retirée des travaux futurs.
+Ce commit prépare la clôture ; vérifier sa publication/CI avant ready et fusion.
 
 ## Prochaine action concrète
 
-Achever la publication/fusion du lot 60, vérifier main, puis lot 61 : cadrage de la
-récupération explicite d'un unknown courant unique et estimation après fusion.
+Publier le lot 65, confirmer CI verte de tête, passer #12 ready/fusion sur tête
+exacte puis vérifier main. Lot suivant : cadrer le démarrage explicite start_at:end
+du suivi #4, avant l'import #5 ; revoir l'avancement après fusion.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée de #11 ; le checkout principal reste sur codex/m2-file-source.
-
-Après ces clôtures, reprendre le cadrage de récupération d'un lifecycle inconnu :
-politique distincte pour l'arrêt entre registration et acquisition, sans laisser
-AllowZeroCheckpoint reclasser implicitement l'état. Cas unique courant vérifiable,
-refus et transition attendue à consigner dans ADR-009 avant implémentation. Ensembles
-inconnus multiples et import gzip restent des lots séparés.
+pour la tête publiée du nouveau chantier ; principal sur codex/m2-unknown-recovery.
 
 ## Suite à découper au fil des reprises
 
-1. Rotation par renommage/création et écritures tardives, en lots distincts.
-2. Reprise après arrêt, troncature et diagnostic des lacunes.
-3. Décisions insuffisantes restantes, dont anciennes empreintes vides.
-4. Import historique normal, puis gzip dans un lot distinct.
+1. Démarrage explicite start_at:end et compléments du suivi #4.
+2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
+   ensembles multiples ; diagnostics/compléments du suivi #4.
+3. Import historique normal, puis gzip dans un lot distinct.
 
 Chaque demande de continuation traite par défaut un seul petit lot et actualise
 ce point de reprise avec le résultat et la prochaine action.
