@@ -160,7 +160,33 @@ l'appelant. Ni ouverture/lecture/seek/fermeture, consommation, changement de gr�
 transition ni transfert. Les snapshots ne sont pas atomiques et `known` ne
 revalide ni checkpoint ni intégrité : contrôles de suivi restent nécessaires.
 Une nouvelle génération exigera ouverture vérifiée, acquisition et contrôle de
-capacité ; transfert et raccordement au démarrage seront des lots distincts.
+capacité ; raccordement au démarrage reste un lot distinct.
+
+## Transfert d'un ensemble avec courant connu
+
+`FileSource.FollowOpened` accepte un `OpenedFollowSet` vérifié et une décision
+`known`. Avant transfert : contexte, Sink, garde d'exécution partagée avec Run,
+ensemble valide, nouvelle observation du chemin et concordance OriginID/identité
+physique avec la décision fournie ; identité de source complète de chaque
+ingesteur égale à la configuration. Toute erreur conserve le propriétaire et son
+statut de chemin. Une décision devenue obsolète retourne `ErrPathChanged`.
+Les décisions missing/new/capacity exigent encore un traitement distinct.
+
+La collection du propriétaire est vidée avant remise au scheduler commun. Son
+Close devient inoffensif. Le scheduler possède seul les descripteurs : contrôle
+des tailles/ancres avant consommation, suivi conjoint, polling/grâce et retrait
+durable, fermeture une seule fois au retrait ou à la sortie. Les ingesteurs déjà
+préparés reprennent leur checkpoint sans nouvel enregistrement/acquisition.
+Le courant est désigné par OriginID, sans dépendre de l'ordre de collection.
+LastPathStatus est réinitialisé au transfert puis actualisé par le polling.
+
+Une réécriture/troncature de la même identité physique peut être découverte
+après transfert : arrêt et fermeture par le scheduler, checkpoint préservé.
+Les vérifications ne constituent pas un verrou du système de fichiers. Après
+transfert, une disparition du chemin conserve le dernier courant observé selon
+le suivi existant ; elle ne justifie pas une décision missing au démarrage.
+Les accès au propriétaire et écritures de namespace restent à sérialiser.
+Run ne lance pas encore le pipeline de reprise des ensembles persistés.
 
 ## Limites
 

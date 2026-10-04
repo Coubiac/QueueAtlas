@@ -1305,18 +1305,54 @@ Capacité vérifiée avant toute ouverture, mais nouvelle génération/acquisiti
 transfert au scheduler et raccordement à Run restent à développer, ainsi que
 gzip/copytruncate/lacunes et revue de sécurité indépendante.
 
-## Prochain petit lot : transférer un ensemble avec courant connu au scheduler
+## Lot 32 : transfert au scheduler avec courant connu
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Pour une
-décision `known`, transmettre les 1 ou 2 descripteurs/ingesteurs au scheduler
-existant en désignant le courant par OriginID. Définir la frontière de propriété :
-validation avant transfert conservant le propriétaire sur erreur, collection du
-propriétaire vidée avant remise, scheduler responsable de fermeture une seule
-fois à sa sortie. Réutiliser suivi conjoint/polling/grâce/checkpoints, sans
-enregistrement ou acquisition répétés pour les fichiers déjà en suivi. Tests de
-reprise/ajout tardif/cancellation/erreur et absence de double fermeture. La
-préparation complète depuis Run et le cas d'une nouvelle génération courante
-seront des lots distincts.
+`FileSource.FollowOpened` accepte un ensemble vérifié de 1–2 fichiers et une
+décision `known`. Validation du contexte/Sink/garde partagée avec Run, nouvelle
+observation du chemin et concordance OriginID/identité physique, identité complète
+de source égale pour chaque ingesteur. Tout refus avant transfert conserve le
+propriétaire et LastPathStatus ; décision obsolète : ErrPathChanged.
+
+Collection vidée avant remise au scheduler commun : Close du propriétaire devient
+inoffensif, fermeture désormais exclusive au scheduler au retrait ou à sa sortie.
+Contrôles taille/ancre, suivi conjoint, polling/grâce/retrait durable réutilisés ;
+aucun enregistrement/acquisition répété des ingesteurs déjà prêts. Courant choisi
+par OriginID, quelle que soit sa position dans la collection. LastPathStatus remis
+à zéro au transfert puis actualisé par le polling.
+
+Tests portables : refus (contexte/Sink/exécution concurrente/décision/source/chemin/
+descripteur fermé/ensemble vide) sans consommation ni perte de propriété/statut ;
+erreur/EOF/annulation du Sink après transfert sans avancement du checkpoint ni
+double fermeture ; propriétaire déjà vide lors du commit et Close inoffensif.
+Troncature/réécriture à identité inchangée après décision connue : contrôle avant
+consommation, arrêt et fermeture par le scheduler. Tests Linux avec vrais fichiers
+localisés/rouverts et SQLite : 1–2 fichiers, courant premier ou second, ajouts
+tardifs sans replay, checkpoints distincts à 9, retrait du seul ancien après grâce,
+courant toujours en suivi, annulation et absence de fuite/double fermeture.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
+et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
+détecteur de courses et builds Linux amd64/arm64 : CI à vérifier après publication.
+Dernier état Linux validé : lot 31, commit
+`3f3d72704c658e6fd03accd96883420a2be34f47`, CI 37175634122.
+
+Limites : ce transfert exige un courant connu ; décisions missing/new/capacity
+refusées avant transfert. Pas de verrou ni snapshot atomique : les contrôles de
+suivi revalident les ancres après transfert. Une disparition ultérieure conserve
+le courant déjà observé selon le scheduler existant. Run n'utilise pas encore le
+pipeline de reprise d'ensembles persistés. Pas de migration/dépendance ajoutée ;
+gzip/copytruncate/lacunes et revue de sécurité indépendante restent à développer.
+
+## Prochain petit lot : ajouter un nouveau courant à un ensemble conservé
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Traiter la
+décision `new_generation` avec un seul fichier rouvert : vérifier la capacité
+avant ouverture, recontrôler le nouveau chemin/descripteur et préparer/acquérir
+la nouvelle génération avant consommation. Définir la propriété et le nettoyage
+sur chaque erreur, puis utiliser le scheduler commun avec les deux générations.
+Tester les ajouts de l'ancien, les erreurs/annulations et le refus d'une troisième
+ouverture. Le raccordement complet depuis Run et la politique missing seront des
+lots distincts.
 
 ## Suite à découper au fil des reprises
 

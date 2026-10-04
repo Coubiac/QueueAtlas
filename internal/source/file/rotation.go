@@ -36,6 +36,12 @@ func (s *FileSource) followPath(ctx context.Context, f *os.File, ingestor *Inges
 
 func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingestor *Ingestor, sink source.Sink, wait func(context.Context, time.Duration) error, now func() time.Time) (err error) {
 	opened := []*openedGeneration{{file: f, ingestor: ingestor}}
+	return s.followGenerations(ctx, opened, opened[0], sink, wait, now)
+}
+
+// followGenerations takes exclusive ownership immediately, including on errors
+// during initial inspection. Retirements remove their descriptor before cleanup.
+func (s *FileSource) followGenerations(ctx context.Context, opened []*openedGeneration, active *openedGeneration, sink source.Sink, wait func(context.Context, time.Duration) error, now func() time.Time) (err error) {
 	defer func() {
 		for _, generation := range opened {
 			if generation.file != nil {
@@ -46,12 +52,13 @@ func (s *FileSource) followPathWithClock(ctx context.Context, f *os.File, ingest
 	if err := ctx.Err(); err != nil {
 		return err
 	}
-	id, err := Inspect(f)
-	if err != nil {
-		return err
+	for _, generation := range opened {
+		id, err := Inspect(generation.file)
+		if err != nil {
+			return err
+		}
+		generation.identity = id
 	}
-	opened[0].identity = id
-	active := opened[0]
 	poll := func() error {
 		// Diagnose observed shrink before retiring any descriptor or switching
 		// generations, including retained files and unacknowledged partial bytes.

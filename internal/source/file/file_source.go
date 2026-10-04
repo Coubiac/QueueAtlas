@@ -40,7 +40,7 @@ func (e *ResumeDecisionError) Error() string {
 // ErrCheckpointChanged diagnoses a mismatch in its last acknowledged anchor
 // window. Neither check proves that all previously consumed bytes are unchanged.
 // The caller must serialize state writes for its source ID across all objects;
-// Run guards only this object.
+// Run and FollowOpened guard only this object.
 // The object must not be copied after use. Dependencies must support context.
 type FileSource struct {
 	config     Config

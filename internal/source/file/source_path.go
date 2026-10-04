@@ -9,7 +9,9 @@ import (
 // The empty value means no observation yet. An accepted new Run resets it;
 // a rejected concurrent Run does not. The value survives cancellation/errors
 // and may be stale; it is neither a running state nor proof of continuity.
-// It is safe to call concurrently with Run and contains no path or log content.
+// FollowOpened resets it only after ownership transfer, before scheduler polling;
+// a rejection before transfer preserves it. It is safe to call concurrently with
+// Run/FollowOpened and contains no path or log content.
 func (s *FileSource) LastPathStatus() PathStatus {
 	s.pathMu.RLock()
 	defer s.pathMu.RUnlock()
