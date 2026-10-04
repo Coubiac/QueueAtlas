@@ -55,8 +55,8 @@ inconnus avec `LoadFollowOrigins`, après parcours complet borné par chemin.
 Les lecteurs par identité et chemin exposent l'état dans la même page que le
 checkpoint. Les empreintes et checkpoints restent conservés lors d'un retrait.
 Le contrat, la migration, le Sink, l'acquisition et le retrait par FileSource sont
-implémentés ; préparation/localisation des candidats implémentées, ouverture
-avec revérification et raccordement à la reprise de Run restent à développer.
+implémentés ; préparation/localisation et réouverture avec revérification des
+candidats implémentées, sélection du courant et reprise de Run restent à développer.
 
 ## Préparation des candidats de reprise
 
@@ -110,6 +110,34 @@ Tous les descripteurs temporaires sont fermés avant retour. Les chemins devront
 descripteur durable n'est modifié. L'ordre des recherches ne choisit pas le
 fichier courant. La capacité finale, incluant un éventuel nouveau courant, et
 le raccordement au démarrage restent des lots distincts.
+
+## Réouverture de l'ensemble localisé
+
+`OpenFollowLocations` accepte seulement un ensemble entièrement `unique` de
+1 ou 2 états en suivi. Avant accès disque : source file/normaliseur valides,
+IDs non vides distincts, même chemin d'origine non vide, chemins sélectionnés
+absolus et distincts après nettoyage lexical ; copies de tous les checkpoints.
+Le namespace source reste garanti par l'appelant et ses lecteurs.
+
+Chaque fichier est rouvert en lecture seule par `OpenLog`, vérifié strictement
+par `VerifyCandidate`, puis revérifié et positionné par `NewIngestor` au checkpoint
+positif. L'identité physique, les fenêtres préfixe/ancre et la frontière LF sont
+contrôlées sans consommation de ligne, normalisation ni écriture d'état. Un
+checkpoint absent/zéro ou une preuve insuffisante n'autorise aucune relecture
+implicite. Deux ouvertures du même fichier physique donnent ambiguïté, même
+avec deux chemins distincts.
+
+Le succès rend un `OpenedFollowSet` opaque propriétaire de tous les descripteurs.
+`Len` expose sa capacité ; `Close` ferme l'ensemble sans modifier les états durables.
+La collection est vidée avant fermeture, même en erreur, pour ne pas réessayer
+un Close et fermer les autres fichiers. Close est idempotent ; valeur zéro et
+récepteur nil admis. L'objet ne doit pas être copié ni utilisé concurremment.
+
+Échec/annulation, notamment sur le second fichier : toutes les ouvertures acquises
+sont fermées et aucun ensemble partiel n'est rendu. Cause initiale et erreurs de
+fermeture sont conservées. Descripteurs restent au propriétaire jusqu'à Close ;
+choix du courant, transfert au scheduler et raccordement à Run seront séparés.
+Les vérifications bornées successives ne forment pas un snapshot atomique.
 
 ## Limites
 

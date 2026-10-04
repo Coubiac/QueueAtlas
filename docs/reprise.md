@@ -1130,7 +1130,7 @@ Ce composant ne choisit pas le courant, n'ouvre aucun journal et n'écrit aucun 
 Localisation/revérification et raccordement à Run restent à développer, ainsi que
 gzip/copytruncate/lacunes et la revue de sécurité indépendante prévue.
 
-## Dernier lot terminé : localisation bornée des candidats en suivi
+## Localisation bornée des candidats en suivi
 
 `LocateFollowOrigins(ctx, configuredPath, origins, entryLimit)` exige un ensemble
 `FollowOriginsComplete` de 1 ou 2 états en suivi, IDs non vides distincts et chemin
@@ -1184,16 +1184,71 @@ candidats persistés ; un nouveau fichier courant devra aussi compter dans les
 deux descripteurs. Pas d'ingestion/transition ni raccordement à Run dans ce lot.
 Gzip/copytruncate/lacunes et revue de sécurité indépendante restent à développer.
 
-## Prochain petit lot : rouvrir et revérifier l'ensemble localisé
+## Dernier lot : réouverture et revérification de l'ensemble localisé
 
-Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Pour un
-ensemble entièrement `unique`, ouvrir les chemins avec `OpenLog` puis revérifier
-les états/checkpoints avec `NewIngestor`, sans lire de ligne ni écrire d'état.
-Définir la propriété/fermeture de l'ensemble de 1 ou 2 descripteurs avant modification.
-Remplacement/disparition/réécriture/annulation/échec du second : fermer toute
-ouverture déjà détenue et ne rendre aucun ensemble partiel. Tests de capacité,
-copies et fermeture ; sélection du courant et raccordement au scheduler/Run
-resteront des lots distincts.
+`OpenFollowLocations(ctx, identity, locations, normalize)` exige un ensemble
+entièrement `unique` de 1 ou 2 états en suivi. Toute l'entrée est validée avant
+ouverture : identité file et normaliseur requis ; IDs non vides distincts, même
+chemin d'origine non vide, chemins sélectionnés absolus et distincts après
+nettoyage lexical. Diagnostic fixe `ErrInvalidFollowLocations`. Checkpoints
+optionnels copiés pour tout l'ensemble avant la première ouverture.
+
+`OpenLog` ouvre chaque fichier en lecture seule ; `VerifyCandidate` contrôle
+strictement la preuve actuelle, puis `NewIngestor` revérifie et se place au
+checkpoint positif acquitté. Absence/zéro/preuve insuffisante : décision
+`insufficient`, jamais de replay implicite ; contenu/identité différents :
+`different`. Collision physique avec une autre ouverture : `ambiguous`, même
+pour deux chemins distincts. Aucune ligne consommée/normalisée, aucun commit.
+
+Le succès rend un propriétaire opaque `OpenedFollowSet`, collection privée de
+descripteurs/identités/ingesteurs, avec `Len` et `Close`. Close vide la collection
+avant les fermetures, ferme tous les fichiers même si l'un échoue, conserve les
+erreurs et reste idempotent. Valeur zéro/récepteur nil acceptés. Aucun état durable
+ne change sur Close. Objet non copiable et usage sérialisé, sans méthodes de
+transfert au scheduler dans ce lot.
+
+Sur erreur/annulation, les ouvertures déjà acquises, dont celle du candidat en
+échec, sont fermées ; résultat nil, cause et erreurs de nettoyage conservées.
+Pas de réessai ni ouverture après annulation constatée. Le propriétaire n'est
+rendu qu'après succès et contrôle d'annulation pour chaque candidat.
+
+Tests portables : entrée entière invalide/mélangée/dupliquée/trop grande,
+chemin relatif/alias lexical et configuration invalide refusés avant ouverture ;
+annulation préalable ; Close normal/en erreur ferme tous les fichiers, aucune
+seconde fermeture, propriétaire vide/nil. Tests Linux : un/deux fichiers courant
+et renommé, ajout tardif conservant les preuves, offsets/positions/pending inchangés
+avant consommation, zéro normalisation, lecture seule et un descripteur par fichier ;
+mutation du checkpoint appelant sans alias, et copie du second checkpoint avant
+première ouverture. Disparition/remplacement/réécriture/troncature du second,
+checkpoint nil/zéro/ancre invalide, hard link créant collision, erreur du second,
+annulation après première/avant seconde/après seconde ouverture et erreur de
+nettoyage : aucun ensemble partiel, cause conservée, toutes les ouvertures fermées.
+Données synthétiques, aucune migration/dépendance ajoutée.
+
+Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
+des tests FileSource Linux amd64 sans CGO. Exécution Linux/détecteur de courses/
+builds : CI à confirmer après publication du commit de code.
+
+Limites : fenêtres bornées et contrôles successifs, pas de verrou/snapshot atomique
+sur les fichiers. La vérification stricte précède le constructeur, qui relit les
+fenêtres avant seek ; pas de consommation de ligne dans ces lectures de preuve.
+Les chemins absolus localisés évitent une redirection par changement de répertoire
+courant. Les états n'embarquent pas de source ID ; l'appelant garantit le namespace
+et sérialise les écritures d'état jusqu'à application. La capacité est celle des
+candidats rouverts ; un nouveau fichier courant devra aussi compter. Propriété
+et fermeture explicites, mais sélection du courant/transfert/scheduler/Run restent
+à raccorder ; gzip/copytruncate/lacunes et revue de sécurité indépendante aussi.
+
+## Prochain petit lot : identifier le courant parmi les fichiers rouverts
+
+Reprendre sur `codex/m2-file-source`, conserver la PR #11 et ADR-009. Observer le
+chemin configuré par rapport à l'ensemble rouvert via `ObservePath`/`SameFile`.
+Distinguer un courant déjà ouvert, un chemin absent et une nouvelle génération
+qui nécessiterait une ouverture ; refuser le dépassement de capacité avant une
+troisième ouverture. Ne pas choisir le courant par ID/date/offset quand le chemin
+est absent. Traiter uniquement décision, tests et documentation, sans ingestion,
+transition, ouverture supplémentaire ni transfert au scheduler/Run. Ces
+raccordements resteront des lots distincts.
 
 ## Suite à découper au fil des reprises
 
