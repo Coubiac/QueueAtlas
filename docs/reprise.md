@@ -126,6 +126,12 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
   [CI localisation](https://github.com/Coubiac/mailtrace/actions/runs/37174564943)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
+- Trentième lot FileSource : `OpenFollowLocations` et propriétaire opaque
+  `OpenedFollowSet`, réouverture/revérification sans consommation et nettoyage
+  complet sur erreur, commit `35fc07be34b38672e6e9586783dc5490dd7719d2`, dans la PR #11.
+  [CI réouverture](https://github.com/Coubiac/mailtrace/actions/runs/37175078596)
+  réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
+  amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Les trois PR sont en brouillon. La PR #10 cible la branche de la PR #9.
   Aucune fusion n'a été effectuée.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
@@ -1184,7 +1190,7 @@ candidats persistés ; un nouveau fichier courant devra aussi compter dans les
 deux descripteurs. Pas d'ingestion/transition ni raccordement à Run dans ce lot.
 Gzip/copytruncate/lacunes et revue de sécurité indépendante restent à développer.
 
-## Dernier lot : réouverture et revérification de l'ensemble localisé
+## Dernier lot terminé : réouverture et revérification de l'ensemble localisé
 
 `OpenFollowLocations(ctx, identity, locations, normalize)` exige un ensemble
 entièrement `unique` de 1 ou 2 états en suivi. Toute l'entrée est validée avant
@@ -1226,8 +1232,10 @@ nettoyage : aucun ensemble partiel, cause conservée, toutes les ouvertures ferm
 Données synthétiques, aucune migration/dépendance ajoutée.
 
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
-des tests FileSource Linux amd64 sans CGO. Exécution Linux/détecteur de courses/
-builds : CI à confirmer après publication du commit de code.
+des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
+et builds Linux amd64/arm64 sans CGO confirmés réussis par la
+[CI réouverture](https://github.com/Coubiac/mailtrace/actions/runs/37175078596)
+Go 1.26.x/stable sur `35fc07be34b38672e6e9586783dc5490dd7719d2`.
 
 Limites : fenêtres bornées et contrôles successifs, pas de verrou/snapshot atomique
 sur les fichiers. La vérification stricte précède le constructeur, qui relit les
