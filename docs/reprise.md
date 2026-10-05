@@ -29,6 +29,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
   Main `8886427ab7efee72b95597bdb3c1996176aeefdb`,
   [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37288519438),
   vérifiée REST. Nouvelle branche `codex/m3-recipient-attempts` depuis main.
+- Lot 89 publié : `f6c888bb8f86d789e5ba22dfb0f5ebcfa989fa40`,
+  [PR #19](https://github.com/Coubiac/mailtrace/pull/19) créée/attachée en brouillon,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37289790856).
+  Résultat d'une tentative, deux défauts de preuve reproduits/corrigés/relus.
 - Lot 87 publié : `0b3e362fe9ccfc40ce87a72bba78e113702c6beb`, #18,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37287896648).
   Test portable Windows et intégration FileSource Linux réussis, revue sans blocage.
@@ -2730,13 +2734,27 @@ HasExactStatusReply compare premier vrai champ status avec frontières parser32.
 Test parser cinq cas, matching neuf cas et legacy quatre combinaisons/xstatus réussis.
 Delta final relu sans blocage et régressions helper/legacy exécutées par auditeur.
 docs/correlation-contract.md et rapport recipient-projection.md alignés.
-Publication/CI89 à vérifier ; dernier état validé publié/fusionné = lot88.
+Publié `f6c888b`, PR #19 créée/attachée ; CI37289790856 success vérifiée.
 Aucune génération/chronologie, regroupement destinataire, projection DB ou Web.
+
+## Lot 90 : index candidat par instance et provenance
+
+Résultat attendu : partitionner un snapshot borné des faits sans fusion de parcours,
+établir des références stables et ordonner les hypothèses datées, conserver les autres.
+PartitionFacts développé : limite positive<=4096, provenance/source/instance validées,
+duplicates/overlap refusés sans sortie partielle ; QueueKey instanceconfigurée/QueueID,
+streams source/origine gardés, CrossStreamUncertain quand multiples. Index candidat
+seulement, aucune génération. Timed triés UTC hypothétique puisoffset, Untimed séparés,
+Other garde NOQUEUE/malformed/unknown ; Host/MessageID jamais clés.
+Quatre tests/suite correlation/vet/diff Windows réussis, permutations/dates égales,
+2hôtes/mêmeID/doublonMessageID, overlapincertain, conservation/refus/limites/copies.
+Revue finale sans blocage, quatre tests exécutés par auditeur : pass.
+Publication/CI90 à vérifier. Dernier état publié validé=lot89.
 
 ## Prochaine action concrète
 
-Publier lot89 et créer PR cohérente M3, vérifier CI exacte.
-Ensuite séparer instances/générations avant regroupement de résultats par destinataire.
+Publier90 sur #19 et vérifier CI exacte. Ensuite génération observée
+après frontière explicite sans fusion d'ID recyclé ni ordre temporel inventé.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-recipient-attempts.

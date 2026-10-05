@@ -31,3 +31,19 @@ exacte à vérifier.
 
 Aucun état global, génération, lien, expiration/NOQUEUE, lecteur DB ni persistance
 de projection livré. Données synthétiques, revue assistée.
+
+## Lot90 : index candidat par instance et flux de provenance
+
+PartitionFacts pur et borné4096, refus sans résultat partiel pour provenance invalide,
+source/instance incohérente, duplicate/overlap. QueueKey instance configurée/QueueID,
+flux source/origine distincts et CrossStreamUncertain si multiples ; jamais une
+QueueInstance/génération/parcours. Timed selon hypothèses puis offset, Untimed
+séparé, Other conserve NOQUEUE/unknown ; aucun effet Host/MessageID ou hashtexte.
+
+Quatre tests et suite correlation/vet/diff Windows réussis : 25permutations fixture16,
+date égale départagée par provenance, 2hôtes mêmeID/MessageIDdupliqué/importoverlap,
+conservation tousfaits/NOQUEUE/undated, limites et refus de snapshot sans résultat
+partiel. Références par valeur, pas maps/dates empruntées. Deux corrections de tests
+avant validation : mapnil de removed et fixture26 comportant deux lignes reconnues.
+Revue finale sans blocage, quatre tests exécutés par auditeur sur version finale :
+pass. Publication/CI90 à vérifier. Aucun stockage/source/Web changé.

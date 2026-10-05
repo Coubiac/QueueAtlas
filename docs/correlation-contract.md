@@ -49,9 +49,33 @@ retries, bounce et expiration. Le test compte toutes les tentatives : deux defer
 puis sent restent trois faits. Il ne calcule pas encore le dernier résultat par
 destinataire, un statut global, les générations, NOQUEUE, les arcs ou la rétention.
 
+## Lot90 : index borné des faits candidats
+
+`PartitionFacts` reçoit un snapshot explicite et une limite positive <=4096 faits.
+Provenance source/origine/offsets, SourceID de l'observation et instance configurée
+doivent être cohérents ; doublons ou chevauchements physiques sont refusés sans
+résultat partiel, même pour les lignes non reconnues. Une origine ne peut recevoir
+deux instances de confiance différentes. Cette limite compte les faits ; elle ne
+remplace pas les limites de tailles du parser ou de configuration en amont.
+
+L'index rassemble les candidats `(instance configurée, Queue ID)` sans utiliser
+hôte déclaré ou Message-ID. **Un index candidat n'est pas une QueueInstance ni un
+parcours.** Chaque flux `(SourceID, OriginID)` garde ses propres références, sans
+déduplication textuelle. Plusieurs flux indiquent `CrossStreamUncertain` : aucune
+preuve de continuité ou de chevauchement entre eux. Un flux unique ne certifie pas
+l'absence de lacunes ou de réutilisation d'ID à l'intérieur du fichier.
+
+Les références sont indépendantes des IDs d'insertion SQLite. Les faits datés sont
+triés selon leurs instants/hypothèses conservés, puis offset physique pour égalité ;
+les non datés restent séparés, triés par offset. Ce classement est déterministe
+sous permutation du snapshot, pas une preuve d'ordre réel en cas d'horloge incertaine.
+Le classement des sources/origines est lexical, jamais une chronologie de rotation.
+NOQUEUE, unknown et autres faits hors file restent dans `Other` ; rien n'est supprimé.
+Le résultat contient des références par valeur, aucune map/date empruntée au caller.
+
 ## Suite concrète
 
-Séparer les instances et les générations de file avant de regrouper les résultats
+L'index sépare les instances et flux ; établir ensuite les générations avant de regrouper les résultats
 par destinataire. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.
