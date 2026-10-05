@@ -6,7 +6,8 @@ Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scop�
 CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI vertes.
 Lots 75–79 manifest fusionnés dans #16, CI finale et main vertes. Lot 80 :
 préparation d'ingestor publiée dans #17, CI verte. Lot 81 CommitNext publié, CI
-verte et revue sans blocage. Lot 82 Binding développé et relu sans blocage ; pilote futur.
+verte et revue sans blocage. Lot 82 Binding publié/CI verte, revue sans blocage.
+Lot83 Attempt.Run un fichier développé et relu sans blocage ; orchestration globale future.
 
 ## Décision et séparation des étapes
 
@@ -291,3 +292,30 @@ de source sérialisées. CP inclus même s'il existe pour vérifier l'ancre dans
 Resume déjà associé : aucune écriture supplémentaire. Getter du futur ingestor
 ne peut exposer une association non acquittée. Caller garde Close/exclusivité et
 bytes privés immuables ; lecture manifest/CP n'est pas un snapshot multi-écrivain.
+
+## Pilote d'une tentative du lot 83
+
+Attempt implémente Source pour un seul chemin/run explicite. NewAttempt résout
+path et TempDir une fois, valide kind/import/ID/limits/dépendances sans IO. Run
+exige un contexte avec deadline avant toute écriture ; TryLock protège cet objet,
+caller mono-écrivain pour la source. Dépendances honorent ctx ; deadline entre
+opérations bornées, pas interruption d'un syscall de fichier régulier bloqué.
+
+Pending exact d'un précédent Run réessayé avant lookup/ouverture. Run absent :
+création running non préparé ; run existant : source/ID/path exacts. Complete déjà
+durable revient succès sans rouvrir le path : l'ID identifie cette tentative, pas
+un nouvel import d'une entrée peut-être changée. Failed ne se ranime pas ; nouvelle
+demande nécessite nouvel ID. Legacy/ID étranger non adopté, conflit SQL conservé.
+
+PrepareRegular possède copie jusqu'au Close différé, toutes sorties joignent
+erreurs cleanup. Binding puis ingestion finie, status terminal acquitté distingue
+EOF source/Sink. Erreur Sink : retenir batch exact avant fermeture de copie, puis
+arrêter ; Run suivant l'acquitte avant revalidation/CP durable. Après perte du
+process, pending mémoire perdu, reprendre état commité et contenu entier validé.
+Reprise content changé/absent refusée sans transformer run préparé en failed.
+
+Préparation non interrompue refusée sur run sans contenu : trace failed avec date
+stable et batch conservé si erreur Sink. Interruption de contexte pendant préparation
+reste running pour permettre reprise. Suffixe partiel : failed lastLF acquitté.
+Cleanup refusé est signalé, jamais suppression récursive/compensation du manifest
+déjà complete. Aucun retry automatique ni plusieurs fichiers dans ce pilote.

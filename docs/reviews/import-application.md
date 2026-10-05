@@ -41,5 +41,20 @@ sans write, aucun parser ou propriété transférée. Trois tests ciblés Window
 SQLite réelle réussis : ACK retry, rename/recompression/CP partagé, scope source,
 refus dix cas/state-error/cancel. Suite/vet/diff Windows réussis, revue indépendante
 sans blocage : trois tests ciblés/diff réussis, aucun test supplémentaire nécessaire.
-Propriété/exclusivité jusqu'à ingestion et mono-écrivain requis. Publication/CI82
-à vérifier ; pas de Run ou cleanup implémenté par ce lot.
+Propriété/exclusivité jusqu'à ingestion et mono-écrivain requis. Publié e8e5469,
+CI 37264777146 success ; pas de Run ou cleanup implémenté par ce lot.
+
+## Lot 83 : Attempt.Run sur un fichier
+
+Deux nouveaux fichiers attempt.go/tests : tentative explicite source/run/path,
+deadline obligatoire, exclusivité d'objet et caller mono-écrivain, copie possédée
+et cleanup joint. Pending exact réessayé avant lookup/open, copie fermée après
+erreur Sink puis revalidation/reprise durable après ACK ; complete reconnu par
+status. Failed préparation non interrompue tracé sans compensation de commit
+ambigu ; interruption ou reprise input indisponible/changé restent running.
+Terminal ID représente opération passée, aucun reopen/ranimation implicite.
+Cinq tests ciblés Windows/suite/vet/diff réussis avec SQLite réelle,
+revue indépendante sans blocage : cinq tests ciblés Windows passés par auditeur,
+code/tests/documentation relus, aucun contrôle supplémentaire nécessaire identifié.
+Publication/CI83 à vérifier ; audit assisté sans certification externe.
+Liste/ordre/nombre/deadline globale encore exclus ; pas de CLI/service.

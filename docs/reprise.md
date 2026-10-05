@@ -13,11 +13,10 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
-Bibliothèque seule, sans CLI/service. Lot 80 NewIngestor publié dans #17, CI verte.
-Lot 81 CommitNext publié, revue sans blocage et CI verte. Lot 82 Binding développé :
-preuve du CP partagé puis association acquittée avant ingestion ; tests ciblés
-Windows/suite/vet/diff réussis, revue sans blocage. Publication/CI82 à vérifier.
-Pas de Run global.
+Bibliothèque seule, sans CLI/service. Lots 80–82 publiés dans #17, revues sans
+blocage et CI vertes. Lot 83 Attempt.Run
+pour un fichier développé, cinq tests Windows/suite/vet/diff réussis, revue sans blocage.
+Orchestration globale ordre/nombre/durée à développer au lot84.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 M2 inclut les autres décisions encore ouvertes
@@ -25,6 +24,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 82 publié : `e8e54694f0f19d9823131deb282d91111fae13c7`, #17,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37264777146).
+  Association/reprise prouvées, trois tests/suite/vet/diff et revue sans blocage.
 - Lot 81 publié : `2a80042b243b4b073cd39150ea633762a918dced`, #17,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37264301733).
   Revue/runtime et régression sentinelles Sink terminées sans blocage.
@@ -2568,14 +2570,36 @@ cancel/retry, renamed/recompressed à CP positif, reprise sans write, run périm
 refusé, autre source indépendante, réimport à EOF sans parser ; dix refus et
 state-error/cancel/nilreader. Suite/vet/diff Windows réussis. Revue sans blocage,
 trois tests ciblés exécutés par auditeur, aucun contrôle supplémentaire nécessaire.
-Publication/CI82 à vérifier.
-Dernier état publié validé : lot81 ; Binding82 non publié.
+Publié `e8e5469`, CI 37264777146 success vérifiée.
+
+## Lot 83 : pilote propriétaire d'une tentative
+
+Résultat attendu : un fichier/run explicite créé ou repris durablement, copie
+validée possédée et fermée sur chaque sortie ; batch ambigu conservé pour retry.
+NewAttempt valide et résout paths avant IO. Run exige deadline, protège son objet
+par TryLock, pending exact réessayé avant lookup/open, source/run/path concordants.
+PrepareRegular puis Binding/CommitNext ; EOF reconnu par status acquitté, pas par
+sentinelle du Sink. Copie fermée/supprimée sur chaque sortie, erreurs cleanup jointes.
+Préparation CRC/budget refusée sur run non préparé : trace failed ; erreur de cette
+trace garde batch exact. Interruption de contexte et input de reprise indisponible/
+changé restent running, pas de compensation ambiguë. Complete existant sans réouvrir
+path : RunID identifie la tentative passée ; nouvelle demande = nouvel ID explicite.
+Failed ne se ranime pas. Après perte de process, reprendre contenu entier validé
+et CP durable ; ambiguïté en mémoire seulement tant que l'objet existe.
+
+Cinq TestImportAttempt* Windows réussis, SQLite réelle plain/gzip/vide/partial ;
+create/attach/record/terminal × avant write/ACK perdu (Sink EOF), JSON exact au retry
+après cleanup, restart/CP positif/changement/missing, préparation interrompue,
+deadline/config/cancel/concurrence ; foreign sentinel conservé, copie supprimée,
+erreur cleanup signalée sans compensation du complete durable. Suite/vet/diff
+Windows réussis. Revue terminée sans blocage, cinq tests ciblés exécutés par auditeur,
+publication/CI83 à vérifier. Dernier état publié validé : lot82.
 
 ## Prochaine action concrète
 
-Publier82 dans #17 et vérifier la CI exacte ; revue terminée sans blocage.
-Lot 83 : pilote d'une tentative avec création/reprise durable et propriété/Close ;
-ordre/nombre/durée globaux dans un lot distinct ensuite.
+Publier83 dans #17 et vérifier la CI exacte ; revue terminée sans blocage.
+Lot 84 : liste explicite ordonnée, borne du nombre et deadline globale ;
+lot85 : synthèse/validation/fusion du chantier #17 et réestimation M2.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
 
