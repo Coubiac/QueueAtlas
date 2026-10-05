@@ -241,10 +241,90 @@ faits. Les sorties sont ordonnées par provenance pour l'affichage. Aucun lien v
 une file acceptée dans la même fenêtre, statut final, couverture certifiée ou
 session globale entre fichiers. Aucun stockage/source/API/Web ajouté.
 
+## Lot100 : indices natifs de changement de file
+
+`BuildQueueHints` conserve l'index borné/validé entier et extrait au plus un indice
+par fait, trié par provenance. Trois catégories distinctes : smtp_queue_hint,
+local_forward_hint et bounce_notification_hint. Chaque indice cite la file source,
+la référence physique, l'ID cible rapporté, la preuve native et le relay présent.
+Aucune QueueInstance cible, génération, relation confirmée ou modification d'état.
+
+SMTP exige sent et la réponse native exacte de forme limitée
+`250 2.0.0 Ok: queued as ID`. Local exige sent avec `forwarded as ID`. Les gardes
+du premier statut/réponse natifs protègent les champs historiques normalisés et
+les suffixes trompeurs. Bounce exige la phrase native exacte
+`sender non-delivery notification: ID` et le champ présent concordant. L'ID doit
+suivre la même grammaire bornée que le parser (IsQueueID) ; reconnaître sa syntaxe
+ne prouve ni existence ni identité de file. Les autres formats restent dans les
+faits d'origine, sans extraction permissive de texte distant.
+
+L'instance cible SMTP reste absente : même loopback, localhost, hôte déclaré ou
+présence d'une file portant cet ID ne prouve pas son espace d'identité. Les rapports
+local/bounce indiquent l'instance configurée de leur agent, mais restent candidats.
+Les [filtres après mise en file](https://www.postfix.org/FILTER_README.html) peuvent
+réinjecter ou changer la destination ; [local](https://www.postfix.org/local.8.html)
+réintroduit un message transféré. La corroboration exige les observations des deux
+côtés et une configuration explicite pour les pairs SMTP ; ces manuels ne sont pas
+une preuve de configuration du serveur observé.
+
+Une date inconnue garde l'indice et l'index Untimed : aucune attribution temporelle
+à une génération n'est tentée ici. Plusieurs origines gardent leurs indices
+distincts. Message-ID, adresse ou texte identique ne fusionne rien. Aucun statut de
+la file initiale ne bénéficie d'un résultat de la file citée ; bounce notification
+reste distincte d'une remise du destinataire initial. Aucun stockage/source/Web.
+
+## Lot101 : relations corroborées sous preuves et hypothèses
+
+`BuildQueueLinks` conserve tous les indices et les générations candidates ; chaque
+indice produit une relation candidate ou corroborée, sans fusion de générations,
+parcours ou états de destinataires. Les ancrages source/cible et les preuves
+positives sont des références copiées aux faits immuables, au plus huit par lien.
+Une seule référence positive par champ est citée ; toutes les répétitions sont
+contrôlées pour contradiction et restent dans les faits de la génération.
+La corroboration reste
+révisable si des faits historiques arrivent ; ce n'est ni couverture certifiée ni
+identité globale immuable. Bounce garde sa catégorie distincte d'un transfert.
+
+Options explicites : fenêtre positive <=24h et au plus64 bindings SMTP. Chaque
+binding mappe littéralement `(instance source, relay rapporté)` vers une instance
+cible ; chaque valeur non vide <=1024 octets, sans NUL/CR/LF/tabulation, aucune
+paire dupliquée. Les options invalides donnent l'erreur fixe ErrLinkOptions sans
+résultat partiel. Les limites de snapshot/provenance restent celles de PartitionFacts.
+Un mapping est une affirmation de configuration du caller, pas un fait extrait des
+logs ni une certification indépendante du relais. La relation conserve sa copie.
+
+La source doit appartenir à une génération datée non ambiguë. La cible doit avoir
+une réception observée strictement après celle de la source et dans la fenêtre
+avant/après le rapport natif. La source et la cible gardent leurs hypothèses de
+date : même une date explicite ne certifie pas l'horloge. Une seule génération
+cible doit être plausible dans ces conditions temporelles ; un ID recyclé peut
+être corroboré si une seule génération satisfait la fenêtre et les autres preuves.
+On ne choisit jamais entre plusieurs générations temporellement admissibles ou
+origines en comparant leurs adresses/Message-IDs. Une génération cible non résolue
+ou des sources multiples empêchent la corroboration. La même clé source/cible est
+refusée, et l'ordre strict des réceptions empêche un cycle corroboré.
+
+Les deux côtés doivent avoir des expéditeurs qmgr présents, non contradictoires.
+Pour SMTP, le mapping est obligatoire, expéditeurs égaux, Message-IDs cleanup
+présents/non vides concordants et destinataire du rapport également observé sur
+la cible. Pour local/forwarded, l'expéditeur doit concorder ; si deux Message-IDs
+sont présents, ils ne doivent pas se contredire. Pour bounce, la source doit avoir
+un expéditeur non vide, la notification un expéditeur explicitement vide et une
+tentative cible vers l'expéditeur source. Ce sont des règles conservatrices de
+QueueAtlas : les changements d'adresse/enveloppe non corroborables restent candidats.
+Une tentative cible deferred/bounced peut prouver son adresse sans prouver un succès.
+
+Les motifs candidats fixes sont source_unresolved, source_ambiguous,
+target_instance_unknown, target_absent, target_ambiguous, evidence_insufficient et
+self_reference. Sans preuves suffisantes, aucune ancre cible n'est assignée. Les
+indices et faits restent visibles ; un lien ne modifie jamais une tentative ni son
+dernier résultat. HasNonExplicitTime garde les hypothèses des deux générations.
+Aucun stockage, parcours global, preuve de continuité entre fichiers ou Web ajouté.
+
 ## Suite concrète
 
-Les chantiers purs #19/#20 sont fusionnés. Clôturer les faits NOQUEUE/sessions
-candidates après revue/CI, puis traiter les liens candidats et corroborés sans
-identité par PID seul. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Les chantiers purs #19–21 sont fusionnés. Clôturer les indices/relations après
+revue et CI, puis traiter les identités de projection et leur persistance, sans
+fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

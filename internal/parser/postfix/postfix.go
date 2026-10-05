@@ -98,6 +98,10 @@ func Parse(line []byte, opts Options) model.Observation {
 	return o
 }
 
+// IsQueueID checks the bounded identifier grammar used by Parse. Recognising
+// this spelling proves neither that a queue exists nor which instance owns it.
+func IsQueueID(v string) bool { return validQueueID(v) }
+
 func validQueueID(v string) bool {
 	if len(v) < 3 || len(v) > 32 {
 		return false

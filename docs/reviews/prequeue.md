@@ -51,4 +51,8 @@ Résultat attendu : conserver avis97–98, vérifier CI exacte, publier bilan et
 pas de rerun des fondations. Documentation et estimation actualisées, M3 encore
 incomplet (13–23 lots), total38–66 avec M4/M5. Avis documentaire final sans blocage,
 HEAD7486fe2 et delta limité aux trois documents vérifiés ; précision de motif intégrée,
-aucun test relancé. CI98 entière verte. Publication/CI finale99, fusion et main à vérifier.
+aucun test relancé. CI98 entière verte. Publié884a8c1,
+CI finale37323621470 success ; #21 fusionnée sur
+43f5155e423075c60c96e465e5562672da6706b7, CI push main37323880818 success
+vérifiée REST sur SHA exact. Commentaire de revue5415970535 ; revue assistée.
+Lot99 terminé.

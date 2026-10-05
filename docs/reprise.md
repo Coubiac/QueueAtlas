@@ -6,8 +6,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
-Expiration94 et synthèse95 fusionnées, clôture96 terminée dans #20. NOQUEUE97 publié
-avec CI verte #21 ; sessions98 publiées/relues, clôture99 en cours.
+Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
+clôture99 terminée, CI finale et main réussies. Indices100 et relations101 publiés,
+CI verte #22 ; clôture102 documentaire en cours avant fusion.
 Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -26,6 +27,20 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 101 publié : `d07f6bdf6c689eacf3041fa7768e17d4f9b4d66f`, #22,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37326579775).
+  Six tests QueueLinks, suite/vet/diff, revue code/docs et correctif des preuves
+  répétées validés. Dernier état fusionné validé99.
+- Lot 100 publié : `bfdb9e0d9e4674aa3614da6816750f4c19cfc0de`,
+  [PR #22](https://github.com/Coubiac/mailtrace/pull/22) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37324927168).
+  Quatre tests QueueHints, suites/vet/diff et revue code/docs sans blocage.
+- Lot 99 terminé : [PR #21](https://github.com/Coubiac/mailtrace/pull/21) fusionnée,
+  tête `884a8c1738e91ae833ee64197b1a0050e8714b0b`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323621470).
+  Main `43f5155e423075c60c96e465e5562672da6706b7`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323880818),
+  vérifiée REST. Branche suivante `codex/m3-queue-links` depuis ce main.
 - Lot 98 publié : `7486fe2d5f83c20e5231255604c981779285fc35`, #21.
   Quatre tests PrequeueSessions, suite/vet/diff et revue code/docs sans blocage.
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323131066).
@@ -2916,19 +2931,65 @@ Résultat attendu : bilan fidèle, avis documentaire/CI exacte, fusion #21 sur t
 attendue puis CI push main. Runtime inchangé depuis97–98 relus, aucun nouveau test
 des fondations nécessaire. Avis documentaire final favorable, HEAD7486fe2, delta
 limité aux trois documents. CI98 entière success vérifiée. Publication99/CI finale,
-fusion et main restent à vérifier.
+fusion et main désormais vérifiées : publié884a8c1, CI finale37323621470 success,
+commentaire5415970535/ready puis fusion #21 sur43f5155, CI push main37323880818
+success vérifiée REST. Lot99 terminé.
 M3 reste incomplet,13–23 lots estimés après99 ; M4 15–25 et M5 10–18, total38–66.
 NOQUEUE/sessions pures réalisées ; complétude applicative, identités/continuité/liens,
 stockage/recalcul, recherche/rétention et intégration/mesures/clôture encore requis.
 
+## Lot 100 : indices natifs de changement de file
+
+Résultat attendu : conserver indices SMTP/local/bounce avec preuves, sans fusion
+ni QueueInstance depuis ID distant. BuildQueueHints développé, index complet,
+bornes/refus réutilisés. Premier statut/réponse natifs exacts, formats limités,
+grammaire IsQueueID identique au parser. SMTP instance cible absente même loopback
+ou file présente ; local/bounce indiquent l'instance configurée mais restent
+indices. Dates inconnues et autres faits conservés, aucun état/arc attribué.
+Quatre tests et suites correlation/parser, vet/diff Windows réussis ; revue code/
+docs favorable, quatre tests via overlay isolé par auditeur pass, aucun rerun.
+Publiébfdb9e0 dans #22 créée/attachée, CI37324927168 success ; état fusionné validé99.
+
+## Lot 101 : relations sous preuve des deux côtés
+
+Résultat attendu : garder les candidats, corroborer seulement source/cible reçues
+non ambiguës avec date compatible et observations concordantes ; mapping SMTP
+explicite exigé. BuildQueueLinks développé, options fenêtre positive<=24h/bindings64/
+valeurs1024/dup refusé sans sortie partielle ; indices/générations conservés. Preuves
+qmgr/cleanup/recipient citées, relation bounce distincte, origines/IDs recyclés non
+unifiés. Date cible strictement après source et proche hint, cycles/self refusés.
+Six tests/suite correlation/vet/diff Windows pass ; revue initiale sans blocage et
+cinq tests via overlay isolé par auditeur pass. Unicité des cibles dans la fenêtre
+précisée : ID recyclé corroborable si une seule génération admissible.
+Contrôle de taille reproduit : 700 répétitions qmgr donnent708 preuves positives ;
+test échoue avant garde. Première référence par champ gardée, toutes contradictions
+contrôlées et704 faits source conservés, <=8 preuves positives par lien. Test/suite
+pass après correctif ; delta final/documentation validés sans blocage par auditeur,
+régression700 via overlay isolé pass. Dernière répétition contradictoire reste
+candidate, cas local ajouté/exécuté pass. Aucun rerun des fondations.
+Publié d07f6bd dans #22, CI37326579775 entière success vérifiée sur la tête exacte ;
+état publié avec CI verte101, fusionné99.
+Aucun résultat des tentatives modifié, identité globale ni DB/source/Web.
+
+## Lot 102 : clôture des indices et relations de file
+
+Résultat attendu : bilan fidèle, revue documentaire finale, CI exacte puis fusion
+#22 et CI push main. Runtime inchangé depuis100–101 relus ; aucune nouvelle
+exécution des tests des fondations nécessaire. CI101 success vérifiée. Limites :
+mapping SMTP explicite, génération cible temporellement admissible unique, réserves
+de date/provenance conservées, preuve positive bornée sans ignorer les contradictions.
+Les états des destinataires restent inchangés ; aucun parcours global ni persistance.
+Documents actualisés ; avis documentaire final indépendant favorable sur les seuls
+quatre documents modifiés, aucun test relancé. Publication102/CI, fusion/main à vérifier.
+
 ## Prochaine action concrète
 
-CI98 et revue99 validées. Commit/push sur #21 puis CI finale,
-fusion attendue et CI main. Lot100 : liens candidats de réinjection
-avec preuves, sans fusion depuis un ID distant ou Message-ID seul.
+Terminer clôture102 : revue des seuls documents, commit/push sur #22 puis CI exacte,
+fusion sur la tête attendue et CI main. Ensuite identités de projection et
+persistance transactionnelle, sans fusion d'origines ou de parcours non prouvée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-prequeue.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-queue-links.
 
 ## Suite à découper au fil des reprises
 
