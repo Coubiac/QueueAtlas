@@ -209,10 +209,42 @@ l'hôte déclaré ne crée aucune identité. Chaque autre fait reste dans l'inde
 candidat Queued ou Other. Postscreen/autres services restent non projetés ici.
 Les sessions et rattachements prouvés seront un comportement séparé.
 
+## Lot98 : sessions NOQUEUE candidates fermées
+
+`BuildPrequeueSessions` conserve la partition NOQUEUE entière et rattache seulement
+les rapports situés physiquement entre connect/disconnect natifs dans la même
+instance configurée, source, origine et PID. L'ancre de la candidate est la référence
+connect ; un PID réutilisé après disconnect ouvre une autre candidate. Plusieurs
+origines restent indépendantes, sans continuité présumée.
+
+Les trois clients natifs (connect, rapports, disconnect) doivent porter exactement
+le même token host[address]. Aucun lookup DNS, alias ou comparaison par adresse
+SMTP. Les stages reconnus sont CONNECT/HELO/EHLO/MAIL/RCPT/DATA/END-OF-MESSAGE ;
+un format absent/non reconnu reste non attribué. Les dates doivent être utilisables
+sous leurs hypothèses, le disconnect strictement après connect, chaque rapport dans
+leur intervalle inclusif. L'ordre physique ne remplace pas une date incompatible.
+HasNonExplicitTime garde l'hypothèse de date ; CoverageUnproven est toujours vrai.
+
+Un seul rapport de client/date douteux rend tous les rapports de cette fenêtre
+non attribués. Les raisons fixes sont boundary_unproven, client_mismatch, undated
+et time_conflict. Sans connect/disconnect, avec fenêtre encore ouverte ou nouveau
+connect avant fermeture, les anciens rapports restent boundary_unproven ; la
+nouvelle fenêtre exige à nouveau ses preuves. Dans une fenêtre fermée, le premier
+motif de refus connu est préservé entre les contrôles ; une frontière manquante ou
+interrompue impose boundary_unproven, même après un client douteux. Aucune candidate
+confiante partielle de la fenêtre refusée.
+
+Les rapports rejet/warning, leurs données et les index Queued/Other restent tous
+conservés ; connect/disconnect restent aussi dans Other comme faits d'origine.
+Les références de la candidate les citent comme preuves, sans créer de nouveaux
+faits. Les sorties sont ordonnées par provenance pour l'affichage. Aucun lien vers
+une file acceptée dans la même fenêtre, statut final, couverture certifiée ou
+session globale entre fichiers. Aucun stockage/source/API/Web ajouté.
+
 ## Suite concrète
 
-Les chantiers purs #19/#20 sont fusionnés. Après les faits NOQUEUE distincts,
-traiter les sessions candidates avec frontières explicites, sans identité par PID
-seul. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Les chantiers purs #19/#20 sont fusionnés. Clôturer les faits NOQUEUE/sessions
+candidates après revue/CI, puis traiter les liens candidats et corroborés sans
+identité par PID seul. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.
