@@ -4,7 +4,8 @@ Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer
 et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
 Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
 CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI vertes.
-Lot 78 association/progression de contenu développées ; importeur futur.
+Lot 78 association/progression publiées, CI verte. Lot 79 synthèse finale relue,
+fusion après CI exacte finale ; importeur futur.
 
 ## Décision et séparation des étapes
 
@@ -197,7 +198,7 @@ annulation ou conflit n'acquittent rien, même si un ACK peut être perdu après
 commit durable. Pas de retry interne. Origines/records/checkpoints/contenu ne sont
 pas acceptés avec une trace de préparation ; records/checkpoints d'import sans
 changement explicite du manifest refusés. La lecture interne utilise le même Tx.
-Le lot suivant ajoutera association de contenu et progression atomique ; aucune
+Le lot 78 ajoute association de contenu et progression atomique ; aucune
 lecture de fichier ni appel PrepareRegular/normalizer n'est effectué par ce Sink.
 
 ## Contenu et progression transactionnelle du lot 78

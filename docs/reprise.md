@@ -14,9 +14,8 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation normale/gzip et copie privée sont fusionnés dans main (#9–15).
 Bibliothèque seule, sans CLI/service. Lots 75–76 identité/migration/lecture publiés,
-CI vertes. Lot 77 trace de préparation publiée/CI verte ; lot 78 association et
-progression développées/relues sans blocage, vérifications Windows réussies,
-publication/CI à vérifier.
+CI vertes. Lots 77–78 préparation/association/progression publiés et CI vertes ;
+lot 79 synthèse finale relue sans blocage, publication/CI finale/fusion à vérifier.
 Critère de fin du chantier : identité stable, lecture source-scopée et écritures
 atomiques/réessais du manifest, CI verte et PR cohérente fusionnée.
 Ingestion dans un chantier distinct. M2 inclut les autres décisions encore ouvertes
@@ -24,6 +23,10 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 78 : publié `8425fd5df073c80a690faf3f4342df2d1f2528b8`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262628894), #16.
+  Correctif ACK reproduit/corrigé/relu ; sept tests nouveaux dont régression/reuse,
+  vérifications Windows et suite Linux en CI réussies. Aucun importeur livré.
 - Lot 77 : publié `6fbf38a8d8df05122c4c7771e97b5a9182765b39`,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261638578), #16.
   Revue indépendante sans blocage, quatre tests ciblés/suite/vet/diff Windows réussis.
@@ -2437,8 +2440,8 @@ Revue interrompue par quota puis reprise : défaut SQL NUL signalé et reproduit
 SHA canonique+NULsuffix accepté avec length(TEXT)/GLOB ; première correction BLOBseul
 laissait NULintérieur accepté. Deux régressions échouaient avant puis passent avec
 les deux longueurs TEXT/BLOB=64 et GLOBcanonique conservés. Treize contraintes,
-suite/vet/diff Windows repassés. Revue finale/publication/CI à terminer ; dernier
-état publié validé = lot75 `8797183`, modifications76 locales tant que non publiées.
+suite/vet/diff Windows repassés. Pendant l'interruption, dernier état publié validé
+= lot75 `8797183` ; modifications76 restaient locales. Revue reprise ci-dessous.
 Revue indépendante terminée sans autre blocage : quatre tests Windows exécutés,
 puis deux régressions NUL ciblées passées/diff propre ; IDrun global dans la base
 précisé. Publié `91bfdaa`, CI 37261183931 success, #16 réutilisée.
@@ -2478,19 +2481,30 @@ réessaye exactement sans duplication. Six tests ciblés/régression/suite/vet/d
 Windows repassent. Revue finale sans blocage : auditeur cinq tests initiaux puis
 régression corrigée exécutés Windows, diff propre. Test ciblé supplémentaire de
 réutilisation contenu (taille/partial changés et origine stockée incohérente) passé,
-code runtime inchangé après revue. Publication/CI à vérifier. Dernier état publié validé
-= lot77 `6fbf38a`.
+code runtime inchangé après revue. Publié `8425fd5`, CI 37262628894 success,
+tests progrès/association/retry/reuse Linux réellement exécutés.
+
+## Lot 79 : synthèse et clôture du manifest
+
+Résultat attendu : réutiliser les revues/tests des quatre lots sans rerun injustifié,
+actualiser documentation puis ready/fusion après CI exacte finale. Référence isolée
+`8425fd5` propre ; sept fichiers runtime identiques, nouveau test reuse relu.
+Aucun blocage ni risque nécessitant rerun. CI78 complète success ; corrections NUL
+et ACK consignées, suite future corrigée. Diff documentaire/commit/push/CI finale
+et fusion encore à constater. Pas d'ingestion/fichier/parser/CLI changés.
 
 ## Prochaine action concrète
 
-Publier/vérifier CI du lot 78 dans #16.
-Lot 79 : synthèse/CI exacte/fusion du manifest puis importeur dans son chantier.
+Publier le lot 79, vérifier CI exacte puis ready/fusion #16 avec tête attendue.
+Lot suivant : préparation d'un ingestor sur copie détenue/content validé et position
+prouvée, sans lecture/parsing/CommitNext ; application et orchestration en lots distincts.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-manifest.
 
 ## Suite à découper au fil des reprises
 
-1. Import historique : manifest, application/reprise en lots distincts ; copie détenue réalisée.
+1. Import historique : application/reprise et budgets globaux, puis CLI au jalon adapté ;
+   copie détenue et manifest réalisés.
 2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
    ensembles multiples ; diagnostics/compléments du suivi #4.
 3. Application CLI/service et métriques au jalon adapté.

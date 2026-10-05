@@ -58,7 +58,8 @@ Quatre tests TestImportPreparation* -count=1, suite/vet/diff Windows réussis :
 ACK perdu/retry/reopen, global ID/legacy/foreign/stale, trigger insert/update et
 source rollback, cancel et dix-huit refus contenus/provenance/dates/immutabilité.
 Revue indépendante terminée sans blocage : quatre tests ciblés Windows/diff propres,
-contrat/rollback/immutabilité/retry relus, aucun edit. Publication/CI à vérifier. Mono-écrivain et ownership
+contrat/rollback/immutabilité/retry relus, aucun edit. Publié `6fbf38a8d8df05122c4c7771e97b5a9182765b39`,
+[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261638578). Mono-écrivain et ownership
 du batch au caller, audit assisté sans certification externe.
 
 ## Lot 78 : association et progression atomiques
@@ -84,4 +85,19 @@ Six tests ciblés/régression/suite/vet/diff Windows repassent. Revue finale san
 auditeur régression corrigée exécutée Windows et diff propre. Test supplémentaire
 réutilisation contenu : taille/partial changés ou fingerprint/device stockés
 incohérents refusés, quatre sous-cas Windows passent ; runtime inchangé après revue.
-Publication/CI à vérifier. Mono-écrivain/preuves/batch possédé par caller requis.
+Publié `8425fd5df073c80a690faf3f4342df2d1f2528b8`,
+[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262628894), tests Linux exécutés.
+Mono-écrivain/preuves/batch possédé par caller requis.
+
+## Lot 79 : synthèse et clôture du manifest
+
+Référence isolée `8425fd5`, checkout/diff propres. Auditeur indépendant : sept
+fichiers runtime identiques aux références relues 75–78, nouveau test reuse relu,
+aucun risque concret justifiant rerun. Correctifs NUL et ACK présents/consignés.
+Documentation actualisée pour retirer les travaux réalisés de la suite future.
+CI 78 complète success sur tête publiée ; CI du commit documentaire final à vérifier.
+
+Avis favorable ready/fusion après CI exacte finale. Mono-écrivain, ID global,
+batch et pointeurs conservés, preuves SHA/CRC/EOF/ancres à l'application future.
+Pas de FileSource/deps/workflow/CLI/ingestion nouveaux. Audit assisté, sans
+certification externe ; ce lot ne modifie pas les comportements des quatre lots livrés.
