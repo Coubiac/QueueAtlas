@@ -34,42 +34,55 @@ type CorrelationScope struct {
 // entire read fail: no truncated snapshot can be mistaken for absence of facts.
 // Missing queues mean absence in the selected database snapshot, not the logs.
 func (s *Store) CorrelationFacts(ctx context.Context, scope CorrelationScope, limit int) ([]correlation.Fact, error) {
+	facts, _, err := correlationFacts(ctx, s.db, scope, limit)
+	return facts, err
+}
+
+type correlationQuerier interface {
+	QueryContext(context.Context, string, ...any) (*sql.Rows, error)
+}
+
+// The same single-statement reader is used under a write transaction. Internal
+// row IDs are returned only for manifest FKs, never for public fact identity.
+func correlationFacts(ctx context.Context, db correlationQuerier, scope CorrelationScope, limit int) ([]correlation.Fact, []int64, error) {
 	if limit < 1 || limit > correlation.MaxPartitionFacts {
-		return nil, correlation.ErrPartitionLimit
+		return nil, nil, correlation.ErrPartitionLimit
 	}
 	where, args, err := correlationSelection(scope)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	args = append(args, limit+1)
-	rows, err := s.db.QueryContext(ctx, `SELECT r.source_id, r.generation_id,
+	rows, err := db.QueryContext(ctx, `SELECT r.id, r.source_id, r.generation_id,
 		r.start_offset, r.end_offset, r.raw, e.instance, e.time_utc_ns,
 		e.time_raw, e.time_quality, e.time_year, e.time_zone, e.host, e.program,
 		e.service, e.pid, e.kind, e.queue_id, e.no_queue, e.message, e.fields_json, e.parse_error
 		FROM events e JOIN raw_records r ON r.id = e.raw_record_id
 		WHERE `+where+` ORDER BY r.source_id, r.generation_id, r.start_offset LIMIT ?`, args...)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer rows.Close()
 	var facts []correlation.Fact
+	var ids []int64
 	for rows.Next() {
 		if len(facts) == limit {
-			return nil, correlation.ErrPartitionLimit
+			return nil, nil, correlation.ErrPartitionLimit
 		}
 		var f correlation.Fact
+		var id int64
 		var raw []byte
 		var date sql.NullInt64
 		var fieldsJSON string
 		o := &f.Observation
-		if err := rows.Scan(&f.Ref.SourceID, &f.Ref.OriginID, &f.Ref.Start, &f.Ref.End,
+		if err := rows.Scan(&id, &f.Ref.SourceID, &f.Ref.OriginID, &f.Ref.Start, &f.Ref.End,
 			&raw, &f.Instance, &date, &o.Timestamp.Raw, &o.Timestamp.Quality,
 			&o.Timestamp.Year, &o.Timestamp.Zone, &o.Host, &o.Program, &o.Service,
 			&o.PID, &o.Kind, &o.QueueID, &o.NoQueue, &o.Message, &fieldsJSON, &o.ParseError); err != nil {
 			if ctx.Err() != nil {
-				return nil, ctx.Err()
+				return nil, nil, ctx.Err()
 			}
-			return nil, ErrCorrelationStoredFact
+			return nil, nil, ErrCorrelationStoredFact
 		}
 		o.SourceID, o.Raw = f.Ref.SourceID, string(raw)
 		if date.Valid {
@@ -78,18 +91,19 @@ func (s *Store) CorrelationFacts(ctx context.Context, scope CorrelationScope, li
 		}
 		fields, present, err := decodeCorrelationFields(fieldsJSON)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		o.Fields, o.Present = fields, present
 		facts = append(facts, f)
+		ids = append(ids, id)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if _, err := correlation.PartitionFacts(facts, limit); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return facts, nil
+	return facts, ids, nil
 }
 
 // Require the writer's exact object shape. Go's struct/map decoding silently

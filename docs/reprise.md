@@ -10,8 +10,9 @@ Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés 
 clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
 #22, clôture102 terminée, CI finale et main réussies. Clés103 et composition104
 fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 publiée
-dans #24/CI verte ; schéma107 testé et relu, documentation validée.
-Trois jalons restent : M3–M5, environ37–65 lots au chantier103–105, dont12–22 pour M3.
+dans #24/CI verte ; schéma107 publié/CI verte ; installation108 testée en revue.
+Trois jalons restent : M3–M5, environ35–63 lots après107, dont10–20 pour M3,
+incluant validation108 ; estimation par comportements restants, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -29,6 +30,9 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 107 publié : `8d490396b0be7135a7fdec96a23e1d0c20a093a5`, #24,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37336085923).
+  Cinq tests schéma/migration, suite/vet/diff et revue code/docs sans blocage.
 - Lot 106 publié : `e2426b5c04273d96a81feccacc51c4205579647f`,
   [PR #24](https://github.com/Coubiac/mailtrace/pull/24) créée/attachée en brouillon,
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37333408517).
@@ -3080,14 +3084,30 @@ avant rétention ; aucune API de rétention encore livrée. Cinq tests nouveaux 
 compatibilité migrations existantes, suite SQLite/vet/diff Windows pass. Auditeur :
 cinq tests via overlay isolé pass, aucun blocage code/migration. Fact_count vs lignes,
 hash canonique et fraîcheur après ajout restent aux API futures. Documentation
-relue indépendamment sans blocage, aucun test relancé ; non publié, CI107 non
-vérifiée. Publié validé106/fusionné105.
+relue indépendamment sans blocage, aucun test relancé ; publié8d49039 dans #24,
+CI37336085923 entière success vérifiée. Publié validé107/fusionné105.
+
+## Lot 108 : installation transactionnelle du manifest
+
+Résultat attendu : relecture sous réservation d'écriture avant remplacement atomique,
+refus de snapshot obsolète. InstallProjection développé ; BuildProjection horsTX,
+verrou avant SELECT commun106, compare count/FactRef/fullRevision recalculée puis
+scope canonique versionné/optionsBLOB/révision/tous memberships/current dans un commit.
+Ancien manifest du scope supprimé, autres scopes conservés ; pas d'historique public.
+Six tests nouveaux, six tests lecteur106 refonte, suite SQLite/vet/diff Windows pass.
+Tests : réserves+ALLfacts/reopen/ordre/options, stale/missing/attribut/import tardif,
+rollbackancien+nouscope, BLOB/framing/empty, refus/annulation, verrou deux connexions.
+Fixture rollback corrigée pour provoquer l'erreur par révision, pas défaut runtime.
+Première revue interrompue par quota sans résultat ; reprise audit code/docs favorable,
+six nouveaux tests via overlay Windows isolé pass, root inchangé/fondations non relancées.
+Publication/CI108 à vérifier. Dernier validé107/fusionné105.
+Manifest peut devenir obsolète après nouvelle ingestion ; aucun lecteur public encore.
 
 ## Prochaine action concrète
 
-Terminer revue107/docs, commit/push dans #24, puis CI exacte. Lot108 : installation
-atomique d'un manifest sous contrôle des faits courants, avec refus d'entrée obsolète.
-Ensuite lecture/reconstruction et contrôle de fraîcheur ; aucun parcours non prouvé.
+Terminer revue108 code/docs, commit/push dans #24, puis CI exacte. Lot109 : lecture
+du manifest et reconstruction vérifiée dans un snapshot cohérent ; contrôler
+sa fraîcheur après nouvelle ingestion, sans parcours ou couverture non prouvés.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-storage.

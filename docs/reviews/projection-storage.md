@@ -46,4 +46,30 @@ Auditeur indépendant : cinq tests via overlay Windows isolé pass, aucun blocag
 concret sur le schéma/migration, root inchangé. La concordance de fact_count et
 la fraîcheur après ajout de faits restent à vérifier par les API futures. Aucun
 stockage de projection dérivée ni API de rétention annoncé. Documentation relue
-indépendamment sans blocage, aucun test relancé. Publication/CI107 à vérifier.
+indépendamment sans blocage, aucun test relancé. Publié8d49039 dans #24,
+CI37336085923 entière success vérifiée sur la tête exacte.
+
+## Lot108 : installation atomique et refus d'un snapshot obsolète
+
+Résultat attendu : révision/options/périmètre/tous faits validés dans une transaction
+après réservation d'écriture et relecture ; aucun remplacement si entrée changée.
+InstallProjection compare nombre/refs/révision recalculée et installe le manifest,
+remplace seulement le scope concerné, rollback intégral sur refus/erreur SQL.
+Lecteur106 partagé avec transaction ; IDs internes ajoutés pour les seules FK.
+
+Six tests nouveaux, six lecteurs106 après refonte, suite SQLite/vet/diff Windows pass.
+Manifest complet live+archive non datée+NOQUEUE, réserves conservées, réordonnancement
+stable, changement d'options/version, autre scope préservé et reopen ; entrées
+incomplètes/attribut changé/import tardif refusés sans remplacement ; erreur provoquée
+après un membership revient à l'ancien état ou ne laisse aucun nouveau scope ;
+scope vide déclaré et options BLOB UTF8 invalide, framing sans ambiguïté ; limites,
+scope/options invalides/annulation ; deux connexions vérifient le verrou avant lecture.
+Premier test rollback utilisait un compte global=1 et ne provoquait pas l'erreur pour
+le nouveau scope ; fixture ajustée au compte par NEW.revision_id, aucun défaut runtime.
+
+Revue indépendante code/docs favorable sans blocage, six nouveaux tests via overlay
+Windows isolé pass, fondations réutilisées sans rerun/root inchangé. Publication/CI108
+non vérifiées. Estimation mise à jour séparément dans avancement : 10–20 M3 et35–63
+MVP, incluant validation108 et sans réduire les critères.
+Pas de cache dérivé, d'historique public, de lecture de révision ni de fraîcheur après
+ingestion future annoncé : ces contrôles restent au lot suivant.

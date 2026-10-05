@@ -74,7 +74,43 @@ contraintes de suppression/mutation : la fraîcheur doit être contrôlée sépa
 
 ## Suite
 
-Installer atomiquement un manifest après relecture des faits courants sous verrou
-d'écriture ; refuser une entrée devenue obsolète. Puis lire/reconstruire une révision
-en vérifiant sa fraîcheur. Aucun write public, cache dérivé ou recalcul transactionnel
-n'est livré par107. Couverture, continuité et parcours global restent non prouvés.
+## Lot108 : installation transactionnelle du manifest
+
+`Store.InstallProjection` reçoit le périmètre, tous ses faits, la limite et les
+options. Le caller garde ces entrées immuables pendant l'appel. BuildProjection
+calcule d'abord hors transaction ; la transaction acquiert ensuite une réservation
+d'écriture avant de relire les faits sélectionnés, avec le même lecteur que106.
+Un autre écrivain ne peut donc valider de nouveaux faits entre contrôle et commit.
+Nombre, ensemble des FactRef et révision complète recalculée doivent correspondre.
+Sinon ErrProjectionStale, sans sortie ni remplacement. Un dépassement de limite
+ou des métadonnées invalides restent des refus complets du lecteur existant.
+
+Le scope est un ensemble canonique trié par kind/instance/queue, avec domaine
+`projection-scope-v1`, compte et chaînes encadrées par leur longueur uint64 BE.
+Les parties absentes de la base participent aussi au hash. Les octets sont exacts,
+sans conversion JSON/UTF8. La révision et toutes ses options, avec tous les IDs
+internes des faits d'entrée, sont installées dans la même transaction ; fact_count
+correspond aux memberships écrits. Pointeur courant et memberships sont validés
+ensemble. Une erreur après suppression de l'ancien manifest revient entièrement
+à l'état précédent, y compris lors de la création d'un nouveau scope.
+
+Chaque scope conserve uniquement son manifest courant : remplacement supprime
+ses anciennes révisions, sans modifier les autres scopes ni leurs références.
+Réinstaller la même révision peut renouveler ID interne/date ; aucune API d'historique
+n'est promise. Le résultat retourné reste la projection pure avec les mêmes réserves,
+aucun résultat dérivé n'est sérialisé. ErrProjectionInstall est fixe pour les erreurs
+d'installation SQL, context annulé distinct. Cette API ne certifie pas une base
+modifiée par un tiers hors du contrat ; elle n'authentifie ni faits ni hashes.
+
+La réservation est obtenue par un UPDATE sans ligne correspondante avant SELECT ;
+un test avec deux connexions vérifie le refus de commit concurrent puis la libération
+au rollback. La sélection/refonte du lecteur conserve sa requête unique et retourne
+les IDs internes uniquement pour les FK, jamais comme identité publique.
+
+## Prochaine étape
+
+Lire/reconstruire le manifest et contrôler sa fraîcheur après ingestion ultérieure.
+Un manifest installé peut devenir obsolète dès qu'un fait supplémentaire est ingéré ;
+il ne doit pas être affiché comme actuel sans cette revalidation. Aucun lecteur public
+de manifest ni cache dérivé livré par108. Couverture, continuité et parcours global
+restent non prouvés ; rétention applicative reste à développer.
