@@ -8,8 +8,8 @@ Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; c
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
 Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
 clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
-#22, clôture102 terminée, CI finale et main réussies. Clés103 publiées/CI verte #23,
-composition104 publiée/revue favorable et CI verte ; clôture105 en cours avant fusion.
+#22, clôture102 terminée, CI finale et main réussies. Clés103 et composition104
+fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 en revue.
 Trois jalons restent : M3–M5, environ37–65 lots au chantier103–105, dont12–22 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -28,6 +28,12 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 105 terminé : [PR #23](https://github.com/Coubiac/mailtrace/pull/23) fusionnée,
+  tête `72ee7ef2710cc71dce8f1bd282d6e3098738326b`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37330738903).
+  Main `50ba6a782371962f130abe79de6d81c7f1aaddb9`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37331003071),
+  vérifiée REST. Branche suivante `codex/m3-projection-storage` depuis ce main.
 - Lot 104 publié : `e344ed773b1d98dc1a657dddfa701530705c05d9`, #23,
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37330343331).
   Quatre tests Projection, suite/vet/diff et revue code/docs sans blocage.
@@ -3036,19 +3042,37 @@ révision complète incluant configuration, sans amélioration des résultats de
 M3 encore incomplet ; les projections ne prouvent ni couverture ni continuité.
 Avis documentaire final indépendant favorable sur les trois documents modifiés,
 aucun test relancé. CI10437330343331 entière success ; publication105/CI finale,
-fusion/main à vérifier. Lancement
+fusion/main vérifiées : publié72ee7ef, CI finale37330738903 success,
+commentaire assisté5416700099/ready puis fusion #23 sur50ba6a7,
+CI push main37331003071 success vérifiée REST. Lot105 terminé. Lancement
 Actions104 absent après push et tête distante exacte confirmée ; #23 fermée puis
-rouverte pour redéclencher la CI sur la même tête. Second run37330437206 encore
-en cours au contrôle ; aucune nouvelle exécution locale ajoutée.
+rouverte pour redéclencher la CI sur la même tête. Second run37330437206 également
+success au contrôle final ; aucune nouvelle exécution locale ajoutée.
+
+## Lot 106 : lecture bornée des faits persistés
+
+Résultat attendu : sélection explicite et cohérente, observations persistées sans
+reparse/contexte inventé, refus total du snapshot dépassant la limite. CorrelationFacts
+développé en un SELECT paramétré, scope1..64 parties/limite1..4096, toutes origines
+des clés choisies, refs physiques sans insertionID. UTC NULL reste inconnu, notamment
+année2500 hors UnixNano ; instance persistée, jamais Host. Six tests, suite SQLite/
+vet/diff Windows pass. Revue a reproduit JSON null d'entrée devenant vide/boolfalse
+et Scan citant la valeur ; régressions root échouées avant correctif. JSON tokens
+stricts, maps nulles entières admises/entrées nulles et doublons refusés, Scan erreur
+fixe/annulation distincte. Six tests et suite pass après correctifs ; delta relu sans
+blocage, deux régressions via overlay isolé pass par auditeur (cinq tests initiaux
+réutilisés). Documentation validée sans blocage, aucun test relancé ; non publié,
+CI106 non vérifiée. Fusionné105.
+Aucun schéma/write de projection/source/UI changé ; coverage/continuity non prouvées.
 
 ## Prochaine action concrète
 
-Terminer clôture105 : commit/push sur #23
-et CI finale, fusion sur tête attendue puis CI main. Ensuite lecture/persistance
-transactionnelles, sans fusion d'origines ou de parcours non prouvée.
+Terminer revue106/docs, commit/push et ouvrir la PR du chantier stockage, puis CI
+exacte. Lot107 : tables/contraintes de révision et preuves ; ensuite remplacement
+transactionnel/recalcul, sans fusion d'origines ou de parcours non prouvée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-identities.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-storage.
 
 ## Suite à découper au fil des reprises
 

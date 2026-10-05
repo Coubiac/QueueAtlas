@@ -6,8 +6,8 @@ CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration
 synthèse95 fusionnées dans #20 ; clôture96 terminée, CI finale/main réussies.
 Rapports NOQUEUE97 et sessions98 fusionnés #21, clôture99 terminée avec CI finale/main
 vertes. Indices natifs100 et relations101 fusionnés dans #22, clôture102 terminée,
-CI finale/main réussies. Clés103 publiées/CI verte #23, composition104 publiée,
-revues favorables/CI verte ; clôture105 en cours avant fusion.
+CI finale/main réussies. Clés103 et composition104 fusionnées #23, clôture105
+terminée/CI finale et main vertes. Lecture SQLite106 en revue.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -37,10 +37,10 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections pures #19–22 fusionnées ; clés103/composition104 publiées, CI verte et clôture105 en cours #23 | Continuité prouvée, complétude applicative, persistance/recalcul, recherche et rétention | 12–22 (réestimation au chantier103–105) |
+| M3 — reconstruction | En cours : projections pures #19–23 fusionnées, CI finale/main vertes ; lecture SQLite106 en revue | Continuité prouvée, complétude applicative, persistance/recalcul, recherche et rétention | 12–22 après clôture105 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total au chantier103–105** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **37–65, soit environ 40–65** |
+| **Total après clôture105** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **37–65, soit environ 40–65** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -131,12 +131,12 @@ soustraction de trois au compteur. Ces regroupements restent à découper :
 
 | Travail M3 restant | Lots estimés |
 | --- | ---: |
-| Continuité prouvée entre origines et intégration des clés révisables ; liens purs fusionnés100–102, clés/composition103–104 publiées | 1–3 |
+| Continuité prouvée entre origines et intégration des clés révisables ; liens et clés/composition100–105 fusionnés | 1–3 |
 | Complétude applicative restante (avec réserves existantes) | 0–1 |
 | Persistance transactionnelle des projections et recalcul | 4–6 |
 | Recherche indexée et rétention cohérente | 4–6 |
 | Intégration corpus, mesures et revue/clôture M3 | 3–6 |
-| **M3 restant au chantier103–105** | **12–22** |
+| **M3 restant après clôture105** | **12–22** |
 
 M4 et M5 gardent leurs fourchettes. Le backlog applicatif #4/#5 est inclus dans
 les jalons suivants ; aucun critère de MVP n'est supprimé par ces clôtures.
@@ -146,7 +146,9 @@ SMTP/local/bounce sous preuves des deux côtés. CI37324927168 et37326579775 suc
 revues favorables après correction de la répétition des preuves positives. Le
 lot102 clôture la fusion de #22, CI finale37327741368 et main37328022256 success
 vérifiées sur les SHA exacts. Clés103/CI37329247549 success, composition104 publiée
-avec revue favorable et CI37330343331 entière success. Clôture105 en cours.
+avec revue favorable et CI37330343331 entière success. Clôture105 terminée,
+#23 fusionnée sur50ba6a7, CI finale37330738903 et main37331003071 success vérifiées.
+Lecture bornée106 en revue, sans persistance de projection encore livrée.
 Continuité entre origines et stockage
 et stockage restent à définir ensemble ; le schéma initial ne représente pas encore
 toutes les réserves et preuves des projections pures. Les clés et la composition
