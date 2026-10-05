@@ -2,8 +2,8 @@
 
 Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer lot 72
 et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
-Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 : identité de contenu
-source-scopée développée ; importeur et manifest non implémentés.
+Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
+CI verte ; lot 76 migration/lecture du manifest développées. Écriture et importeur futurs.
 
 ## Décision et séparation des étapes
 
@@ -35,9 +35,9 @@ Le lecteur de lignes conserve ses bornes et ne normalise pas seulement un suffix
 2. Suite : ordre/nombre de fichiers/durée globale bornés.
    Ne pas déduire une identité de contenu d'un chemin, inode ou en-tête gzip ;
    recompressions/renommages identiques doivent pouvoir retrouver la même origine.
-3. Ajouter lecture/écriture source-scopée du manifest dans un lot stockage distinct,
-   sans retoucher le schéma v1 publié. Lier provenance/offsets/digest décompressé,
-   inscrire running/failed et n'autoriser complete qu'après validation finale.
+3. Lot 76 : migration/lecture source-scopée du manifest développées, v1/v2 inchangés.
+   Suite écriture : lier provenance/offsets/digest, inscrire running/failed et
+   n'autoriser complete qu'après validation finale, dans la transaction du Sink.
 4. Application du contenu validé à parser/Sink, reprise du checkpoint exact,
    depuis la copie privée validée. Une inspection n'est pas un snapshot filesystem
    et ne prouve pas un second passage identique de l'entrée originale.
@@ -52,7 +52,8 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 ## Limites actuelles
 
 Les briques d'inspection/copie normale/gzip et préparation de fichier détenu existent.
-Pas encore d'import_run, ingestion, CLI, déduplication ni garantie de snapshot atomique. Les tests
+Migration/lecture du manifest développées, aucune écriture publique, ingestion,
+CLI, déduplication ni garantie de snapshot atomique. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
 
@@ -139,8 +140,9 @@ Renommage ou recompression du même contenu retrouve cette origine dans la même
 source ; un digest ou une source différents donnent une origine différente.
 La provenance garde chaque offset : deux lignes identiques ne sont pas supprimées.
 
-Le prochain lot stockage ajoutera une migration v3 sans modifier les SQL v1/v2.
+Le lot 76 ajoute une migration v3 sans modifier les SQL v1/v2.
 Un run sera une tentative explicite avec ID positif fourni par l'appelant,
+globalement unique dans la base, y compris parmi les lignes legacy,
 source de kind import distincte du suivi live, chemin original, état, digest/taille
 du contenu validé, origine associée et offsets. Les lignes v1 sans source restent
 héritées, non attribuées : aucune adoption ou reprise implicite. Le lien doit être
@@ -152,5 +154,28 @@ L'écriture du manifest sera ensuite intégrée au même Commit que records/chec
 avec réessai identique après ACK perdu, sans avance séparée. Complete exigera EOF
 validé, absence de suffixe partiel et offset égal à la taille ; cette validation
 ne se déduit pas du SHA seul. Ces comportements SQL et l'application ne sont pas
-encore implémentés au lot 75. Mono-écrivain/service arrêté au MVP. Aucune déduplication
+encore implémentés au lot 76. Mono-écrivain/service arrêté au MVP. Aucune déduplication
 inter-source prouvée par ImportOriginID, aucun chemin fourni par l'API Web.
+
+## Migration et lecteur du lot 76
+
+V3 reconstruit seulement import_runs avec les huit colonnes v1 conservées et
+source_id/generation_id/trailing_partial nullable. Les anciennes valeurs, même
+sans digest canonique ou sans fin renseignée, sont copiées sans adoption. Le DDL,
+l'historique et user_version=3 sont dans la même transaction ; refus d'historique
+manquant ou version future conservé. Index digest recréé, index source/origine ajouté.
+
+Pour une ligne associée : ID positif, source/chemin non vides, FK source et FK
+composite source/origine, SHA canonique et taille/partial présents ensemble ; longueur
+TEXT et BLOB égales à 64 avec GLOB hex minuscule pour exclure aussi les NUL. Sans
+contenu, offset zéro et état running/failed seulement. Running sans fin, états
+terminaux avec fin >= début. Offset <= taille, complete seulement à taille exacte
+sans partial. SQL ne prouve ni la lecture du fichier ni le checksum : caller requis.
+
+ImportStateReader.ImportRun effectue une lookup exacte source/ID positif et une
+jointure unique vers source/origine. Legacy ou autre source : absence, distincte
+de zéro. Kind import, ID dérivé, fingerprint sha256 et absence d'identité physique
+contrôlés avant exposition ; état incohérent refuse avec résultat vide. Dates UTC,
+pointeurs rendus possédés par caller. Aucun write/adoption, décision de reprise,
+checkpoint ou page globale implicite. Une lecture de checkpoint ultérieure est
+un autre snapshot ; sérialiser les écritures/réessais reste à l'application.

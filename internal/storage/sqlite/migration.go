@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-const schemaVersion = 2
+const schemaVersion = 3
 
 func preflight(ctx context.Context, db *sql.DB) error {
 	var version int
@@ -182,6 +182,50 @@ CREATE INDEX import_runs_hash ON import_runs(sha256) WHERE sha256 IS NOT NULL;
 const schemaV2 = `ALTER TABLE file_generations ADD COLUMN follow_state INTEGER NOT NULL
 	DEFAULT 0 CHECK(follow_state IN (0, 1, 2));`
 
+// Preserve every v1 column and legacy row without inventing source association.
+// Rebuild only import_runs to add its composite provenance FK and linked checks.
+const schemaV3 = `
+CREATE TABLE import_runs_v3 (
+    id INTEGER PRIMARY KEY,
+    path TEXT NOT NULL,
+    byte_size INTEGER CHECK(byte_size IS NULL OR byte_size >= 0),
+    sha256 TEXT,
+    status TEXT NOT NULL CHECK(status IN ('running', 'complete', 'failed')),
+    last_offset INTEGER NOT NULL DEFAULT 0 CHECK(last_offset >= 0),
+    created_at_ns INTEGER NOT NULL,
+    completed_at_ns INTEGER,
+    source_id TEXT REFERENCES sources(id),
+    generation_id TEXT,
+    trailing_partial INTEGER CHECK(trailing_partial IS NULL OR trailing_partial IN (0, 1)),
+    FOREIGN KEY(source_id, generation_id) REFERENCES file_generations(source_id, id),
+    CHECK (
+      (source_id IS NULL AND generation_id IS NULL AND trailing_partial IS NULL)
+      OR
+      (source_id IS NOT NULL AND source_id <> '' AND id > 0 AND path <> ''
+       AND ((status = 'running' AND completed_at_ns IS NULL)
+            OR (status IN ('complete', 'failed') AND completed_at_ns IS NOT NULL
+                AND completed_at_ns >= created_at_ns))
+       AND (
+         (generation_id IS NULL AND byte_size IS NULL AND sha256 IS NULL
+          AND trailing_partial IS NULL AND last_offset = 0 AND status <> 'complete')
+         OR
+         (generation_id IS NOT NULL AND length(generation_id) > 0
+          AND byte_size IS NOT NULL AND sha256 IS NOT NULL AND length(sha256) = 64
+          AND length(CAST(sha256 AS BLOB)) = 64
+          AND sha256 NOT GLOB '*[^0-9a-f]*' AND trailing_partial IS NOT NULL
+          AND last_offset <= byte_size
+          AND (status <> 'complete' OR (last_offset = byte_size AND trailing_partial = 0)))
+       ))
+    )
+);
+INSERT INTO import_runs_v3(id, path, byte_size, sha256, status, last_offset, created_at_ns, completed_at_ns)
+    SELECT id, path, byte_size, sha256, status, last_offset, created_at_ns, completed_at_ns FROM import_runs;
+DROP TABLE import_runs;
+ALTER TABLE import_runs_v3 RENAME TO import_runs;
+CREATE INDEX import_runs_hash ON import_runs(sha256) WHERE sha256 IS NOT NULL;
+CREATE INDEX import_runs_source_origin ON import_runs(source_id, generation_id, id) WHERE source_id IS NOT NULL;
+`
+
 func migrate(ctx context.Context, db *sql.DB, nowNS int64) error {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
@@ -232,6 +276,17 @@ func migrate(ctx context.Context, db *sql.DB, nowNS int64) error {
 			return err
 		}
 		if _, err := tx.ExecContext(ctx, `PRAGMA user_version = 2`); err != nil {
+			return err
+		}
+	}
+	if version < 3 {
+		if _, err := tx.ExecContext(ctx, schemaV3); err != nil {
+			return fmt.Errorf("apply schema v3: %w", err)
+		}
+		if _, err := tx.ExecContext(ctx, `INSERT INTO schema_migrations(version, applied_at_ns) VALUES(3, ?)`, nowNS); err != nil {
+			return err
+		}
+		if _, err := tx.ExecContext(ctx, `PRAGMA user_version = 3`); err != nil {
 			return err
 		}
 	}

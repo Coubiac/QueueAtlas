@@ -13,15 +13,19 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation normale/gzip et copie privée sont fusionnés dans main (#9–15).
-Bibliothèque seule, sans CLI/service. Lot 75 : identité de contenu source-scopée
-développée/relue sans blocage, vérifications Windows réussies ; publication/CI à vérifier.
-Critère de fin du chantier : copie détenue des octets validés, refus bornés,
-fermeture/cleanup/annulation vérifiés, CI verte et PR cohérente fusionnée.
-Manifest et ingestion dans des lots distincts. M2 inclut les autres décisions encore ouvertes
+Bibliothèque seule, sans CLI/service. Lot 75 identité publiée/CI verte ; lot 76
+migration/lecture du manifest développées/relues, vérifications Windows réussies,
+publication/CI à vérifier.
+Critère de fin du chantier : identité stable, lecture source-scopée et écritures
+atomiques/réessais du manifest, CI verte et PR cohérente fusionnée.
+Ingestion dans un chantier distinct. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 75 : identité publiée `8797183d65b6a2cfd79f85fc94df913c7d764ccd`, PR #16
+  créée/attachée ; [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246530486).
+  Revue indépendante sans blocage, deux tests Windows/suite/vet/diff/golden réussis.
 - Lot 74 terminé : [PR #15](https://github.com/Coubiac/mailtrace/pull/15) fusionnée,
   tête `6fb1bb3e1836e7ccaeb64df1b32aa9b26095ce47`,
   [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246043524).
@@ -2405,13 +2409,38 @@ opaque et non vide, erreur fixe sans données. Golden calculé indépendamment v
 .NET, deux tests stabilité/source/casse/espaces/NUL/Unicode/refus réussis Windows,
 suite/vet/diff réussis. Revue indépendante sans blocage, deux tests Windows et
 golden .NET recalculé par auditeur réussis ; longueur octets Go sans validation
-UTF-8 précisée. Publication/CI à vérifier. Aucun SQL ou importeur.
+UTF-8 précisée. Publié `8797183`, PR #16 créée/attachée, CI 37246530486 success.
+Aucun SQL ou importeur dans ce lot.
 ADR précise identité et contrat du prochain manifest, pas une implémentation SQL.
+
+## Lot 76 : migration v3 et lecture exacte du manifest
+
+Résultat attendu : conserver les imports anciens sans adoption, lire une tentative
+exacte pour une source import, aucun write/ingestion. Types ImportRun/Content/Status
+et ImportStateReader, rebuild import_runs v3 avec FK composite/source/contraintes,
+copie exacte des huit colonnes legacy, association NULL. SQL v1/v2 inchangés.
+Lecteur one-statement : absence vs zéro, source/kind/ID/fingerprint/content contrôlés,
+UTC et résultat vide sur erreur ; pas de preuve EOF ni reprise automatique.
+Quatre tests nouveaux : migration v1/v2 et rollbacktrigger3 (DDL/history/version),
+lecture/reopen/statuts/scopes/NULcaractèresSQL/cancel/refus, onze contraintes et
+origines corrompues. Ciblés/suite/vet/diff Windows réussis ; attentes de version
+actuelle adaptées, refus de futureversion4 et autres gates conservés.
+Revue interrompue par quota puis reprise : défaut SQL NUL signalé et reproduit.
+SHA canonique+NULsuffix accepté avec length(TEXT)/GLOB ; première correction BLOBseul
+laissait NULintérieur accepté. Deux régressions échouaient avant puis passent avec
+les deux longueurs TEXT/BLOB=64 et GLOBcanonique conservés. Treize contraintes,
+suite/vet/diff Windows repassés. Revue finale/publication/CI à terminer ; dernier
+état publié validé = lot75 `8797183`, modifications76 locales tant que non publiées.
+Revue indépendante terminée sans autre blocage : quatre tests Windows exécutés,
+puis deux régressions NUL ciblées passées/diff propre ; IDrun global dans la base
+précisé. Publication/CI à vérifier.
+Aucun changement Commit/FileSource/ingestion.
 
 ## Prochaine action concrète
 
-Publier/vérifier CI du lot 75 dans une PR de manifest réutilisable.
-Lot 76 : migration v3 et lecture exacte source-scopée des runs, sans écriture/ingestion.
+Publier/vérifier CI du lot 76 dans #16.
+Lot 77 : écritures du manifest dans le Commit atomique et réessais stricts,
+en conservant SourceBatch records/checkpoints et contrôles de provenance.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-manifest.
 
