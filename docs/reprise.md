@@ -8,7 +8,8 @@ Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; c
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
 Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
 clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
-#22, clôture102 terminée, CI finale et main réussies. Clés de révision103 en revue.
+#22, clôture102 terminée, CI finale et main réussies. Clés103 publiées/CI verte #23,
+composition104 développée et revue code favorable.
 Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -27,6 +28,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 103 publié : `76055c0a28e4fe917f6d4f70383e8103d4a93a46`,
+  [PR #23](https://github.com/Coubiac/mailtrace/pull/23) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37329247549).
+  Cinq tests QueueInstances, suite/vet/diff et revue code/docs sans blocage.
 - Lot 102 terminé : [PR #22](https://github.com/Coubiac/mailtrace/pull/22) fusionnée,
   tête `fced137d2936cc1aad565f67eab5d6b942d123b2`,
   [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37327741368).
@@ -3000,14 +3005,28 @@ UTC sans UnixNano. Réordonner stable ; import tardif/attribut changé nouvelle 
 Clé complète obligatoire ; ordre des origines n'est pas chronologie ni continuité.
 Cinq tests, suite correlation/vet/diff Windows pass. Revue code sans blocage et
 cinq tests via overlay isolé par auditeur pass ; documentation validée sans blocage ;
-non publié, CI103 non vérifiée. Dernier état fusionné validé102. Aucun schéma DB,
+publié76055c0 dans #23 créée/attachée, CI37329247549 success vérifiée.
+Dernier état fusionné validé102. Aucun schéma DB,
 résultat de remise, lien, couverture ou parcours global modifié.
+
+## Lot 104 : composition sous une révision complète
+
+Résultat attendu : résumés/liens/NOQUEUE cohérents dans le même snapshot, clés et
+endpoints liés à la révision incluant options SMTP. BuildProjection développé,
+primitives/réserves/preuves conservées, domaine versionné+InputRevision+durée+tous
+mappings copiés/triés ; caller garde les entrées immuables pendant l'appel.
+Options modifiées nouvelle version, ordre équivalent même version ; aucune amélioration
+de résultat recipient ni fusion. Quatre tests, suite correlation/vet/diff Windows
+pass ; revue code sans blocage, quatre tests via overlay isolé par auditeur pass.
+Documentation validée sans blocage, aucun test relancé ; non publié, CI104 non vérifiée.
+Publié validé103/fusionné102.
+Aucun schéma DB, source, couverture, parcours global ou Web ajouté.
 
 ## Prochaine action concrète
 
-Terminer revue103/code/docs, commit/push et ouvrir la PR du chantier identités ;
-vérifier sa CI exacte. Ensuite composition des projections liées à une révision,
-puis persistance transactionnelle, sans fusion d'origines ou de parcours non prouvée.
+Terminer revue104/docs, commit/push sur #23 puis CI exacte. Lot105 : clôture du
+chantier identités/composition, CI/fusion/main. Ensuite lecture/persistance
+transactionnelles, sans fusion d'origines ou de parcours non prouvée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-identities.

@@ -355,10 +355,39 @@ restent les FactRef. Le snapshot vide possède une révision sans instance ; un
 snapshot invalide est refusé avant toute révision/sortie partielle. Aucun état de
 remise, lien, parcours global ou schéma SQLite changé par ce lot.
 
+## Lot104 : composition sous une révision complète
+
+`BuildProjection` compose les résumés par génération, leurs clés candidates,
+les liens et les sessions/rapports NOQUEUE, sous le même snapshot immuable.
+Le caller garde les observations immuables pendant l'appel. Les bornes/options et
+refus restent ceux des primitives : aucune sortie partielle sur erreur.
+Un désaccord interne d'ancres retourne l'erreur fixe ErrProjectionInvariant.
+
+La révision complète utilise le domaine `correlation-projection-v1`, la révision
+d'entrée103 et les options de liens validées : durée exacte et tous les mappings
+SMTP littéraux. La copie des mappings est triée par source/relay ; leur ordre dans
+la configuration ne change pas la version. Une option modifiée, même un mapping
+inutilisé, produit une nouvelle révision. Le domaine doit évoluer si les règles
+de composition ou les comportements des projections changent.
+
+`InputRevision` identifie les entrées des instances candidates sans les options ;
+`Revision` identifie la composition complète. Toutes les clés des queues et des
+endpoints utilisent cette dernière. Les ancres From/To natives et les preuves
+FactRef restent dans Observed. Une relation candidate garde une cible non assignée ;
+sa source peut être assignée seulement si la primitive101 avait déjà une ancre.
+Les clés/pointeurs et options sont copiés ; une sortie ne modifie pas les entrées.
+
+Résumés, réserves, flux non résolus, Other et rapports NOQUEUE sont conservés.
+Chaque référence du snapshot appartient à exactement une génération, un flux
+non résolu ou Other ; les preuves supplémentaires peuvent la citer. Aucun lien
+ni session ne change un résultat de destinataire ou fusionne des générations.
+La composition ne certifie toujours ni couverture, continuité ni authenticité ;
+aucun parcours/statut global, persistance, API ou schéma SQLite ajouté.
+
 ## Suite concrète
 
-Les chantiers purs #19–22 sont fusionnés. Valider les clés de révision puis traiter
-leur composition avec les autres projections et leur persistance, sans
+Les chantiers purs #19–22 sont fusionnés. Clôturer clés/composition après CI,
+puis traiter lecture et persistance transactionnelles des projections, sans
 fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

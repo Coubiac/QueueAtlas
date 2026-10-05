@@ -6,7 +6,8 @@ CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration
 synthèse95 fusionnées dans #20 ; clôture96 terminée, CI finale/main réussies.
 Rapports NOQUEUE97 et sessions98 fusionnés #21, clôture99 terminée avec CI finale/main
 vertes. Indices natifs100 et relations101 fusionnés dans #22, clôture102 terminée,
-CI finale/main réussies. Clés de révision103 développées/en revue. Référence de périmètre :
+CI finale/main réussies. Clés103 publiées/CI verte #23, composition104 en revue.
+Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -35,7 +36,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections pures #19–22 fusionnées ; clés de révision103 en revue | Identités/continuité globales, complétude applicative, persistance/recalcul, recherche et rétention | 13–23 (référence après99, à réévaluer avec le stockage) |
+| M3 — reconstruction | En cours : projections pures #19–22 fusionnées ; clés103 publiées et composition104 en revue #23 | Identités/continuité globales, complétude applicative, persistance/recalcul, recherche et rétention | 13–23 (référence après99, à réévaluer avec le stockage) |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture99** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **38–66, soit environ 40–65** |
@@ -129,7 +130,7 @@ soustraction de trois au compteur. Ces regroupements restent à découper :
 
 | Travail M3 restant | Lots estimés |
 | --- | ---: |
-| Identités et continuité globales ; liens purs fusionnés100–102, clés de révision103 en revue | 2–4 |
+| Identités et continuité globales ; liens purs fusionnés100–102, clés103/CI verte et composition104 en revue | 2–4 |
 | Complétude applicative restante (avec réserves existantes) | 0–1 |
 | Persistance transactionnelle des projections et recalcul | 4–6 |
 | Recherche indexée et rétention cohérente | 4–6 |
@@ -143,7 +144,8 @@ Les lots100–101 conservent les indices natifs puis corroborent des relations
 SMTP/local/bounce sous preuves des deux côtés. CI37324927168 et37326579775 success,
 revues favorables après correction de la répétition des preuves positives. Le
 lot102 clôture la fusion de #22, CI finale37327741368 et main37328022256 success
-vérifiées sur les SHA exacts. Clés de révision103 en revue. Identités persistantes, continuité entre origines
+vérifiées sur les SHA exacts. Clés103/CI37329247549 success, composition104 en revue.
+Identités persistantes, continuité entre origines
 et stockage restent à définir ensemble ; le schéma initial ne représente pas encore
 toutes les réserves et preuves des projections pures. La fourchette après99 reste
 une référence de planification, pas un compteur décrémenté de trois à chaque PR.
