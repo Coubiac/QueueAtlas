@@ -66,4 +66,25 @@ Passe physique triéeoffset puis linéaire maxdate/removal refuse contradictions
 dans les deux sens, en conservant horsordre interne. Trois cas régression passent
 après fix. Suite correlation/vet/diff Windows finale réussis ; delta relu sans blocage,
 régression ciblée trois scénarios exécutée par auditeur sur Windows : pass.
-Publication/CI91 à vérifier. Pas de projection DB ni état global.
+Publié34c3f72, CI37291866747 success. Pas de projection DB ni état global.
+
+## Lot92 : tentatives et dernier résultat observé par destinataire
+
+BuildRecipients reprend les générations candidates sous leurs limites/refus et
+incertitudes. Adresse exacte, toutes tentatives avec références/date copiée/DSN/
+réponse/orig_to. Latest garde toutes les tentatives à date maximale ; conflit de
+statuts donne unknown/OrderUncertain, aucun choix par offset. Adresse vide garde
+ses faits mais résultat unknown ; unresolved/Other sont conservés, aucune synthèse
+de succès global. Removed n'améliore pas le résultat de remise.
+
+Quatre tests Recipient et suites correlation/parser Postfix, vet/diff Windows
+réussis : mixed04, trois retries08 et25permutations/copies, tie07 contradictoire,
+cycles13/sources/casse/alias/vide, partial17/NOQUEUE/undated/refus.
+En préparant la synthèse, statut `<sent>` observé transformé en sent par trimAngle :
+régression échoue avant fix. Parser conserve status+reply, garde du premier token
+HasNativeStatus protège les champs historiques et xstatus ultérieur. Test Delivery
+trois statuts/legacy et helper parser huit cas réussis. Test tie07 corrigé après
+lecture des indices de fixture (cleanup et qmgr retry conservés).
+Revue finale code et documentaire sans blocage ; quatre tests Recipient et deux
+régressions de statut natif exécutés par auditeur : pass. Publication/CI92 à
+vérifier. Pas de DB/Web/global/expiration ajoutés.

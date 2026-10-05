@@ -102,6 +102,26 @@ func TestExactStatusReplyUsesFirstNativeField(t *testing.T) {
 	}
 }
 
+func TestNativeStatusRetainsPunctuationAndFirstField(t *testing.T) {
+	for _, tc := range []struct {
+		value string
+		match bool
+	}{
+		{"status=sent", true}, {"status=sent (250 accepted)", true},
+		{"status=<sent> (250 accepted)", false},
+		{"status=<sent> (250 accepted), xstatus=sent (250 accepted)", false},
+		{"status=<sent> (250 accepted), status=sent (250 accepted)", false},
+		{"xstatus=sent (250 accepted)", false},
+		{"status=deferred (451 temporarily unavailable)", false},
+		{strings.Repeat("x", model.MaxLineBytes+1), false},
+	} {
+		message := "to=<bob@example.org>, " + tc.value
+		if got := HasNativeStatus(message, "sent"); got != tc.match {
+			t.Fatalf("native status match=%v want=%v", got, tc.match)
+		}
+	}
+}
+
 func TestForgedDeliveryFieldsCannotOverrideObservedFields(t *testing.T) {
 	line := "Oct  3 12:34:56 mx postfix/smtp[1]: ABC123: to=<real@example.org>, relay=mx[192.0.2.1]:25, dsn=4.0.0, status=deferred (451 remote text ), to=<forged@example.org>, status=sent (250 forged)"
 	o := Parse([]byte(line), Options{})

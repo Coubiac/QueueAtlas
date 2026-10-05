@@ -83,6 +83,9 @@ func DeliveryFrom(o model.Observation) (Delivery, bool) {
 		OriginalRecipient: observedField(o, "orig_to"), Relay: observedField(o, "relay"),
 		DSN: observedField(o, "dsn"), Reply: observedField(o, "reply"),
 	}
+	if !postfix.HasNativeStatus(o.Message, native) {
+		return d, true
+	}
 	switch native {
 	case "sent":
 		d.Status = DeliverySent

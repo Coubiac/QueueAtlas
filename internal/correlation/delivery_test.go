@@ -54,7 +54,7 @@ func TestDeliveryTransportScopeAndHostileReply(t *testing.T) {
 }
 
 func TestDeliveryRequiresObservedFieldsAndDeliveryKind(t *testing.T) {
-	base := model.Observation{QueueID: "ABC123", Service: "smtp", Kind: model.KindDelivery,
+	base := model.Observation{QueueID: "ABC123", Service: "smtp", Kind: model.KindDelivery, Message: "to=<>, status=sent",
 		Fields:  map[string]string{"to": "", "status": "sent", "reply": "ignored absent", "orig_to": "ignored absent"},
 		Present: map[string]bool{"to": true, "status": true, "dsn": true}}
 	d, ok := DeliveryFrom(base)
@@ -97,7 +97,7 @@ func TestDeliveryLegacyNormalisedReplyDoesNotProveMailbox(t *testing.T) {
 				t.Fatalf("ignored status suffix promoted: %#v, %v", d, ok)
 			}
 			o.Message = ""
-			if d, ok := DeliveryFrom(o); !ok || d.Status != DeliverySent {
+			if d, ok := DeliveryFrom(o); !ok || d.Status != DeliveryUnknown {
 				t.Fatalf("missing native text promoted: %#v, %v", d, ok)
 			}
 		}
@@ -136,5 +136,23 @@ func TestDeliveryCorpusPreservesEveryAttempt(t *testing.T) {
 				t.Fatalf("attempts: got %v want %v", got, tc.statuses)
 			}
 		})
+	}
+}
+
+func TestDeliveryNativeStatusCannotBeNormalisedToSuccess(t *testing.T) {
+	for _, status := range []string{"<sent>", "<deferred>", "<bounced>"} {
+		raw := "Oct  3 12:00:01 mx postfix/smtp[1]: ABC123: to=<bob@example.org>, status=" + status + " (250 accepted)\n"
+		o := postfix.Parse([]byte(raw), postfix.Options{})
+		d, ok := DeliveryFrom(o)
+		if !ok || d.Status != DeliveryUnknown || d.NativeStatus != status {
+			t.Fatalf("malformed native status promoted: %#v %v", d, ok)
+		}
+		// Older durable fields may already have lost brackets. Native Message
+		// still must prevent their classification as a supported status.
+		o.Fields["status"] = status[1 : len(status)-1]
+		o.Message += ", xstatus=" + o.Fields["status"] + " (250 accepted)"
+		if d, ok := DeliveryFrom(o); !ok || d.Status != DeliveryUnknown {
+			t.Fatalf("legacy native status promoted: %#v %v", d, ok)
+		}
 	}
 }

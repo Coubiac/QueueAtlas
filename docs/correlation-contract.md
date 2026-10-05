@@ -40,14 +40,18 @@ Les adresses/IDs gardent leur traitement existant. La projection vérifie aussi 
 premier champ status du texte Postfix original `Message`, avec les mêmes frontières
 bornées que le parser : une ancienne réponse stockée déjà
 normalisée, telle que `<delivered to maildir>`, ne suffit pas à établir la remise.
-Sans champ natif concordant, le résultat reste sent ; un suffixe ultérieur ressemblant
-à status ne peut le remplacer. Les faits durables antérieurs
+Sans reply natif concordant, la remise en boîte n'est pas établie ; un suffixe
+ultérieur ressemblant à status ne peut le remplacer. Depuis le lot92, la
+classification d'un statut connu exige aussi sa concordance avec le premier token
+status du texte natif. Sans Message concordant, le résultat est unknown.
+Les faits durables antérieurs
 ne sont pas réécrits par ce correctif ; la projection reste conservatrice.
 
 Les fixtures synthétiques couvrent local, SMTP, LMTP, virtual, pipe, remise partielle,
 retries, bounce et expiration. Le test compte toutes les tentatives : deux deferred
-puis sent restent trois faits. Il ne calcule pas encore le dernier résultat par
-destinataire, un statut global, les générations, NOQUEUE, les arcs ou la rétention.
+puis sent restent trois faits. Ce comportement seul ne calcule aucun résultat
+global, génération, rattachement NOQUEUE, arc ou rétention ; les fonctions suivantes
+restent séparées.
 
 ## Lot90 : index borné des faits candidats
 
@@ -104,9 +108,38 @@ continuité entre générations de fichiers, rotation et import n'est certifiée
 Les références ordonnées sont déterministes pour un snapshot donné, pas une
 identité globale persistante : l'arrivée de faits plus anciens peut réviser l'ancre.
 
+## Lot92 : tentatives et dernier résultat observé par destinataire
+
+`BuildRecipients` conserve toutes les tentatives dans chaque génération candidate,
+avec provenance, date/hypothèses, résultat de transport, DSN, réponse et orig_to.
+Les adresses restent exactes : pas de fusion par casse ni par alias orig_to.
+Une adresse explicitement vide reste visible avec AddressUnspecified et résultat
+unknown ; les observations ne sont ni supprimées ni utilisées comme succès.
+
+Latest référence toutes les tentatives à la date la plus récente. Si leurs résultats
+normalisés se contredisent, ObservedStatus est unknown et OrderUncertain est vrai.
+Un offset ne choisit jamais le résultat « vraiment dernier ». Une observation à
+une date strictement ultérieure peut remplacer ce résultat ambigu, sans supprimer
+l'historique. Des résultats identiques à date égale restent tous visibles.
+
+L'absence de création/removal, les hypothèses de date et les incertitudes entre
+flux restent portées par la génération. Les flux Unresolved et Other restent
+conservés sans attribution à un destinataire. Une observation KindDelivery non
+projectable reste référencée dans UnprojectedDeliveries. Removed ne transforme
+jamais un deferred en succès. L'expiration qmgr est encore un fait distinct ; le
+résultat actuel est celui des tentatives de remise, pas un verdict final du parcours.
+Aucun statut global ou certificat de complétude n'est produit ici.
+
+Le parser préserve maintenant aussi les chevrons du statut : `<sent>` n'est pas
+`sent`. La régression a échoué avant correction. HasNativeStatus vérifie le premier
+champ natif borné pour ne pas interpréter une ancienne valeur déjà normalisée ou
+un fragment xstatus ultérieur comme un résultat connu. Une ancienne valeur de
+champ peut rester altérée dans les faits historiques ; elle n'est pas réécrite,
+son résultat projeté reste unknown quand le texte natif ne la corrobore pas.
+
 ## Suite concrète
 
-Projeter toutes les tentatives par destinataire dans ces générations candidates,
-avec résultat observé prudent et réserves de complétude. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Clôturer ce premier chantier de fonctions pures, puis traiter les réserves de
+complétude, expiration explicite et résumés prudents. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

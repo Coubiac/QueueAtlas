@@ -131,8 +131,8 @@ func setField(o *model.Observation, key, value string) {
 		return // a second key in untrusted text must not replace an observed value
 	}
 	// The enclosing brackets belong to addresses/IDs, never to a delivery
-	// reply. Its punctuation must survive unchanged for later projections.
-	if key != "reply" {
+	// status or reply. Their punctuation must survive unchanged for projections.
+	if key != "reply" && key != "status" {
 		value = trimAngle(value)
 	}
 	o.Fields[key] = value
@@ -160,6 +160,27 @@ func HasExactStatusReply(message, status, reply string) bool {
 		i := strings.IndexByte(part, '=')
 		if i > 0 && part[:i] == "status" {
 			return strings.TrimSpace(part[i+1:]) == status+" ("+reply+")"
+		}
+	}
+	return false
+}
+
+// HasNativeStatus compares the first status token before its reply, preserving
+// malformed punctuation. Legacy normalised fields cannot manufacture a known
+// outcome; later status-looking fragments never replace the first one.
+func HasNativeStatus(message, status string) bool {
+	if len(message) > model.MaxLineBytes || len(status) > model.MaxLineBytes {
+		return false
+	}
+	for _, part := range topLevelParts(message, 32) {
+		part = strings.TrimSpace(part)
+		i := strings.IndexByte(part, '=')
+		if i > 0 && part[:i] == "status" {
+			value := strings.TrimSpace(part[i+1:])
+			if open := strings.Index(value, " ("); open >= 0 {
+				value = value[:open]
+			}
+			return value == status
 		}
 	}
 	return false

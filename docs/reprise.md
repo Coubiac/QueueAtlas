@@ -36,6 +36,9 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 - Lot 90 publié : `83c101141989ad156301a664326a562daa0441f5`, #19,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37290765408).
   Index candidat/provenances séparées, quatre tests/revue sans blocage.
+- Lot 91 publié : `34c3f7217a6fdec8f5797ce616613683112eea7d`, #19,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37291866747).
+  Générations candidates et frontières contradictoires, cinq tests/revue sans blocage.
 - Lot 87 publié : `0b3e362fe9ccfc40ce87a72bba78e113702c6beb`, #18,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37287896648).
   Test portable Windows et intégration FileSource Linux réussis, revue sans blocage.
@@ -2770,13 +2773,34 @@ rejoignait anciencycle, régression échoue avant fix. Passe physique maxdate/re
 refuse contradictions dans les deux sens ; trois cas régression et horsordre16
 réussissent après correction. Suite correlation/vet/diff Windows finale réussis,
 delta relu sans blocage, trois scénarios exécutés par auditeur : pass.
-Publication/CI91 à vérifier.
+Publié `34c3f72`, CI37291866747 success vérifiée.
 Aucune génération globale interorigine, statutglobal, lecteurDB ou persistance.
+
+## Lot 92 : tentatives et dernier résultat observé par destinataire
+
+Résultat attendu : garder tous les retries par adresse exacte dans chaque génération
+candidate et exprimer le dernier résultat sous dates/incertitudes conservées.
+BuildRecipients développé, Latest garde tous les faits à date max ; contradiction
+à date égale =>unknown/OrderUncertain, aucun verdict par offset. Date strictement
+plus tardive peut remplacer l'ambiguïté, sans supprimer l'historique. Adresse vide
+garde tentative mais status unknown, casse/orig_to n'unifient rien. Références/date
+copiées et DSN/réponse/portée gardés ; unresolved/Other restent hors attribution.
+Quatre tests Recipient et suites correlation/parser Postfix, vet/diff Windows
+réussis : mixed/retries/permutations/copies/tie/IDrecyclé/sources/alias/vide/partial/
+NOQUEUE/undated/refus. Aucun état global, expiration, lecteurDB ou stockage modifiés.
+
+Défaut natif reproduit : status=<sent> canonicalisé en sent. Parser préserve status
+comme reply ; HasNativeStatus premier token borné protège les valeurs anciennes
+normalisées et xstatus ultérieur. Trois statuts/legacy et huit cas helper passent.
+Message natif absent donne désormais unknown, attente test adaptée ; tie07 utilise
+les véritables indices après lecture fixture. Revue finale code/docs sans blocage,
+quatre tests Recipient et deux régressions natives exécutés par auditeur : pass.
+Publication/CI92 à vérifier. Dernier état publié validé = lot91.
 
 ## Prochaine action concrète
 
-Publier91 sur #19 et vérifier CI exacte. Puis tentatives
-par destinataire sous limites/incertitudes, avant persistance ou regroupement global.
+Publier92 sur #19 et vérifier CI exacte. Lot93 : clôture du premier
+chantier M3 pur, CI/fusion/main, puis complétude/expiration/résumés prudents.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-recipient-attempts.
