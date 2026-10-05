@@ -2,8 +2,10 @@
 
 Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer lot 72
 et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
-Lot 74 : synthèse finale sans changement runtime, fusion après CI exacte finale.
-Importeur et manifest non implémentés.
+Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
+CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI vertes.
+Lot 78 association/progression publiées, CI verte. Lot 79 synthèse finale relue,
+fusion après CI exacte finale ; importeur futur.
 
 ## Décision et séparation des étapes
 
@@ -35,24 +37,25 @@ Le lecteur de lignes conserve ses bornes et ne normalise pas seulement un suffix
 2. Suite : ordre/nombre de fichiers/durée globale bornés.
    Ne pas déduire une identité de contenu d'un chemin, inode ou en-tête gzip ;
    recompressions/renommages identiques doivent pouvoir retrouver la même origine.
-3. Ajouter lecture/écriture source-scopée du manifest dans un lot stockage distinct,
-   sans retoucher le schéma v1 publié. Lier provenance/offsets/digest décompressé,
-   inscrire running/failed et n'autoriser complete qu'après validation finale.
+3. Lot 76 : migration/lecture source-scopée du manifest développées, v1/v2 inchangés.
+   Lots 77–78 : écriture de préparation puis contenu/progression développées dans
+   le Commit du Sink. Application future : prouver EOF/ancres avant complete.
 4. Application du contenu validé à parser/Sink, reprise du checkpoint exact,
    depuis la copie privée validée. Une inspection n'est pas un snapshot filesystem
    et ne prouve pas un second passage identique de l'entrée originale.
 5. CLI import hors service actif, ordre fourni sans tri implicite, recalcul M3,
    contraintes globales et scénarios de chevauchement avec suivi continu.
 
-La stratégie d'identité et l'évolution SQL seront précisées avant leur lot
-d'implémentation. Pas de déduplication sur seul hash de ligne. Reconnaître un
+La stratégie d'identité ci-dessous précède le lot SQL. Pas de déduplication sur
+seul hash de ligne. Reconnaître un
 chevauchement FileSource uniquement avec provenance/positions et preuves concordantes ;
 sinon le signaler incertain. Conserver les hypothèses des timestamps sans année.
 
 ## Limites actuelles
 
 Les briques d'inspection/copie normale/gzip et préparation de fichier détenu existent.
-Pas encore d'import_run, ingestion, CLI, déduplication ni garantie de snapshot atomique. Les tests
+Migration/lecture et préparation publiées, progression développée. Pas d'ingestion,
+CLI, déduplication ni garantie de snapshot atomique. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
 
@@ -121,3 +124,112 @@ seulement ; jamais de suppression récursive ou du parent TempDir/entrée d'orig
 Windows ACL non vérifiées ; protections de bits Unix exécutées en CI Linux verte
 37245585832 sur `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745`. La prochaine
 application devra jeter la copie sur toute erreur et fermer le propriétaire final.
+
+## Identité durable du lot 75 et contrat du manifest suivant
+
+ImportOriginID prend l'ID exact et non vide de la source et le SHA-256 entier
+décompressé, exactement 64 caractères hexadécimaux minuscules. Il refuse toute
+autre représentation, sans trim ni casse implicite, et ne prouve aucune lecture
+ou validation de fichier. Le caller fournit le digest d'une préparation réussie.
+
+Contrat stable : `import-v1:` suivi du SHA-256 hex minuscule de la concaténation
+des octets `queueatlas/import-origin/v1` puis NUL, de la longueur en octets de
+l'ID source sur huit octets big-endian, de l'ID source, puis des 32 octets du digest.
+Préfixe versionné et longueur évitent les ambiguïtés de concaténation. IDs source
+opaques, octets Go exacts sans transcodage ou validation UTF-8 ; espaces/casse/NUL/
+Unicode conservés. Un test golden fixe le format durable.
+Renommage ou recompression du même contenu retrouve cette origine dans la même
+source ; un digest ou une source différents donnent une origine différente.
+La provenance garde chaque offset : deux lignes identiques ne sont pas supprimées.
+
+Le lot 76 ajoute une migration v3 sans modifier les SQL v1/v2.
+Un run sera une tentative explicite avec ID positif fourni par l'appelant,
+globalement unique dans la base, y compris parmi les lignes legacy,
+source de kind import distincte du suivi live, chemin original, état, digest/taille
+du contenu validé, origine associée et offsets. Les lignes v1 sans source restent
+héritées, non attribuées : aucune adoption ou reprise implicite. Le lien doit être
+source-scopé, l'identité de contenu immuable ; les lecteurs n'interprètent pas
+le chemin comme preuve. Préparation échouée sans digest valide ne doit pas produire
+une origine ni des records ; la tentative peut être tracée failed sans contenu.
+
+L'écriture du manifest est intégrée au même Commit que records/checkpoint,
+avec réessai identique après ACK perdu, sans avance séparée. Complete exigera EOF
+validé, absence de suffixe partiel et offset égal à la taille ; cette validation
+ne se déduit pas du SHA seul. Ces contrôles SQL existent au lot 78 ; application
+future : Sink vérifie metadata/progression, preuve du
+fichier à l'appelant. Mono-écrivain/service arrêté au MVP. Aucune déduplication
+inter-source prouvée par ImportOriginID, aucun chemin fourni par l'API Web.
+
+## Migration et lecteur du lot 76
+
+V3 reconstruit seulement import_runs avec les huit colonnes v1 conservées et
+source_id/generation_id/trailing_partial nullable. Les anciennes valeurs, même
+sans digest canonique ou sans fin renseignée, sont copiées sans adoption. Le DDL,
+l'historique et user_version=3 sont dans la même transaction ; refus d'historique
+manquant ou version future conservé. Index digest recréé, index source/origine ajouté.
+
+Pour une ligne associée : ID positif, source/chemin non vides, FK source et FK
+composite source/origine, SHA canonique et taille/partial présents ensemble ; longueur
+TEXT et BLOB égales à 64 avec GLOB hex minuscule pour exclure aussi les NUL. Sans
+contenu, offset zéro et état running/failed seulement. Running sans fin, états
+terminaux avec fin >= début. Offset <= taille, complete seulement à taille exacte
+sans partial. SQL ne prouve ni la lecture du fichier ni le checksum : caller requis.
+
+ImportStateReader.ImportRun effectue une lookup exacte source/ID positif et une
+jointure unique vers source/origine. Legacy ou autre source : absence, distincte
+de zéro. Kind import, ID dérivé, fingerprint sha256 et absence d'identité physique
+contrôlés avant exposition ; état incohérent refuse avec résultat vide. Dates UTC,
+pointeurs rendus possédés par caller. Aucun write/adoption, décision de reprise,
+checkpoint ou page globale implicite. Une lecture de checkpoint ultérieure est
+un autre snapshot ; sérialiser les écritures/réessais reste à l'application.
+
+## Trace de préparation du lot 77
+
+Batch.ImportChange optionnel porte Before attendu (nil = création) et Target.
+Première étape : créer running sans contenu, puis tracer failed avec fin après
+préparation refusée. Source kind import, IDsource exact, IDrun global positif,
+chemin/début immuables, dates représentables en nanosecondes int64 sans wrapping.
+Une reprise d'écriture accepte le Target déjà identique ; état périmé, ID étranger/
+legacy ou tentative terminale à ranimer refusés. Le caller conserve son batch
+et tous les pointeurs sans mutation, sérialise écritures et réessais de sa source.
+
+Source et changement de run sont commités dans la même transaction. Refus SQL,
+annulation ou conflit n'acquittent rien, même si un ACK peut être perdu après un
+commit durable. Pas de retry interne. Origines/records/checkpoints/contenu ne sont
+pas acceptés avec une trace de préparation ; records/checkpoints d'import sans
+changement explicite du manifest refusés. La lecture interne utilise le même Tx.
+Le lot 78 ajoute association de contenu et progression atomique ; aucune
+lecture de fichier ni appel PrepareRegular/normalizer n'est effectué par ce Sink.
+
+## Contenu et progression transactionnelle du lot 78
+
+ImportChange peut associer une fois un Content à un running sans contenu, ou créer
+une tentative préparée running à un checkpoint existant concordant. Aucun record
+au moment d'associer. Contenu immuable dans le run ; taille/partial/SHA doivent
+aussi concorder entre tentatives du même contenu/source. Renommage représenté
+par nouvelle tentative avec même origine, chemin/début de chaque run immuables.
+
+Origine fournie au plus une : ID dérivé, chemin de tentative, fingerprint sha256,
+device/inode vides. Origine persistée également contrôlée même si non fournie.
+Avant records/checkpoints, expectedstate et checkpoint de départ vérifiés dans Tx :
+offset Before pour progression, Target pour association ; nouveau zéro exige
+registration explicite, positif exige checkpoint existant. Aucun saut arbitraire
+ni réparation de position incohérente.
+
+Records contigus depuis Before.LastOffset jusqu'à Target.LastOffset, même origine.
+Checkpoint fourni au plus un, même offset/origine et anchor non vide. Après writes,
+checkpoint durable doit égaler Target et l'anchor proposé si présent ; un anchor
+différent à offset égal ne peut pas être ignoré puis acquitté. Manifest, records,
+events, checkpoint et source rollback/commit ensemble.
+
+Target déjà identique accepte réessai après ACK perdu, avec CP durable au moins à
+son offset. À offset égal, vérifier aussi l'anchor fourni. Une tentative ultérieure
+peut avoir avancé le CP partagé ; l'ancien Target reste accepté sans le modifier.
+Complete exige taille exacte et aucun suffixe partiel. Vide validé peut devenir
+complete à zéro après association ; suffixe partiel peut laisser des records
+complets puis une tentative failed au dernier offset acquitté.
+
+Sink ne calcule pas le digest, ne valide pas gzip/EOF, ne décode pas l'anchor et ne
+relit pas le fichier. Preuves, bornes et batch conservé restent à l'importeur futur ;
+un état SQL canonique ne certifie pas le contenu. Mono-écrivain, aucune compensation
+sur erreur d'ACK.

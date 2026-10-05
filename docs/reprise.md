@@ -4,26 +4,45 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Prévision après le lot 71 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
-50–85 petits lots jusqu'au MVP, dont 5–12 pour M2. PR #14 fusionnée après trois lots
-de prévalidation ; copie privée validée détenue suivante : environ trois lots,
+Prévision après le lot 74 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
+50–85 petits lots jusqu'au MVP, dont 5–10 pour M2. PR #15 fusionnée après trois lots
+de copie privée ; identité/manifest puis application/reprise : environ 5–8 lots,
 inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
-end ainsi que prévalidation normale/gzip sont fusionnés dans main (#9–14).
-Bibliothèque seule, sans CLI/service. Lots 72–73 : copie pendant hash et fichier
-privé détenu publiés/CI vertes ; lot 74 synthèse finale relue sans blocage.
-Critère de fin du chantier : copie détenue des octets validés, refus bornés,
-fermeture/cleanup/annulation vérifiés, CI verte et PR cohérente fusionnée.
-Manifest et ingestion dans des lots distincts. M2 inclut les autres décisions encore ouvertes
+end, prévalidation normale/gzip et copie privée sont fusionnés dans main (#9–15).
+Bibliothèque seule, sans CLI/service. Lots 75–76 identité/migration/lecture publiés,
+CI vertes. Lots 77–78 préparation/association/progression publiés et CI vertes ;
+lot 79 synthèse finale relue sans blocage, publication/CI finale/fusion à vérifier.
+Critère de fin du chantier : identité stable, lecture source-scopée et écritures
+atomiques/réessais du manifest, CI verte et PR cohérente fusionnée.
+Ingestion dans un chantier distinct. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
-- Lot 74 : clôture documentaire relue sans blocage, runtime/tests identiques aux
-  références 72–73 ; aucun rerun justifié. Publication/CI finale et fusion à vérifier.
+- Lot 78 : publié `8425fd5df073c80a690faf3f4342df2d1f2528b8`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262628894), #16.
+  Correctif ACK reproduit/corrigé/relu ; sept tests nouveaux dont régression/reuse,
+  vérifications Windows et suite Linux en CI réussies. Aucun importeur livré.
+- Lot 77 : publié `6fbf38a8d8df05122c4c7771e97b5a9182765b39`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261638578), #16.
+  Revue indépendante sans blocage, quatre tests ciblés/suite/vet/diff Windows réussis.
+- Lot 76 : publié `91bfdaa717bc6eb30a8b222eaa7fe10cdd6ef097`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261183931), #16.
+  Deux contournements NUL reproduits/corrigés, revue terminée sans blocage,
+  quatre tests ciblés et régressions/suite/vet/diff Windows réussis.
+- Lot 75 : identité publiée `8797183d65b6a2cfd79f85fc94df913c7d764ccd`, PR #16
+  créée/attachée ; [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246530486).
+  Revue indépendante sans blocage, deux tests Windows/suite/vet/diff/golden réussis.
+- Lot 74 terminé : [PR #15](https://github.com/Coubiac/mailtrace/pull/15) fusionnée,
+  tête `6fb1bb3e1836e7ccaeb64df1b32aa9b26095ce47`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246043524).
+  Main `f8e58e30a8e85bac6d67fe1c30e5ce64ff2e4c7a` vérifié ;
+  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246230592),
+  vérifiée via API REST. Branche `codex/m2-import-manifest` depuis main.
 - Lot 73 : PrepareRegular/PreparedContent développés/relus sans blocage, trois tests
   ciblés Windows/suite/vet/diff réussis. Publié `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745`,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245585832), bits privés
@@ -2389,18 +2408,103 @@ exacte et fusion après CI finale verte. Référence isolée propre `93cf83cec`,
 fichiers runtime/tests identiques aux revues ; aucun blocage ni rerun utile.
 CI 73 complète success, permissions Unix réellement exécutées Linux. Rapport et
 ADR actualisés, comportements futurs séparés des briques déjà réalisées.
-Diff documentaire à vérifier, commit/push/CI finale/ready/fusion encore à constater.
+Diff propre, clôture `6fb1bb3` publiée, CI 37246043524 success, ready/fusion #15.
+Main `f8e58e3` vérifié ; CI push 37246230592 success, vérifiée via API REST.
+
+## Lot 75 : identité de contenu stable et source-scopée
+
+Résultat attendu : identité durable fondée sur source exacte et SHA décompressé,
+sans chemin/inode/encodage ni dédup de lignes. ImportOriginID développé : framing
+versionné, longueur source uint64 big-endian, SHA canonique minuscule ; source
+opaque et non vide, erreur fixe sans données. Golden calculé indépendamment via
+.NET, deux tests stabilité/source/casse/espaces/NUL/Unicode/refus réussis Windows,
+suite/vet/diff réussis. Revue indépendante sans blocage, deux tests Windows et
+golden .NET recalculé par auditeur réussis ; longueur octets Go sans validation
+UTF-8 précisée. Publié `8797183`, PR #16 créée/attachée, CI 37246530486 success.
+Aucun SQL ou importeur dans ce lot.
+ADR précise identité et contrat du prochain manifest, pas une implémentation SQL.
+
+## Lot 76 : migration v3 et lecture exacte du manifest
+
+Résultat attendu : conserver les imports anciens sans adoption, lire une tentative
+exacte pour une source import, aucun write/ingestion. Types ImportRun/Content/Status
+et ImportStateReader, rebuild import_runs v3 avec FK composite/source/contraintes,
+copie exacte des huit colonnes legacy, association NULL. SQL v1/v2 inchangés.
+Lecteur one-statement : absence vs zéro, source/kind/ID/fingerprint/content contrôlés,
+UTC et résultat vide sur erreur ; pas de preuve EOF ni reprise automatique.
+Quatre tests nouveaux : migration v1/v2 et rollbacktrigger3 (DDL/history/version),
+lecture/reopen/statuts/scopes/NULcaractèresSQL/cancel/refus, onze contraintes et
+origines corrompues. Ciblés/suite/vet/diff Windows réussis ; attentes de version
+actuelle adaptées, refus de futureversion4 et autres gates conservés.
+Revue interrompue par quota puis reprise : défaut SQL NUL signalé et reproduit.
+SHA canonique+NULsuffix accepté avec length(TEXT)/GLOB ; première correction BLOBseul
+laissait NULintérieur accepté. Deux régressions échouaient avant puis passent avec
+les deux longueurs TEXT/BLOB=64 et GLOBcanonique conservés. Treize contraintes,
+suite/vet/diff Windows repassés. Pendant l'interruption, dernier état publié validé
+= lot75 `8797183` ; modifications76 restaient locales. Revue reprise ci-dessous.
+Revue indépendante terminée sans autre blocage : quatre tests Windows exécutés,
+puis deux régressions NUL ciblées passées/diff propre ; IDrun global dans la base
+précisé. Publié `91bfdaa`, CI 37261183931 success, #16 réutilisée.
+Aucun changement Commit/FileSource/ingestion.
+
+## Lot 77 : trace transactionnelle de préparation
+
+Résultat attendu réduit pour garder un petit lot : running sans contenu puis failed
+de préparation, expectedstate/idempotence et source+manifest dans le même Commit.
+Association/progression de contenu reportées au 78. Batch.ImportChange Before/Target,
+kindimport/sourceexact/IDglobal/pathdébutimmuables/timestampsnanoexact, Target déjà
+identique accepté après ACK perdu. Legacy/étranger/périmé/terminalrevived refusés.
+Content/OriginsRecordsCP non acceptés dans ce lot ; importRecordsCP sans changement
+de manifest refusés. Pas de retry interne/ingestion. Reader partagé DB/Tx.
+Quatre TestImportPreparation* Windows et suite/vet/diff réussis : lifecycle/ACKperdu/
+reopen, IDgloballegacyforeign/stale, triggerinsert/update rollback avec source, cancel,
+dix-huit refus dont dates wrap et contenu sans preuve. Revue indépendante terminée
+sans blocage, quatre tests Windows/diff propres, aucun edit ni risque supplémentaire
+identifié dans cette portée.
+Publié `6fbf38a`, CI 37261638578 success, #16 réutilisée.
+
+## Lot 78 : association et progression du manifest
+
+Résultat attendu : contenu validé associé une fois puis records/checkpoint/manifest
+commités ensemble sans saut ni faux complete. Sink implémenté sans fichier/parser/
+worker. Metadata immuable et concordante entre tentatives d'une origine ; expectedstate
+et CPavant exacts, nouveau zéro explicite, positif seulement persisté. Records
+contigus Before→Target, CPaprès exact y compris anchor proposé ; complete fullsize/
+noPartial, failed possible. Aucune preuve EOF/CRC/anchor par le Sink.
+Cinq tests initiaux Windows/suite/vet/diff réussis : deux lignes identiques distinctes,
+retry/reopen/réimport, triggerfinalrollback records/events/CP/source, treize divergences
++ CPpréalable corrompu/anchor mêmeoffset différent, vide/partial et sept refus association.
+Revue a trouvé ACKerroné : Target déjà identique ignorait anchor différent mêmeoffset.
+Régression deux sous-cas zéro/cinq échouante puis corrigée ; CP durable ≥Target et
+anchorégaloffsetcomparé même au retry ; ancienne tentative après CP partagé plushaut
+réessaye exactement sans duplication. Six tests ciblés/régression/suite/vet/diff
+Windows repassent. Revue finale sans blocage : auditeur cinq tests initiaux puis
+régression corrigée exécutés Windows, diff propre. Test ciblé supplémentaire de
+réutilisation contenu (taille/partial changés et origine stockée incohérente) passé,
+code runtime inchangé après revue. Publié `8425fd5`, CI 37262628894 success,
+tests progrès/association/retry/reuse Linux réellement exécutés.
+
+## Lot 79 : synthèse et clôture du manifest
+
+Résultat attendu : réutiliser les revues/tests des quatre lots sans rerun injustifié,
+actualiser documentation puis ready/fusion après CI exacte finale. Référence isolée
+`8425fd5` propre ; sept fichiers runtime identiques, nouveau test reuse relu.
+Aucun blocage ni risque nécessitant rerun. CI78 complète success ; corrections NUL
+et ACK consignées, suite future corrigée. Diff documentaire/commit/push/CI finale
+et fusion encore à constater. Pas d'ingestion/fichier/parser/CLI changés.
 
 ## Prochaine action concrète
 
-Publier le lot 74 sur #15, vérifier CI exacte puis ready/fusion avec tête attendue.
-Lot suivant : contrat et identité source-scopée du manifest, stockage en lot distinct.
+Publier le lot 79, vérifier CI exacte puis ready/fusion #16 avec tête attendue.
+Lot suivant : préparation d'un ingestor sur copie détenue/content validé et position
+prouvée, sans lecture/parsing/CommitNext ; application et orchestration en lots distincts.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-snapshot.
+pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-manifest.
 
 ## Suite à découper au fil des reprises
 
-1. Import historique : manifest, application/reprise en lots distincts ; copie détenue réalisée.
+1. Import historique : application/reprise et budgets globaux, puis CLI au jalon adapté ;
+   copie détenue et manifest réalisés.
 2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
    ensembles multiples ; diagnostics/compléments du suivi #4.
 3. Application CLI/service et métriques au jalon adapté.

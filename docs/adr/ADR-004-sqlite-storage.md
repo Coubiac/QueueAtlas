@@ -39,4 +39,12 @@ Débit d'ingestion, taille du binaire et inventaire complet des licences transit
 La migration v2 ajoute l'état durable du suivi des générations (ADR-009), en
 conservant le schéma v1 intact et les anciennes générations à l'état inconnu.
 Les migrations, leur historique et `user_version` sont acquittés dans une même
-transaction ; l'ouverture contrôle désormais les entrées d'historique v1 et v2.
+transaction ; l'ouverture contrôle les entrées d'historique de chaque version.
+
+La migration v3 du lot 76 associe explicitement les nouveaux import_runs à une
+source/origine (ADR-011), sans attribuer les lignes anciennes. Table reconstruite,
+valeurs v1 préservées, contraintes/FK composites et index dans la même transaction
+que l'historique et user_version. SQL v1/v2 conservés, base plus récente refusée
+avant changement WAL. Lecture source-scopée ; lot 77 ajoute source+trace running/failed
+de préparation dans le même Commit. Lot 78 ajoute association/progression avec
+records/events/checkpoint atomiques ; preuves de contenu à l'importeur futur.
