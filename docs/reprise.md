@@ -7,8 +7,8 @@ Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
 Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
-clôture99 terminée, CI finale et main réussies. Indices100 publiés/CI verte #22 ;
-relations101 développées/en revue.
+clôture99 terminée, CI finale et main réussies. Indices100 et relations101 publiés,
+CI verte #22 ; clôture102 documentaire en cours avant fusion.
 Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -27,6 +27,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 101 publié : `d07f6bdf6c689eacf3041fa7768e17d4f9b4d66f`, #22,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37326579775).
+  Six tests QueueLinks, suite/vet/diff, revue code/docs et correctif des preuves
+  répétées validés. Dernier état fusionné validé99.
 - Lot 100 publié : `bfdb9e0d9e4674aa3614da6816750f4c19cfc0de`,
   [PR #22](https://github.com/Coubiac/mailtrace/pull/22) créée/attachée en brouillon,
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37324927168).
@@ -2963,13 +2967,25 @@ contrôlées et704 faits source conservés, <=8 preuves positives par lien. Test
 pass après correctif ; delta final/documentation validés sans blocage par auditeur,
 régression700 via overlay isolé pass. Dernière répétition contradictoire reste
 candidate, cas local ajouté/exécuté pass. Aucun rerun des fondations.
-Travail non publié/CI101 non vérifiée ; état publié avec CI verte100, fusionné99.
+Publié d07f6bd dans #22, CI37326579775 entière success vérifiée sur la tête exacte ;
+état publié avec CI verte101, fusionné99.
 Aucun résultat des tentatives modifié, identité globale ni DB/source/Web.
+
+## Lot 102 : clôture des indices et relations de file
+
+Résultat attendu : bilan fidèle, revue documentaire finale, CI exacte puis fusion
+#22 et CI push main. Runtime inchangé depuis100–101 relus ; aucune nouvelle
+exécution des tests des fondations nécessaire. CI101 success vérifiée. Limites :
+mapping SMTP explicite, génération cible temporellement admissible unique, réserves
+de date/provenance conservées, preuve positive bornée sans ignorer les contradictions.
+Les états des destinataires restent inchangés ; aucun parcours global ni persistance.
+Documents actualisés ; avis documentaire final indépendant favorable sur les seuls
+quatre documents modifiés, aucun test relancé. Publication102/CI, fusion/main à vérifier.
 
 ## Prochaine action concrète
 
-Terminer revue101/code/docs, commit/push sur #22 puis CI exacte. Lot102 : clôture du
-chantier indices/relations, CI/fusion/main. Ensuite identités de projection et
+Terminer clôture102 : revue des seuls documents, commit/push sur #22 puis CI exacte,
+fusion sur la tête attendue et CI main. Ensuite identités de projection et
 persistance transactionnelle, sans fusion d'origines ou de parcours non prouvée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`

@@ -46,5 +46,17 @@ faits source, réduit les preuves à <=8. Test et suite passent après correctio
 Delta final et docs validés sans blocage par auditeur ; régression700 répétitions
 exécutée via overlay isolé Windows pass. La dernière répétition contradictoire est
 également testée localement : reste candidate/evidence_insufficient. Aucun test
-des fondations relancé, root inchangé par auditeur. Publication/CI101 à vérifier.
+des fondations relancé, root inchangé par auditeur. Publié d07f6bd dans #22,
+CI37326579775 entière success vérifiée sur la tête exacte.
 Pas de DB/source/API/Web.
+
+## Lot102 : clôture du chantier
+
+Bilan documentaire uniquement, aucun changement de comportement après100–101.
+Les avis et tests ci-dessus sont réutilisés. CI101 vérifiée success ; six tests
+QueueLinks incluent la borne des preuves et la contradiction tardive. Les liens
+corroborés relient des générations candidates dans un snapshot, sans fusion des
+provenances ni modification des résultats des destinataires. SMTP exige le mapping
+configuré ; une cible parmi plusieurs temporellement admissibles reste ambiguë.
+Revue documentaire finale indépendante favorable sur les quatre documents modifiés,
+sans blocage ni nouveau test. Publication/CI102 et fusion/CI main à vérifier.
