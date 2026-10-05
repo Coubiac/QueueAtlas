@@ -3,7 +3,8 @@
 État au 5 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
 (PR #18, CI finale et main réussies). Projections pures M3 validées aux lots89–92,
 CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration94 et
-synthèse95 publiées/relues dans #20 ; clôture96 en cours. Référence de périmètre :
+synthèse95 fusionnées dans #20 ; clôture96 terminée, CI finale/main réussies.
+Rapports NOQUEUE97 développés, revue en cours. Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -32,7 +33,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections pures89–92 fusionnées #19 ; expiration94/synthèse95 publiées et relues #20, clôture96 en cours | Identités/continuité globales, complétude/NOQUEUE, liens prouvés, persistance/recalcul, recherche et rétention | 14–25 après clôture96 |
+| M3 — reconstruction | En cours : projections pures89–92 fusionnées #19 ; expiration94/synthèse95 fusionnées #20, CI finale/main réussies | Identités/continuité globales, complétude/NOQUEUE, liens prouvés, persistance/recalcul, recherche et rétention | 14–25 après clôture96 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture96** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **39–68, soit environ 40–70** |
@@ -112,8 +113,9 @@ Les générations restent séparées par provenance, sans identité globale entr
 fichiers ni preuve de continuité. Dates inconnues/frontières douteuses restent
 non résolues ; aucun statut global, persistance de projection, recherche ou Web.
 
-Expiration explicite et comptes/réserves traités aux lots94–95 ; clôture96 en cours
-avec #20. Ils ne certifient pas la couverture et n'inventent pas de destinataires
+Expiration explicite et comptes/réserves traités aux lots94–95 ; clôture96 fusionnée
+avec #20, finaleCI37295702313 et main37295859068 success vérifiées. Ils ne certifient
+pas la couverture et n'inventent pas de destinataires
 expired. Le résumé conserve les résultats des tentatives et les rapports qmgr
 distincts. Le travail de complétude/NOQUEUE inclut les critères applicatifs restants.
 

@@ -6,7 +6,7 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
-Expiration94 et synthèse95 publiées/relues, clôture96 en cours dans #20.
+Expiration94 et synthèse95 fusionnées, clôture96 terminée dans #20. NOQUEUE97 en cours.
 Trois jalons restent : M3–M5, environ 39–68 lots après96, dont14–25 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -25,6 +25,12 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 96 terminé : [PR #20](https://github.com/Coubiac/mailtrace/pull/20) fusionnée,
+  tête `fa34f92ad6906702531554fbe9fa5583f9f79421`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295702313).
+  Main `b737484c7703f5e739e9c96a7c66077b5364cd17`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295859068),
+  vérifiée REST. Branche suivante `codex/m3-prequeue` depuis ce main.
 - Lot 95 publié : `ff8e2a1ad5476a61028b4836302959467c358e50`, #20.
   Quatre tests Summaries, suite/vet/diff et revue code/docs sans blocage.
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295460030).
@@ -2859,20 +2865,33 @@ Doc immédiate ajoutée, DB/source/Web inchangés.
 Résultat attendu : bilan cohérent, avis final/CI exacte, fusion #20 sur tête
 attendue puis CI push main. Runtime inchangé depuis94–95 relus. Documentation
 et estimation actualisées, avis documentaire final favorable sans delta runtime/
-tests depuis95, aucun test relancé. Publication/CI finale/fusion/main à vérifier.
+tests depuis95, aucun test relancé. Publiéfa34f92, CI finale37295702313 success,
+commentaire5413020142/ready puis fusion #20 surb737484,
+CI push main37295859068 success vérifiée REST. Lot96 terminé.
 M3 restant14–25 :
 NOQUEUE/sessions, identités/continuité/liens, stockage/recalcul, recherche/rétention
 et intégration/mesures/clôture. Total39–68 avec M4/M5 ; fourchette de planification,
 aucun critère retiré. Aucun état final/global ni preuve de couverture nouvelle.
 
+## Lot 97 : rapports NOQUEUE séparés
+
+Résultat attendu : garder reject et reject_warning avec métadonnées/date/provenance,
+sans les rattacher au destinataire/file accepté par PID seul. BuildPrequeue développé,
+borné/validé ; instance configurée et références, métadonnées présentes/vide, date
+copiée, messages/PID simples valeurs. Warning distinct d'un rejet. Queued/Other
+conservés, origines/PID/adresses n'unifient rien. Quatre tests et suite correlation/
+vet/diff Windows réussis ; revue code/docs indépendante sans blocage, quatre tests
+via overlay checkout isolé propre par auditeur : pass. Travail non publié et CI97
+non vérifiée ; dernier état fusionné validé96. Pas de session/DB/Web livré.
+
 ## Prochaine action concrète
 
-CI95 vérifiée success. Terminer revue documentaire96, commit/push sur #20, CI finale puis
-fusion attendue/mainCI. Lot97 projetera les
-rejets NOQUEUE distincts, sans les rattacher par PID seul à une file acceptée.
+Terminer revue97/code/docs, commit/push et PR du chantier puis CI exacte. Lot98 :
+sessions candidates avec frontières connect/disconnect explicites dans une origine,
+réserves et aucune identité/file assignée par PID seul.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-expiration.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-prequeue.
 
 ## Suite à découper au fil des reprises
 

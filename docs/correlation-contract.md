@@ -184,9 +184,35 @@ remplacent pas les hypothèses/qualités de date et les preuves natives du déta
 Sans réception ou sans tentative, la file reste visible sans succès inventé.
 Aucun certificat de complétude, stockage, arc, session NOQUEUE ou Web ajouté.
 
+## Lot97 : faits NOQUEUE séparés
+
+`BuildPrequeue` réutilise le snapshot borné/validé de PartitionFacts. Un fait
+smtpd/KindReject, NOQUEUE sans Queue ID ni erreur de parsing, est projeté seulement
+si son Message borné commence par le préfixe natif reject: ou reject_warning:.
+Le premier est un rejet rapporté (sans transformer un code temporaire en bounce),
+le second un avertissement : [warn_if_reject](https://www.postfix.org/postconf.5.html#warn_if_reject)
+journalise ce diagnostic au lieu de rejeter la requête au titre de cette règle.
+Un avertissement ne prouve pas non plus une acceptation ultérieure.
+
+Chaque tentative garde sa référence, instance configurée, PID comme métadonnée,
+date/hypothèses copiée et Message comme chaîne ordinaire, ainsi que les champs
+from/to/proto/helo présents. Absence et valeur explicitement vide restent distinctes.
+Une extraction de métadonnées refusée par le parser conserve le rapport sans
+attribuer d'adresses. Les champs hostiles restent des données, sans HTML ou URL
+interprétés ; le rendu Web sécurisé sera vérifié au jalon M4.
+
+Les tentatives sont classées par provenance, pas par chronologie supposée. Les
+dates inconnues ne créent pas de session ni de file ; elles gardent leur qualité.
+Même PID, adresse, date ou texte n'unifie aucun rapport et ne le rattache à la file
+acceptée après un RCPT refusé. Origines et hôtes de confiance restent distincts ;
+l'hôte déclaré ne crée aucune identité. Chaque autre fait reste dans l'index
+candidat Queued ou Other. Postscreen/autres services restent non projetés ici.
+Les sessions et rattachements prouvés seront un comportement séparé.
+
 ## Suite concrète
 
-Le premier chantier pur #19 est fusionné. Clôturer expiration/réserves de synthèse
-après revue/CI, puis traiter les tentatives NOQUEUE distinctes. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Les chantiers purs #19/#20 sont fusionnés. Après les faits NOQUEUE distincts,
+traiter les sessions candidates avec frontières explicites, sans identité par PID
+seul. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.
