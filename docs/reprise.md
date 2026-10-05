@@ -4,17 +4,18 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Après diagnostic/intégration87, le socle M2 est validé en bibliothèque ; clôture88
-et fusion #18 en cours. Après fusion, trois jalons restent : M3–M5, environ 43–73
-petits lots jusqu'au MVP. Les compléments86–88 ont demandé trois lots dans la
+Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
+et CI main vérifiées. Premier chantier M3 pur89–92 validé, clôture93 en cours.
+Trois jalons restent : M3–M5, environ 41–70 lots après93, dont16–27 pour M3.
+Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
 M1 (parseurs), socle SQLite M2, FileSource/récupération/end et import normal/gzip
 ordonné en bibliothèque fusionnés dans main (#9–17). Aucun CLI/service.
-Lot87 parser/import/SQLite et contrat d'exploitation publiés dans #18, CI verte
-avec intégration FileSource Linux exécutée. Clôture88 sans modification runtime.
+Lots86–88 diagnostic/parser/import/SQLite et contrat fusionnés dans #18, CI finale
+et main vertes avec intégration FileSource Linux exécutée. M3 commence au lot89.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 Le socle M2 correspond aux livrables de la roadmap ; les issues #4/#5 restent
@@ -23,6 +24,26 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 88 terminé : [PR #18](https://github.com/Coubiac/mailtrace/pull/18) fusionnée,
+  tête `b1544a7f3821753467355c0837e49a31d02549dc`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37288318666).
+  Main `8886427ab7efee72b95597bdb3c1996176aeefdb`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37288519438),
+  vérifiée REST. Nouvelle branche `codex/m3-recipient-attempts` depuis main.
+- Lot 89 publié : `f6c888bb8f86d789e5ba22dfb0f5ebcfa989fa40`,
+  [PR #19](https://github.com/Coubiac/mailtrace/pull/19) créée/attachée en brouillon,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37289790856).
+  Résultat d'une tentative, deux défauts de preuve reproduits/corrigés/relus.
+- Lot 90 publié : `83c101141989ad156301a664326a562daa0441f5`, #19,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37290765408).
+  Index candidat/provenances séparées, quatre tests/revue sans blocage.
+- Lot 91 publié : `34c3f7217a6fdec8f5797ce616613683112eea7d`, #19,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37291866747).
+  Générations candidates et frontières contradictoires, cinq tests/revue sans blocage.
+- Lot 92 publié : `df0bc0ef3556eb662d2d6e10d6cc160dac0cb556`, #19,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37293123113).
+  Tentatives/dernier résultat observé, quatre tests/revue finale sans blocage,
+  statut natif malformé reproduit/corrigé et gardes historiques vérifiées.
 - Lot 87 publié : `0b3e362fe9ccfc40ce87a72bba78e113702c6beb`, #18,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37287896648).
   Test portable Windows et intégration FileSource Linux réussis, revue sans blocage.
@@ -2702,17 +2723,104 @@ du socle d'ingestion de la roadmap et les dépendances applicatives encore ouver
 Checkout isolé propre0b3e362, versions identiques aux revues86/87, aucun delta runtime
 ni contrôle supplémentaire justifié. Revue de clôture sans blocage ; CI87 entière
 success, diagnostic/pipeline et contrat validés. Documents/avancement actualisés.
-Publication de clôture, CI finale88, ready/fusion et CI push main restent à vérifier.
+Clôture publiée `b1544a7`, CI37288318666 success ; ready/fusion #18 sur `8886427`,
+CI push main37288519438 success vérifiée REST.
 M2 n'est pas un logiciel installable ; #4/#5 restent ouvertes. M3 commence ensuite
 par une projection pure et bornée des faits, avant persistance/recherche.
 
+## Lot 89 : résultat et portée d'une tentative de remise
+
+Résultat attendu : projeter une seule observation de remise, préserver destinataire,
+status natif, présence/vide orig_to/DSN/relay/reply et distinguer transport de boîte.
+DeliveryFrom développé, quatre tests et suite parser/vet/diff Windows réussis.
+Dix fixtures conservent toutes tentatives ; unknown natif reste unknown, removed/
+bounce/NOQUEUE exclus. SMTP/LMTP/pipe sent ne prouvent jamais la boîte ; local/virtual
+requièrent phrase exacte et premier champ status natif concordant, sinon sent de cet agent.
+
+Revue a découvert trimAngle de reply, surclassement reproduit par deux sous-cas
+avant correction. Parser préserve désormais chevrons reply, adresses/IDs inchangés ;
+guard Message protège les champs durables déjà normalisés ou privés de texte.
+Première garde HasSuffix contournable par xstatus ultérieur, reproduit/corrigé :
+HasExactStatusReply compare premier vrai champ status avec frontières parser32.
+Test parser cinq cas, matching neuf cas et legacy quatre combinaisons/xstatus réussis.
+Delta final relu sans blocage et régressions helper/legacy exécutées par auditeur.
+docs/correlation-contract.md et rapport recipient-projection.md alignés.
+Publié `f6c888b`, PR #19 créée/attachée ; CI37289790856 success vérifiée.
+Aucune génération/chronologie, regroupement destinataire, projection DB ou Web.
+
+## Lot 90 : index candidat par instance et provenance
+
+Résultat attendu : partitionner un snapshot borné des faits sans fusion de parcours,
+établir des références stables et ordonner les hypothèses datées, conserver les autres.
+PartitionFacts développé : limite positive<=4096, provenance/source/instance validées,
+duplicates/overlap refusés sans sortie partielle ; QueueKey instanceconfigurée/QueueID,
+streams source/origine gardés, CrossStreamUncertain quand multiples. Index candidat
+seulement, aucune génération. Timed triés UTC hypothétique puisoffset, Untimed séparés,
+Other garde NOQUEUE/malformed/unknown ; Host/MessageID jamais clés.
+Quatre tests/suite correlation/vet/diff Windows réussis, permutations/dates égales,
+2hôtes/mêmeID/doublonMessageID, overlapincertain, conservation/refus/limites/copies.
+Revue finale sans blocage, quatre tests exécutés par auditeur : pass.
+Publié `83c1011`, CI37290765408 success ; dernier état publié validé=lot90.
+
+## Lot 91 : générations candidates après frontières observées
+
+Résultat attendu : séparer les réutilisations d'un QueueID dans un flux, conserver
+tousfaits et les frontières non prouvées sans exposer de génération partielle.
+BuildGenerations développé sur PartitionFacts validé/borné, origins indépendantes.
+Premierfait ancre révisable ; Removed seulement observation. Nouveaucycle après
+removal exige réception+dateSTRICTsupérieure soushypothèses ; dateégale/noReceipt/
+duplicateRemoved, cleanupMessageIDdivergents ou undated =>fluxENTIERUnresolved.
+ReceiptObservedpremierfait, HasNonExplicitTime et CrossStreamUncertain conservés.
+Cinq tests Windows réussis : recyclage13/permutations/copies, horsordre/partial/
+retries/encours, intersourcegardé, cinq ambiguïtés conservation, NOQUEUE/marqueurs.
+Revue trouve frontier physique masquée par dates : receipt postRemoved antidaté
+rejoignait anciencycle, régression échoue avant fix. Passe physique maxdate/removal
+refuse contradictions dans les deux sens ; trois cas régression et horsordre16
+réussissent après correction. Suite correlation/vet/diff Windows finale réussis,
+delta relu sans blocage, trois scénarios exécutés par auditeur : pass.
+Publié `34c3f72`, CI37291866747 success vérifiée.
+Aucune génération globale interorigine, statutglobal, lecteurDB ou persistance.
+
+## Lot 92 : tentatives et dernier résultat observé par destinataire
+
+Résultat attendu : garder tous les retries par adresse exacte dans chaque génération
+candidate et exprimer le dernier résultat sous dates/incertitudes conservées.
+BuildRecipients développé, Latest garde tous les faits à date max ; contradiction
+à date égale =>unknown/OrderUncertain, aucun verdict par offset. Date strictement
+plus tardive peut remplacer l'ambiguïté, sans supprimer l'historique. Adresse vide
+garde tentative mais status unknown, casse/orig_to n'unifient rien. Références/date
+copiées et DSN/réponse/portée gardés ; unresolved/Other restent hors attribution.
+Quatre tests Recipient et suites correlation/parser Postfix, vet/diff Windows
+réussis : mixed/retries/permutations/copies/tie/IDrecyclé/sources/alias/vide/partial/
+NOQUEUE/undated/refus. Aucun état global, expiration, lecteurDB ou stockage modifiés.
+
+Défaut natif reproduit : status=<sent> canonicalisé en sent. Parser préserve status
+comme reply ; HasNativeStatus premier token borné protège les valeurs anciennes
+normalisées et xstatus ultérieur. Trois statuts/legacy et huit cas helper passent.
+Message natif absent donne désormais unknown, attente test adaptée ; tie07 utilise
+les véritables indices après lecture fixture. Revue finale code/docs sans blocage,
+quatre tests Recipient et deux régressions natives exécutés par auditeur : pass.
+Publié `df0bc0e`, CI37293123113 success ; dernier état publié validé = lot92.
+
+## Lot 93 : clôture des premières projections pures M3
+
+Résultat attendu : clôturer #19 avec CI exacte/fusion/main, réutiliser revues scellées
+89–92 et préciser le travail restant sans présenter M3 terminé. Checkout isolé
+propre df0bc0e, dix fichiers runtime/tests conformes aux versions relues, aucun
+delta ni risque nouveau nécessitant rerun. CI92 entière verte et avis de clôture
+sans blocage. Quatre comportements purs, runtime inchangé dans ce lot de clôture.
+README/contrat/bilan et estimation actualisés : M3 restant16–27 par comportements,
+M4 15–25, M5 10–18, total41–70. Hypothèses de planification, aucun critère MVP ôté.
+Publication93, CI finale, ready/fusion et CI main restent à vérifier.
+
 ## Prochaine action concrète
 
-Publier clôture88, vérifier CI exacte, fusionner #18 sur sa tête attendue et vérifier
-main. Ensuite lot89 : premier comportement de reconstruction M3, défini avant code.
+Publier clôture93, vérifier CI exacte, fusionner #19 sur sa tête attendue et vérifier
+main. Lot94 : expiration explicitement rapportée et ses preuves, sans inventer une
+expiration depuis removed ou une absence de logs ; puis résumé/complétude distincts.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-source-diagnostics.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-recipient-attempts.
 
 ## Suite à découper au fil des reprises
 

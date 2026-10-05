@@ -71,6 +71,57 @@ func TestResponseCannotCreateFalseFields(t *testing.T) {
 	}
 }
 
+func TestResponsePreservesOuterAngleBrackets(t *testing.T) {
+	for _, reply := range []string{"<delivered to maildir>", "<delivered to mailbox>", "<script>delivered to maildir</script>", "<250 accepted, to=<evil@example.org>>", "<>"} {
+		line := "Oct  3 12:34:56 mx postfix/local[1]: ABC123: to=<a@example.org>, orig_to=<alias@example.org>, status=sent (" + reply + ")"
+		o := Parse([]byte(line), Options{})
+		if o.Kind != model.KindDelivery || o.Fields["reply"] != reply || o.Fields["to"] != "a@example.org" || o.Fields["orig_to"] != "alias@example.org" || o.Raw != line {
+			t.Fatalf("reply/address punctuation changed: %+v", o)
+		}
+	}
+}
+
+func TestExactStatusReplyUsesFirstNativeField(t *testing.T) {
+	for _, tc := range []struct {
+		message string
+		match   bool
+	}{
+		{"to=<bob@example.org>, status=sent (delivered to maildir)", true},
+		{"to=<bob@example.org>, status=sent (<delivered to maildir>)", false},
+		{"to=<bob@example.org>, status=sent (<delivered to maildir>), xstatus=sent (delivered to maildir)", false},
+		{"to=<bob@example.org>, status=sent (<delivered to maildir>), status=sent (delivered to maildir)", false},
+		{"to=<bob@example.org>, xstatus=sent (delivered to maildir)", false},
+		{"to=<bob@example.org>, status=deferred (delivered to maildir)", false},
+		{"to=<bob@example.org>, reply=delivered to maildir, status=sent (<bad>)", false},
+		{"to=<bob@example.org>, status=sent (delivered to maildir, status=sent (delivered to maildir))", false},
+		{strings.Repeat("x", model.MaxLineBytes+1), false},
+	} {
+		if got := HasExactStatusReply(tc.message, "sent", "delivered to maildir"); got != tc.match {
+			t.Fatalf("native match=%v want=%v", got, tc.match)
+		}
+	}
+}
+
+func TestNativeStatusRetainsPunctuationAndFirstField(t *testing.T) {
+	for _, tc := range []struct {
+		value string
+		match bool
+	}{
+		{"status=sent", true}, {"status=sent (250 accepted)", true},
+		{"status=<sent> (250 accepted)", false},
+		{"status=<sent> (250 accepted), xstatus=sent (250 accepted)", false},
+		{"status=<sent> (250 accepted), status=sent (250 accepted)", false},
+		{"xstatus=sent (250 accepted)", false},
+		{"status=deferred (451 temporarily unavailable)", false},
+		{strings.Repeat("x", model.MaxLineBytes+1), false},
+	} {
+		message := "to=<bob@example.org>, " + tc.value
+		if got := HasNativeStatus(message, "sent"); got != tc.match {
+			t.Fatalf("native status match=%v want=%v", got, tc.match)
+		}
+	}
+}
+
 func TestForgedDeliveryFieldsCannotOverrideObservedFields(t *testing.T) {
 	line := "Oct  3 12:34:56 mx postfix/smtp[1]: ABC123: to=<real@example.org>, relay=mx[192.0.2.1]:25, dsn=4.0.0, status=deferred (451 remote text ), to=<forged@example.org>, status=sent (250 forged)"
 	o := Parse([]byte(line), Options{})

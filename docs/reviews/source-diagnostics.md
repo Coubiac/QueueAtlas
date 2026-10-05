@@ -46,4 +46,5 @@ builds statiques et chemins Windows réussis. Revue de clôture sans blocage.
 Bilan du socle M2 conforme aux livrables de la roadmap : sources, checkpoints,
 rotation/copytruncate diagnostiqué, reprise et import. Les issues #4/#5 conservent
 leurs critères applicatifs futurs ; aucune fonctionnalité CLI/exporteur/projection
-ou preuve de chevauchement ajoutée. CI finale88/fusion/main encore à vérifier.
+ou preuve de chevauchement ajoutée. Clôture b1544a7, CI37288318666 success ; #18
+fusionnée sur 8886427, CI push main37288519438 success vérifiée REST.
