@@ -97,6 +97,19 @@ Souscas de conversion ajouté après suite : test malformed ciblé repassé ; ha
 
 Revue indépendante code/docs sans blocage ; six nouveaux tests via overlay Windows
 isolé pass, delta malformed neuf souscas également pass/root inchangé. Documentation
-validée sans nouveau test. Publication/CI109 non vérifiées.
+validée sans nouveau test. Publié8f1ed84518f15a0005dccbcda242cdcc0662affc dans #24,
+CI37368041134 queued au dernier contrôle.
 Pas de garantie de fraîcheur future ou couverture ; pas d'historique/cache dérivé,
 de rétention applicative ou de parcours global. Aucun rerun des fondations demandé.
+
+## Lot110 : bilan et clôture documentaire
+
+Runtime109 relu inchangé ; résultats23 tests ciblés106–109 (6+5+6+6), suites/vet/diff
+et avis indépendants code/docs réutilisés. README aligné sur chantier publié mais
+non fusionné ; contrats conservés : entrées exactes/BLOB, transaction manifeste,
+reconstruction au snapshot, aucun résultat partiel ou réparation implicite.
+CI108/109 en file d'attente, sans résultat ; finale110 et fusion/main restent à vérifier.
+Revue documentaire finale indépendante favorable après correction d'une phrase
+obsolète d'avancement (lecteur109 publié, validation distante encore attendue).
+Aucun test relancé ; publication/CI finale110 encore à vérifier.
+M3 inachevé, aucun Web/service/paquet, rétention ou continuité prouvée annoncé.

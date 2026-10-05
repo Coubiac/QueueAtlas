@@ -11,7 +11,8 @@ clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fu
 #22, clôture102 terminée, CI finale et main réussies. Clés103 et composition104
 fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 publiée
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108 publiée/CI en attente,
-lecture/fraîcheur109 testée en revue. Main contient encore la clôture105.
+lecture/fraîcheur109 publiée/testée/relue, CI en attente. Clôture110 documentaire
+en préparation ; main contient encore la clôture105, PR #24 non fusionnée.
 Trois jalons restent : M3–M5, environ35–63 lots après107, dont10–20 pour M3,
 incluant validation108 ; estimation par comportements restants, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
@@ -31,6 +32,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 109 publié : `8f1ed84518f15a0005dccbcda242cdcc0662affc`, #24,
+  six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
+  [CI en file d'attente](https://github.com/Coubiac/mailtrace/actions/runs/37368041134).
+  Dernière tête avec CI verte107 ; derniers lots fusionnés105.
 - Lot 108 publié : `1edbed25b4bfbb914a7d5fa83f6d6fe58b1eba51`, #24,
   six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
   [CI en file d'attente](https://github.com/Coubiac/mailtrace/actions/runs/37367582155),
@@ -3122,14 +3127,29 @@ dans DB malformée ajoutée puis test malformed ciblé pass, zéro PII dans erre
 Deux connexions WAL testent snapshot ancien cohérent pendant remplacement puis
 nouvelle révision visible à la prochaine lecture. Revue code/docs indépendante sans
 blocage, six tests via overlay isolé et delta malformed9pass, root inchangé ; docs
-validées sans rerun. Pub/CI109 à vérifier. Dernier publié108/CI queued,
-dernier CI verte107/fusionné105.
+validées sans rerun. Publié8f1ed84 dans #24, CI37368041134 queued.
+Dernier publié109/CI queued, dernier CI verte107/fusionné105.
+
+## Lot 110 : clôture documentaire du chantier stockage
+
+Résultat attendu : bilan106–109 et README fidèles, revue finale, CI exacte puis
+fusion #24 et CI main. Runtime inchangé depuis109 relu ; tests/audits déjà consignés
+réutilisés sans relance locale. Quatre comportements en bibliothèque, tous faits
+référencés, pas de sérialisation dérivée ni recalcul implicite. M3 reste incomplet :
+continuité, recherche/rétention et intégration/mesures encore à réaliser ; M4/M5 futurs.
+Documents de clôture relus indépendamment, avis favorable après actualisation d'une
+phrase de l'avancement sur lecteur109 déjà publié ; aucun test relancé. Publication110
+et CI finale à vérifier.
+CI10837367582155 et10937368041134 toujours queued au dernier contrôle ; la clôture
+et la fusion ne sont pas terminées. Dernière tête CI verte107, main105 inchangé.
 
 ## Prochaine action concrète
 
-Terminer revue109 code/docs, commit/push dans #24, puis CI exacte ; suivre CI108
-actuellement queued. Lot110 : clôture cohérente106–109, revue finale/CI et fusion
-si verte, puis CI main. Recherche/rétention et continuité restent aux prochains lots.
+Commit/push110 dans #24 puis vérifier CI exacte110 ; revue documentaire terminée.
+Les jobs108/109 attendent les runners GitHub ; ne pas annoncer une réussite avant
+résultat. Fusionner #24 seulement après CI finale verte/revue, puis vérifier CI main.
+Recherche/rétention et continuité restent aux prochains lots ; aucun nouveau runtime
+nécessaire pour clôturer ce chantier. Pas de tests optionnels des fondations à relancer.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-storage.
