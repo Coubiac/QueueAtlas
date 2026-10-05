@@ -32,4 +32,18 @@ ne certifient pas la couverture, nrcpt999 ne crée pas d'adresses, partial17,
 aucune tentative, tie07/empty/unprojectable, origines distinctes/undated/NOQUEUE et
 trois limites refusées sans résultat partiel. Une attente initiale incorrecte pour
 fixture05 corrigée après lecture : remise local/maildir = delivered, pas sent.
-Revue indépendante en cours ; lot95 non publié/non validé par CI.
+Revue indépendante code/docs sans blocage : quatre tests Summaries exécutés par
+auditeur via overlay dans le checkout isolé propre, pass. Aucun fichier root
+modifié, aucune suite fondatrice relancée. Publiéff8e2a1 dans #20,
+CI37295460030 entière success vérifiée sur la tête exacte.
+
+## Lot96 : clôture expiration et réserves de synthèse
+
+Résultat attendu : clôturer le périmètre #20 après revue/CI exacte, fusionner sa
+tête attendue et vérifier la CI push main. Runtime inchangé depuis94–95 relus ;
+aucun contrôle des fondations relancé sans delta. Bilan/documentation actualisés,
+M3 toujours incomplet : synthèse observée, pas couverture certifiée ni état final.
+Avis documentaire final favorable : HEADff8e2a1, aucun delta runtime/tests depuis
+revue95, expiration94 inchangée ; aucun test relancé. Résultats94–95 réutilisés,
+CI95 entière success désormais vérifiée. Publication/CI finale96, fusion et CI
+push main restent à vérifier. Revue assistée.

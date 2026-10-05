@@ -6,7 +6,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
-Trois jalons restent : M3–M5, environ 41–70 lots après93, dont16–27 pour M3.
+Expiration94 et synthèse95 publiées/relues, clôture96 en cours dans #20.
+Trois jalons restent : M3–M5, environ 39–68 lots après96, dont14–25 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -24,6 +25,9 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 95 publié : `ff8e2a1ad5476a61028b4836302959467c358e50`, #20.
+  Quatre tests Summaries, suite/vet/diff et revue code/docs sans blocage.
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295460030).
 - Lot 94 publié : `076275911319b29970b4bf56f3edfbbd20db8fec`,
   [PR #20](https://github.com/Coubiac/mailtrace/pull/20) créée/attachée en brouillon,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37294712566).
@@ -2845,13 +2849,26 @@ réception/removal/date/origines/empty/tie/unknown/unprojectable et aucune tenta
 en réserves fixes ; aucun état final/global ni adresses déduites du nrcpt.
 Quatre tests Summaries et suite correlation/vet/diff Windows pass ; fixture05
 attente corrigée après lecture (local maildir=delivered), pas correctif runtime.
-Revue en cours, travail non publié/non validé par CI95 ; état publié validé94,
-dernier état fusionné93. Doc immédiate ajoutée, DB/source/Web inchangés.
+Revue code/docs sans blocage, quatre tests par auditeur/overlay checkout propre
+pass, aucun fichier root modifié ni suite fondatrice relancée. Publiéff8e2a1,
+CI37295460030 success ; état publié avec CI réussie95, dernier état fusionné93.
+Doc immédiate ajoutée, DB/source/Web inchangés.
+
+## Lot 96 : clôture du chantier expiration et synthèse
+
+Résultat attendu : bilan cohérent, avis final/CI exacte, fusion #20 sur tête
+attendue puis CI push main. Runtime inchangé depuis94–95 relus. Documentation
+et estimation actualisées, avis documentaire final favorable sans delta runtime/
+tests depuis95, aucun test relancé. Publication/CI finale/fusion/main à vérifier.
+M3 restant14–25 :
+NOQUEUE/sessions, identités/continuité/liens, stockage/recalcul, recherche/rétention
+et intégration/mesures/clôture. Total39–68 avec M4/M5 ; fourchette de planification,
+aucun critère retiré. Aucun état final/global ni preuve de couverture nouvelle.
 
 ## Prochaine action concrète
 
-Terminer revue95, commit/push sur #20 et vérifier CI exacte. Puis lot96 : clôture
-de ce chantier expiration/réserves et fusion attendue/mainCI ; lot97 projetera les
+CI95 vérifiée success. Terminer revue documentaire96, commit/push sur #20, CI finale puis
+fusion attendue/mainCI. Lot97 projetera les
 rejets NOQUEUE distincts, sans les rattacher par PID seul à une file acceptée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`

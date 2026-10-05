@@ -2,7 +2,8 @@
 
 État au 5 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
 (PR #18, CI finale et main réussies). Projections pures M3 validées aux lots89–92,
-CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Référence de périmètre :
+CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration94 et
+synthèse95 publiées/relues dans #20 ; clôture96 en cours. Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -15,7 +16,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 93 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 96 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -31,10 +32,10 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : quatre projections pures89–92 fusionnées dans #19, CI finale et main réussies | Identités/continuité globales, complétude/expiration/NOQUEUE, liens prouvés, persistance/recalcul, recherche et rétention | 16–27 après clôture93 |
+| M3 — reconstruction | En cours : projections pures89–92 fusionnées #19 ; expiration94/synthèse95 publiées et relues #20, clôture96 en cours | Identités/continuité globales, complétude/NOQUEUE, liens prouvés, persistance/recalcul, recherche et rétention | 14–25 après clôture96 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après clôture93** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **41–70, soit environ 40–70** |
+| **Total après clôture96** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **39–68, soit environ 40–70** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -111,17 +112,22 @@ Les générations restent séparées par provenance, sans identité globale entr
 fichiers ni preuve de continuité. Dates inconnues/frontières douteuses restent
 non résolues ; aucun statut global, persistance de projection, recherche ou Web.
 
+Expiration explicite et comptes/réserves traités aux lots94–95 ; clôture96 en cours
+avec #20. Ils ne certifient pas la couverture et n'inventent pas de destinataires
+expired. Le résumé conserve les résultats des tentatives et les rapports qmgr
+distincts. Le travail de complétude/NOQUEUE inclut les critères applicatifs restants.
+
 La réestimation vient des comportements encore nécessaires, et non d'une simple
-soustraction de cinq au compteur. Ces regroupements restent à découper :
+soustraction de trois au compteur. Ces regroupements restent à découper :
 
 | Travail M3 restant | Lots estimés |
 | --- | ---: |
 | Identités globales, continuité et liens corroborés/candidats | 2–4 |
-| Complétude, expiration explicite et NOQUEUE/sessions | 3–5 |
+| Complétude restante et NOQUEUE/sessions | 1–3 |
 | Persistance transactionnelle des projections et recalcul | 4–6 |
 | Recherche indexée et rétention cohérente | 4–6 |
 | Intégration corpus, mesures et revue/clôture M3 | 3–6 |
-| **M3 restant** | **16–27** |
+| **M3 restant après clôture96** | **14–25** |
 
 M4 et M5 gardent leurs fourchettes. Le backlog applicatif #4/#5 est inclus dans
 les jalons suivants ; aucun critère de MVP n'est supprimé par ces clôtures.
