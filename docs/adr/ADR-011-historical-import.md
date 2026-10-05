@@ -7,7 +7,8 @@ CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI v
 Lots 75–79 manifest fusionnés dans #16, CI finale et main vertes. Lot 80 :
 préparation d'ingestor publiée dans #17, CI verte. Lot 81 CommitNext publié, CI
 verte et revue sans blocage. Lot 82 Binding publié/CI verte, revue sans blocage.
-Lot83 Attempt.Run un fichier développé et relu sans blocage ; orchestration globale future.
+Lot83 Attempt.Run un fichier publié/CI verte, revue sans blocage. Lot84 orchestration
+ordonnée et bornée développée, revue sans blocage. CLI/corrélation futures.
 
 ## Décision et séparation des étapes
 
@@ -57,7 +58,7 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 
 Les briques d'inspection/copie normale/gzip et préparation de fichier détenu existent.
 Migration/lecture/manifest fusionnés ; ingestion élémentaire développée dans #17.
-Pas de Source.Run import, CLI ni garantie de snapshot atomique. Les tests
+Source.Run import développé dans #17, sans CLI ni garantie de snapshot atomique. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
 
@@ -319,3 +320,25 @@ stable et batch conservé si erreur Sink. Interruption de contexte pendant prép
 reste running pour permettre reprise. Suffixe partiel : failed lastLF acquitté.
 Cleanup refusé est signalé, jamais suppression récursive/compensation du manifest
 déjà complete. Aucun retry automatique ni plusieurs fichiers dans ce pilote.
+
+## Orchestration globale du lot 84
+
+ImportSource.New valide toute la liste explicite avant IO : taille positive au
+plus MaxFiles (positif<=hardcap1000), durée globale positive, IDs run distincts et
+stables pour les retries, encodings choisis explicitement. Paramètres copiés et
+paths résolus une fois par NewAttempt ; pas de glob, inférence d'ordre, tri ou
+identité sur path. Bytes et ratio bornés par fichier, donc contenu total borné
+par le nombre fini d'inputs ; aucune somme int64 pouvant déborder n'est utilisée.
+
+Un unique contexte WithTimeout pour la liste entière, également limité par parent
+plus court ; aucun reset par fichier. Run séquentiel, une seule copie détenue,
+premier échec arrête sans commencer la suite. Tentatives complete restent durables,
+retry même liste/objet réessaie batch ambigu du fichier interrompu avant la suite.
+Run suivant reçoit un nouveau budget global ; aucun retry interne. TryLock par
+objet, écriture source sérialisée entre objets par caller, dépendances context-aware.
+Deadline entre opérations ; aucune promesse d'interrompre un syscall bloqué.
+
+Cette livraison est une bibliothèque, pas la CLI hors service actif. Déduplication
+par contenu seulement au sein d'une source import ; chevauchement FileSource encore
+incertain, pas de dédup automatique par hash de ligne. Projection canonique quel
+que soit l'ordre relève de M3, pas d'une inversion arbitraire de l'ordre des reads.

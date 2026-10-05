@@ -56,5 +56,18 @@ Terminal ID représente opération passée, aucun reopen/ranimation implicite.
 Cinq tests ciblés Windows/suite/vet/diff réussis avec SQLite réelle,
 revue indépendante sans blocage : cinq tests ciblés Windows passés par auditeur,
 code/tests/documentation relus, aucun contrôle supplémentaire nécessaire identifié.
-Publication/CI83 à vérifier ; audit assisté sans certification externe.
+Publié 1e6bc8f, CI 37265252402 success ; audit assisté sans certification externe.
 Liste/ordre/nombre/deadline globale encore exclus ; pas de CLI/service.
+
+## Lot 84 : ImportSource liste ordonnée et borne globale
+
+Deux nouveaux fichiers import_source.go/tests : liste explicite, IDs distincts
+stables, encodings explicites/pathabs, paramètres copiés, count positif<=MaxFiles
+<=1000 et durée positive, validation avant IO. Run séquentiel sous deadline commune,
+parent plus court respecté, une copie au plus, premier échec stop, retries par
+Attempt et complete sans reopen. Cinq tests ciblés/suite/vet/diff Windows réussis
+avec SQLite réelle, deadline globale/parent sans write via lookup bloqué, ordre/
+recompression/config/ACKretry/partial/limites/concurrence. Revue sans blocage : cinq
+tests ciblés exécutés par auditeur, aucun contrôle supplémentaire nécessaire.
+Publication/CI84 à vérifier. Dépendances context-aware et mono-écrivain requis ;
+pas CLI/corrélation. Audit assisté sans certification externe.

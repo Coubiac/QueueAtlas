@@ -14,9 +14,8 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
 Bibliothèque seule, sans CLI/service. Lots 80–82 publiés dans #17, revues sans
-blocage et CI vertes. Lot 83 Attempt.Run
-pour un fichier développé, cinq tests Windows/suite/vet/diff réussis, revue sans blocage.
-Orchestration globale ordre/nombre/durée à développer au lot84.
+blocage et CI vertes. Lot 83 Attempt.Run publié/CI verte. Lot84 ImportSource ordonné
+et borné développé, cinq tests Windows/suite/vet/diff réussis, revue sans blocage.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 M2 inclut les autres décisions encore ouvertes
@@ -24,6 +23,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 83 publié : `1e6bc8ff4e83c1a1df9ed96f902b8460f097ed96`, #17,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265252402).
+  Pilote un fichier et cleanup/retry, cinq tests/suite/vet/diff et revue sans blocage.
 - Lot 82 publié : `e8e54694f0f19d9823131deb282d91111fae13c7`, #17,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37264777146).
   Association/reprise prouvées, trois tests/suite/vet/diff et revue sans blocage.
@@ -2593,13 +2595,36 @@ après cleanup, restart/CP positif/changement/missing, préparation interrompue,
 deadline/config/cancel/concurrence ; foreign sentinel conservé, copie supprimée,
 erreur cleanup signalée sans compensation du complete durable. Suite/vet/diff
 Windows réussis. Revue terminée sans blocage, cinq tests ciblés exécutés par auditeur,
-publication/CI83 à vérifier. Dernier état publié validé : lot82.
+Publié `1e6bc8f`, CI 37265252402 success vérifiée.
+
+## Lot 84 : liste d'import ordonnée et bornée
+
+Résultat attendu : liste explicite dans l'ordre fourni, nombre maximum et deadline
+globale commune ; arrêter au premier échec, une seule copie privée à la fois.
+ImportSource.New valide liste entière avant IO, count<=MaxFiles<=1000 positif,
+MaxDuration positif, IDs distincts dans liste/stables aux retries, encoding explicite,
+paths résolus et paramètres copiés par NewAttempt. Limites content/ratio par fichier,
+contenu total également borné par nombre fini de fichiers, sans somme int64 débordante.
+Run garde un unique WithTimeout (parent plus court respecté), ordre sans tri/glob,
+TryLock pour objet et mono-écrivain caller ; premier échec stop, précédents complete
+restent durables et retries ne réouvrent pas ces paths. Une nouvelle invocation
+obtient un nouveau budget global, pas de retry interne. Limite temps entre appels
+context-aware ; syscall régulier bloquant non interrompu.
+
+Cinq TestImportSource* Windows/suite/vet/diff réussis : ordre z/a et paramètres
+copiés, gzip explicite/recompression identique sans parser, deadline même au Sink
+sur plusieurs fichiers, une copie à la fois ; ACK perdu sur second puis JSON exact
+avant troisième, premier path supprimé, partial failed arrêt/retry sans revival ;
+deadline globale/parent via state-reader bloqué, dix refus de liste/nil/concurrent.
+Revue indépendante sans blocage, cinq tests ciblés exécutés par auditeur, aucun
+contrôle supplémentaire nécessaire. Publication/CI84 à vérifier.
+Dernier état publié validé : lot83.
 
 ## Prochaine action concrète
 
-Publier83 dans #17 et vérifier la CI exacte ; revue terminée sans blocage.
-Lot 84 : liste explicite ordonnée, borne du nombre et deadline globale ;
-lot85 : synthèse/validation/fusion du chantier #17 et réestimation M2.
+Publier84 dans #17 et vérifier la CI exacte ; revue terminée sans blocage.
+Lot85 : synthèse/validation/fusion du chantier #17 et réestimation M2 ; issues #4/#5
+restent ouvertes pour diagnostics, chevauchement inter-source, CLI et projection M3.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
 
