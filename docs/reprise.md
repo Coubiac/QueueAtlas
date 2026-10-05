@@ -8,9 +8,13 @@ Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; c
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
 Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
 clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
-#22, clôture102 terminée, CI finale et main réussies. Clés103 publiées/CI verte #23,
-composition104 publiée/revue favorable et CI verte ; clôture105 en cours avant fusion.
-Trois jalons restent : M3–M5, environ37–65 lots au chantier103–105, dont12–22 pour M3.
+#22, clôture102 terminée, CI finale et main réussies. Clés103 et composition104
+fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 publiée
+dans #24/CI verte ; schéma107 publié/CI verte ; installation108 publiée/CI en attente,
+lecture/fraîcheur109 publiée/testée/relue, CI en attente. Clôture110 documentaire
+en préparation ; main contient encore la clôture105, PR #24 non fusionnée.
+Trois jalons restent : M3–M5, environ35–63 lots après107, dont10–20 pour M3,
+incluant validation108 ; estimation par comportements restants, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -28,6 +32,27 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 109 publié : `8f1ed84518f15a0005dccbcda242cdcc0662affc`, #24,
+  six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
+  [CI en file d'attente](https://github.com/Coubiac/mailtrace/actions/runs/37368041134).
+  Dernière tête avec CI verte107 ; derniers lots fusionnés105.
+- Lot 108 publié : `1edbed25b4bfbb914a7d5fa83f6d6fe58b1eba51`, #24,
+  six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
+  [CI en file d'attente](https://github.com/Coubiac/mailtrace/actions/runs/37367582155),
+  trois jobs queued observés ; ne pas la présenter verte ni fusionner sur cet état.
+- Lot 107 publié : `8d490396b0be7135a7fdec96a23e1d0c20a093a5`, #24,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37336085923).
+  Cinq tests schéma/migration, suite/vet/diff et revue code/docs sans blocage.
+- Lot 106 publié : `e2426b5c04273d96a81feccacc51c4205579647f`,
+  [PR #24](https://github.com/Coubiac/mailtrace/pull/24) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37333408517).
+  Six tests CorrelationFacts, suite/vet/diff et revue code/docs sans blocage.
+- Lot 105 terminé : [PR #23](https://github.com/Coubiac/mailtrace/pull/23) fusionnée,
+  tête `72ee7ef2710cc71dce8f1bd282d6e3098738326b`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37330738903).
+  Main `50ba6a782371962f130abe79de6d81c7f1aaddb9`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37331003071),
+  vérifiée REST. Branche suivante `codex/m3-projection-storage` depuis ce main.
 - Lot 104 publié : `e344ed773b1d98dc1a657dddfa701530705c05d9`, #23,
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37330343331).
   Quatre tests Projection, suite/vet/diff et revue code/docs sans blocage.
@@ -3036,19 +3061,98 @@ révision complète incluant configuration, sans amélioration des résultats de
 M3 encore incomplet ; les projections ne prouvent ni couverture ni continuité.
 Avis documentaire final indépendant favorable sur les trois documents modifiés,
 aucun test relancé. CI10437330343331 entière success ; publication105/CI finale,
-fusion/main à vérifier. Lancement
+fusion/main vérifiées : publié72ee7ef, CI finale37330738903 success,
+commentaire assisté5416700099/ready puis fusion #23 sur50ba6a7,
+CI push main37331003071 success vérifiée REST. Lot105 terminé. Lancement
 Actions104 absent après push et tête distante exacte confirmée ; #23 fermée puis
-rouverte pour redéclencher la CI sur la même tête. Second run37330437206 encore
-en cours au contrôle ; aucune nouvelle exécution locale ajoutée.
+rouverte pour redéclencher la CI sur la même tête. Second run37330437206 également
+success au contrôle final ; aucune nouvelle exécution locale ajoutée.
+
+## Lot 106 : lecture bornée des faits persistés
+
+Résultat attendu : sélection explicite et cohérente, observations persistées sans
+reparse/contexte inventé, refus total du snapshot dépassant la limite. CorrelationFacts
+développé en un SELECT paramétré, scope1..64 parties/limite1..4096, toutes origines
+des clés choisies, refs physiques sans insertionID. UTC NULL reste inconnu, notamment
+année2500 hors UnixNano ; instance persistée, jamais Host. Six tests, suite SQLite/
+vet/diff Windows pass. Revue a reproduit JSON null d'entrée devenant vide/boolfalse
+et Scan citant la valeur ; régressions root échouées avant correctif. JSON tokens
+stricts, maps nulles entières admises/entrées nulles et doublons refusés, Scan erreur
+fixe/annulation distincte. Six tests et suite pass après correctifs ; delta relu sans
+blocage, deux régressions via overlay isolé pass par auditeur (cinq tests initiaux
+réutilisés). Documentation validée sans blocage, aucun test relancé ; publié
+e2426b5 dans #24, CI37333408517 entière success vérifiée. Fusionné105.
+Aucun schéma/write de projection/source/UI changé ; coverage/continuity non prouvées.
+
+## Lot 107 : schéma des manifests de révision
+
+Résultat attendu : migration v4 conservant faits/checkpoints et contraintes des
+révisions/preuves. Cinq tables sans sérialisation dérivée ; périmètre/options BLOB,
+bounds/hashes/formats, current appartient au scope, memberships vers raw ET event,
+suppression/mutation des faits référencés refusées. Invalidation explicite obligatoire
+avant rétention ; aucune API de rétention encore livrée. Cinq tests nouveaux et
+compatibilité migrations existantes, suite SQLite/vet/diff Windows pass. Auditeur :
+cinq tests via overlay isolé pass, aucun blocage code/migration. Fact_count vs lignes,
+hash canonique et fraîcheur après ajout restent aux API futures. Documentation
+relue indépendamment sans blocage, aucun test relancé ; publié8d49039 dans #24,
+CI37336085923 entière success vérifiée. Publié validé107/fusionné105.
+
+## Lot 108 : installation transactionnelle du manifest
+
+Résultat attendu : relecture sous réservation d'écriture avant remplacement atomique,
+refus de snapshot obsolète. InstallProjection développé ; BuildProjection horsTX,
+verrou avant SELECT commun106, compare count/FactRef/fullRevision recalculée puis
+scope canonique versionné/optionsBLOB/révision/tous memberships/current dans un commit.
+Ancien manifest du scope supprimé, autres scopes conservés ; pas d'historique public.
+Six tests nouveaux, six tests lecteur106 refonte, suite SQLite/vet/diff Windows pass.
+Tests : réserves+ALLfacts/reopen/ordre/options, stale/missing/attribut/import tardif,
+rollbackancien+nouscope, BLOB/framing/empty, refus/annulation, verrou deux connexions.
+Fixture rollback corrigée pour provoquer l'erreur par révision, pas défaut runtime.
+Première revue interrompue par quota sans résultat ; reprise audit code/docs favorable,
+six nouveaux tests via overlay Windows isolé pass, root inchangé/fondations non relancées.
+Publié1edbed2 dans #24 ; CI37367582155 queued, trois jobs queued vérifiés.
+Dernier publié avec CI verte107/fusionné105.
+Manifest peut devenir obsolète après nouvelle ingestion ; aucun lecteur public encore.
+
+## Lot 109 : lecture de révision et fraîcheur
+
+Résultat attendu : lecture manifest/faits dans le même snapshot ; refus d'obsolescence,
+manifest incohérent, sortie partielle ou recalcul persistant implicite. CurrentProjection
+développé ; readonlyTX, parties/options/ordinals/owner/format/memberships/count exacts,
+facts sélectionnés puis BuildProjection comparé à InputRevision/fullRevision. Absent
+et NULL donnent foundfalse, manifest valide vide foundtrue ; imports tardifs stale,
+installation explicite obligatoire ; copie des sorties et réserves intactes.
+Six tests nouveaux et suite SQLite/vet/diff Windows pass ; conversion window privée
+dans DB malformée ajoutée puis test malformed ciblé pass, zéro PII dans erreur.
+Deux connexions WAL testent snapshot ancien cohérent pendant remplacement puis
+nouvelle révision visible à la prochaine lecture. Revue code/docs indépendante sans
+blocage, six tests via overlay isolé et delta malformed9pass, root inchangé ; docs
+validées sans rerun. Publié8f1ed84 dans #24, CI37368041134 queued.
+Dernier publié109/CI queued, dernier CI verte107/fusionné105.
+
+## Lot 110 : clôture documentaire du chantier stockage
+
+Résultat attendu : bilan106–109 et README fidèles, revue finale, CI exacte puis
+fusion #24 et CI main. Runtime inchangé depuis109 relu ; tests/audits déjà consignés
+réutilisés sans relance locale. Quatre comportements en bibliothèque, tous faits
+référencés, pas de sérialisation dérivée ni recalcul implicite. M3 reste incomplet :
+continuité, recherche/rétention et intégration/mesures encore à réaliser ; M4/M5 futurs.
+Documents de clôture relus indépendamment, avis favorable après actualisation d'une
+phrase de l'avancement sur lecteur109 déjà publié ; aucun test relancé. Publication110
+et CI finale à vérifier.
+CI10837367582155 et10937368041134 toujours queued au dernier contrôle ; la clôture
+et la fusion ne sont pas terminées. Dernière tête CI verte107, main105 inchangé.
 
 ## Prochaine action concrète
 
-Terminer clôture105 : commit/push sur #23
-et CI finale, fusion sur tête attendue puis CI main. Ensuite lecture/persistance
-transactionnelles, sans fusion d'origines ou de parcours non prouvée.
+Commit/push110 dans #24 puis vérifier CI exacte110 ; revue documentaire terminée.
+Les jobs108/109 attendent les runners GitHub ; ne pas annoncer une réussite avant
+résultat. Fusionner #24 seulement après CI finale verte/revue, puis vérifier CI main.
+Recherche/rétention et continuité restent aux prochains lots ; aucun nouveau runtime
+nécessaire pour clôturer ce chantier. Pas de tests optionnels des fondations à relancer.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-identities.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-storage.
 
 ## Suite à découper au fil des reprises
 
