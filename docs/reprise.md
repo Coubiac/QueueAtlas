@@ -14,8 +14,9 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation normale/gzip et copie privée sont fusionnés dans main (#9–15).
 Bibliothèque seule, sans CLI/service. Lots 75–76 identité/migration/lecture publiés,
-CI vertes. Lot 77 trace de préparation développée/relue sans blocage, vérifications
-Windows réussies ; publication/CI à vérifier.
+CI vertes. Lot 77 trace de préparation publiée/CI verte ; lot 78 association et
+progression développées/relues sans blocage, vérifications Windows réussies,
+publication/CI à vérifier.
 Critère de fin du chantier : identité stable, lecture source-scopée et écritures
 atomiques/réessais du manifest, CI verte et PR cohérente fusionnée.
 Ingestion dans un chantier distinct. M2 inclut les autres décisions encore ouvertes
@@ -23,6 +24,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 77 : publié `6fbf38a8d8df05122c4c7771e97b5a9182765b39`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261638578), #16.
+  Revue indépendante sans blocage, quatre tests ciblés/suite/vet/diff Windows réussis.
 - Lot 76 : publié `91bfdaa717bc6eb30a8b222eaa7fe10cdd6ef097`,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261183931), #16.
   Deux contournements NUL reproduits/corrigés, revue terminée sans blocage,
@@ -2454,13 +2458,33 @@ reopen, IDgloballegacyforeign/stale, triggerinsert/update rollback avec source, 
 dix-huit refus dont dates wrap et contenu sans preuve. Revue indépendante terminée
 sans blocage, quatre tests Windows/diff propres, aucun edit ni risque supplémentaire
 identifié dans cette portée.
-Publication/CI à vérifier, dernier état publié validé = lot76 `91bfdaa`.
+Publié `6fbf38a`, CI 37261638578 success, #16 réutilisée.
+
+## Lot 78 : association et progression du manifest
+
+Résultat attendu : contenu validé associé une fois puis records/checkpoint/manifest
+commités ensemble sans saut ni faux complete. Sink implémenté sans fichier/parser/
+worker. Metadata immuable et concordante entre tentatives d'une origine ; expectedstate
+et CPavant exacts, nouveau zéro explicite, positif seulement persisté. Records
+contigus Before→Target, CPaprès exact y compris anchor proposé ; complete fullsize/
+noPartial, failed possible. Aucune preuve EOF/CRC/anchor par le Sink.
+Cinq tests initiaux Windows/suite/vet/diff réussis : deux lignes identiques distinctes,
+retry/reopen/réimport, triggerfinalrollback records/events/CP/source, treize divergences
++ CPpréalable corrompu/anchor mêmeoffset différent, vide/partial et sept refus association.
+Revue a trouvé ACKerroné : Target déjà identique ignorait anchor différent mêmeoffset.
+Régression deux sous-cas zéro/cinq échouante puis corrigée ; CP durable ≥Target et
+anchorégaloffsetcomparé même au retry ; ancienne tentative après CP partagé plushaut
+réessaye exactement sans duplication. Six tests ciblés/régression/suite/vet/diff
+Windows repassent. Revue finale sans blocage : auditeur cinq tests initiaux puis
+régression corrigée exécutés Windows, diff propre. Test ciblé supplémentaire de
+réutilisation contenu (taille/partial changés et origine stockée incohérente) passé,
+code runtime inchangé après revue. Publication/CI à vérifier. Dernier état publié validé
+= lot77 `6fbf38a`.
 
 ## Prochaine action concrète
 
-Publier/vérifier CI du lot 77 dans #16.
-Lot 78 : association du contenu validé puis progression records/checkpoint/manifest
-atomiques ; lot 79 clôture/fusion cohérente avant importeur dans son chantier.
+Publier/vérifier CI du lot 78 dans #16.
+Lot 79 : synthèse/CI exacte/fusion du manifest puis importeur dans son chantier.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-manifest.
 

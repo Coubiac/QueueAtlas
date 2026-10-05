@@ -60,3 +60,28 @@ source rollback, cancel et dix-huit refus contenus/provenance/dates/immutabilit�
 Revue indépendante terminée sans blocage : quatre tests ciblés Windows/diff propres,
 contrat/rollback/immutabilité/retry relus, aucun edit. Publication/CI à vérifier. Mono-écrivain et ownership
 du batch au caller, audit assisté sans certification externe.
+
+## Lot 78 : association et progression atomiques
+
+Contenu attaché une fois ou création préparée au checkpoint persisté, puis progression
+records contigus/CP/manifest dans le même Tx. Source/ID/fingerprint/noPhysical et
+contenu immuables, metadata concordante entre tentatives ; expectedstate/CPavant
+contrôlés avant writes, CPaprès égal à Target et anchor proposé si présent.
+Complete taille entière/noPartial, failed au dernier offset acquitté ; Sink ne
+prouve pas EOF/CRC/anchor/fichier.
+
+Cinq tests initiaux Windows/suite/vet/diff réussis : deux lignes identiques à des
+offsets distincts, retry/reopen/réimport, finaltrigger rollback records/events/CP/source,
+treize divergences et mauvaisCPavant/anchorégaloffsetdifférent, vide/partial, sept
+refus d'association. Anciens Preparation/Run repassés après extension.
+
+Revue indépendante : défaut ACK trouvé, Target déjà identique acquittait une ancre
+différente au même offset ignorée par upsert. Régression deux sous-cas zéro/cinq
+échouante, puis corrigée : CP durable au moins au Target, à égaloffset comparer
+l'anchor proposé même lors des deux retours anticipés. Ancien retry exact après
+progression partagée d'une autre tentative reste accepté, sans duplication.
+Six tests ciblés/régression/suite/vet/diff Windows repassent. Revue finale sans blocage,
+auditeur régression corrigée exécutée Windows et diff propre. Test supplémentaire
+réutilisation contenu : taille/partial changés ou fingerprint/device stockés
+incohérents refusés, quatre sous-cas Windows passent ; runtime inchangé après revue.
+Publication/CI à vérifier. Mono-écrivain/preuves/batch possédé par caller requis.

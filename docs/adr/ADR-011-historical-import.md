@@ -3,8 +3,8 @@
 Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer lot 72
 et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
 Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
-CI verte ; lot 76 migration/lecture publié/CI verte. Lot 77 trace de préparation
-développée ; association/progression de contenu et importeur futurs.
+CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI vertes.
+Lot 78 association/progression de contenu développées ; importeur futur.
 
 ## Décision et séparation des étapes
 
@@ -37,8 +37,8 @@ Le lecteur de lignes conserve ses bornes et ne normalise pas seulement un suffix
    Ne pas déduire une identité de contenu d'un chemin, inode ou en-tête gzip ;
    recompressions/renommages identiques doivent pouvoir retrouver la même origine.
 3. Lot 76 : migration/lecture source-scopée du manifest développées, v1/v2 inchangés.
-   Suite écriture : lier provenance/offsets/digest, inscrire running/failed et
-   n'autoriser complete qu'après validation finale, dans la transaction du Sink.
+   Lots 77–78 : écriture de préparation puis contenu/progression développées dans
+   le Commit du Sink. Application future : prouver EOF/ancres avant complete.
 4. Application du contenu validé à parser/Sink, reprise du checkpoint exact,
    depuis la copie privée validée. Une inspection n'est pas un snapshot filesystem
    et ne prouve pas un second passage identique de l'entrée originale.
@@ -53,7 +53,7 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 ## Limites actuelles
 
 Les briques d'inspection/copie normale/gzip et préparation de fichier détenu existent.
-Migration/lecture du manifest publiées, écriture de préparation développée. Pas d'ingestion,
+Migration/lecture et préparation publiées, progression développée. Pas d'ingestion,
 CLI, déduplication ni garantie de snapshot atomique. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
@@ -151,11 +151,12 @@ source-scopé, l'identité de contenu immuable ; les lecteurs n'interprètent pa
 le chemin comme preuve. Préparation échouée sans digest valide ne doit pas produire
 une origine ni des records ; la tentative peut être tracée failed sans contenu.
 
-L'écriture du manifest sera ensuite intégrée au même Commit que records/checkpoint,
+L'écriture du manifest est intégrée au même Commit que records/checkpoint,
 avec réessai identique après ACK perdu, sans avance séparée. Complete exigera EOF
 validé, absence de suffixe partiel et offset égal à la taille ; cette validation
-ne se déduit pas du SHA seul. Ces comportements SQL et l'application ne sont pas
-encore implémentés au lot 77. Mono-écrivain/service arrêté au MVP. Aucune déduplication
+ne se déduit pas du SHA seul. Ces contrôles SQL existent au lot 78 ; application
+future : Sink vérifie metadata/progression, preuve du
+fichier à l'appelant. Mono-écrivain/service arrêté au MVP. Aucune déduplication
 inter-source prouvée par ImportOriginID, aucun chemin fourni par l'API Web.
 
 ## Migration et lecteur du lot 76
@@ -198,3 +199,36 @@ pas acceptés avec une trace de préparation ; records/checkpoints d'import sans
 changement explicite du manifest refusés. La lecture interne utilise le même Tx.
 Le lot suivant ajoutera association de contenu et progression atomique ; aucune
 lecture de fichier ni appel PrepareRegular/normalizer n'est effectué par ce Sink.
+
+## Contenu et progression transactionnelle du lot 78
+
+ImportChange peut associer une fois un Content à un running sans contenu, ou créer
+une tentative préparée running à un checkpoint existant concordant. Aucun record
+au moment d'associer. Contenu immuable dans le run ; taille/partial/SHA doivent
+aussi concorder entre tentatives du même contenu/source. Renommage représenté
+par nouvelle tentative avec même origine, chemin/début de chaque run immuables.
+
+Origine fournie au plus une : ID dérivé, chemin de tentative, fingerprint sha256,
+device/inode vides. Origine persistée également contrôlée même si non fournie.
+Avant records/checkpoints, expectedstate et checkpoint de départ vérifiés dans Tx :
+offset Before pour progression, Target pour association ; nouveau zéro exige
+registration explicite, positif exige checkpoint existant. Aucun saut arbitraire
+ni réparation de position incohérente.
+
+Records contigus depuis Before.LastOffset jusqu'à Target.LastOffset, même origine.
+Checkpoint fourni au plus un, même offset/origine et anchor non vide. Après writes,
+checkpoint durable doit égaler Target et l'anchor proposé si présent ; un anchor
+différent à offset égal ne peut pas être ignoré puis acquitté. Manifest, records,
+events, checkpoint et source rollback/commit ensemble.
+
+Target déjà identique accepte réessai après ACK perdu, avec CP durable au moins à
+son offset. À offset égal, vérifier aussi l'anchor fourni. Une tentative ultérieure
+peut avoir avancé le CP partagé ; l'ancien Target reste accepté sans le modifier.
+Complete exige taille exacte et aucun suffixe partiel. Vide validé peut devenir
+complete à zéro après association ; suffixe partiel peut laisser des records
+complets puis une tentative failed au dernier offset acquitté.
+
+Sink ne calcule pas le digest, ne valide pas gzip/EOF, ne décode pas l'anchor et ne
+relit pas le fichier. Preuves, bornes et batch conservé restent à l'importeur futur ;
+un état SQL canonique ne certifie pas le contenu. Mono-écrivain, aucune compensation
+sur erreur d'ACK.

@@ -203,6 +203,11 @@ func (s *Store) Commit(ctx context.Context, batch source.Batch) error {
 			return ErrFollowStateConflict
 		}
 	}
+	if batch.ImportChange != nil {
+		if err := prepareImportProgress(ctx, tx, batch); err != nil {
+			return err
+		}
+	}
 	for _, record := range batch.Records {
 		result, err := tx.ExecContext(ctx, `INSERT INTO raw_records(source_id, generation_id, start_offset, end_offset, raw, read_error, observed_at_ns)
 			VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT(source_id, generation_id, start_offset) DO NOTHING`,
@@ -251,7 +256,7 @@ func (s *Store) Commit(ctx context.Context, batch source.Batch) error {
 		}
 	}
 	if batch.ImportChange != nil {
-		if err := writeImportChange(ctx, tx, *batch.ImportChange); err != nil {
+		if err := writeImportChange(ctx, tx, batch); err != nil {
 			return err
 		}
 	}

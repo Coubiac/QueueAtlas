@@ -46,4 +46,5 @@ source/origine (ADR-011), sans attribuer les lignes anciennes. Table reconstruit
 valeurs v1 préservées, contraintes/FK composites et index dans la même transaction
 que l'historique et user_version. SQL v1/v2 conservés, base plus récente refusée
 avant changement WAL. Lecture source-scopée ; lot 77 ajoute source+trace running/failed
-de préparation dans le même Commit. Association/progression de contenu futures.
+de préparation dans le même Commit. Lot 78 ajoute association/progression avec
+records/events/checkpoint atomiques ; preuves de contenu à l'importeur futur.

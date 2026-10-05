@@ -52,8 +52,12 @@ type ImportStateReader interface {
 // for retry after lost acknowledgment. The source owns both values and pointers,
 // keeps the same batch on retry and serializes this source's writes. Run identity,
 // path and creation time are immutable; failed/complete states cannot be revived.
-// The initial persistence step accepts unprepared running creation and its
-// transition to failed only; attaching validated content is a separate step.
+// Content can be attached once after whole-copy validation. Later advancement
+// requires contiguous records from Before.LastOffset and the matching checkpoint
+// in the same batch. A new prepared attempt may start at an existing verified
+// checkpoint. Completion requires all content acknowledged, without a partial
+// suffix. The source proves content/EOF/anchors; the Sink verifies metadata and
+// atomic progress, and never opens an input file.
 type ImportChange struct {
 	Before *ImportRun
 	Target ImportRun
