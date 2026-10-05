@@ -12,11 +12,10 @@ planification incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
-M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
-end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
-Bibliothèque seule, sans CLI/service. Lots 80–82 publiés dans #17, revues sans
-blocage et CI vertes. Lots83–84 pilote/list ordonnée publiés, CI vertes. Lot85 clôture
-documentaire et référence isolée vérifiée, ready/fusion après CI finale à vérifier.
+M1 (parseurs), socle SQLite M2, FileSource/récupération/end et import normal/gzip
+ordonné en bibliothèque fusionnés dans main (#9–17). Aucun CLI/service.
+Lot85 clôturé et main/CI vérifiés. Lot86 diagnostic à vocabulaire fixe développé,
+quatre tests Windows/suite/vet/diff réussis ; correctif de repli confirmé par auditeur.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 M2 inclut les autres décisions encore ouvertes
@@ -24,6 +23,12 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 85 terminé : [PR #17](https://github.com/Coubiac/mailtrace/pull/17) fusionnée,
+  tête `5b28ee79920b859e1bd13babd15de3aca6c8b3bd`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265820369).
+  Main `fcb6ad9bfdc488c21cdf352d8bef2ada9487c574` et
+  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265917012),
+  vérifiée REST. Branche `codex/m2-source-diagnostics` depuis ce main.
 - Lot 84 publié : `84f091b86c26a9bf046595d1aa74574612bf8f81`, #17,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265578493).
   Liste/ordre/borne globale, cinq tests/suite/vet/diff et revue sans blocage.
@@ -2630,15 +2635,40 @@ Résultat attendu : synthèse des revues scellées80–84, CI exacte finale, rea
 de clôture sans blocage, versions runtime/tests identiques, aucun risque nouveau
 nécessitant rerun. Coordinateur compare neuf fichiers Go/test entre root et isolé :
 SHA256 tous identiques. Documentation/README/estimation actualisés, runtime inchangé.
-CI84 success, dernier état publié validé84. Publication/CI85/fusion/main à vérifier.
+CI84 success ; clôture publiée `5b28ee7`, CI finale 37265820369 success,
+ready/fusion #17, main `fcb6ad9` et CI push 37265917012 success vérifiés REST.
 Déduplication source import par contenu uniquement ; FileSource overlap incertain,
 CLI et projection canonique M3 non livrées, issues #4/#5 restent ouvertes.
 
+## Lot 86 : diagnostic fixe missing/gap/degraded sans PII
+
+Résultat attendu : qualifier observation et erreur déjà exposées, sans mutation de
+source ni divulgation de données, pour futurs doctor/métriques. Diagnose développé :
+PathStatus whitelist, Failure enum fixe, bool Missing/Gap/Degraded ; aucun path,
+ID/offset, chaîne d'erreur ou contenu journal. LastPathStatus peut être ancien,
+ce rapport ne certifie ni santé courante ni perte d'octets. Missing par observation
+ou ErrCurrentMissing ; fsNotExist générique ne prouve pas absence du courant.
+Gap = tag de continuité vérifiée refusée, pas scan incomplet/ambigu/limité ni seul
+changement/troncature. Context stop pur non dégradé, contexte joint à vrai échec
+conserve l'échec. Pas d'appel Error/Is/As ; Unwrap des dépendances doit terminer.
+Parcours d'erreur borné64 nœuds y compris nil, cycle/branches invalides et path
+invalide rendent Failure error ; flags déjà rencontrés restent rapports séparés.
+
+Quatre TestFileDiagnostic* Windows réussis : décisions de scan causales, missing
+avec lecture retenue non dégradée, changes sans fauxgap, EOF/fsNotExist erreurs,
+mix contexte/permission/gap/missing/capacité, données hostiles non exposées, cycles/
+branches nil bornés. Revue a trouvé repli non prioritaire après tag gap/missing ;
+régression mixte échoue avant fix puis quatre cas réussissent avec flag unverified.
+Suite/vet/diff réussis, delta correctif relu et quatre cas exécutés par auditeur
+sans blocage ; publication/CI86 à vérifier.
+Dernier état publié validé = main après85, pas ces diagnostics.
+
 ## Prochaine action concrète
 
-Publier85, vérifier CI exacte puis ready/fusion #17 et CI main.
-Lot86 : qualifier les diagnostics de source missing/gap/degraded sans PII à partir
-des décisions déjà exposées ; chevauchement inter-source reste incertain sans preuve.
+Publier86 dans une PR cohérente de diagnostics M2, vérifier CI ; revue terminée.
+Lot87 : exposer explicitement l'incertitude de chevauchement inter-source et les
+conditions d'exploitation/reprise dans le bilan M2, sans fusion de provenance.
+Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
 

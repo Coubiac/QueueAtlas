@@ -1,7 +1,7 @@
 # Avancement et estimation jusqu'au MVP
 
-État au 5 octobre 2026, après développement/revues de l'import ordonné aux lots 80–84,
-clôture/fusion du chantier au lot 85 à vérifier dans le point de reprise. Référence de périmètre :
+État au 5 octobre 2026, après import ordonné fusionné au lot85 (PR #17,
+CI finale et main réussies). Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -27,7 +27,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | --- | --- | --- | ---: |
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
-| M2 — ingestion | En cours : SQLite/FileSource/récupération/end et manifest fusionnés (#10–16) ; import ordonné/reprise développé/relu (#17, fusion à vérifier) | Compléments/diagnostics de source, état incertain des chevauchements et bilan de sortie M2 | 2–5 |
+| M2 — ingestion | En cours : SQLite/FileSource/récupération/end et import ordonné/reprise fusionnés (#10–17) | Compléments/diagnostics de source, état incertain des chevauchements et bilan de sortie M2 | 2–5 |
 | M3 — reconstruction | À réaliser | Instances/générations, destinataires/tentatives, NOQUEUE, liens prouvés, recalcul, recherche indexée et rétention validés sur corpus | 18–30 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
@@ -72,14 +72,14 @@ traités avant l'application. Ce chantier n'est pas encore un importeur complet.
 Le chantier d'application est développé aux cinq lots 80–84 : constructeur prouvé,
 CommitNext/ACK/EOF, association au CP partagé, pilote d'une tentative propriétaire,
 puis liste ordonnée avec deadline globale et nombre borné. Le lot85 clôture les
-revues/CI et la fusion, soit six lots dans la fourchette 4–6 annoncée après79.
+revues/CI et la fusion sur `fcb6ad9`, soit six lots dans la fourchette 4–6 annoncée après79.
 La revue a précisé qu'une sentinelle EOF du Sink ne prouve pas une fin acquittée ;
 la régression et le pilote vérifient le status du run. Aucun défaut runtime non
 corrigé identifié ; [synthèse](reviews/import-application.md).
 
 Critères développés/vérifiés : contenu entier validé ingéré, reprise/rejeu par
 provenance, pas de faux complete en cas de checksum/partial/annulation, bornes
-de fichiers/durée. Statut de fusion/main à vérifier au point de reprise.
+de fichiers/durée. CI finale37265820369 et push main37265917012 success vérifiées.
 Compléments du suivi #4 et diagnostics à valider séparément. Bibliothèque seule
 jusqu'aux jalons CLI/service ; aucune CLI import livrée par ce chantier.
 Les ensembles inconnus multiples restent refusés ; leur résolution administrative

@@ -84,3 +84,5 @@ Limites : mono-écrivain et parents protégés, deadline coopérative, syscall/c
 potentiellement bloquant, résidu cleanup refusé signalé. Provenance/déduplication
 source-scopées ; overlap avec FileSource incertain, pas de projection canonique
 avant M3. Bibliothèque Go sans CLI/service. Audit assisté sans certification externe.
+Clôture publiée 5b28ee7, CI37265820369 success ; #17 ready/fusion sur main fcb6ad9,
+CI push37265917012 success vérifiée REST. Les contrôles ci-dessus ont précédé la fusion.

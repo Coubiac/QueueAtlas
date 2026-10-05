@@ -449,3 +449,21 @@ Absent est vérifié par NewIngestor avant acquisition, sans preuve de préfixe
 retenue aux polls. Une réécriture entre vérification/acquisition et consommation
 peut donc échapper aux contrôles de ce cas. Étendre la preuve persistante à ce
 démarrage est un comportement distinct, non livré par cette PR.
+
+## Diagnostic à vocabulaire fixe du lot86
+
+Diagnose(LastPathStatus, error) compose les rapports existants sans modifier la
+source, choisir une génération ou stocker des données. Path et Failure sur enum
+fixe, bool Missing/Gap/Degraded, aucun path/ID/offset/error-string/log. Observation
+peut être ancienne et lectures séparées non atomiques ; pas de certificat de santé.
+Missing observé avec ancien descriptor lisible peut rester non dégradé. Absence
+startup explicite dégrade ; fsNotExist générique ne désigne pas forcément courant.
+Gap tag de reprise vérifiée refusée, pas preuve de perte/suppression ; décisions
+incomplètes/ambiguës/limitées et changes/truncation seuls ne deviennent pas gap.
+
+Contexte pur annulé/expiré : cause fixe, non dégradé. Contexte joint à une vraie
+erreur : préserver l'échec. Pas de lecture de chaînes Error/Is/As ; parcours Unwrap
+borné64 nœuds, méthodes des dépendances terminantes requises. Path invalide ou
+arbre malformé/tronqué : Failure error prioritaire, flags rencontrés conservés
+comme rapports ; pas d'echo de labels libres. Futurs doctor/métriques peuvent
+consommer ces valeurs, aucun exporter/compteur ou CLI livré par cette fonction.

@@ -8,7 +8,8 @@ Lots 75–79 manifest fusionnés dans #16, CI finale et main vertes. Lot 80 :
 préparation d'ingestor publiée dans #17, CI verte. Lot 81 CommitNext publié, CI
 verte et revue sans blocage. Lot 82 Binding publié/CI verte, revue sans blocage.
 Lots83–84 pilote et orchestration ordonnée/bornée publiés, CI vertes et revues sans
-blocage. Lot85 clôture documentaire, CI finale/fusion à vérifier. CLI/corrélation futures.
+blocage. Lot85 clôturé, #17 fusionnée sur fcb6ad9, CI finale/main vertes.
+CLI/corrélation futures.
 
 ## Décision et séparation des étapes
 
