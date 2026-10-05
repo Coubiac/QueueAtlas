@@ -33,6 +33,9 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
   [PR #19](https://github.com/Coubiac/mailtrace/pull/19) créée/attachée en brouillon,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37289790856).
   Résultat d'une tentative, deux défauts de preuve reproduits/corrigés/relus.
+- Lot 90 publié : `83c101141989ad156301a664326a562daa0441f5`, #19,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37290765408).
+  Index candidat/provenances séparées, quatre tests/revue sans blocage.
 - Lot 87 publié : `0b3e362fe9ccfc40ce87a72bba78e113702c6beb`, #18,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37287896648).
   Test portable Windows et intégration FileSource Linux réussis, revue sans blocage.
@@ -2749,12 +2752,31 @@ Other garde NOQUEUE/malformed/unknown ; Host/MessageID jamais clés.
 Quatre tests/suite correlation/vet/diff Windows réussis, permutations/dates égales,
 2hôtes/mêmeID/doublonMessageID, overlapincertain, conservation/refus/limites/copies.
 Revue finale sans blocage, quatre tests exécutés par auditeur : pass.
-Publication/CI90 à vérifier. Dernier état publié validé=lot89.
+Publié `83c1011`, CI37290765408 success ; dernier état publié validé=lot90.
+
+## Lot 91 : générations candidates après frontières observées
+
+Résultat attendu : séparer les réutilisations d'un QueueID dans un flux, conserver
+tousfaits et les frontières non prouvées sans exposer de génération partielle.
+BuildGenerations développé sur PartitionFacts validé/borné, origins indépendantes.
+Premierfait ancre révisable ; Removed seulement observation. Nouveaucycle après
+removal exige réception+dateSTRICTsupérieure soushypothèses ; dateégale/noReceipt/
+duplicateRemoved, cleanupMessageIDdivergents ou undated =>fluxENTIERUnresolved.
+ReceiptObservedpremierfait, HasNonExplicitTime et CrossStreamUncertain conservés.
+Cinq tests Windows réussis : recyclage13/permutations/copies, horsordre/partial/
+retries/encours, intersourcegardé, cinq ambiguïtés conservation, NOQUEUE/marqueurs.
+Revue trouve frontier physique masquée par dates : receipt postRemoved antidaté
+rejoignait anciencycle, régression échoue avant fix. Passe physique maxdate/removal
+refuse contradictions dans les deux sens ; trois cas régression et horsordre16
+réussissent après correction. Suite correlation/vet/diff Windows finale réussis,
+delta relu sans blocage, trois scénarios exécutés par auditeur : pass.
+Publication/CI91 à vérifier.
+Aucune génération globale interorigine, statutglobal, lecteurDB ou persistance.
 
 ## Prochaine action concrète
 
-Publier90 sur #19 et vérifier CI exacte. Ensuite génération observée
-après frontière explicite sans fusion d'ID recyclé ni ordre temporel inventé.
+Publier91 sur #19 et vérifier CI exacte. Puis tentatives
+par destinataire sous limites/incertitudes, avant persistance ou regroupement global.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-recipient-attempts.

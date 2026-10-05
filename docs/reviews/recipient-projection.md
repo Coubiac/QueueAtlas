@@ -46,4 +46,24 @@ conservation tousfaits/NOQUEUE/undated, limites et refus de snapshot sans résul
 partiel. Références par valeur, pas maps/dates empruntées. Deux corrections de tests
 avant validation : mapnil de removed et fixture26 comportant deux lignes reconnues.
 Revue finale sans blocage, quatre tests exécutés par auditeur sur version finale :
-pass. Publication/CI90 à vérifier. Aucun stockage/source/Web changé.
+pass. Publié83c1011, CI37290765408 success. Aucun stockage/source/Web changé.
+
+## Lot91 : frontières de générations candidates dans un flux
+
+BuildGenerations appelle PartitionFacts ; aucune fusion entre origins/sources,
+ancre First révisable et Removed seulement observé, pas succès/complet. Réception
+après removal et date strictement supérieure seules autorisent le nouveaucycle.
+Undated, frontière non prouvée ou MessageIDs cleanup divergents sans removal rendent
+tout le flux concerné Unresolved avec tousfaits, aucune génération partielle.
+Dates restent hypothèses ; crossStream/incertitudes conservées.
+
+Cinq tests Windows pass : IDrecyclé13 deuxcycles +25permutations et copies ;
+horsordre16/partial17/retries08/encours18, sourcesidentiquestexte distinctes ;
+cinq ambiguïtés sans perte/présomption, NOQUEUE/datesexplicites/refus/soutien des
+quatre marqueurs réception. Revue trouve retrait physique masqué par tri des dates :
+receipt postRemoved antidaté rejoignait anciencycle. Régression échoue avant fix.
+Passe physique triéeoffset puis linéaire maxdate/removal refuse contradictions
+dans les deux sens, en conservant horsordre interne. Trois cas régression passent
+après fix. Suite correlation/vet/diff Windows finale réussis ; delta relu sans blocage,
+régression ciblée trois scénarios exécutée par auditeur sur Windows : pass.
+Publication/CI91 à vérifier. Pas de projection DB ni état global.

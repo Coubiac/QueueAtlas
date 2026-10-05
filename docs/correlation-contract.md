@@ -73,9 +73,40 @@ Le classement des sources/origines est lexical, jamais une chronologie de rotati
 NOQUEUE, unknown et autres faits hors file restent dans `Other` ; rien n'est supprimé.
 Le résultat contient des références par valeur, aucune map/date empruntée au caller.
 
+## Lot91 : générations candidates dans un flux
+
+`BuildGenerations` réutilise le snapshot borné/validé et garde les flux séparés.
+Une génération candidate a un premier fait (ancre révisable), ses références et
+l'éventuel fait `removed`. Celui-ci ne prouve ni succès, ni couverture complète.
+`ReceiptObserved` décrit le premier fait de réception : cleanup/message-id,
+smtpd/client, pickup/uid ou qmgr/from+size+nrcpt sans statut. Ce booléen ne garantit
+pas que tous les événements de création sont présents.
+
+Après `removed`, une nouvelle génération candidate exige une réception observée
+à une date strictement postérieure, selon les hypothèses conservées. Date égale,
+activité sans réception ou seconde removal : frontière non prouvée. Plusieurs
+Message-IDs cleanup divergents sans frontière removal rendent aussi l'identité
+ambiguë ; Message-ID n'est jamais une clé de fusion. Un fait non daté dans le flux
+empêche ce découpage temporel. Dans ces cas, **tout le flux de cette file est
+Unresolved**, sans générations partielles confiantes ni faits perdus.
+
+Le tri temporel ne peut masquer une frontière physique contradictoire : un fait
+avant removal ne peut être daté après lui ; tout fait après removal doit avoir une
+date strictement ultérieure. Sinon le flux entier reste boundary_unproven. Les
+dates hors ordre au sein d'un cycle restent admises ; cette vérification ne prouve
+pas la justesse de l'horloge.
+
+Les motifs fixes sont undated, boundary_unproven et conflicting_message_ids.
+Les autres flux restent indépendants. HasNonExplicitTime indique les dates
+configurées/inférées plutôt qu'explicites ; même une date explicite ne certifie pas
+la synchronisation de l'horloge. CrossStreamUncertain reste présent : aucune
+continuité entre générations de fichiers, rotation et import n'est certifiée ici.
+Les références ordonnées sont déterministes pour un snapshot donné, pas une
+identité globale persistante : l'arrivée de faits plus anciens peut réviser l'ancre.
+
 ## Suite concrète
 
-L'index sépare les instances et flux ; établir ensuite les générations avant de regrouper les résultats
-par destinataire. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Projeter toutes les tentatives par destinataire dans ces générations candidates,
+avec résultat observé prudent et réserves de complétude. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.
