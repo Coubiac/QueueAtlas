@@ -2,8 +2,8 @@
 
 Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer lot 72
 et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
-Lot 74 : synthèse finale sans changement runtime, fusion après CI exacte finale.
-Importeur et manifest non implémentés.
+Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 : identité de contenu
+source-scopée développée ; importeur et manifest non implémentés.
 
 ## Décision et séparation des étapes
 
@@ -44,8 +44,8 @@ Le lecteur de lignes conserve ses bornes et ne normalise pas seulement un suffix
 5. CLI import hors service actif, ordre fourni sans tri implicite, recalcul M3,
    contraintes globales et scénarios de chevauchement avec suivi continu.
 
-La stratégie d'identité et l'évolution SQL seront précisées avant leur lot
-d'implémentation. Pas de déduplication sur seul hash de ligne. Reconnaître un
+La stratégie d'identité ci-dessous précède le lot SQL. Pas de déduplication sur
+seul hash de ligne. Reconnaître un
 chevauchement FileSource uniquement avec provenance/positions et preuves concordantes ;
 sinon le signaler incertain. Conserver les hypothèses des timestamps sans année.
 
@@ -121,3 +121,36 @@ seulement ; jamais de suppression récursive ou du parent TempDir/entrée d'orig
 Windows ACL non vérifiées ; protections de bits Unix exécutées en CI Linux verte
 37245585832 sur `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745`. La prochaine
 application devra jeter la copie sur toute erreur et fermer le propriétaire final.
+
+## Identité durable du lot 75 et contrat du manifest suivant
+
+ImportOriginID prend l'ID exact et non vide de la source et le SHA-256 entier
+décompressé, exactement 64 caractères hexadécimaux minuscules. Il refuse toute
+autre représentation, sans trim ni casse implicite, et ne prouve aucune lecture
+ou validation de fichier. Le caller fournit le digest d'une préparation réussie.
+
+Contrat stable : `import-v1:` suivi du SHA-256 hex minuscule de la concaténation
+des octets `queueatlas/import-origin/v1` puis NUL, de la longueur en octets de
+l'ID source sur huit octets big-endian, de l'ID source, puis des 32 octets du digest.
+Préfixe versionné et longueur évitent les ambiguïtés de concaténation. IDs source
+opaques, octets Go exacts sans transcodage ou validation UTF-8 ; espaces/casse/NUL/
+Unicode conservés. Un test golden fixe le format durable.
+Renommage ou recompression du même contenu retrouve cette origine dans la même
+source ; un digest ou une source différents donnent une origine différente.
+La provenance garde chaque offset : deux lignes identiques ne sont pas supprimées.
+
+Le prochain lot stockage ajoutera une migration v3 sans modifier les SQL v1/v2.
+Un run sera une tentative explicite avec ID positif fourni par l'appelant,
+source de kind import distincte du suivi live, chemin original, état, digest/taille
+du contenu validé, origine associée et offsets. Les lignes v1 sans source restent
+héritées, non attribuées : aucune adoption ou reprise implicite. Le lien doit être
+source-scopé, l'identité de contenu immuable ; les lecteurs n'interprètent pas
+le chemin comme preuve. Préparation échouée sans digest valide ne doit pas produire
+une origine ni des records ; la tentative peut être tracée failed sans contenu.
+
+L'écriture du manifest sera ensuite intégrée au même Commit que records/checkpoint,
+avec réessai identique après ACK perdu, sans avance séparée. Complete exigera EOF
+validé, absence de suffixe partiel et offset égal à la taille ; cette validation
+ne se déduit pas du SHA seul. Ces comportements SQL et l'application ne sont pas
+encore implémentés au lot 75. Mono-écrivain/service arrêté au MVP. Aucune déduplication
+inter-source prouvée par ImportOriginID, aucun chemin fourni par l'API Web.
