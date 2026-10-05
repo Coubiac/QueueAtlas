@@ -23,6 +23,24 @@ type GzipLimits struct {
 // of byte counts is formed. A valid later member cannot excuse an earlier excess.
 // Input remains caller-owned. Any failure, including cleanup, discards metadata.
 func InspectGzip(ctx context.Context, input io.Reader, limits GzipLimits) (info ContentInfo, err error) {
+	return inspectGzip(ctx, input, limits, nil)
+}
+
+// CopyGzip writes decompressed bytes during inspection. All members must still
+// validate at EOF before metadata is returned. A checksum failure may leave a
+// whole tentative payload in output: callers must discard output on any error.
+// Input/output remain caller-owned, and no failed write is retried.
+func CopyGzip(ctx context.Context, input io.Reader, output io.Writer, limits GzipLimits) (ContentInfo, error) {
+	if err := ctx.Err(); err != nil {
+		return ContentInfo{}, err
+	}
+	if output == nil {
+		return ContentInfo{}, errors.New("gzip copy output is required")
+	}
+	return inspectGzip(ctx, input, limits, output)
+}
+
+func inspectGzip(ctx context.Context, input io.Reader, limits GzipLimits, output io.Writer) (info ContentInfo, err error) {
 	if err := ctx.Err(); err != nil {
 		return ContentInfo{}, err
 	}
@@ -43,7 +61,7 @@ func InspectGzip(ctx context.Context, input io.Reader, limits GzipLimits) (info 
 	// Keep the default multistream=true: success verifies every member, not
 	// merely the first compressed payload followed by unverified trailing bytes.
 	expanded := &ratioReader{input: decoder, compressed: compressed, limit: limits.ContentBytes, maxRatio: limits.MaxRatio}
-	return InspectPlain(ctx, expanded, limits.ContentBytes)
+	return inspectContent(ctx, expanded, limits.ContentBytes, output)
 }
 
 type compressedReader struct {

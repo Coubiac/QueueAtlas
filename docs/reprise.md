@@ -4,28 +4,39 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Prévision après le lot 68 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
-50–90 petits lots jusqu'au MVP, dont 6–14 pour M2. PR #13 fusionnée après trois lots
-de départ initial end ; prévalidation d'import suivante : environ trois lots,
+Prévision après le lot 71 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
+50–85 petits lots jusqu'au MVP, dont 5–12 pour M2. PR #14 fusionnée après trois lots
+de prévalidation ; copie privée validée détenue suivante : environ trois lots,
 inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
-end sont fusionnés dans main (#9–13). Bibliothèque seule, sans CLI/service.
-Lot 69 : prévalidation normale publiée/CI verte ; lot 70 gzip développé, ADR-011,
-CI 37244378495 verte, synthèse lot 71 sans blocage ; clôture/fusion à vérifier.
-Manifest et ingestion dans des lots distincts.
-Critère de fin du chantier : métadonnées seulement à EOF réussi, refus bornés,
-gzip/CRC/ratio vérifiés, CI verte et PR cohérente fusionnée. M2 inclut les autres décisions encore ouvertes
+end ainsi que prévalidation normale/gzip sont fusionnés dans main (#9–14).
+Bibliothèque seule, sans CLI/service. Lots 72–73 : copie pendant hash et fichier
+privé détenu publiés/CI vertes ; lot 74 synthèse finale relue sans blocage.
+Critère de fin du chantier : copie détenue des octets validés, refus bornés,
+fermeture/cleanup/annulation vérifiés, CI verte et PR cohérente fusionnée.
+Manifest et ingestion dans des lots distincts. M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
-- Lot 71 : synthèse indépendante sur `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`
-  sans blocage, quatre fichiers source/tests identiques aux revues 69–70 ; diff propre.
-  CI 37244378495 verte, tests Linux/vet/race FileSource/builds/Windows exécutés.
-  Clôture documentaire prête ; publication/CI finale et fusion à constater.
+- Lot 74 : clôture documentaire relue sans blocage, runtime/tests identiques aux
+  références 72–73 ; aucun rerun justifié. Publication/CI finale et fusion à vérifier.
+- Lot 73 : PrepareRegular/PreparedContent développés/relus sans blocage, trois tests
+  ciblés Windows/suite/vet/diff réussis. Publié `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245585832), bits privés
+  Unix exécutés Linux. Manifest/ingestion non implémentés.
+- Lot 72 : CopyPlain/CopyGzip développés/relus, quatre tests Copy ciblés et suite/vet/diff
+  Windows réussis. Correctif des causes lecture+écriture jointes relu, régression
+  douze sous-cas passée par auditeur. Publié `8aa3fc8b57512eedadc66fe4e5f25df208b84da6`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245062246), PR #15.
+- Lot 71 terminé : [PR #14](https://github.com/Coubiac/mailtrace/pull/14) fusionnée
+  avec tête `e980c0d545329e4b5a3ab013b2b81ef545696399`, CI 37244524828 verte.
+  Main `85effe5b62e0786f32d8cd9bcbf8a0fe7c1c26fb` vérifié ;
+  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37244663400),
+  vérifiée via API REST publique. Branche suivante `codex/m2-import-snapshot` depuis main.
 - Lot 70 : InspectGzip développé/relu sans blocage, quatre tests gzip et trois normal
   Windows, suite/vet/diff réussis après correctif no-progress d'en-tête.
   Publié `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`,
@@ -2340,19 +2351,56 @@ préparation de copie privée des octets validés avant ingestion. Rapport inté
 CI 37244378495 terminée success, trois jobs ; tests normal/gzip Linux, vet, race
 FileSource, builds sans CGO et Windows chemins. Publication/CI finale de cette clôture
 requises avant ready et fusion avec tête attendue ; pas encore constatées ici.
+Clôture `e980c0d545329e4b5a3ab013b2b81ef545696399` publiée, CI 37244524828 verte,
+ready/fusion #14. Main `85effe5` et CI 37244663400 verte vérifiés.
+
+## Lot 72 : copie des octets inspectés au même passage
+
+Résultat attendu : CopyPlain/CopyGzip vers writer caller-owned, copie bornée des
+mêmes buffers du hash, pas de retry/Close/ingestion ; metadata zéro sur tout échec.
+Implémenté, inspection sans output inchangée, CRC/budgets/membres conservés. Sortie
+partielle/CRC invalide à jeter par caller, pas encore de propriété filesystem.
+Quatre tests Copy Windows -count=1, suite/vet/diff réussis ; inspection existante
+incluse dans suite. Revue indépendante sans blocage de sécurité, remarque diagnostics
+corrigée : readErr non-EOF joint aux erreurs/short/invalid Writer/cancel. Régression
+douze sous-cas plain/gzip/EOF exact exécutée/réussie par auditeur après correctif.
+Rapport import-snapshot.md, pas de risque restant identifié. Publié `8aa3fc8`,
+PR #15 créée/attachée, CI 37245062246 verte, copie/régression exécutées Linux.
+
+## Lot 73 : fichier privé validé et propriétaire
+
+Résultat attendu : entrée régulière détenue, copie/digest privée bornée, writer fermé
+puis reader read-only à zéro, cleanup final/erreur/cancel avec causes jointes.
+PrepareRegular/PreparedContent implémentés, OpenLog réutilisé, MkdirTemp/CreateTemp
+Unix0700/0600, parent TempDir protégé requis ; pas de manifest/Source.Run/ingestion.
+Metadata/getters, Read/ReadAt/Seek exclusifs, Close libère avant fermeture/removal
+fichier/directory vide seulement, sans RemoveAll/retry ou suppression parent/entrée.
+Trois tests Windows -count=1, suite/vet/diff réussis. Test header corrigé : fixture
+de six octets provoquait UnexpectedEOF, remplacée par header invalide complet pour
+ErrHeader ; pas de correctif runtime. Revue indépendante sans blocage/test supplémentaire
+nécessaire identifié ; trois tests ciblés Windows réussis par auditeur, rapport intégré.
+Publié `93cf83cec`, CI 37245585832 verte, notamment les bits privés Unix Linux. Copie éphémère,
+ACL Windows non vérifiées, aucune garantie de snapshot atomique de l'entrée.
+
+## Lot 74 : synthèse et clôture de copie privée
+
+Résultat attendu : revue globale réutilisant les contrôles 72–73, documentation
+exacte et fusion après CI finale verte. Référence isolée propre `93cf83cec`, cinq
+fichiers runtime/tests identiques aux revues ; aucun blocage ni rerun utile.
+CI 73 complète success, permissions Unix réellement exécutées Linux. Rapport et
+ADR actualisés, comportements futurs séparés des briques déjà réalisées.
+Diff documentaire à vérifier, commit/push/CI finale/ready/fusion encore à constater.
 
 ## Prochaine action concrète
 
-Publier le lot 71, vérifier CI exacte puis ready/fusion #14 et CI main.
-Lot 72 : copie bornée des octets inspectés au même passage (normal/gzip), writer
-fourni par appelant, erreurs/cancel sans metadata. Lot suivant : copie privée détenue
-avec ouverture de fichier régulier/cleanup, avant stockage du manifest.
+Publier le lot 74 sur #15, vérifier CI exacte puis ready/fusion avec tête attendue.
+Lot suivant : contrat et identité source-scopée du manifest, stockage en lot distinct.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-preflight.
+pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-snapshot.
 
 ## Suite à découper au fil des reprises
 
-1. Import historique : copie validée détenue, manifest, application/reprise en lots distincts.
+1. Import historique : manifest, application/reprise en lots distincts ; copie détenue réalisée.
 2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
    ensembles multiples ; diagnostics/compléments du suivi #4.
 3. Application CLI/service et métriques au jalon adapté.
