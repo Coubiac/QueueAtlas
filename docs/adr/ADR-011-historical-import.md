@@ -1,8 +1,9 @@
 # ADR-011 — import historique borné et identité de contenu
 
-Statut : prévalidation normale/gzip lots 69–71 fusionnée, copie vers writer lot 72
-publiée/CI verte ; fichier privé détenu lot 73 développé/relu sans blocage.
-Publication/CI de 73 à vérifier ; importeur et manifest non implémentés.
+Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer lot 72
+et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
+Lot 74 : synthèse finale sans changement runtime, fusion après CI exacte finale.
+Importeur et manifest non implémentés.
 
 ## Décision et séparation des étapes
 
@@ -25,13 +26,13 @@ traité explicitement par l'importeur : son SHA peut être connu mais cela ne si
 ni que tous les records sont ingérés ni qu'un import_run peut devenir complete.
 Le lecteur de lignes conserve ses bornes et ne normalise pas seulement un suffixe.
 
-## Lots suivants et invariants à conserver
+## Étape réalisée et lots suivants
 
-1. Conserver les octets décompressés inspectés dans une copie privée bornée avant
-   ingestion, pour ne pas relire un fichier d'origine modifié sous le même digest.
-   Copier au même passage que le SHA, fermer le writer puis rendre un reader détenu.
-   Échec/annulation : copie partielle supprimée, aucune ingestion de son contenu.
-2. Ouvrir l'entrée régulière avec propriété explicite ; ordre/nombre de fichiers/durée globale bornés.
+1. Réalisé aux lots 72–73 : conserver les octets décompressés inspectés dans une
+   copie privée bornée, SHA au même passage, writer fermé puis reader détenu.
+   Entrée régulière ouverte avec propriété explicite ; échec/annulation refuse la
+   copie et tente son cleanup, les erreurs de suppression étant signalées.
+2. Suite : ordre/nombre de fichiers/durée globale bornés.
    Ne pas déduire une identité de contenu d'un chemin, inode ou en-tête gzip ;
    recompressions/renommages identiques doivent pouvoir retrouver la même origine.
 3. Ajouter lecture/écriture source-scopée du manifest dans un lot stockage distinct,
@@ -117,5 +118,6 @@ ferment/nettoient la copie. Close libère la propriété avant fermeture/removal
 joint les causes et reste idempotent même sur échec : les removals échoués sont
 signalés, sans retry silencieux. Remove de son fichier puis de son directory vide
 seulement ; jamais de suppression récursive ou du parent TempDir/entrée d'origine.
-Windows ACL non vérifiées, protections de bits Unix à confirmer en CI Linux. La prochaine
+Windows ACL non vérifiées ; protections de bits Unix exécutées en CI Linux verte
+37245585832 sur `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745`. La prochaine
 application devra jeter la copie sur toute erreur et fermer le propriétaire final.

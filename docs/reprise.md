@@ -13,8 +13,8 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end ainsi que prévalidation normale/gzip sont fusionnés dans main (#9–14).
-Bibliothèque seule, sans CLI/service. Lot 72 : copie pendant hash publiée/CI verte ;
-lot 73 fichier privé détenu développé/relu, publication/CI à vérifier.
+Bibliothèque seule, sans CLI/service. Lots 72–73 : copie pendant hash et fichier
+privé détenu publiés/CI vertes ; lot 74 synthèse finale relue sans blocage.
 Critère de fin du chantier : copie détenue des octets validés, refus bornés,
 fermeture/cleanup/annulation vérifiés, CI verte et PR cohérente fusionnée.
 Manifest et ingestion dans des lots distincts. M2 inclut les autres décisions encore ouvertes
@@ -22,9 +22,12 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 74 : clôture documentaire relue sans blocage, runtime/tests identiques aux
+  références 72–73 ; aucun rerun justifié. Publication/CI finale et fusion à vérifier.
 - Lot 73 : PrepareRegular/PreparedContent développés/relus sans blocage, trois tests
-  ciblés Windows/suite/vet/diff réussis. Publication/CI à vérifier, bits privés Unix
-  non encore exécutés Linux. Manifest/ingestion non implémentés.
+  ciblés Windows/suite/vet/diff réussis. Publié `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245585832), bits privés
+  Unix exécutés Linux. Manifest/ingestion non implémentés.
 - Lot 72 : CopyPlain/CopyGzip développés/relus, quatre tests Copy ciblés et suite/vet/diff
   Windows réussis. Correctif des causes lecture+écriture jointes relu, régression
   douze sous-cas passée par auditeur. Publié `8aa3fc8b57512eedadc66fe4e5f25df208b84da6`,
@@ -2376,19 +2379,28 @@ Trois tests Windows -count=1, suite/vet/diff réussis. Test header corrigé : fi
 de six octets provoquait UnexpectedEOF, remplacée par header invalide complet pour
 ErrHeader ; pas de correctif runtime. Revue indépendante sans blocage/test supplémentaire
 nécessaire identifié ; trois tests ciblés Windows réussis par auditeur, rapport intégré.
-Publication/CI Linux à vérifier, notamment les bits privés Unix. Copie éphémère,
+Publié `93cf83cec`, CI 37245585832 verte, notamment les bits privés Unix Linux. Copie éphémère,
 ACL Windows non vérifiées, aucune garantie de snapshot atomique de l'entrée.
+
+## Lot 74 : synthèse et clôture de copie privée
+
+Résultat attendu : revue globale réutilisant les contrôles 72–73, documentation
+exacte et fusion après CI finale verte. Référence isolée propre `93cf83cec`, cinq
+fichiers runtime/tests identiques aux revues ; aucun blocage ni rerun utile.
+CI 73 complète success, permissions Unix réellement exécutées Linux. Rapport et
+ADR actualisés, comportements futurs séparés des briques déjà réalisées.
+Diff documentaire à vérifier, commit/push/CI finale/ready/fusion encore à constater.
 
 ## Prochaine action concrète
 
-Publier le lot 73 sur #15 et vérifier CI exacte.
-Lot 74 : synthèse/propriété/CI de tête et fusion, avant stockage du manifest en lot distinct.
+Publier le lot 74 sur #15, vérifier CI exacte puis ready/fusion avec tête attendue.
+Lot suivant : contrat et identité source-scopée du manifest, stockage en lot distinct.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-snapshot.
 
 ## Suite à découper au fil des reprises
 
-1. Import historique : copie validée détenue, manifest, application/reprise en lots distincts.
+1. Import historique : manifest, application/reprise en lots distincts ; copie détenue réalisée.
 2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
    ensembles multiples ; diagnostics/compléments du suivi #4.
 3. Application CLI/service et métriques au jalon adapté.

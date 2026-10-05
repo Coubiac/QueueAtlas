@@ -46,8 +46,22 @@ large, entrée changée après préparation, read-only/ReadAt/Seek/getters/Close
 douze refus options/ctx/input/temp/budgets/CRC/header, close déjà fermé et foreign file
 préservé. Première attente de test header corrigée : six octets donnaient UnexpectedEOF,
 header invalide complet choisi pour ErrHeader ; pas de changement runtime requis.
-Bits privés Unix et suite Linux à vérifier en CI de publication.
+[CI du lot 73 réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245585832)
+sur `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745` : suite Linux et vérification des
+bits privés Unix exécutées, ainsi que les autres contrôles du workflow Go.
 
 Limites : parent temporaire protégé, ACL Windows non vérifiées, propriété exclusive,
 IO bloquante non interruptible, copie éphémère/no snapshot atomique original/manifest.
 Un failed removal peut laisser un résidu signalé ; pas d'import complet implicite.
+
+## Lot 74 : clôture du chantier
+
+Référence isolée `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745`, checkout et diff propres.
+Auditeur indépendant : fichiers runtime/tests identiques aux revues 72–73, aucun
+blocage ni risque précis nécessitant de répéter les tests. Cohérence globale
+copie/hash, budgets, CRC, propriété/read-only et cleanup conservée. Documentation
+actualisée : préparation réalisée, permissions Unix exécutées en CI ; budgets
+globaux, manifest et ingestion restent futurs. Audit assisté, sans certification externe.
+
+Avis favorable à la fusion après CI exacte du commit documentaire final. Ce lot
+ne change aucun comportement ; il clôture les deux lots développés et relus.
