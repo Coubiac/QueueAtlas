@@ -9,8 +9,8 @@ et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 ter
 Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
 clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
 #22, clôture102 terminée, CI finale et main réussies. Clés103 publiées/CI verte #23,
-composition104 développée et revue code favorable.
-Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
+composition104 publiée/revue favorable et CI verte ; clôture105 en cours avant fusion.
+Trois jalons restent : M3–M5, environ37–65 lots au chantier103–105, dont12–22 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -28,6 +28,9 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 104 publié : `e344ed773b1d98dc1a657dddfa701530705c05d9`, #23,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37330343331).
+  Quatre tests Projection, suite/vet/diff et revue code/docs sans blocage.
 - Lot 103 publié : `76055c0a28e4fe917f6d4f70383e8103d4a93a46`,
   [PR #23](https://github.com/Coubiac/mailtrace/pull/23) créée/attachée en brouillon,
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37329247549).
@@ -3018,14 +3021,30 @@ mappings copiés/triés ; caller garde les entrées immuables pendant l'appel.
 Options modifiées nouvelle version, ordre équivalent même version ; aucune amélioration
 de résultat recipient ni fusion. Quatre tests, suite correlation/vet/diff Windows
 pass ; revue code sans blocage, quatre tests via overlay isolé par auditeur pass.
-Documentation validée sans blocage, aucun test relancé ; non publié, CI104 non vérifiée.
-Publié validé103/fusionné102.
+Documentation validée sans blocage, aucun test relancé ; publié
+`e344ed773b1d98dc1a657dddfa701530705c05d9` dans #23, CI37330343331 entière success.
+Publié validé avec CI verte104/fusionné102.
 Aucun schéma DB, source, couverture, parcours global ou Web ajouté.
+
+## Lot 105 : clôture des identités et de la composition
+
+Résultat attendu : bilan fidèle, revue documentaire finale et CI exacte, fusion
+#23 puis CI push main. Runtime inchangé depuis103–104 relus ; aucune nouvelle
+exécution des fondations nécessaire. Cinq tests103 et quatre104, suites/vet/diff
+locaux et avis code/docs indépendants réutilisés. Clés et endpoints liés à une
+révision complète incluant configuration, sans amélioration des résultats de remise.
+M3 encore incomplet ; les projections ne prouvent ni couverture ni continuité.
+Avis documentaire final indépendant favorable sur les trois documents modifiés,
+aucun test relancé. CI10437330343331 entière success ; publication105/CI finale,
+fusion/main à vérifier. Lancement
+Actions104 absent après push et tête distante exacte confirmée ; #23 fermée puis
+rouverte pour redéclencher la CI sur la même tête. Second run37330437206 encore
+en cours au contrôle ; aucune nouvelle exécution locale ajoutée.
 
 ## Prochaine action concrète
 
-Terminer revue104/docs, commit/push sur #23 puis CI exacte. Lot105 : clôture du
-chantier identités/composition, CI/fusion/main. Ensuite lecture/persistance
+Terminer clôture105 : commit/push sur #23
+et CI finale, fusion sur tête attendue puis CI main. Ensuite lecture/persistance
 transactionnelles, sans fusion d'origines ou de parcours non prouvée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`

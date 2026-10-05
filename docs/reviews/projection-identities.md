@@ -41,5 +41,17 @@ ou non et permutation de configuration ; archive non datée tardive préservée 
 relations devenant candidates ; quatre refus et vide sans résultat partiel.
 Revue code indépendante favorable, quatre tests via overlay isolé Windows pass,
 root inchangé. Documentation alignée, avis favorable sans nouveau test ;
-publication/CI104 attendues.
+publié e344ed7 dans #23, CI37330343331 entière success vérifiée sur la tête exacte.
 Aucun stockage/source/API/Web ni parcours global ajouté.
+
+## Lot105 : clôture du chantier
+
+Documents uniquement, runtime103–104 inchangé. Avis/tests ci-dessus réutilisés,
+sans relancer les fondations. La révision complète lie tous les endpoints et
+résumés à leurs entrées/options, sans certifier couverture ou continuité. Les faits
+non résolus et NOQUEUE restent conservés ; aucun nouveau stockage/état global.
+CI103 et CI10437330343331 entières success ; avis documentaire final indépendant
+favorable sur les trois documents modifiés, aucun test relancé. Publication/CI105
+et fusion/CI main encore attendus. Actions104 absent après push et tête distante
+exacte confirmée ; même #23 fermée/rouverte pour redéclencher la CI.
+Second run37330437206 encore en cours au contrôle.
