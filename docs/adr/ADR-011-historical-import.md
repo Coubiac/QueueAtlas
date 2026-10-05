@@ -7,8 +7,8 @@ CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI v
 Lots 75–79 manifest fusionnés dans #16, CI finale et main vertes. Lot 80 :
 préparation d'ingestor publiée dans #17, CI verte. Lot 81 CommitNext publié, CI
 verte et revue sans blocage. Lot 82 Binding publié/CI verte, revue sans blocage.
-Lot83 Attempt.Run un fichier publié/CI verte, revue sans blocage. Lot84 orchestration
-ordonnée et bornée développée, revue sans blocage. CLI/corrélation futures.
+Lots83–84 pilote et orchestration ordonnée/bornée publiés, CI vertes et revues sans
+blocage. Lot85 clôture documentaire, CI finale/fusion à vérifier. CLI/corrélation futures.
 
 ## Décision et séparation des étapes
 
@@ -37,13 +37,13 @@ Le lecteur de lignes conserve ses bornes et ne normalise pas seulement un suffix
    copie privée bornée, SHA au même passage, writer fermé puis reader détenu.
    Entrée régulière ouverte avec propriété explicite ; échec/annulation refuse la
    copie et tente son cleanup, les erreurs de suppression étant signalées.
-2. Suite : ordre/nombre de fichiers/durée globale bornés.
+2. Réalisé lot84 : ordre/nombre de fichiers/durée globale bornés.
    Ne pas déduire une identité de contenu d'un chemin, inode ou en-tête gzip ;
    recompressions/renommages identiques doivent pouvoir retrouver la même origine.
 3. Lot 76 : migration/lecture source-scopée du manifest développées, v1/v2 inchangés.
    Lots 77–78 : écriture de préparation puis contenu/progression développées dans
-   le Commit du Sink. Application future : prouver EOF/ancres avant complete.
-4. Application du contenu validé à parser/Sink, reprise du checkpoint exact,
+   le Commit du Sink. Lots80–84 : EOF/ancres prouvés avant complete.
+4. Réalisé lots80–84 : application du contenu validé à parser/Sink, reprise du checkpoint exact,
    depuis la copie privée validée. Une inspection n'est pas un snapshot filesystem
    et ne prouve pas un second passage identique de l'entrée originale.
 5. CLI import hors service actif, ordre fourni sans tri implicite, recalcul M3,
@@ -233,7 +233,7 @@ complete à zéro après association ; suffixe partiel peut laisser des records
 complets puis une tentative failed au dernier offset acquitté.
 
 Sink ne calcule pas le digest, ne valide pas gzip/EOF, ne décode pas l'anchor et ne
-relit pas le fichier. Preuves, bornes et batch conservé restent à l'importeur futur ;
+relit pas le fichier. Preuves, bornes et batch conservé sont à l'importeur des lots80–84 ;
 un état SQL canonique ne certifie pas le contenu. Mono-écrivain, aucune compensation
 sur erreur d'ACK.
 

@@ -69,5 +69,18 @@ Attempt et complete sans reopen. Cinq tests ciblés/suite/vet/diff Windows réus
 avec SQLite réelle, deadline globale/parent sans write via lookup bloqué, ordre/
 recompression/config/ACKretry/partial/limites/concurrence. Revue sans blocage : cinq
 tests ciblés exécutés par auditeur, aucun contrôle supplémentaire nécessaire.
-Publication/CI84 à vérifier. Dépendances context-aware et mono-écrivain requis ;
+Publié 84f091b, CI 37265578493 success. Dépendances context-aware et mono-écrivain requis ;
 pas CLI/corrélation. Audit assisté sans certification externe.
+
+## Lot 85 : synthèse et référence isolée
+
+Checkout géré isolé propre sur 84f091b86c26a9bf046595d1aa74574612bf8f81. Huit
+fichiers runtime/tests comparés par auditeur identiques aux versions relues ; coordinateur
+confirme les neuf fichiers Go/test du chantier identiques entre root et isolé. Aucun risque
+nouveau justifiant rerun. Avis de clôture indépendant sans blocage : réutiliser
+tests/revues ciblés Windows et suites/vet/CI publiées, ready/fusion après CI finale
+exacte du commit documentaire85. Aucun changement runtime à cette clôture.
+Limites : mono-écrivain et parents protégés, deadline coopérative, syscall/cleanup
+potentiellement bloquant, résidu cleanup refusé signalé. Provenance/déduplication
+source-scopées ; overlap avec FileSource incertain, pas de projection canonique
+avant M3. Bibliothèque Go sans CLI/service. Audit assisté sans certification externe.

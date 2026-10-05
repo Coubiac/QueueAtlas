@@ -4,18 +4,19 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Prévision après le lot 79 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
-50–85 petits lots jusqu'au MVP, dont 5–8 pour M2. PR #16 fusionnée après cinq lots
-de manifest ; application/reprise et orchestration : environ 4–6 lots,
-inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
+Prévision après le développement de l'import ordonné (lots80–84, clôture85) : quatre
+jalons à clôturer (M2 en cours, M3–M5), environ 45–80 petits lots jusqu'au MVP,
+dont 2–5 pour compléments/diagnostics et bilan M2. Application/reprise/orchestration
+a demandé six lots avec clôture, dans la prévision 4–6 après79. Fourchettes de
+planification incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
 Bibliothèque seule, sans CLI/service. Lots 80–82 publiés dans #17, revues sans
-blocage et CI vertes. Lot 83 Attempt.Run publié/CI verte. Lot84 ImportSource ordonné
-et borné développé, cinq tests Windows/suite/vet/diff réussis, revue sans blocage.
+blocage et CI vertes. Lots83–84 pilote/list ordonnée publiés, CI vertes. Lot85 clôture
+documentaire et référence isolée vérifiée, ready/fusion après CI finale à vérifier.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 M2 inclut les autres décisions encore ouvertes
@@ -23,6 +24,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 84 publié : `84f091b86c26a9bf046595d1aa74574612bf8f81`, #17,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265578493).
+  Liste/ordre/borne globale, cinq tests/suite/vet/diff et revue sans blocage.
 - Lot 83 publié : `1e6bc8ff4e83c1a1df9ed96f902b8460f097ed96`, #17,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265252402).
   Pilote un fichier et cleanup/retry, cinq tests/suite/vet/diff et revue sans blocage.
@@ -2617,14 +2621,24 @@ sur plusieurs fichiers, une copie à la fois ; ACK perdu sur second puis JSON ex
 avant troisième, premier path supprimé, partial failed arrêt/retry sans revival ;
 deadline globale/parent via state-reader bloqué, dix refus de liste/nil/concurrent.
 Revue indépendante sans blocage, cinq tests ciblés exécutés par auditeur, aucun
-contrôle supplémentaire nécessaire. Publication/CI84 à vérifier.
-Dernier état publié validé : lot83.
+contrôle supplémentaire nécessaire. Publié `84f091b`, CI 37265578493 success vérifiée.
+
+## Lot 85 : clôture du chantier d'import applicatif
+
+Résultat attendu : synthèse des revues scellées80–84, CI exacte finale, ready/fusion
+#17 et vérification main, sans rerun injustifié. Checkout isolé propre84f091b ; revue
+de clôture sans blocage, versions runtime/tests identiques, aucun risque nouveau
+nécessitant rerun. Coordinateur compare neuf fichiers Go/test entre root et isolé :
+SHA256 tous identiques. Documentation/README/estimation actualisés, runtime inchangé.
+CI84 success, dernier état publié validé84. Publication/CI85/fusion/main à vérifier.
+Déduplication source import par contenu uniquement ; FileSource overlap incertain,
+CLI et projection canonique M3 non livrées, issues #4/#5 restent ouvertes.
 
 ## Prochaine action concrète
 
-Publier84 dans #17 et vérifier la CI exacte ; revue terminée sans blocage.
-Lot85 : synthèse/validation/fusion du chantier #17 et réestimation M2 ; issues #4/#5
-restent ouvertes pour diagnostics, chevauchement inter-source, CLI et projection M3.
+Publier85, vérifier CI exacte puis ready/fusion #17 et CI main.
+Lot86 : qualifier les diagnostics de source missing/gap/degraded sans PII à partir
+des décisions déjà exposées ; chevauchement inter-source reste incertain sans preuve.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
 
