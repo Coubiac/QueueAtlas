@@ -4,7 +4,8 @@
 (PR #18, CI finale et main réussies). Projections pures M3 validées aux lots89–92,
 CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration94 et
 synthèse95 fusionnées dans #20 ; clôture96 terminée, CI finale/main réussies.
-Rapports NOQUEUE97 et sessions98 publiés/relus #21, clôture99 en cours. Référence de périmètre :
+Rapports NOQUEUE97 et sessions98 fusionnés #21, clôture99 terminée avec CI finale/main
+vertes. Indices natifs100 développés/en revue. Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -33,7 +34,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections pures #19/#20 fusionnées, CI finale/main vertes ; NOQUEUE97/sessions98 publiés/relus #21, clôture99 en cours | Identités/continuité globales, complétude applicative, liens prouvés, persistance/recalcul, recherche et rétention | 13–23 après clôture99 |
+| M3 — reconstruction | En cours : projections pures #19–21 fusionnées, CI finale/main vertes ; indices natifs100 en revue | Identités/continuité globales, complétude applicative, liens prouvés, persistance/recalcul, recherche et rétention | 13–23 après clôture99 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture99** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **38–66, soit environ 40–65** |
@@ -119,8 +120,9 @@ pas la couverture et n'inventent pas de destinataires
 expired. Le résumé conserve les résultats des tentatives et les rapports qmgr
 distincts. Le travail de complétude/NOQUEUE inclut les critères applicatifs restants.
 
-NOQUEUE et fenêtres de sessions candidates traités aux lots97–98, clôture99 en
-cours. Aucun lien de file accepté, identité globale par PID ni couverture certifiée.
+NOQUEUE et fenêtres de sessions candidates traités aux lots97–98, clôture99 fusionnée
+avec #21, CI finale37323621470 et main37323880818 success vérifiées. Aucun lien de
+file accepté, identité globale par PID ni couverture certifiée.
 La réestimation vient des comportements encore nécessaires, et non d'une simple
 soustraction de trois au compteur. Ces regroupements restent à découper :
 

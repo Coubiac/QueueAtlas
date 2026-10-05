@@ -241,10 +241,42 @@ faits. Les sorties sont ordonnées par provenance pour l'affichage. Aucun lien v
 une file acceptée dans la même fenêtre, statut final, couverture certifiée ou
 session globale entre fichiers. Aucun stockage/source/API/Web ajouté.
 
+## Lot100 : indices natifs de changement de file
+
+`BuildQueueHints` conserve l'index borné/validé entier et extrait au plus un indice
+par fait, trié par provenance. Trois catégories distinctes : smtp_queue_hint,
+local_forward_hint et bounce_notification_hint. Chaque indice cite la file source,
+la référence physique, l'ID cible rapporté, la preuve native et le relay présent.
+Aucune QueueInstance cible, génération, relation confirmée ou modification d'état.
+
+SMTP exige sent et la réponse native exacte de forme limitée
+`250 2.0.0 Ok: queued as ID`. Local exige sent avec `forwarded as ID`. Les gardes
+du premier statut/réponse natifs protègent les champs historiques normalisés et
+les suffixes trompeurs. Bounce exige la phrase native exacte
+`sender non-delivery notification: ID` et le champ présent concordant. L'ID doit
+suivre la même grammaire bornée que le parser (IsQueueID) ; reconnaître sa syntaxe
+ne prouve ni existence ni identité de file. Les autres formats restent dans les
+faits d'origine, sans extraction permissive de texte distant.
+
+L'instance cible SMTP reste absente : même loopback, localhost, hôte déclaré ou
+présence d'une file portant cet ID ne prouve pas son espace d'identité. Les rapports
+local/bounce indiquent l'instance configurée de leur agent, mais restent candidats.
+Les [filtres après mise en file](https://www.postfix.org/FILTER_README.html) peuvent
+réinjecter ou changer la destination ; [local](https://www.postfix.org/local.8.html)
+réintroduit un message transféré. La corroboration exige les observations des deux
+côtés et une configuration explicite pour les pairs SMTP ; ces manuels ne sont pas
+une preuve de configuration du serveur observé.
+
+Une date inconnue garde l'indice et l'index Untimed : aucune attribution temporelle
+à une génération n'est tentée ici. Plusieurs origines gardent leurs indices
+distincts. Message-ID, adresse ou texte identique ne fusionne rien. Aucun statut de
+la file initiale ne bénéficie d'un résultat de la file citée ; bounce notification
+reste distincte d'une remise du destinataire initial. Aucun stockage/source/Web.
+
 ## Suite concrète
 
-Les chantiers purs #19/#20 sont fusionnés. Clôturer les faits NOQUEUE/sessions
-candidates après revue/CI, puis traiter les liens candidats et corroborés sans
-identité par PID seul. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Les chantiers purs #19–21 sont fusionnés. Corroborer les indices uniquement avec
+preuves des deux côtés, mapping SMTP explicite et frontières de générations non
+ambiguës. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

@@ -6,8 +6,8 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
-Expiration94 et synthèse95 fusionnées, clôture96 terminée dans #20. NOQUEUE97 publié
-avec CI verte #21 ; sessions98 publiées/relues, clôture99 en cours.
+Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
+clôture99 terminée, CI finale et main réussies. Indices natifs100 développés/en revue.
 Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -26,6 +26,12 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 99 terminé : [PR #21](https://github.com/Coubiac/mailtrace/pull/21) fusionnée,
+  tête `884a8c1738e91ae833ee64197b1a0050e8714b0b`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323621470).
+  Main `43f5155e423075c60c96e465e5562672da6706b7`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323880818),
+  vérifiée REST. Branche suivante `codex/m3-queue-links` depuis ce main.
 - Lot 98 publié : `7486fe2d5f83c20e5231255604c981779285fc35`, #21.
   Quatre tests PrequeueSessions, suite/vet/diff et revue code/docs sans blocage.
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323131066).
@@ -2916,19 +2922,33 @@ Résultat attendu : bilan fidèle, avis documentaire/CI exacte, fusion #21 sur t
 attendue puis CI push main. Runtime inchangé depuis97–98 relus, aucun nouveau test
 des fondations nécessaire. Avis documentaire final favorable, HEAD7486fe2, delta
 limité aux trois documents. CI98 entière success vérifiée. Publication99/CI finale,
-fusion et main restent à vérifier.
+fusion et main désormais vérifiées : publié884a8c1, CI finale37323621470 success,
+commentaire5415970535/ready puis fusion #21 sur43f5155, CI push main37323880818
+success vérifiée REST. Lot99 terminé.
 M3 reste incomplet,13–23 lots estimés après99 ; M4 15–25 et M5 10–18, total38–66.
 NOQUEUE/sessions pures réalisées ; complétude applicative, identités/continuité/liens,
 stockage/recalcul, recherche/rétention et intégration/mesures/clôture encore requis.
 
+## Lot 100 : indices natifs de changement de file
+
+Résultat attendu : conserver indices SMTP/local/bounce avec preuves, sans fusion
+ni QueueInstance depuis ID distant. BuildQueueHints développé, index complet,
+bornes/refus réutilisés. Premier statut/réponse natifs exacts, formats limités,
+grammaire IsQueueID identique au parser. SMTP instance cible absente même loopback
+ou file présente ; local/bounce indiquent l'instance configurée mais restent
+indices. Dates inconnues et autres faits conservés, aucun état/arc attribué.
+Quatre tests et suites correlation/parser, vet/diff Windows réussis ; revue code/
+docs favorable, quatre tests via overlay isolé par auditeur pass, aucun rerun.
+Travail non publié/CI100 non vérifiée ; dernier état fusionné validé99.
+
 ## Prochaine action concrète
 
-CI98 et revue99 validées. Commit/push sur #21 puis CI finale,
-fusion attendue et CI main. Lot100 : liens candidats de réinjection
-avec preuves, sans fusion depuis un ID distant ou Message-ID seul.
+Terminer revue100/code/docs, commit/push et PR du chantier puis CI exacte. Lot101 :
+corroboration des deux côtés avec frontières de génération et configuration SMTP
+explicite, sans fusion depuis ID distant, relay loopback ou Message-ID seul.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-prequeue.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-queue-links.
 
 ## Suite à découper au fil des reprises
 
