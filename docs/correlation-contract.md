@@ -273,10 +273,58 @@ distincts. Message-ID, adresse ou texte identique ne fusionne rien. Aucun statut
 la file initiale ne bénéficie d'un résultat de la file citée ; bounce notification
 reste distincte d'une remise du destinataire initial. Aucun stockage/source/Web.
 
+## Lot101 : relations corroborées sous preuves et hypothèses
+
+`BuildQueueLinks` conserve tous les indices et les générations candidates ; chaque
+indice produit une relation candidate ou corroborée, sans fusion de générations,
+parcours ou états de destinataires. Les ancrages source/cible et les preuves
+positives sont des références copiées aux faits immuables, au plus huit par lien.
+Une seule référence positive par champ est citée ; toutes les répétitions sont
+contrôlées pour contradiction et restent dans les faits de la génération.
+La corroboration reste
+révisable si des faits historiques arrivent ; ce n'est ni couverture certifiée ni
+identité globale immuable. Bounce garde sa catégorie distincte d'un transfert.
+
+Options explicites : fenêtre positive <=24h et au plus64 bindings SMTP. Chaque
+binding mappe littéralement `(instance source, relay rapporté)` vers une instance
+cible ; chaque valeur non vide <=1024 octets, sans NUL/CR/LF/tabulation, aucune
+paire dupliquée. Les options invalides donnent l'erreur fixe ErrLinkOptions sans
+résultat partiel. Les limites de snapshot/provenance restent celles de PartitionFacts.
+Un mapping est une affirmation de configuration du caller, pas un fait extrait des
+logs ni une certification indépendante du relais. La relation conserve sa copie.
+
+La source doit appartenir à une génération datée non ambiguë. La cible doit avoir
+une réception observée strictement après celle de la source et dans la fenêtre
+avant/après le rapport natif. La source et la cible gardent leurs hypothèses de
+date : même une date explicite ne certifie pas l'horloge. Une seule génération
+cible doit être plausible dans ces conditions temporelles ; un ID recyclé peut
+être corroboré si une seule génération satisfait la fenêtre et les autres preuves.
+On ne choisit jamais entre plusieurs générations temporellement admissibles ou
+origines en comparant leurs adresses/Message-IDs. Une génération cible non résolue
+ou des sources multiples empêchent la corroboration. La même clé source/cible est
+refusée, et l'ordre strict des réceptions empêche un cycle corroboré.
+
+Les deux côtés doivent avoir des expéditeurs qmgr présents, non contradictoires.
+Pour SMTP, le mapping est obligatoire, expéditeurs égaux, Message-IDs cleanup
+présents/non vides concordants et destinataire du rapport également observé sur
+la cible. Pour local/forwarded, l'expéditeur doit concorder ; si deux Message-IDs
+sont présents, ils ne doivent pas se contredire. Pour bounce, la source doit avoir
+un expéditeur non vide, la notification un expéditeur explicitement vide et une
+tentative cible vers l'expéditeur source. Ce sont des règles conservatrices de
+QueueAtlas : les changements d'adresse/enveloppe non corroborables restent candidats.
+Une tentative cible deferred/bounced peut prouver son adresse sans prouver un succès.
+
+Les motifs candidats fixes sont source_unresolved, source_ambiguous,
+target_instance_unknown, target_absent, target_ambiguous, evidence_insufficient et
+self_reference. Sans preuves suffisantes, aucune ancre cible n'est assignée. Les
+indices et faits restent visibles ; un lien ne modifie jamais une tentative ni son
+dernier résultat. HasNonExplicitTime garde les hypothèses des deux générations.
+Aucun stockage, parcours global, preuve de continuité entre fichiers ou Web ajouté.
+
 ## Suite concrète
 
-Les chantiers purs #19–21 sont fusionnés. Corroborer les indices uniquement avec
-preuves des deux côtés, mapping SMTP explicite et frontières de générations non
-ambiguës. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Les chantiers purs #19–21 sont fusionnés. Clôturer les indices/relations après
+revue et CI, puis traiter les identités de projection et leur persistance, sans
+fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

@@ -7,7 +7,8 @@ Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
 Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
-clôture99 terminée, CI finale et main réussies. Indices natifs100 développés/en revue.
+clôture99 terminée, CI finale et main réussies. Indices100 publiés/CI verte #22 ;
+relations101 développées/en revue.
 Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -26,6 +27,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 100 publié : `bfdb9e0d9e4674aa3614da6816750f4c19cfc0de`,
+  [PR #22](https://github.com/Coubiac/mailtrace/pull/22) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37324927168).
+  Quatre tests QueueHints, suites/vet/diff et revue code/docs sans blocage.
 - Lot 99 terminé : [PR #21](https://github.com/Coubiac/mailtrace/pull/21) fusionnée,
   tête `884a8c1738e91ae833ee64197b1a0050e8714b0b`,
   [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323621470).
@@ -2939,13 +2944,33 @@ ou file présente ; local/bounce indiquent l'instance configurée mais restent
 indices. Dates inconnues et autres faits conservés, aucun état/arc attribué.
 Quatre tests et suites correlation/parser, vet/diff Windows réussis ; revue code/
 docs favorable, quatre tests via overlay isolé par auditeur pass, aucun rerun.
-Travail non publié/CI100 non vérifiée ; dernier état fusionné validé99.
+Publiébfdb9e0 dans #22 créée/attachée, CI37324927168 success ; état fusionné validé99.
+
+## Lot 101 : relations sous preuve des deux côtés
+
+Résultat attendu : garder les candidats, corroborer seulement source/cible reçues
+non ambiguës avec date compatible et observations concordantes ; mapping SMTP
+explicite exigé. BuildQueueLinks développé, options fenêtre positive<=24h/bindings64/
+valeurs1024/dup refusé sans sortie partielle ; indices/générations conservés. Preuves
+qmgr/cleanup/recipient citées, relation bounce distincte, origines/IDs recyclés non
+unifiés. Date cible strictement après source et proche hint, cycles/self refusés.
+Six tests/suite correlation/vet/diff Windows pass ; revue initiale sans blocage et
+cinq tests via overlay isolé par auditeur pass. Unicité des cibles dans la fenêtre
+précisée : ID recyclé corroborable si une seule génération admissible.
+Contrôle de taille reproduit : 700 répétitions qmgr donnent708 preuves positives ;
+test échoue avant garde. Première référence par champ gardée, toutes contradictions
+contrôlées et704 faits source conservés, <=8 preuves positives par lien. Test/suite
+pass après correctif ; delta final/documentation validés sans blocage par auditeur,
+régression700 via overlay isolé pass. Dernière répétition contradictoire reste
+candidate, cas local ajouté/exécuté pass. Aucun rerun des fondations.
+Travail non publié/CI101 non vérifiée ; état publié avec CI verte100, fusionné99.
+Aucun résultat des tentatives modifié, identité globale ni DB/source/Web.
 
 ## Prochaine action concrète
 
-Terminer revue100/code/docs, commit/push et PR du chantier puis CI exacte. Lot101 :
-corroboration des deux côtés avec frontières de génération et configuration SMTP
-explicite, sans fusion depuis ID distant, relay loopback ou Message-ID seul.
+Terminer revue101/code/docs, commit/push sur #22 puis CI exacte. Lot102 : clôture du
+chantier indices/relations, CI/fusion/main. Ensuite identités de projection et
+persistance transactionnelle, sans fusion d'origines ou de parcours non prouvée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-queue-links.
