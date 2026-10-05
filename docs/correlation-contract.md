@@ -321,10 +321,44 @@ indices et faits restent visibles ; un lien ne modifie jamais une tentative ni s
 dernier résultat. HasNonExplicitTime garde les hypothèses des deux générations.
 Aucun stockage, parcours global, preuve de continuité entre fichiers ou Web ajouté.
 
+## Lot103 : clés candidates liées à une révision d'entrée
+
+`BuildQueueInstances` conserve les générations, flux non résolus et autres faits
+de `BuildGenerations`, sous les mêmes limites/refus. Chaque génération candidate
+reçoit la clé `(révision, instance configurée, queue_id, ordinal)`. L'ordinal
+commence à zéro pour chaque instance/ID, selon l'ordre déterministe des sources,
+origines puis cycles dans l'origine ; ce n'est pas une chronologie inter-origines.
+Plusieurs origines restent plusieurs candidats avec CrossStreamUncertain ; aucune
+clé n'est inventée pour un flux non résolu ou NOQUEUE.
+
+La révision SHA256 est calculée sur tous les faits du snapshot, y compris Other,
+les provenances, l'instance configurée, tous les attributs de l'observation et
+les hypothèses de date. Domaine `queue-instances-v1`, chaînes cadrées par longueur
+en octets, nombres/booléens canoniques, références physiques et clés de maps triées.
+Les octets UTF8 invalides sont distincts ; les instants sont normalisés en UTC,
+sans perdre les nanosecondes ou limiter les années à UnixNano. Les IDs SQLite et
+l'ordre d'arrivée n'interviennent pas. Une limite de nombre de faits ne constitue
+pas une limite indépendante de taille des métadonnées fournies par le caller.
+
+Réordonner les mêmes faits conserve la révision et les clés. Un import tardif,
+une modification d'attribut ou d'hypothèse change toute la révision ; un ordinal
+ancien ne peut pas désigner silencieusement une autre génération. Même une ancre
+inchangée obtient une clé d'une autre révision. Le caller doit garder la clé entière
+avec la projection et remplacer atomiquement une révision lors du futur stockage.
+La version du domaine doit évoluer si le framing ou les règles d'identité/génération évoluent.
+Cette révision concerne uniquement les entrées/règles des instances candidates,
+pas les options SMTP ou une future projection complète des parcours.
+
+L'empreinte versionne une entrée ; elle ne certifie pas l'authenticité, la couverture,
+la continuité entre sources ni la déduplication de leurs contenus. Les preuves
+restent les FactRef. Le snapshot vide possède une révision sans instance ; un
+snapshot invalide est refusé avant toute révision/sortie partielle. Aucun état de
+remise, lien, parcours global ou schéma SQLite changé par ce lot.
+
 ## Suite concrète
 
-Les chantiers purs #19–21 sont fusionnés. Clôturer les indices/relations après
-revue et CI, puis traiter les identités de projection et leur persistance, sans
+Les chantiers purs #19–22 sont fusionnés. Valider les clés de révision puis traiter
+leur composition avec les autres projections et leur persistance, sans
 fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

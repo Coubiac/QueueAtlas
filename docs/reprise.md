@@ -7,8 +7,8 @@ Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
 Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
-clôture99 terminée, CI finale et main réussies. Indices100 et relations101 publiés,
-CI verte #22 ; clôture102 documentaire en cours avant fusion.
+clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
+#22, clôture102 terminée, CI finale et main réussies. Clés de révision103 en revue.
 Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -27,6 +27,12 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 102 terminé : [PR #22](https://github.com/Coubiac/mailtrace/pull/22) fusionnée,
+  tête `fced137d2936cc1aad565f67eab5d6b942d123b2`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37327741368).
+  Main `a979827c28fa1ba7f05b3fdaf6994d0c10d564ae`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37328022256),
+  vérifiée REST. Branche suivante `codex/m3-projection-identities` depuis ce main.
 - Lot 101 publié : `d07f6bdf6c689eacf3041fa7768e17d4f9b4d66f`, #22,
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37326579775).
   Six tests QueueLinks, suite/vet/diff, revue code/docs et correctif des preuves
@@ -2980,16 +2986,31 @@ mapping SMTP explicite, génération cible temporellement admissible unique, ré
 de date/provenance conservées, preuve positive bornée sans ignorer les contradictions.
 Les états des destinataires restent inchangés ; aucun parcours global ni persistance.
 Documents actualisés ; avis documentaire final indépendant favorable sur les seuls
-quatre documents modifiés, aucun test relancé. Publication102/CI, fusion/main à vérifier.
+quatre documents modifiés, aucun test relancé. Publié fced137, CI finale37327741368
+success ; commentaire assisté5416408767/ready, fusion #22 sur a979827,
+CI push main37328022256 success vérifiée REST exacte. Lot102 terminé.
+
+## Lot 103 : clés candidates liées à une révision
+
+Résultat attendu : ordinal de génération déterministe dans une révision d'entrée,
+aucun alias après import tardif et aucune fusion d'origines. BuildQueueInstances
+développé ; générations/réserves/non résolus/Other conservés. Révision SHA256
+versionnée sur tous les faits et attributs, framing brut, refs/maps triés, instants
+UTC sans UnixNano. Réordonner stable ; import tardif/attribut changé nouvelle révision.
+Clé complète obligatoire ; ordre des origines n'est pas chronologie ni continuité.
+Cinq tests, suite correlation/vet/diff Windows pass. Revue code sans blocage et
+cinq tests via overlay isolé par auditeur pass ; documentation validée sans blocage ;
+non publié, CI103 non vérifiée. Dernier état fusionné validé102. Aucun schéma DB,
+résultat de remise, lien, couverture ou parcours global modifié.
 
 ## Prochaine action concrète
 
-Terminer clôture102 : revue des seuls documents, commit/push sur #22 puis CI exacte,
-fusion sur la tête attendue et CI main. Ensuite identités de projection et
-persistance transactionnelle, sans fusion d'origines ou de parcours non prouvée.
+Terminer revue103/code/docs, commit/push et ouvrir la PR du chantier identités ;
+vérifier sa CI exacte. Ensuite composition des projections liées à une révision,
+puis persistance transactionnelle, sans fusion d'origines ou de parcours non prouvée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-queue-links.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-identities.
 
 ## Suite à découper au fil des reprises
 
