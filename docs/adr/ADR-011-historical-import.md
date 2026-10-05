@@ -3,7 +3,8 @@
 Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer lot 72
 et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
 Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
-CI verte ; lot 76 migration/lecture du manifest développées. Écriture et importeur futurs.
+CI verte ; lot 76 migration/lecture publié/CI verte. Lot 77 trace de préparation
+développée ; association/progression de contenu et importeur futurs.
 
 ## Décision et séparation des étapes
 
@@ -52,7 +53,7 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 ## Limites actuelles
 
 Les briques d'inspection/copie normale/gzip et préparation de fichier détenu existent.
-Migration/lecture du manifest développées, aucune écriture publique, ingestion,
+Migration/lecture du manifest publiées, écriture de préparation développée. Pas d'ingestion,
 CLI, déduplication ni garantie de snapshot atomique. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
@@ -154,7 +155,7 @@ L'écriture du manifest sera ensuite intégrée au même Commit que records/chec
 avec réessai identique après ACK perdu, sans avance séparée. Complete exigera EOF
 validé, absence de suffixe partiel et offset égal à la taille ; cette validation
 ne se déduit pas du SHA seul. Ces comportements SQL et l'application ne sont pas
-encore implémentés au lot 76. Mono-écrivain/service arrêté au MVP. Aucune déduplication
+encore implémentés au lot 77. Mono-écrivain/service arrêté au MVP. Aucune déduplication
 inter-source prouvée par ImportOriginID, aucun chemin fourni par l'API Web.
 
 ## Migration et lecteur du lot 76
@@ -179,3 +180,21 @@ contrôlés avant exposition ; état incohérent refuse avec résultat vide. Dat
 pointeurs rendus possédés par caller. Aucun write/adoption, décision de reprise,
 checkpoint ou page globale implicite. Une lecture de checkpoint ultérieure est
 un autre snapshot ; sérialiser les écritures/réessais reste à l'application.
+
+## Trace de préparation du lot 77
+
+Batch.ImportChange optionnel porte Before attendu (nil = création) et Target.
+Première étape : créer running sans contenu, puis tracer failed avec fin après
+préparation refusée. Source kind import, IDsource exact, IDrun global positif,
+chemin/début immuables, dates représentables en nanosecondes int64 sans wrapping.
+Une reprise d'écriture accepte le Target déjà identique ; état périmé, ID étranger/
+legacy ou tentative terminale à ranimer refusés. Le caller conserve son batch
+et tous les pointeurs sans mutation, sérialise écritures et réessais de sa source.
+
+Source et changement de run sont commités dans la même transaction. Refus SQL,
+annulation ou conflit n'acquittent rien, même si un ACK peut être perdu après un
+commit durable. Pas de retry interne. Origines/records/checkpoints/contenu ne sont
+pas acceptés avec une trace de préparation ; records/checkpoints d'import sans
+changement explicite du manifest refusés. La lecture interne utilise le même Tx.
+Le lot suivant ajoutera association de contenu et progression atomique ; aucune
+lecture de fichier ni appel PrepareRegular/normalizer n'est effectué par ce Sink.

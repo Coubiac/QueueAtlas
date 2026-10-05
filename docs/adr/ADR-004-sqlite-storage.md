@@ -45,4 +45,5 @@ La migration v3 du lot 76 associe explicitement les nouveaux import_runs à une
 source/origine (ADR-011), sans attribuer les lignes anciennes. Table reconstruite,
 valeurs v1 préservées, contraintes/FK composites et index dans la même transaction
 que l'historique et user_version. SQL v1/v2 conservés, base plus récente refusée
-avant changement WAL. Lecture source-scopée seulement à ce stade, écritures futures.
+avant changement WAL. Lecture source-scopée ; lot 77 ajoute source+trace running/failed
+de préparation dans le même Commit. Association/progression de contenu futures.

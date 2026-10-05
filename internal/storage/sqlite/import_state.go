@@ -16,6 +16,14 @@ var ErrImportState = errors.New("invalid persisted import state")
 // ImportRun reads one associated attempt and its content origin in one SQL
 // statement. Unassociated legacy rows and other sources are never adopted.
 func (s *Store) ImportRun(ctx context.Context, sourceID string, runID int64) (source.ImportRun, bool, error) {
+	return readImportRun(ctx, s.db, sourceID, runID)
+}
+
+type importQueryer interface {
+	QueryRowContext(context.Context, string, ...any) *sql.Row
+}
+
+func readImportRun(ctx context.Context, q importQueryer, sourceID string, runID int64) (source.ImportRun, bool, error) {
 	if err := ctx.Err(); err != nil {
 		return source.ImportRun{}, false, err
 	}
@@ -27,7 +35,7 @@ func (s *Store) ImportRun(ctx context.Context, sourceID string, runID int64) (so
 	var completed, bytes, partial sql.NullInt64
 	var originID, digest, fingerprint, device, inode sql.NullString
 	var kind string
-	err := s.db.QueryRowContext(ctx, `SELECT r.id, r.path, r.status, r.last_offset,
+	err := q.QueryRowContext(ctx, `SELECT r.id, r.path, r.status, r.last_offset,
 		r.created_at_ns, r.completed_at_ns, r.generation_id, r.byte_size, r.sha256,
 		r.trailing_partial, s.kind, g.fingerprint, g.device, g.inode
 		FROM import_runs AS r JOIN sources AS s ON s.id = r.source_id
@@ -69,6 +77,10 @@ func (s *Store) ImportRun(ctx context.Context, sourceID string, runID int64) (so
 
 func validateImportRun(r source.ImportRun) error {
 	if r.ID <= 0 || r.SourceID == "" || r.Path == "" || r.LastOffset < 0 {
+		return ErrImportState
+	}
+	if !time.Unix(0, r.CreatedAt.UTC().UnixNano()).Equal(r.CreatedAt) ||
+		r.CompletedAt != nil && !time.Unix(0, r.CompletedAt.UTC().UnixNano()).Equal(*r.CompletedAt) {
 		return ErrImportState
 	}
 	if r.Content == nil {

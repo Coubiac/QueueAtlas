@@ -250,6 +250,11 @@ func (s *Store) Commit(ctx context.Context, batch source.Batch) error {
 			return err
 		}
 	}
+	if batch.ImportChange != nil {
+		if err := writeImportChange(ctx, tx, *batch.ImportChange); err != nil {
+			return err
+		}
+	}
 	return tx.Commit()
 }
 
@@ -288,7 +293,7 @@ func validate(batch source.Batch) error {
 			return errors.New("invalid checkpoint")
 		}
 	}
-	return nil
+	return validateImportChange(batch)
 }
 
 func insertEvent(ctx context.Context, tx *sql.Tx, recordID int64, instance string, o model.Observation) error {

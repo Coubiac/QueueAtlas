@@ -46,3 +46,15 @@ type ImportRun struct {
 type ImportStateReader interface {
 	ImportRun(ctx context.Context, sourceID string, runID int64) (ImportRun, bool, error)
 }
+
+// ImportChange creates an explicit preparation attempt (Before nil), or changes
+// its expected committed state. An identical already-applied Target is accepted
+// for retry after lost acknowledgment. The source owns both values and pointers,
+// keeps the same batch on retry and serializes this source's writes. Run identity,
+// path and creation time are immutable; failed/complete states cannot be revived.
+// The initial persistence step accepts unprepared running creation and its
+// transition to failed only; attaching validated content is a separate step.
+type ImportChange struct {
+	Before *ImportRun
+	Target ImportRun
+}

@@ -42,4 +42,21 @@ Go refusait déjà ces valeurs, sans faux succès de lookup ; contrainte SQL dur
 Revue finale terminée sans autre blocage : auditeur quatre tests nouveaux Windows,
 deux régressions NUL ciblées et diff propres. Null branches/FK/offsets/statuts
 cohérents ; SQL v1/v2 inchangés. ID run global dans la base précisé dans le contrat.
-Publication/CI à vérifier. Manifest-write/application et preuve EOF restent futurs.
+Publié `91bfdaa717bc6eb30a8b222eaa7fe10cdd6ef097`,
+[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261183931).
+Manifest-write/application et preuve EOF restent futurs à cette étape historique.
+
+## Lot 77 : trace transactionnelle de préparation
+
+Portée réduite avant contenu connu, progression reportée au 78. ImportChange
+Before/Target dans Batch, running sans contenu créé ou running->failed, identité
+et datation immuables. Target exact déjà durable accepté, autres conflits/legacy/
+étrangers/refus terminal sans adoption ni retry. Source et trace dans le même Tx.
+Reader commun DB/Tx ; timestamps int64 sans wrapping. Aucun changement SQL/FileSource.
+
+Quatre tests TestImportPreparation* -count=1, suite/vet/diff Windows réussis :
+ACK perdu/retry/reopen, global ID/legacy/foreign/stale, trigger insert/update et
+source rollback, cancel et dix-huit refus contenus/provenance/dates/immutabilité.
+Revue indépendante terminée sans blocage : quatre tests ciblés Windows/diff propres,
+contrat/rollback/immutabilité/retry relus, aucun edit. Publication/CI à vérifier. Mono-écrivain et ownership
+du batch au caller, audit assisté sans certification externe.

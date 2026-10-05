@@ -13,9 +13,9 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation normale/gzip et copie privée sont fusionnés dans main (#9–15).
-Bibliothèque seule, sans CLI/service. Lot 75 identité publiée/CI verte ; lot 76
-migration/lecture du manifest développées/relues, vérifications Windows réussies,
-publication/CI à vérifier.
+Bibliothèque seule, sans CLI/service. Lots 75–76 identité/migration/lecture publiés,
+CI vertes. Lot 77 trace de préparation développée/relue sans blocage, vérifications
+Windows réussies ; publication/CI à vérifier.
 Critère de fin du chantier : identité stable, lecture source-scopée et écritures
 atomiques/réessais du manifest, CI verte et PR cohérente fusionnée.
 Ingestion dans un chantier distinct. M2 inclut les autres décisions encore ouvertes
@@ -23,6 +23,10 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 76 : publié `91bfdaa717bc6eb30a8b222eaa7fe10cdd6ef097`,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261183931), #16.
+  Deux contournements NUL reproduits/corrigés, revue terminée sans blocage,
+  quatre tests ciblés et régressions/suite/vet/diff Windows réussis.
 - Lot 75 : identité publiée `8797183d65b6a2cfd79f85fc94df913c7d764ccd`, PR #16
   créée/attachée ; [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246530486).
   Revue indépendante sans blocage, deux tests Windows/suite/vet/diff/golden réussis.
@@ -2433,14 +2437,30 @@ suite/vet/diff Windows repassés. Revue finale/publication/CI à terminer ; dern
 état publié validé = lot75 `8797183`, modifications76 locales tant que non publiées.
 Revue indépendante terminée sans autre blocage : quatre tests Windows exécutés,
 puis deux régressions NUL ciblées passées/diff propre ; IDrun global dans la base
-précisé. Publication/CI à vérifier.
+précisé. Publié `91bfdaa`, CI 37261183931 success, #16 réutilisée.
 Aucun changement Commit/FileSource/ingestion.
+
+## Lot 77 : trace transactionnelle de préparation
+
+Résultat attendu réduit pour garder un petit lot : running sans contenu puis failed
+de préparation, expectedstate/idempotence et source+manifest dans le même Commit.
+Association/progression de contenu reportées au 78. Batch.ImportChange Before/Target,
+kindimport/sourceexact/IDglobal/pathdébutimmuables/timestampsnanoexact, Target déjà
+identique accepté après ACK perdu. Legacy/étranger/périmé/terminalrevived refusés.
+Content/OriginsRecordsCP non acceptés dans ce lot ; importRecordsCP sans changement
+de manifest refusés. Pas de retry interne/ingestion. Reader partagé DB/Tx.
+Quatre TestImportPreparation* Windows et suite/vet/diff réussis : lifecycle/ACKperdu/
+reopen, IDgloballegacyforeign/stale, triggerinsert/update rollback avec source, cancel,
+dix-huit refus dont dates wrap et contenu sans preuve. Revue indépendante terminée
+sans blocage, quatre tests Windows/diff propres, aucun edit ni risque supplémentaire
+identifié dans cette portée.
+Publication/CI à vérifier, dernier état publié validé = lot76 `91bfdaa`.
 
 ## Prochaine action concrète
 
-Publier/vérifier CI du lot 76 dans #16.
-Lot 77 : écritures du manifest dans le Commit atomique et réessais stricts,
-en conservant SourceBatch records/checkpoints et contrôles de provenance.
+Publier/vérifier CI du lot 77 dans #16.
+Lot 78 : association du contenu validé puis progression records/checkpoint/manifest
+atomiques ; lot 79 clôture/fusion cohérente avant importeur dans son chantier.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-manifest.
 

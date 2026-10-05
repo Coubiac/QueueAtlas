@@ -143,4 +143,5 @@ type Batch struct {
 	Records           []Record
 	Checkpoints       []Position
 	FollowTransitions []FollowTransition // acknowledged in the same transaction
+	ImportChange      *ImportChange      // one explicit attempt, acknowledged atomically
 }
