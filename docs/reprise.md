@@ -5,8 +5,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
-et CI main vérifiées. Trois jalons restent : M3–M5, environ 43–73
-petits lots jusqu'au MVP. Les compléments86–88 ont demandé trois lots dans la
+et CI main vérifiées. Premier chantier M3 pur89–92 validé, clôture93 en cours.
+Trois jalons restent : M3–M5, environ 41–70 lots après93, dont16–27 pour M3.
+Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
@@ -39,6 +40,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 - Lot 91 publié : `34c3f7217a6fdec8f5797ce616613683112eea7d`, #19,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37291866747).
   Générations candidates et frontières contradictoires, cinq tests/revue sans blocage.
+- Lot 92 publié : `df0bc0ef3556eb662d2d6e10d6cc160dac0cb556`, #19,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37293123113).
+  Tentatives/dernier résultat observé, quatre tests/revue finale sans blocage,
+  statut natif malformé reproduit/corrigé et gardes historiques vérifiées.
 - Lot 87 publié : `0b3e362fe9ccfc40ce87a72bba78e113702c6beb`, #18,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37287896648).
   Test portable Windows et intégration FileSource Linux réussis, revue sans blocage.
@@ -2795,12 +2800,24 @@ normalisées et xstatus ultérieur. Trois statuts/legacy et huit cas helper pass
 Message natif absent donne désormais unknown, attente test adaptée ; tie07 utilise
 les véritables indices après lecture fixture. Revue finale code/docs sans blocage,
 quatre tests Recipient et deux régressions natives exécutés par auditeur : pass.
-Publication/CI92 à vérifier. Dernier état publié validé = lot91.
+Publié `df0bc0e`, CI37293123113 success ; dernier état publié validé = lot92.
+
+## Lot 93 : clôture des premières projections pures M3
+
+Résultat attendu : clôturer #19 avec CI exacte/fusion/main, réutiliser revues scellées
+89–92 et préciser le travail restant sans présenter M3 terminé. Checkout isolé
+propre df0bc0e, dix fichiers runtime/tests conformes aux versions relues, aucun
+delta ni risque nouveau nécessitant rerun. CI92 entière verte et avis de clôture
+sans blocage. Quatre comportements purs, runtime inchangé dans ce lot de clôture.
+README/contrat/bilan et estimation actualisés : M3 restant16–27 par comportements,
+M4 15–25, M5 10–18, total41–70. Hypothèses de planification, aucun critère MVP ôté.
+Publication93, CI finale, ready/fusion et CI main restent à vérifier.
 
 ## Prochaine action concrète
 
-Publier92 sur #19 et vérifier CI exacte. Lot93 : clôture du premier
-chantier M3 pur, CI/fusion/main, puis complétude/expiration/résumés prudents.
+Publier clôture93, vérifier CI exacte, fusionner #19 sur sa tête attendue et vérifier
+main. Lot94 : expiration explicitement rapportée et ses preuves, sans inventer une
+expiration depuis removed ou une absence de logs ; puis résumé/complétude distincts.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-recipient-attempts.

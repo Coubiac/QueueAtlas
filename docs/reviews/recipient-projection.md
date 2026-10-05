@@ -86,5 +86,14 @@ HasNativeStatus protège les champs historiques et xstatus ultérieur. Test Deli
 trois statuts/legacy et helper parser huit cas réussis. Test tie07 corrigé après
 lecture des indices de fixture (cleanup et qmgr retry conservés).
 Revue finale code et documentaire sans blocage ; quatre tests Recipient et deux
-régressions de statut natif exécutés par auditeur : pass. Publication/CI92 à
-vérifier. Pas de DB/Web/global/expiration ajoutés.
+régressions de statut natif exécutés par auditeur : pass. Publiédf0bc0e,
+CI37293123113 success. Pas de DB/Web/global/expiration ajoutés.
+
+## Lot93 : clôture du premier chantier de projections pures
+
+Référence isolée propre df0bc0e, dix fichiers runtime/tests identiques aux versions
+relues ; aucun delta ni risque nouveau. Aucun test relancé. CI92 entière réussie,
+matrice Linux, race FileSource, builds statiques et chemins Windows compris.
+Avis de clôture sans blocage, bilan et contrat cohérents avec les limites livrées.
+M3 reste en cours ; reprise/README/estimation actualisés. Publication finale93,
+CI exacte, fusion #19 et CI push main restent à vérifier. Revue assistée.
