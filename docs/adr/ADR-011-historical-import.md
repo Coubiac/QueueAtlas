@@ -4,8 +4,11 @@ Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer
 et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
 Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
 CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI vertes.
-Lot 78 association/progression publiées, CI verte. Lot 79 synthèse finale relue,
-fusion après CI exacte finale ; importeur futur.
+Lots 75–79 manifest fusionnés dans #16, CI finale et main vertes. Lot 80 :
+préparation d'ingestor publiée dans #17, CI verte. Lot 81 CommitNext publié, CI
+verte et revue sans blocage. Lot 82 Binding publié/CI verte, revue sans blocage.
+Lots83–84 pilote et orchestration ordonnée/bornée publiés, CI vertes et revues sans
+blocage. Lot85 clôture documentaire, CI finale/fusion à vérifier. CLI/corrélation futures.
 
 ## Décision et séparation des étapes
 
@@ -34,13 +37,13 @@ Le lecteur de lignes conserve ses bornes et ne normalise pas seulement un suffix
    copie privée bornée, SHA au même passage, writer fermé puis reader détenu.
    Entrée régulière ouverte avec propriété explicite ; échec/annulation refuse la
    copie et tente son cleanup, les erreurs de suppression étant signalées.
-2. Suite : ordre/nombre de fichiers/durée globale bornés.
+2. Réalisé lot84 : ordre/nombre de fichiers/durée globale bornés.
    Ne pas déduire une identité de contenu d'un chemin, inode ou en-tête gzip ;
    recompressions/renommages identiques doivent pouvoir retrouver la même origine.
 3. Lot 76 : migration/lecture source-scopée du manifest développées, v1/v2 inchangés.
    Lots 77–78 : écriture de préparation puis contenu/progression développées dans
-   le Commit du Sink. Application future : prouver EOF/ancres avant complete.
-4. Application du contenu validé à parser/Sink, reprise du checkpoint exact,
+   le Commit du Sink. Lots80–84 : EOF/ancres prouvés avant complete.
+4. Réalisé lots80–84 : application du contenu validé à parser/Sink, reprise du checkpoint exact,
    depuis la copie privée validée. Une inspection n'est pas un snapshot filesystem
    et ne prouve pas un second passage identique de l'entrée originale.
 5. CLI import hors service actif, ordre fourni sans tri implicite, recalcul M3,
@@ -54,8 +57,8 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 ## Limites actuelles
 
 Les briques d'inspection/copie normale/gzip et préparation de fichier détenu existent.
-Migration/lecture et préparation publiées, progression développée. Pas d'ingestion,
-CLI, déduplication ni garantie de snapshot atomique. Les tests
+Migration/lecture/manifest fusionnés ; ingestion élémentaire développée dans #17.
+Source.Run import développé dans #17, sans CLI ni garantie de snapshot atomique. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
 
@@ -230,6 +233,112 @@ complete à zéro après association ; suffixe partiel peut laisser des records
 complets puis une tentative failed au dernier offset acquitté.
 
 Sink ne calcule pas le digest, ne valide pas gzip/EOF, ne décode pas l'anchor et ne
-relit pas le fichier. Preuves, bornes et batch conservé restent à l'importeur futur ;
+relit pas le fichier. Preuves, bornes et batch conservé sont à l'importeur des lots80–84 ;
 un état SQL canonique ne certifie pas le contenu. Mono-écrivain, aucune compensation
 sur erreur d'ACK.
+
+## Préparation d'ingestor du lot 80
+
+NewIngestor lie PreparedContent détenu à Identity kind import, run running associé
+et position source-scopée. SHA entier/taille/partial/ID dérivé égaux à Info, offset
+égal au LastOffset et dans le contenu ; run explicite/ID positif/début nano exact.
+Ancre canonique vérifiée par CaptureAnchor sans déplacer le reader, taille actuelle
+égale à Info et byte avant checkpoint positif LF. Zéro peut être prouvé ici grâce
+au digest entier de la copie validée, sans prétendre à une preuve d'ancre vide live.
+
+Seek seulement après preuves et vérification contexte ; LineReader créé sans lire
+de record ni normaliser. Position et RunState exposent état acquitté, content retourné
+copié pour éviter mutations par caller. Pas de Sink/manifest/CommitNext dans ce lot.
+Le caller conserve Close, consommation exclusive et bytes immuables dans répertoire
+protégé ; le constructeur ne rehash pas la copie ni ne rouvre le path original.
+Copie privée de taille changée refusée ; immutabilité des bytes au même descripteur
+reste une hypothèse explicite de cette propriété. Erreur/cancel après Seek peut
+laisser position déplacée ; aucun transfert de propriété ni cleanup implicite.
+
+## Application élémentaire du lot 81
+
+CommitNext consomme une ligne LF complète depuis la copie détenue : ancre sur
+les octets physiques jusqu'à End, normalization bornée, SourceID imposé, record/
+checkpoint/ImportChange commités ensemble. Ligne surdimensionnée : prefix borné
+unknown avec erreur, End et ancre conservent toute la provenance physique.
+Record staged avant toute preuve qui pourrait échouer ; pas de saut à la ligne
+suivante après cancellation ou erreur d'ancre. Batch entièrement construit avant
+appel Sink, retenu tel quel jusqu'au nil, sans nouvelle normalization ni date.
+Read/proof/cancel/Sink error laisse état acquitté intact ; aucune compensation
+failed sur ACK ambigu. Caller sérialise, conserve la copie et décide du retry.
+
+À EOF fini : commit terminal seul, sans record ou checkpoint artificiel. Copie
+complète sans suffixe, offset exact taille : complete puis io.EOF. Suffixe partiel :
+failed au dernier LF acquitté puis ErrImportPartial ; suffixe ni normalisé ni jeté
+comme si ingéré. Date terminale conservée au retry, au moins CreatedAt même si
+l'horloge recule. Appel ultérieur terminal sans écriture. RunState copie les pointeurs.
+Un Sink peut rendre lui-même io.EOF ou ErrImportPartial sans ACK : le caller doit
+vérifier RunState.Status terminal pour reconnaître une fin, pas seulement l'erreur.
+Read/anchor error non terminal : retry possible, caller décide fermeture et reprise
+durable ; CommitNext ne possède pas la copie et ne gère pas plusieurs fichiers.
+
+## Association prouvée du lot 82
+
+PrepareBinding reçoit une copie déjà validée détenue et une tentative running
+acquittée ; lit le CP exact source/ID dérivé du contenu. Run non préparé : sa position
+initiale doit être zéro, Target peut reprendre le CP partagé prouvé ; CP absent :
+nouveau zéro explicite. Run déjà associé : CP obligatoire, metadata et LastOffset
+exactement concordants, aucune adoption de l'avancement d'une autre tentative.
+NewIngestor prouve taille/digest/ancre/LF sur la copie avant tout Sink.
+
+Binding conserve le batch d'association (origine, CP exact et Before/Target), sans
+record ni date variable. Commit expose l'ingestor seulement après ACK. Erreur ou
+annulation : nil ingestor, batch intact et retry du même objet/copie, écritures
+de source sérialisées. CP inclus même s'il existe pour vérifier l'ancre dans le Tx.
+Resume déjà associé : aucune écriture supplémentaire. Getter du futur ingestor
+ne peut exposer une association non acquittée. Caller garde Close/exclusivité et
+bytes privés immuables ; lecture manifest/CP n'est pas un snapshot multi-écrivain.
+
+## Pilote d'une tentative du lot 83
+
+Attempt implémente Source pour un seul chemin/run explicite. NewAttempt résout
+path et TempDir une fois, valide kind/import/ID/limits/dépendances sans IO. Run
+exige un contexte avec deadline avant toute écriture ; TryLock protège cet objet,
+caller mono-écrivain pour la source. Dépendances honorent ctx ; deadline entre
+opérations bornées, pas interruption d'un syscall de fichier régulier bloqué.
+
+Pending exact d'un précédent Run réessayé avant lookup/ouverture. Run absent :
+création running non préparé ; run existant : source/ID/path exacts. Complete déjà
+durable revient succès sans rouvrir le path : l'ID identifie cette tentative, pas
+un nouvel import d'une entrée peut-être changée. Failed ne se ranime pas ; nouvelle
+demande nécessite nouvel ID. Legacy/ID étranger non adopté, conflit SQL conservé.
+
+PrepareRegular possède copie jusqu'au Close différé, toutes sorties joignent
+erreurs cleanup. Binding puis ingestion finie, status terminal acquitté distingue
+EOF source/Sink. Erreur Sink : retenir batch exact avant fermeture de copie, puis
+arrêter ; Run suivant l'acquitte avant revalidation/CP durable. Après perte du
+process, pending mémoire perdu, reprendre état commité et contenu entier validé.
+Reprise content changé/absent refusée sans transformer run préparé en failed.
+
+Préparation non interrompue refusée sur run sans contenu : trace failed avec date
+stable et batch conservé si erreur Sink. Interruption de contexte pendant préparation
+reste running pour permettre reprise. Suffixe partiel : failed lastLF acquitté.
+Cleanup refusé est signalé, jamais suppression récursive/compensation du manifest
+déjà complete. Aucun retry automatique ni plusieurs fichiers dans ce pilote.
+
+## Orchestration globale du lot 84
+
+ImportSource.New valide toute la liste explicite avant IO : taille positive au
+plus MaxFiles (positif<=hardcap1000), durée globale positive, IDs run distincts et
+stables pour les retries, encodings choisis explicitement. Paramètres copiés et
+paths résolus une fois par NewAttempt ; pas de glob, inférence d'ordre, tri ou
+identité sur path. Bytes et ratio bornés par fichier, donc contenu total borné
+par le nombre fini d'inputs ; aucune somme int64 pouvant déborder n'est utilisée.
+
+Un unique contexte WithTimeout pour la liste entière, également limité par parent
+plus court ; aucun reset par fichier. Run séquentiel, une seule copie détenue,
+premier échec arrête sans commencer la suite. Tentatives complete restent durables,
+retry même liste/objet réessaie batch ambigu du fichier interrompu avant la suite.
+Run suivant reçoit un nouveau budget global ; aucun retry interne. TryLock par
+objet, écriture source sérialisée entre objets par caller, dépendances context-aware.
+Deadline entre opérations ; aucune promesse d'interrompre un syscall bloqué.
+
+Cette livraison est une bibliothèque, pas la CLI hors service actif. Déduplication
+par contenu seulement au sein d'une source import ; chevauchement FileSource encore
+incertain, pas de dédup automatique par hash de ligne. Projection canonique quel
+que soit l'ordre relève de M3, pas d'une inversion arbitraire de l'ordre des reads.

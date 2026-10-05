@@ -4,25 +4,48 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Prévision après le lot 74 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
-50–85 petits lots jusqu'au MVP, dont 5–10 pour M2. PR #15 fusionnée après trois lots
-de copie privée ; identité/manifest puis application/reprise : environ 5–8 lots,
-inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
+Prévision après le développement de l'import ordonné (lots80–84, clôture85) : quatre
+jalons à clôturer (M2 en cours, M3–M5), environ 45–80 petits lots jusqu'au MVP,
+dont 2–5 pour compléments/diagnostics et bilan M2. Application/reprise/orchestration
+a demandé six lots avec clôture, dans la prévision 4–6 après79. Fourchettes de
+planification incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
-end, prévalidation normale/gzip et copie privée sont fusionnés dans main (#9–15).
-Bibliothèque seule, sans CLI/service. Lots 75–76 identité/migration/lecture publiés,
-CI vertes. Lots 77–78 préparation/association/progression publiés et CI vertes ;
-lot 79 synthèse finale relue sans blocage, publication/CI finale/fusion à vérifier.
-Critère de fin du chantier : identité stable, lecture source-scopée et écritures
-atomiques/réessais du manifest, CI verte et PR cohérente fusionnée.
-Ingestion dans un chantier distinct. M2 inclut les autres décisions encore ouvertes
+end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
+Bibliothèque seule, sans CLI/service. Lots 80–82 publiés dans #17, revues sans
+blocage et CI vertes. Lots83–84 pilote/list ordonnée publiés, CI vertes. Lot85 clôture
+documentaire et référence isolée vérifiée, ready/fusion après CI finale à vérifier.
+Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
+ordre et bornes globaux, CI verte et PR cohérente fusionnée.
+M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 84 publié : `84f091b86c26a9bf046595d1aa74574612bf8f81`, #17,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265578493).
+  Liste/ordre/borne globale, cinq tests/suite/vet/diff et revue sans blocage.
+- Lot 83 publié : `1e6bc8ff4e83c1a1df9ed96f902b8460f097ed96`, #17,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265252402).
+  Pilote un fichier et cleanup/retry, cinq tests/suite/vet/diff et revue sans blocage.
+- Lot 82 publié : `e8e54694f0f19d9823131deb282d91111fae13c7`, #17,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37264777146).
+  Association/reprise prouvées, trois tests/suite/vet/diff et revue sans blocage.
+- Lot 81 publié : `2a80042b243b4b073cd39150ea633762a918dced`, #17,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37264301733).
+  Revue/runtime et régression sentinelles Sink terminées sans blocage.
+- Lot 80 publié : `357bde7cabcc941904b4d62a5db28cdf13c39642`,
+  [PR #17](https://github.com/Coubiac/mailtrace/pull/17) en brouillon,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37263556572).
+  Revue sans blocage et contrôles Windows réussis ; constructeur seul.
+- Lot 79 terminé : [PR #16](https://github.com/Coubiac/mailtrace/pull/16) fusionnée,
+  tête `fd57bd4488ffd0cdd59a0c36a134eeb9c5730f0a`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262803722).
+  Main `677a61833f93e6114b7cdc88414ecc0b2dbd6e05` vérifié ;
+  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262983824),
+  vérifiée REST. Branche `codex/m2-import-application` depuis main.
 - Lot 78 : publié `8425fd5df073c80a690faf3f4342df2d1f2528b8`,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262628894), #16.
   Correctif ACK reproduit/corrigé/relu ; sept tests nouveaux dont régression/reuse,
@@ -2491,15 +2514,133 @@ actualiser documentation puis ready/fusion après CI exacte finale. Référence 
 `8425fd5` propre ; sept fichiers runtime identiques, nouveau test reuse relu.
 Aucun blocage ni risque nécessitant rerun. CI78 complète success ; corrections NUL
 et ACK consignées, suite future corrigée. Diff documentaire/commit/push/CI finale
-et fusion encore à constater. Pas d'ingestion/fichier/parser/CLI changés.
+et fusion initialement à vérifier. Clôture `fd57bd4` publiée, CI 37262803722 success,
+ready/fusion #16, main `677a618` et CI push 37262983824 success vérifiés REST.
+Pas d'ingestion/fichier/parser/CLI changés par ce lot documentaire.
+
+## Lot 80 : préparation d'ingestor sur copie validée
+
+Résultat attendu : lier la copie heldcallerowned au run/content/CP prouvés sans
+normalizer/Commit/Sink ; reprenez pas sur path/inode. NewIngestor développé :
+kind/source/runrunning/timeNano, bytes/SHAentier/partial/idDerived, CPoffsetExact/
+anchorcanonique/windowmatch/LFavantoffsetpositif/taillecopie contrôlés avant Seek.
+Zéro autorisé par identité entière validée, pas par une ancre vide live. LineReader
+créé, getters état acquitté/Contentcopié. Caller conserve Close/exclusivité/bytes
+immutables, cancellationaprèsSeekpeutmover ; constructeurne rehashpaslacopie.
+Trois TestNewImportIngestor* Windows/suite/vet/diff réussis : plain/gzip/vide0/5/EOF/
+partial/window4096+, sourceoriginalemodifiée, seek/gettersnoparse, dix-neuf refus
++midline, cancel/nilnormalizer/copyclosed/sizechanged. Revue indépendante sans blocage,
+trois tests ciblés Windows/diff propres, aucun contrôle supplémentaire nécessaire.
+Publié `357bde7`, PR #17 ; CI 37263556572 success vérifiée. Constructeur seul dans
+ce commit ; aucun CommitNext/Run. Main reste `677a618` après79.
+
+## Lot 81 : application atomique d'une copie finie
+
+Résultat attendu : CommitNext d'un record complet avec CP et manifest, retry exact
+sur ACK perdu/annulation, puis EOF ou échec explicite sur suffixe partiel. Développé.
+Record consommé conservé avant preuve d'ancre ; échec de preuve ne saute pas une
+ligne et ne normalise pas. Normalizer une fois, raw indépendant, SourceID imposé ;
+ligne trop longue : observation unknown bornée, offset/ancre sur toute la ligne.
+Pending conservé jusqu'au nil du Sink, aucun prochain record ni compensation.
+Position/RunState restent acquittés ; EOF terminal commit sans nouveau record/CP,
+horodatage stable au retry et au moins CreatedAt en cas de recul d'horloge.
+Résultat terminal io.EOF après complete acquitté ; ErrImportPartial après failed au
+dernier LF acquitté. Un Sink peut retourner les mêmes sentinelles en erreur : vérifier
+RunState.Status terminal, pas seulement l'erreur. Appels terminaux sans réécriture.
+Caller conserve propriété/Close.
+
+Quatre TestImportCommitNext* Windows réussis : SQLite réelle plain/gzip, échec avant
+écriture/ACK perdu après commit, égalité JSON des retries, cancel, reopen et deux
+records identiques à offsets distincts sans doublons ; vide/partial/reprise positive,
+cancel normalizer, oversize, preuve refusée puis reprise du record staged.
+Douze cas supplémentaires : sentinelles EOF/Partial du Sink avant/après commit,
+run encore running, pending exact puis retry. Qualification du contrat après revue.
+Suite go test ./..., go vet ./... et diff réussis. Revue runtime sans blocage,
+dernier delta documentaire/régression relu, douze cas exécutés par auditeur sans
+blocage. Publié `2a80042`, CI 37264301733 success vérifiée.
+
+## Lot 82 : association prouvée au contenu partagé
+
+Résultat attendu : depuis une copie détenue et un run running acquitté, retrouver
+CP source/content exact et prouver la position avant association au manifest.
+PrepareBinding développé, aucune lecture du path original/normalisation/écriture.
+Run non préparé à zéro : associer contenu au CP partagé prouvé, ou zéro explicite
+si absent ; run déjà associé : contenu et LastOffset doivent correspondre exactement.
+Ancre canonique/LF/taille/digest entier contrôlés par NewIngestor avant tout commit.
+Binding conserve association exacte et ne rend l'ingestor qu'après nil du Sink,
+retry du même objet/copie avant toute autre écriture. Caller conserve Close.
+
+Trois TestImportBinding* Windows réussis avec SQLite réelle : association nouvelle
+sans write préalable, échec avant write/ACK perdu après, batch JSON identique,
+cancel/retry, renamed/recompressed à CP positif, reprise sans write, run périmé
+refusé, autre source indépendante, réimport à EOF sans parser ; dix refus et
+state-error/cancel/nilreader. Suite/vet/diff Windows réussis. Revue sans blocage,
+trois tests ciblés exécutés par auditeur, aucun contrôle supplémentaire nécessaire.
+Publié `e8e5469`, CI 37264777146 success vérifiée.
+
+## Lot 83 : pilote propriétaire d'une tentative
+
+Résultat attendu : un fichier/run explicite créé ou repris durablement, copie
+validée possédée et fermée sur chaque sortie ; batch ambigu conservé pour retry.
+NewAttempt valide et résout paths avant IO. Run exige deadline, protège son objet
+par TryLock, pending exact réessayé avant lookup/open, source/run/path concordants.
+PrepareRegular puis Binding/CommitNext ; EOF reconnu par status acquitté, pas par
+sentinelle du Sink. Copie fermée/supprimée sur chaque sortie, erreurs cleanup jointes.
+Préparation CRC/budget refusée sur run non préparé : trace failed ; erreur de cette
+trace garde batch exact. Interruption de contexte et input de reprise indisponible/
+changé restent running, pas de compensation ambiguë. Complete existant sans réouvrir
+path : RunID identifie la tentative passée ; nouvelle demande = nouvel ID explicite.
+Failed ne se ranime pas. Après perte de process, reprendre contenu entier validé
+et CP durable ; ambiguïté en mémoire seulement tant que l'objet existe.
+
+Cinq TestImportAttempt* Windows réussis, SQLite réelle plain/gzip/vide/partial ;
+create/attach/record/terminal × avant write/ACK perdu (Sink EOF), JSON exact au retry
+après cleanup, restart/CP positif/changement/missing, préparation interrompue,
+deadline/config/cancel/concurrence ; foreign sentinel conservé, copie supprimée,
+erreur cleanup signalée sans compensation du complete durable. Suite/vet/diff
+Windows réussis. Revue terminée sans blocage, cinq tests ciblés exécutés par auditeur,
+Publié `1e6bc8f`, CI 37265252402 success vérifiée.
+
+## Lot 84 : liste d'import ordonnée et bornée
+
+Résultat attendu : liste explicite dans l'ordre fourni, nombre maximum et deadline
+globale commune ; arrêter au premier échec, une seule copie privée à la fois.
+ImportSource.New valide liste entière avant IO, count<=MaxFiles<=1000 positif,
+MaxDuration positif, IDs distincts dans liste/stables aux retries, encoding explicite,
+paths résolus et paramètres copiés par NewAttempt. Limites content/ratio par fichier,
+contenu total également borné par nombre fini de fichiers, sans somme int64 débordante.
+Run garde un unique WithTimeout (parent plus court respecté), ordre sans tri/glob,
+TryLock pour objet et mono-écrivain caller ; premier échec stop, précédents complete
+restent durables et retries ne réouvrent pas ces paths. Une nouvelle invocation
+obtient un nouveau budget global, pas de retry interne. Limite temps entre appels
+context-aware ; syscall régulier bloquant non interrompu.
+
+Cinq TestImportSource* Windows/suite/vet/diff réussis : ordre z/a et paramètres
+copiés, gzip explicite/recompression identique sans parser, deadline même au Sink
+sur plusieurs fichiers, une copie à la fois ; ACK perdu sur second puis JSON exact
+avant troisième, premier path supprimé, partial failed arrêt/retry sans revival ;
+deadline globale/parent via state-reader bloqué, dix refus de liste/nil/concurrent.
+Revue indépendante sans blocage, cinq tests ciblés exécutés par auditeur, aucun
+contrôle supplémentaire nécessaire. Publié `84f091b`, CI 37265578493 success vérifiée.
+
+## Lot 85 : clôture du chantier d'import applicatif
+
+Résultat attendu : synthèse des revues scellées80–84, CI exacte finale, ready/fusion
+#17 et vérification main, sans rerun injustifié. Checkout isolé propre84f091b ; revue
+de clôture sans blocage, versions runtime/tests identiques, aucun risque nouveau
+nécessitant rerun. Coordinateur compare neuf fichiers Go/test entre root et isolé :
+SHA256 tous identiques. Documentation/README/estimation actualisés, runtime inchangé.
+CI84 success, dernier état publié validé84. Publication/CI85/fusion/main à vérifier.
+Déduplication source import par contenu uniquement ; FileSource overlap incertain,
+CLI et projection canonique M3 non livrées, issues #4/#5 restent ouvertes.
 
 ## Prochaine action concrète
 
-Publier le lot 79, vérifier CI exacte puis ready/fusion #16 avec tête attendue.
-Lot suivant : préparation d'un ingestor sur copie détenue/content validé et position
-prouvée, sans lecture/parsing/CommitNext ; application et orchestration en lots distincts.
+Publier85, vérifier CI exacte puis ready/fusion #17 et CI main.
+Lot86 : qualifier les diagnostics de source missing/gap/degraded sans PII à partir
+des décisions déjà exposées ; chevauchement inter-source reste incertain sans preuve.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-manifest.
+pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
 
 ## Suite à découper au fil des reprises
 
