@@ -2,7 +2,7 @@
 
 État au 5 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
 (PR #18, CI finale et main réussies). Projections pures M3 validées aux lots89–92,
-CI verte ; clôture93 de #19 en cours. Référence de périmètre :
+CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -31,7 +31,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : quatre projections pures89–92 validées, clôture #19 en cours | Identités/continuité globales, complétude/expiration/NOQUEUE, liens prouvés, persistance/recalcul, recherche et rétention | 16–27 après clôture93 |
+| M3 — reconstruction | En cours : quatre projections pures89–92 fusionnées dans #19, CI finale et main réussies | Identités/continuité globales, complétude/expiration/NOQUEUE, liens prouvés, persistance/recalcul, recherche et rétention | 16–27 après clôture93 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture93** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **41–70, soit environ 40–70** |

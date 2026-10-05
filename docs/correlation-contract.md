@@ -137,9 +137,30 @@ un fragment xstatus ultérieur comme un résultat connu. Une ancienne valeur de
 champ peut rester altérée dans les faits historiques ; elle n'est pas réécrite,
 son résultat projeté reste unknown quand le texte natif ne la corrobore pas.
 
+## Lot94 : preuves explicites d'expiration de file
+
+`BuildRecipients` ajoute `Expirations` à chaque génération candidate. Chaque
+`QueueExpiration` conserve sa référence physique, sa date/hypothèses copiée et le
+statut natif `expired`. Seul un fait qmgr/KindMessage, avec Queue ID, sans NOQUEUE
+ni ParseError, et statut présent exactement corroboré par le premier champ natif
+borné est reconnu. Les fragments xstatus, réponses distantes et anciens champs
+normalisés depuis `<expired>` ne suffisent pas. Un événement de log reste une
+observation du serveur, pas une certification indépendante.
+
+Tous les rapports distincts restent visibles, même à date égale ou texte identique.
+Les sources/origines restent séparées ; la génération porte les mêmes réserves
+de date et de continuité. Une date inconnue conserve le flux dans Unresolved,
+avec toutes ses références, sans rattachement certain à une génération.
+
+Ces événements ne sont pas des tentatives de remise : le deferred observé reste
+deferred, et un sent/delivered existant n'est pas remplacé. Removed, notification
+bounce, délai long ou absence de logs ne créent aucune expiration. Aucune adresse
+non observée n'est inventée. La synthèse des états et les réserves de complétude
+seront un comportement distinct ; ni statut global ni persistance ajoutés ici.
+
 ## Suite concrète
 
-Clôturer ce premier chantier de fonctions pures, puis traiter les réserves de
-complétude, expiration explicite et résumés prudents. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Le premier chantier pur #19 est fusionné. Traiter les réserves de complétude et
+résumés prudents après les preuves explicites d'expiration. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

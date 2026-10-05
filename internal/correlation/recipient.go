@@ -28,6 +28,7 @@ type RecipientResult struct {
 type GenerationRecipients struct {
 	Generation            QueueGeneration
 	Recipients            []RecipientResult
+	Expirations           []QueueExpiration
 	UnprojectedDeliveries []FactRef
 }
 
@@ -60,6 +61,9 @@ func BuildRecipients(facts []Fact, limit int) (RecipientPartition, error) {
 		recipients := make(map[string]*recipientState)
 		for _, ref := range g.Facts {
 			o := lookup[ref].Observation
+			if expiration, ok := queueExpirationFrom(ref, o); ok {
+				queue.Expirations = append(queue.Expirations, expiration)
+			}
 			d, ok := DeliveryFrom(o)
 			if !ok {
 				if o.Kind == model.KindDelivery {
