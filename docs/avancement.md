@@ -5,8 +5,10 @@
 CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration94 et
 synthèse95 fusionnées dans #20 ; clôture96 terminée, CI finale/main réussies.
 Rapports NOQUEUE97 et sessions98 fusionnés #21, clôture99 terminée avec CI finale/main
-vertes. Indices natifs100 et relations101 publiés dans #22, CI entière verte ;
-clôture102 en cours avant fusion. Référence de périmètre :
+vertes. Indices natifs100 et relations101 fusionnés dans #22, clôture102 terminée,
+CI finale/main réussies. Clés103 publiées/CI verte #23, composition104 publiée,
+revues favorables/CI verte ; clôture105 en cours avant fusion.
+Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -19,7 +21,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 102 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 105 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -35,10 +37,10 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections pures #19–21 fusionnées ; indices/relations #22 publiés et CI verte, clôture102 en cours | Identités/continuité globales, complétude applicative, persistance/recalcul, recherche et rétention | 13–23 (référence après99, à réévaluer avec le stockage) |
+| M3 — reconstruction | En cours : projections pures #19–22 fusionnées ; clés103/composition104 publiées, CI verte et clôture105 en cours #23 | Continuité prouvée, complétude applicative, persistance/recalcul, recherche et rétention | 12–22 (réestimation au chantier103–105) |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après clôture99** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **38–66, soit environ 40–65** |
+| **Total au chantier103–105** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **37–65, soit environ 40–65** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -129,12 +131,12 @@ soustraction de trois au compteur. Ces regroupements restent à découper :
 
 | Travail M3 restant | Lots estimés |
 | --- | ---: |
-| Identités et continuité globales ; liens purs développés100–101, clôture102 en cours | 2–4 |
+| Continuité prouvée entre origines et intégration des clés révisables ; liens purs fusionnés100–102, clés/composition103–104 publiées | 1–3 |
 | Complétude applicative restante (avec réserves existantes) | 0–1 |
 | Persistance transactionnelle des projections et recalcul | 4–6 |
 | Recherche indexée et rétention cohérente | 4–6 |
 | Intégration corpus, mesures et revue/clôture M3 | 3–6 |
-| **M3 restant après clôture99** | **13–23** |
+| **M3 restant au chantier103–105** | **12–22** |
 
 M4 et M5 gardent leurs fourchettes. Le backlog applicatif #4/#5 est inclus dans
 les jalons suivants ; aucun critère de MVP n'est supprimé par ces clôtures.
@@ -142,10 +144,16 @@ les jalons suivants ; aucun critère de MVP n'est supprimé par ces clôtures.
 Les lots100–101 conservent les indices natifs puis corroborent des relations
 SMTP/local/bounce sous preuves des deux côtés. CI37324927168 et37326579775 success,
 revues favorables après correction de la répétition des preuves positives. Le
-lot102 prépare la fusion de #22. Identités persistantes, continuité entre origines
+lot102 clôture la fusion de #22, CI finale37327741368 et main37328022256 success
+vérifiées sur les SHA exacts. Clés103/CI37329247549 success, composition104 publiée
+avec revue favorable et CI37330343331 entière success. Clôture105 en cours.
+Continuité entre origines et stockage
 et stockage restent à définir ensemble ; le schéma initial ne représente pas encore
-toutes les réserves et preuves des projections pures. La fourchette après99 reste
-une référence de planification, pas un compteur décrémenté de trois à chaque PR.
+toutes les réserves et preuves des projections pures. Les clés et la composition
+réalisées réduisent le restant M3 à12–22 ; il faut encore les intégrer au stockage.
+Cette réestimation remplace13–23 après99 et conserve les critères de continuité,
+recalcul/recherche/rétention. Les lots de clôture ne livrent pas de nouveaux
+comportements ; le compteur n'est pas décrémenté mécaniquement à chaque PR.
 
 ## Pourquoi les prochains jalons ne devraient pas répéter 53 lots chacun
 
