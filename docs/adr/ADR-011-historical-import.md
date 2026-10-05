@@ -5,8 +5,8 @@ et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
 Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
 CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI vertes.
 Lots 75–79 manifest fusionnés dans #16, CI finale et main vertes. Lot 80 :
-préparation d'ingestor publiée dans #17, CI verte. Lot 81 : CommitNext développé,
-tests Windows réussis ; revue runtime sans blocage. Orchestration future.
+préparation d'ingestor publiée dans #17, CI verte. Lot 81 CommitNext publié, CI
+verte et revue sans blocage. Lot 82 Binding développé et relu sans blocage ; pilote futur.
 
 ## Décision et séparation des étapes
 
@@ -274,3 +274,20 @@ Un Sink peut rendre lui-même io.EOF ou ErrImportPartial sans ACK : le caller do
 vérifier RunState.Status terminal pour reconnaître une fin, pas seulement l'erreur.
 Read/anchor error non terminal : retry possible, caller décide fermeture et reprise
 durable ; CommitNext ne possède pas la copie et ne gère pas plusieurs fichiers.
+
+## Association prouvée du lot 82
+
+PrepareBinding reçoit une copie déjà validée détenue et une tentative running
+acquittée ; lit le CP exact source/ID dérivé du contenu. Run non préparé : sa position
+initiale doit être zéro, Target peut reprendre le CP partagé prouvé ; CP absent :
+nouveau zéro explicite. Run déjà associé : CP obligatoire, metadata et LastOffset
+exactement concordants, aucune adoption de l'avancement d'une autre tentative.
+NewIngestor prouve taille/digest/ancre/LF sur la copie avant tout Sink.
+
+Binding conserve le batch d'association (origine, CP exact et Before/Target), sans
+record ni date variable. Commit expose l'ingestor seulement après ACK. Erreur ou
+annulation : nil ingestor, batch intact et retry du même objet/copie, écritures
+de source sérialisées. CP inclus même s'il existe pour vérifier l'ancre dans le Tx.
+Resume déjà associé : aucune écriture supplémentaire. Getter du futur ingestor
+ne peut exposer une association non acquittée. Caller garde Close/exclusivité et
+bytes privés immuables ; lecture manifest/CP n'est pas un snapshot multi-écrivain.

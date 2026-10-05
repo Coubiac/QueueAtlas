@@ -27,6 +27,19 @@ plain/gzip/EOF/partial/oversize/cancel et proof-failure. Revue runtime terminée
 blocage ; trois tests ciblés exécutés par auditeur. Nuance signalée : sentinelle EOF
 peut venir du Sink sans ACK ; qualification RunState terminal ajoutée au contrat et
 régression douze cas passée puis exécutée par auditeur. Dernier delta relu sans
-blocage ; publication/CI81 à vérifier. Audit assisté, sans certification externe.
+blocage ; publié 2a80042, CI 37264301733 success. Audit assisté, sans certification externe.
 Orchestration/Run/cleanup global exclus du périmètre. Propriété exclusive, copie
 privée immuable, erreurs de lecture non compensées, pas de retry interne.
+
+## Lot 82 : Binding de contenu au checkpoint partagé prouvé
+
+Deux nouveaux fichiers binding.go/tests : PrepareBinding lit CP scope source et
+ID dérivé du contenu, NewIngestor prouve copie/CP avant association. Nouveau zéro
+seulement si run non préparé et CP absent, run associé exige son offset exact.
+Binding.Commit garde batch exact et rend ingestor après ACK ; resume déjà associé
+sans write, aucun parser ou propriété transférée. Trois tests ciblés Windows avec
+SQLite réelle réussis : ACK retry, rename/recompression/CP partagé, scope source,
+refus dix cas/state-error/cancel. Suite/vet/diff Windows réussis, revue indépendante
+sans blocage : trois tests ciblés/diff réussis, aucun test supplémentaire nécessaire.
+Propriété/exclusivité jusqu'à ingestion et mono-écrivain requis. Publication/CI82
+à vérifier ; pas de Run ou cleanup implémenté par ce lot.

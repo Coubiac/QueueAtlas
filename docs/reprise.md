@@ -14,9 +14,10 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
 Bibliothèque seule, sans CLI/service. Lot 80 NewIngestor publié dans #17, CI verte.
-Lot 81 CommitNext développé : records/CP/manifest atomiques, retry et EOF/partial ;
-tests ciblés/suite/vet/diff Windows réussis, revue runtime terminée ; qualification
-des erreurs EOF du Sink ajoutée et régression passée. Pas de Run global.
+Lot 81 CommitNext publié, revue sans blocage et CI verte. Lot 82 Binding développé :
+preuve du CP partagé puis association acquittée avant ingestion ; tests ciblés
+Windows/suite/vet/diff réussis, revue sans blocage. Publication/CI82 à vérifier.
+Pas de Run global.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 M2 inclut les autres décisions encore ouvertes
@@ -24,6 +25,9 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 81 publié : `2a80042b243b4b073cd39150ea633762a918dced`, #17,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37264301733).
+  Revue/runtime et régression sentinelles Sink terminées sans blocage.
 - Lot 80 publié : `357bde7cabcc941904b4d62a5db28cdf13c39642`,
   [PR #17](https://github.com/Coubiac/mailtrace/pull/17) en brouillon,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37263556572).
@@ -2545,14 +2549,33 @@ Douze cas supplémentaires : sentinelles EOF/Partial du Sink avant/après commit
 run encore running, pending exact puis retry. Qualification du contrat après revue.
 Suite go test ./..., go vet ./... et diff réussis. Revue runtime sans blocage,
 dernier delta documentaire/régression relu, douze cas exécutés par auditeur sans
-blocage. Publication et CI du lot81 à vérifier.
-Dernier état publié validé : lot80, pas cette application tant que commit/CI absents.
+blocage. Publié `2a80042`, CI 37264301733 success vérifiée.
+
+## Lot 82 : association prouvée au contenu partagé
+
+Résultat attendu : depuis une copie détenue et un run running acquitté, retrouver
+CP source/content exact et prouver la position avant association au manifest.
+PrepareBinding développé, aucune lecture du path original/normalisation/écriture.
+Run non préparé à zéro : associer contenu au CP partagé prouvé, ou zéro explicite
+si absent ; run déjà associé : contenu et LastOffset doivent correspondre exactement.
+Ancre canonique/LF/taille/digest entier contrôlés par NewIngestor avant tout commit.
+Binding conserve association exacte et ne rend l'ingestor qu'après nil du Sink,
+retry du même objet/copie avant toute autre écriture. Caller conserve Close.
+
+Trois TestImportBinding* Windows réussis avec SQLite réelle : association nouvelle
+sans write préalable, échec avant write/ACK perdu après, batch JSON identique,
+cancel/retry, renamed/recompressed à CP positif, reprise sans write, run périmé
+refusé, autre source indépendante, réimport à EOF sans parser ; dix refus et
+state-error/cancel/nilreader. Suite/vet/diff Windows réussis. Revue sans blocage,
+trois tests ciblés exécutés par auditeur, aucun contrôle supplémentaire nécessaire.
+Publication/CI82 à vérifier.
+Dernier état publié validé : lot81 ; Binding82 non publié.
 
 ## Prochaine action concrète
 
-Publier le lot81 dans #17 et vérifier la CI exacte ; revue terminée sans blocage.
-Lot 82 : orchestration d'un import avec propriété de copie et reprise durable ;
-ordre/nombre/durée globaux dans un lot distinct si ce périmètre devient trop large.
+Publier82 dans #17 et vérifier la CI exacte ; revue terminée sans blocage.
+Lot 83 : pilote d'une tentative avec création/reprise durable et propriété/Close ;
+ordre/nombre/durée globaux dans un lot distinct ensuite.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
 
