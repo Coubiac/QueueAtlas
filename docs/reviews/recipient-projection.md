@@ -95,5 +95,7 @@ Référence isolée propre df0bc0e, dix fichiers runtime/tests identiques aux ve
 relues ; aucun delta ni risque nouveau. Aucun test relancé. CI92 entière réussie,
 matrice Linux, race FileSource, builds statiques et chemins Windows compris.
 Avis de clôture sans blocage, bilan et contrat cohérents avec les limites livrées.
-M3 reste en cours ; reprise/README/estimation actualisés. Publication finale93,
-CI exacte, fusion #19 et CI push main restent à vérifier. Revue assistée.
+M3 reste en cours ; reprise/README/estimation actualisés. Publication finale93
+9fd0259, CI37293504453 success ; #19 fusionnée sur
+8b2d969e12960b4efe52c700c90c4fd9d26d4667, CI push main37294124969 success
+vérifiée sur SHA exact. Commentaire de revue5412853694 ; revue assistée.

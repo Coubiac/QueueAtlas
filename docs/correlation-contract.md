@@ -137,9 +137,56 @@ un fragment xstatus ultérieur comme un résultat connu. Une ancienne valeur de
 champ peut rester altérée dans les faits historiques ; elle n'est pas réécrite,
 son résultat projeté reste unknown quand le texte natif ne la corrobore pas.
 
+## Lot94 : preuves explicites d'expiration de file
+
+`BuildRecipients` ajoute `Expirations` à chaque génération candidate. Chaque
+`QueueExpiration` conserve sa référence physique, sa date/hypothèses copiée et le
+statut natif `expired`. Seul un fait qmgr/KindMessage, avec Queue ID, sans NOQUEUE
+ni ParseError, et statut présent exactement corroboré par le premier champ natif
+borné est reconnu. Les fragments xstatus, réponses distantes et anciens champs
+normalisés depuis `<expired>` ne suffisent pas. Un événement de log reste une
+observation du serveur, pas une certification indépendante.
+
+Tous les rapports distincts restent visibles, même à date égale ou texte identique.
+Les sources/origines restent séparées ; la génération porte les mêmes réserves
+de date et de continuité. Une date inconnue conserve le flux dans Unresolved,
+avec toutes ses références, sans rattachement certain à une génération.
+
+Ces événements ne sont pas des tentatives de remise : le deferred observé reste
+deferred, et un sent/delivered existant n'est pas remplacé. Removed, notification
+bounce, délai long ou absence de logs ne créent aucune expiration. Aucune adresse
+non observée n'est inventée. La synthèse des états et les réserves de complétude
+seront un comportement distinct ; ni statut global ni persistance ajoutés ici.
+
+## Lot95 : comptes observés et réserves de synthèse
+
+`BuildSummaries` reprend le snapshot borné et les refus de BuildRecipients. Pour
+chaque génération candidate, il garde toutes ses projections et compte les adresses
+observées selon leur dernier résultat : unknown, sent, delivered, deferred, bounced.
+Une adresse vide compte en unknown et porte une réserve ; une observation de remise
+non projectable reste référencée, sans adresse inventée. Trois retries du même
+destinataire comptent pour une adresse. Les rapports d'expiration sont comptés
+séparément, sans devenir des tentatives ou des destinataires expired.
+
+Les réserves fixes et ordonnées sont coverage_unproven (toujours),
+receipt_not_observed, removal_not_observed, non_explicit_time,
+cross_stream_uncertain, no_recipients_observed, address_unspecified,
+latest_order_uncertain, unknown_result et unprojected_deliveries, selon les faits.
+L'API ne reçoit aucune preuve de couverture ; même réception + retrait + nrcpt
+concordant ne permet pas de la certifier. Le nrcpt rapporté ne crée pas d'adresses
+manquantes et n'est pas utilisé pour déduire la couverture des alias ou des retries.
+Ce ne sont pas des statuts finaux du parcours. Les états sent et delivered gardent
+leurs portées distinctes ; aucune conclusion de lecture ou de remise distante.
+
+Les comptes ne sont jamais fusionnés entre origines candidates. Unresolved et
+Other sont conservés hors des comptes, avec leurs références ; les réserves ne
+remplacent pas les hypothèses/qualités de date et les preuves natives du détail.
+Sans réception ou sans tentative, la file reste visible sans succès inventé.
+Aucun certificat de complétude, stockage, arc, session NOQUEUE ou Web ajouté.
+
 ## Suite concrète
 
-Clôturer ce premier chantier de fonctions pures, puis traiter les réserves de
-complétude, expiration explicite et résumés prudents. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Le premier chantier pur #19 est fusionné. Clôturer expiration/réserves de synthèse
+après revue/CI, puis traiter les tentatives NOQUEUE distinctes. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

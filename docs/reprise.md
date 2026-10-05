@@ -5,8 +5,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
-et CI main vérifiées. Premier chantier M3 pur89–92 validé, clôture93 en cours.
-Trois jalons restent : M3–M5, environ 41–70 lots après93, dont16–27 pour M3.
+et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
+Expiration94 et synthèse95 publiées/relues, clôture96 en cours dans #20.
+Trois jalons restent : M3–M5, environ 39–68 lots après96, dont14–25 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -24,6 +25,19 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 95 publié : `ff8e2a1ad5476a61028b4836302959467c358e50`, #20.
+  Quatre tests Summaries, suite/vet/diff et revue code/docs sans blocage.
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295460030).
+- Lot 94 publié : `076275911319b29970b4bf56f3edfbbd20db8fec`,
+  [PR #20](https://github.com/Coubiac/mailtrace/pull/20) créée/attachée en brouillon,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37294712566).
+  Quatre tests Expirations, suite/vet/diff et revue code/docs sans blocage.
+- Lot 93 terminé : [PR #19](https://github.com/Coubiac/mailtrace/pull/19) fusionnée,
+  tête `9fd0259ef3b8e5186c8b327dc8fa08e9644bddff`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37293504453).
+  Main `8b2d969e12960b4efe52c700c90c4fd9d26d4667`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37294124969),
+  vérifiée REST. Branche suivante `codex/m3-expiration` depuis ce main.
 - Lot 88 terminé : [PR #18](https://github.com/Coubiac/mailtrace/pull/18) fusionnée,
   tête `b1544a7f3821753467355c0837e49a31d02549dc`,
   [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37288318666).
@@ -2811,16 +2825,54 @@ delta ni risque nouveau nécessitant rerun. CI92 entière verte et avis de clôt
 sans blocage. Quatre comportements purs, runtime inchangé dans ce lot de clôture.
 README/contrat/bilan et estimation actualisés : M3 restant16–27 par comportements,
 M4 15–25, M5 10–18, total41–70. Hypothèses de planification, aucun critère MVP ôté.
-Publication93, CI finale, ready/fusion et CI main restent à vérifier.
+Publié9fd0259, CI37293504453 success ; ready/commentaire5412853694 puis fusion
+#19 sur8b2d969, CI push main37294124969 success vérifiée REST. Lot93 terminé.
+
+## Lot 94 : preuve explicite d'expiration de file
+
+Résultat attendu : garder les rapports qmgr/expired avec référence/date native,
+sans expiration inventée depuis removed/absence de logs ni tentative supplémentaire.
+Développé en local : Expirations par génération candidate, premier statut natif
+concordant, dates copiées, multiplicité/origines et unresolved conservés. Aucun
+résultat de destinataire remplacé. Quatre tests et suite correlation/vet/diff
+Windows réussis ; revue indépendante sans blocage, quatre tests exécutés par
+auditeur : pass. Contrat/documentation relus sans blocage, publié0762759,
+#20 brouillon créée/attachée, CI37294712566 success. Dernier état fusionné = lot93.
+
+## Lot 95 : comptes observés et réserves de synthèse
+
+Résultat attendu : compter les adresses par dernier résultat, avec réserves de
+complétude visibles, sans compter retries/expiration comme nouveaux destinataires.
+Développé : BuildSummaries reprend bornes/refus/projections, comptes fixedstates,
+rapports d'expiration séparés. CoverageUnproven toujours (aucune preuve en entrée),
+réception/removal/date/origines/empty/tie/unknown/unprojectable et aucune tentative
+en réserves fixes ; aucun état final/global ni adresses déduites du nrcpt.
+Quatre tests Summaries et suite correlation/vet/diff Windows pass ; fixture05
+attente corrigée après lecture (local maildir=delivered), pas correctif runtime.
+Revue code/docs sans blocage, quatre tests par auditeur/overlay checkout propre
+pass, aucun fichier root modifié ni suite fondatrice relancée. Publiéff8e2a1,
+CI37295460030 success ; état publié avec CI réussie95, dernier état fusionné93.
+Doc immédiate ajoutée, DB/source/Web inchangés.
+
+## Lot 96 : clôture du chantier expiration et synthèse
+
+Résultat attendu : bilan cohérent, avis final/CI exacte, fusion #20 sur tête
+attendue puis CI push main. Runtime inchangé depuis94–95 relus. Documentation
+et estimation actualisées, avis documentaire final favorable sans delta runtime/
+tests depuis95, aucun test relancé. Publication/CI finale/fusion/main à vérifier.
+M3 restant14–25 :
+NOQUEUE/sessions, identités/continuité/liens, stockage/recalcul, recherche/rétention
+et intégration/mesures/clôture. Total39–68 avec M4/M5 ; fourchette de planification,
+aucun critère retiré. Aucun état final/global ni preuve de couverture nouvelle.
 
 ## Prochaine action concrète
 
-Publier clôture93, vérifier CI exacte, fusionner #19 sur sa tête attendue et vérifier
-main. Lot94 : expiration explicitement rapportée et ses preuves, sans inventer une
-expiration depuis removed ou une absence de logs ; puis résumé/complétude distincts.
+CI95 vérifiée success. Terminer revue documentaire96, commit/push sur #20, CI finale puis
+fusion attendue/mainCI. Lot97 projetera les
+rejets NOQUEUE distincts, sans les rattacher par PID seul à une file acceptée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-recipient-attempts.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-expiration.
 
 ## Suite à découper au fil des reprises
 
