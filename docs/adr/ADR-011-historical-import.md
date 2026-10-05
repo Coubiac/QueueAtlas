@@ -5,7 +5,8 @@ et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
 Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
 CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI vertes.
 Lots 75–79 manifest fusionnés dans #16, CI finale et main vertes. Lot 80 :
-préparation d'ingestor développée ; application/CommitNext et orchestration futures.
+préparation d'ingestor publiée dans #17, CI verte. Lot 81 : CommitNext développé,
+tests Windows réussis ; revue runtime sans blocage. Orchestration future.
 
 ## Décision et séparation des étapes
 
@@ -54,8 +55,8 @@ sinon le signaler incertain. Conserver les hypothèses des timestamps sans anné
 ## Limites actuelles
 
 Les briques d'inspection/copie normale/gzip et préparation de fichier détenu existent.
-Migration/lecture et préparation publiées, progression développée. Pas d'ingestion,
-CLI, déduplication ni garantie de snapshot atomique. Les tests
+Migration/lecture/manifest fusionnés ; ingestion élémentaire développée dans #17.
+Pas de Source.Run import, CLI ni garantie de snapshot atomique. Les tests
 restent synthétiques ; aucun accès Web à des chemins locaux d'import. MIT conservée,
 authentification AD/OIDC après MVP.
 
@@ -251,3 +252,25 @@ protégé ; le constructeur ne rehash pas la copie ni ne rouvre le path original
 Copie privée de taille changée refusée ; immutabilité des bytes au même descripteur
 reste une hypothèse explicite de cette propriété. Erreur/cancel après Seek peut
 laisser position déplacée ; aucun transfert de propriété ni cleanup implicite.
+
+## Application élémentaire du lot 81
+
+CommitNext consomme une ligne LF complète depuis la copie détenue : ancre sur
+les octets physiques jusqu'à End, normalization bornée, SourceID imposé, record/
+checkpoint/ImportChange commités ensemble. Ligne surdimensionnée : prefix borné
+unknown avec erreur, End et ancre conservent toute la provenance physique.
+Record staged avant toute preuve qui pourrait échouer ; pas de saut à la ligne
+suivante après cancellation ou erreur d'ancre. Batch entièrement construit avant
+appel Sink, retenu tel quel jusqu'au nil, sans nouvelle normalization ni date.
+Read/proof/cancel/Sink error laisse état acquitté intact ; aucune compensation
+failed sur ACK ambigu. Caller sérialise, conserve la copie et décide du retry.
+
+À EOF fini : commit terminal seul, sans record ou checkpoint artificiel. Copie
+complète sans suffixe, offset exact taille : complete puis io.EOF. Suffixe partiel :
+failed au dernier LF acquitté puis ErrImportPartial ; suffixe ni normalisé ni jeté
+comme si ingéré. Date terminale conservée au retry, au moins CreatedAt même si
+l'horloge recule. Appel ultérieur terminal sans écriture. RunState copie les pointeurs.
+Un Sink peut rendre lui-même io.EOF ou ErrImportPartial sans ACK : le caller doit
+vérifier RunState.Status terminal pour reconnaître une fin, pas seulement l'erreur.
+Read/anchor error non terminal : retry possible, caller décide fermeture et reprise
+durable ; CommitNext ne possède pas la copie et ne gère pas plusieurs fichiers.

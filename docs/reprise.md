@@ -13,8 +13,10 @@ inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après 
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
 end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
-Bibliothèque seule, sans CLI/service. Lot 80 NewIngestor sur copie validée développé,
-trois tests Windows/suite/vet/diff réussis ; revue sans blocage, publication/CI à vérifier.
+Bibliothèque seule, sans CLI/service. Lot 80 NewIngestor publié dans #17, CI verte.
+Lot 81 CommitNext développé : records/CP/manifest atomiques, retry et EOF/partial ;
+tests ciblés/suite/vet/diff Windows réussis, revue runtime terminée ; qualification
+des erreurs EOF du Sink ajoutée et régression passée. Pas de Run global.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 M2 inclut les autres décisions encore ouvertes
@@ -22,6 +24,10 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 80 publié : `357bde7cabcc941904b4d62a5db28cdf13c39642`,
+  [PR #17](https://github.com/Coubiac/mailtrace/pull/17) en brouillon,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37263556572).
+  Revue sans blocage et contrôles Windows réussis ; constructeur seul.
 - Lot 79 terminé : [PR #16](https://github.com/Coubiac/mailtrace/pull/16) fusionnée,
   tête `fd57bd4488ffd0cdd59a0c36a134eeb9c5730f0a`,
   [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262803722).
@@ -2513,14 +2519,40 @@ Trois TestNewImportIngestor* Windows/suite/vet/diff réussis : plain/gzip/vide0/
 partial/window4096+, sourceoriginalemodifiée, seek/gettersnoparse, dix-neuf refus
 +midline, cancel/nilnormalizer/copyclosed/sizechanged. Revue indépendante sans blocage,
 trois tests ciblés Windows/diff propres, aucun contrôle supplémentaire nécessaire.
-Publication/CI à vérifier.
-Dernier état publié validé = main `677a618` après79 ; aucun CommitNext/Run encore.
+Publié `357bde7`, PR #17 ; CI 37263556572 success vérifiée. Constructeur seul dans
+ce commit ; aucun CommitNext/Run. Main reste `677a618` après79.
+
+## Lot 81 : application atomique d'une copie finie
+
+Résultat attendu : CommitNext d'un record complet avec CP et manifest, retry exact
+sur ACK perdu/annulation, puis EOF ou échec explicite sur suffixe partiel. Développé.
+Record consommé conservé avant preuve d'ancre ; échec de preuve ne saute pas une
+ligne et ne normalise pas. Normalizer une fois, raw indépendant, SourceID imposé ;
+ligne trop longue : observation unknown bornée, offset/ancre sur toute la ligne.
+Pending conservé jusqu'au nil du Sink, aucun prochain record ni compensation.
+Position/RunState restent acquittés ; EOF terminal commit sans nouveau record/CP,
+horodatage stable au retry et au moins CreatedAt en cas de recul d'horloge.
+Résultat terminal io.EOF après complete acquitté ; ErrImportPartial après failed au
+dernier LF acquitté. Un Sink peut retourner les mêmes sentinelles en erreur : vérifier
+RunState.Status terminal, pas seulement l'erreur. Appels terminaux sans réécriture.
+Caller conserve propriété/Close.
+
+Quatre TestImportCommitNext* Windows réussis : SQLite réelle plain/gzip, échec avant
+écriture/ACK perdu après commit, égalité JSON des retries, cancel, reopen et deux
+records identiques à offsets distincts sans doublons ; vide/partial/reprise positive,
+cancel normalizer, oversize, preuve refusée puis reprise du record staged.
+Douze cas supplémentaires : sentinelles EOF/Partial du Sink avant/après commit,
+run encore running, pending exact puis retry. Qualification du contrat après revue.
+Suite go test ./..., go vet ./... et diff réussis. Revue runtime sans blocage,
+dernier delta documentaire/régression relu, douze cas exécutés par auditeur sans
+blocage. Publication et CI du lot81 à vérifier.
+Dernier état publié validé : lot80, pas cette application tant que commit/CI absents.
 
 ## Prochaine action concrète
 
-Publier/vérifier CI du lot80 dans une PR application réutilisable.
-Lot 81 : CommitNext records/CP/manifest, pending exact sur ACK perdu et EOF/partial ;
-orchestration globale ordre/nombre/durée en lots distincts ensuite.
+Publier le lot81 dans #17 et vérifier la CI exacte ; revue terminée sans blocage.
+Lot 82 : orchestration d'un import avec propriété de copie et reprise durable ;
+ordre/nombre/durée globaux dans un lot distinct si ce périmètre devient trop large.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
 

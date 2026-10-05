@@ -12,6 +12,21 @@ Trois tests ciblés Windows -count=1, suite/vet/diff réussis. Normal/gzip, vide
 positive/EOF/partial/window4096+, original changé, position/getters, dix-neuf refus
 et midline, cancel/nilNormalizer/copyclosed/sizechanged couverts. Revue indépendante
 terminée sans blocage : trois tests Windows/diff propres, aucun test supplémentaire
-nécessaire identifié. Publication/CI à vérifier, audit assisté sans certification externe.
+nécessaire identifié. Publié 357bde7, CI 37263556572 success ; audit assisté sans certification externe.
 Caller owns Close/exclusivité/bytes stables/répertoire protégé, cancel après Seek
 peut déplacer position, aucun cleanup ou transfert implicite. Application future.
+
+## Lot 81 : CommitNext et fin de copie
+
+Un record, CP et progression du run dans le même batch ; record staged avant
+CaptureAnchor et normalizer, pending exact conservé sur erreur/cancel/ACK perdu.
+EOF commit terminal sans records/CP ; complete si copie entière sans partial,
+failed au dernier LF sinon. Erreur Sink ambiguë ne déclenche aucune compensation.
+Quatre tests ciblés Windows/suite/vet/diff réussis, dont SQLite réelle/reopen/doublons,
+plain/gzip/EOF/partial/oversize/cancel et proof-failure. Revue runtime terminée sans
+blocage ; trois tests ciblés exécutés par auditeur. Nuance signalée : sentinelle EOF
+peut venir du Sink sans ACK ; qualification RunState terminal ajoutée au contrat et
+régression douze cas passée puis exécutée par auditeur. Dernier delta relu sans
+blocage ; publication/CI81 à vérifier. Audit assisté, sans certification externe.
+Orchestration/Run/cleanup global exclus du périmètre. Propriété exclusive, copie
+privée immuable, erreurs de lecture non compensées, pas de retry interne.
