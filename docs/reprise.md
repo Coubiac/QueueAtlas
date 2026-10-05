@@ -24,6 +24,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 94 publié : `076275911319b29970b4bf56f3edfbbd20db8fec`,
+  [PR #20](https://github.com/Coubiac/mailtrace/pull/20) créée/attachée en brouillon,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37294712566).
+  Quatre tests Expirations, suite/vet/diff et revue code/docs sans blocage.
 - Lot 93 terminé : [PR #19](https://github.com/Coubiac/mailtrace/pull/19) fusionnée,
   tête `9fd0259ef3b8e5186c8b327dc8fa08e9644bddff`,
   [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37293504453).
@@ -2828,14 +2832,27 @@ Développé en local : Expirations par génération candidate, premier statut na
 concordant, dates copiées, multiplicité/origines et unresolved conservés. Aucun
 résultat de destinataire remplacé. Quatre tests et suite correlation/vet/diff
 Windows réussis ; revue indépendante sans blocage, quatre tests exécutés par
-auditeur : pass. Travail non publié/non validé par
-CI pour94 ; dernier état fusionné validé = lot93. Contrat/documentation ajoutés.
+auditeur : pass. Contrat/documentation relus sans blocage, publié0762759,
+#20 brouillon créée/attachée, CI37294712566 success. Dernier état fusionné = lot93.
+
+## Lot 95 : comptes observés et réserves de synthèse
+
+Résultat attendu : compter les adresses par dernier résultat, avec réserves de
+complétude visibles, sans compter retries/expiration comme nouveaux destinataires.
+Développé : BuildSummaries reprend bornes/refus/projections, comptes fixedstates,
+rapports d'expiration séparés. CoverageUnproven toujours (aucune preuve en entrée),
+réception/removal/date/origines/empty/tie/unknown/unprojectable et aucune tentative
+en réserves fixes ; aucun état final/global ni adresses déduites du nrcpt.
+Quatre tests Summaries et suite correlation/vet/diff Windows pass ; fixture05
+attente corrigée après lecture (local maildir=delivered), pas correctif runtime.
+Revue en cours, travail non publié/non validé par CI95 ; état publié validé94,
+dernier état fusionné93. Doc immédiate ajoutée, DB/source/Web inchangés.
 
 ## Prochaine action concrète
 
-Terminer revue94, commit/push/PR du chantier et vérifier CI exacte. Puis lot95 :
-résumé des résultats observés avec réserves explicites de complétude, sans certificat
-de succès global ni complétude déduite de removed/nrcpt seul.
+Terminer revue95, commit/push sur #20 et vérifier CI exacte. Puis lot96 : clôture
+de ce chantier expiration/réserves et fusion attendue/mainCI ; lot97 projetera les
+rejets NOQUEUE distincts, sans les rattacher par PID seul à une file acceptée.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-expiration.
