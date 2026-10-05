@@ -7,8 +7,8 @@ Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
 Expiration94 et synthèse95 fusionnées, clôture96 terminée dans #20. NOQUEUE97 publié
-avec CI verte #21 ; sessions98 développées, revue en cours.
-Trois jalons restent : M3–M5, environ 39–68 lots après96, dont14–25 pour M3.
+avec CI verte #21 ; sessions98 publiées/relues, clôture99 en cours.
+Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -26,6 +26,9 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 98 publié : `7486fe2d5f83c20e5231255604c981779285fc35`, #21.
+  Quatre tests PrequeueSessions, suite/vet/diff et revue code/docs sans blocage.
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323131066).
 - Lot 97 publié : `3ef8b1e48e6c63450920d13cef31c356a44fd741`,
   [PR #21](https://github.com/Coubiac/mailtrace/pull/21) créée/attachée en brouillon,
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37296483561).
@@ -2903,14 +2906,25 @@ Quatre tests et suite correlation/vet/diff Windows pass. Motif de client connect
 absent écrasé par mismatch reproduit/corrigé (premier motif préservé), sans fausse
 attribution. Revue code/tests favorable, quatre tests via overlay isolé pass ; docs
 alignées après précision de la priorité du motif (fenêtre fermée seulement, frontière
-absente/interrompue impose boundary_unproven). Aucun test relancé. Publication et
-CI98 non vérifiées ;
-état publié validé97/fusionné96. Aucun lien vers file acceptée, identité globale, DB/Web.
+absente/interrompue impose boundary_unproven). Aucun test relancé. Publié7486fe2,
+CI37323131066 success ; état publié avec CI verte98/fusionné96. Aucun lien vers
+file acceptée, identité globale, DB/Web.
+
+## Lot 99 : clôture du chantier NOQUEUE et sessions candidates
+
+Résultat attendu : bilan fidèle, avis documentaire/CI exacte, fusion #21 sur tête
+attendue puis CI push main. Runtime inchangé depuis97–98 relus, aucun nouveau test
+des fondations nécessaire. Avis documentaire final favorable, HEAD7486fe2, delta
+limité aux trois documents. CI98 entière success vérifiée. Publication99/CI finale,
+fusion et main restent à vérifier.
+M3 reste incomplet,13–23 lots estimés après99 ; M4 15–25 et M5 10–18, total38–66.
+NOQUEUE/sessions pures réalisées ; complétude applicative, identités/continuité/liens,
+stockage/recalcul, recherche/rétention et intégration/mesures/clôture encore requis.
 
 ## Prochaine action concrète
 
-Terminer revue98/code/docs, commit/push sur #21 puis CI exacte. Lot99 : clôture du
-chantier NOQUEUE/sessions, CI/fusion/main. Lot100 : liens candidats de réinjection
+CI98 et revue99 validées. Commit/push sur #21 puis CI finale,
+fusion attendue et CI main. Lot100 : liens candidats de réinjection
 avec preuves, sans fusion depuis un ID distant ou Message-ID seul.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`

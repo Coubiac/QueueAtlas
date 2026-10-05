@@ -41,5 +41,14 @@ Revue code/tests indépendante sans blocage : quatre tests via overlay isolé Wi
 pass, root inchangé. Relecture documentaire favorable avec précision appliquée :
 priorité du premier motif seulement dans une fenêtre fermée ; frontière absente ou
 interrompue impose boundary_unproven. Aucun test relancé pour cette précision.
-Publication/CI98 en cours, aucun test des fondations relancé sans delta. Toujours
+Publié7486fe2, CI37323131066 entière success ; aucun test des fondations relancé sans delta. Toujours
 aucune identité globale, stockage ni Web.
+
+## Lot99 : clôture du chantier
+
+Résultat attendu : conserver avis97–98, vérifier CI exacte, publier bilan et fusionner
+#21 avec CI push main. Aucun changement runtime/test depuis les versions relues,
+pas de rerun des fondations. Documentation et estimation actualisées, M3 encore
+incomplet (13–23 lots), total38–66 avec M4/M5. Avis documentaire final sans blocage,
+HEAD7486fe2 et delta limité aux trois documents vérifiés ; précision de motif intégrée,
+aucun test relancé. CI98 entière verte. Publication/CI finale99, fusion et main à vérifier.
