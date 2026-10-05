@@ -4,8 +4,8 @@ Statut : prévalidation normale/gzip lots 69–71 fusionnée ; copie vers writer
 et fichier privé détenu lot 73 publiés, relus sans blocage et CI vertes.
 Lots 72–74 fusionnés dans #15, CI finale verte. Lot 75 identité source-scopée publié,
 CI verte ; lots 76–77 migration/lecture et trace de préparation publiés/CI vertes.
-Lot 78 association/progression publiées, CI verte. Lot 79 synthèse finale relue,
-fusion après CI exacte finale ; importeur futur.
+Lots 75–79 manifest fusionnés dans #16, CI finale et main vertes. Lot 80 :
+préparation d'ingestor développée ; application/CommitNext et orchestration futures.
 
 ## Décision et séparation des étapes
 
@@ -233,3 +233,21 @@ Sink ne calcule pas le digest, ne valide pas gzip/EOF, ne décode pas l'anchor e
 relit pas le fichier. Preuves, bornes et batch conservé restent à l'importeur futur ;
 un état SQL canonique ne certifie pas le contenu. Mono-écrivain, aucune compensation
 sur erreur d'ACK.
+
+## Préparation d'ingestor du lot 80
+
+NewIngestor lie PreparedContent détenu à Identity kind import, run running associé
+et position source-scopée. SHA entier/taille/partial/ID dérivé égaux à Info, offset
+égal au LastOffset et dans le contenu ; run explicite/ID positif/début nano exact.
+Ancre canonique vérifiée par CaptureAnchor sans déplacer le reader, taille actuelle
+égale à Info et byte avant checkpoint positif LF. Zéro peut être prouvé ici grâce
+au digest entier de la copie validée, sans prétendre à une preuve d'ancre vide live.
+
+Seek seulement après preuves et vérification contexte ; LineReader créé sans lire
+de record ni normaliser. Position et RunState exposent état acquitté, content retourné
+copié pour éviter mutations par caller. Pas de Sink/manifest/CommitNext dans ce lot.
+Le caller conserve Close, consommation exclusive et bytes immuables dans répertoire
+protégé ; le constructeur ne rehash pas la copie ni ne rouvre le path original.
+Copie privée de taille changée refusée ; immutabilité des bytes au même descripteur
+reste une hypothèse explicite de cette propriété. Erreur/cancel après Seek peut
+laisser position déplacée ; aucun transfert de propriété ni cleanup implicite.

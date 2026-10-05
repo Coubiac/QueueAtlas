@@ -1,6 +1,6 @@
 # Avancement et estimation jusqu'au MVP
 
-État au 5 octobre 2026, après la copie privée d'import fusionnée au lot 74. Référence de périmètre :
+État au 5 octobre 2026, après le manifest d'import fusionné au lot 79. Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
@@ -11,7 +11,7 @@ Il reste donc quatre jalons à clôturer, dont un déjà commencé.
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 74 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 79 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -26,11 +26,11 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | --- | --- | --- | ---: |
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
-| M2 — ingestion | En cours : SQLite/FileSource/récupération/end, prévalidation et copie détenue d'import fusionnés (#10–15) | Manifest/application/reprise d'import et compléments/diagnostics du suivi #4 | 5–10 |
+| M2 — ingestion | En cours : SQLite/FileSource/récupération/end, prévalidation/copie/manifest d'import fusionnés (#10–16) | Application/reprise/budgets des imports et compléments/diagnostics du suivi #4 | 5–8 |
 | M3 — reconstruction | À réaliser | Instances/générations, destinataires/tentatives, NOQUEUE, liens prouvés, recalcul, recherche indexée et rétention validés sur corpus | 18–30 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total jusqu'au MVP** | **Quatre jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **48–83, soit environ 50–85** |
+| **Total jusqu'au MVP** | **Quatre jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **48–81, soit environ 50–85** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -60,16 +60,24 @@ La copie privée est fusionnée avec la PR #15 sur `f8e58e3` au lot 74 : trois l
 72–74 comme prévu. Octets du digest conservés avant ingestion, propriété/read-only,
 fermeture/échecs/cancel/cleanup vérifiés, CI finale verte. Manifest et ingestion futurs.
 
-Prochain chantier : identité et manifest source-scopé (identité, migration/lecture,
-écriture transactionnelle), puis application/reprise du contenu ; environ 5–8 lots
-avec clôtures, inclus dans M2. Critère : manifest et checkpoint atomiques, reprise
-sur contenu entier validé, réimport sans doublons de provenance, erreurs gzip et
-suffixes partiels sans faux complete. Compléments du suivi #4 et diagnostics à
-valider séparément. Bibliothèque seule jusqu'aux jalons CLI/service.
+Le manifest est fusionné avec la PR #16 sur `677a618` au lot 79 : cinq lots 75–79.
+Identité source/contenu, migration/lecture et préparation/progression atomiques
+livrées en bibliothèque ; CI finale/main vertes, anciens imports non adoptés.
+L'écriture a été séparée en préparation puis progression pour garder chaque lot
+reviewable. La prévision précédente 5–8 pour manifest + application était trop
+courte : le détail des contrats/transactions et deux défauts reproduits ont été
+traités avant l'application. Ce chantier n'est pas encore un importeur complet.
+
+Prochain chantier : préparation d'ingestor/reprise, application et EOF/ACK, puis
+orchestration ordonnée/bornée et clôture ; environ 4–6 lots, inclus dans M2.
+Critère : contenu entier validé ingéré, reprise/rejeu par provenance, pas de faux
+complete en cas de checksum/partial/annulation, bornes de fichiers/durée vérifiées.
+Compléments du suivi #4 et diagnostics à valider séparément. Bibliothèque seule
+jusqu'aux jalons CLI/service ; aucune CLI import livrée par le manifest.
 Les ensembles inconnus multiples restent refusés ; leur résolution administrative
 ne doit pas devenir une reprise automatique sans preuves.
 
-M2 réestimé 5–10 à partir de cette suite, sans soustraction mécanique des lots :
+M2 réestimé 5–8 à partir de cette suite, sans soustraction mécanique des lots :
 le détail de l'import/reprise et ses revues reste incertain. Autres jalons inchangés.
 
 ## Pourquoi les prochains jalons ne devraient pas répéter 53 lots chacun

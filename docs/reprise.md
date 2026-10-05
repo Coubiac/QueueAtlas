@@ -4,25 +4,30 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Prévision après le lot 74 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
-50–85 petits lots jusqu'au MVP, dont 5–10 pour M2. PR #15 fusionnée après trois lots
-de copie privée ; identité/manifest puis application/reprise : environ 5–8 lots,
+Prévision après le lot 79 : quatre jalons à clôturer (M2 en cours, M3–M5), environ
+50–85 petits lots jusqu'au MVP, dont 5–8 pour M2. PR #16 fusionnée après cinq lots
+de manifest ; application/reprise et orchestration : environ 4–6 lots,
 inclus dans M2. Fourchettes de planification incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
 M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
-end, prévalidation normale/gzip et copie privée sont fusionnés dans main (#9–15).
-Bibliothèque seule, sans CLI/service. Lots 75–76 identité/migration/lecture publiés,
-CI vertes. Lots 77–78 préparation/association/progression publiés et CI vertes ;
-lot 79 synthèse finale relue sans blocage, publication/CI finale/fusion à vérifier.
-Critère de fin du chantier : identité stable, lecture source-scopée et écritures
-atomiques/réessais du manifest, CI verte et PR cohérente fusionnée.
-Ingestion dans un chantier distinct. M2 inclut les autres décisions encore ouvertes
+end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
+Bibliothèque seule, sans CLI/service. Lot 80 NewIngestor sur copie validée développé,
+trois tests Windows/suite/vet/diff réussis ; revue sans blocage, publication/CI à vérifier.
+Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
+ordre et bornes globaux, CI verte et PR cohérente fusionnée.
+M2 inclut les autres décisions encore ouvertes
 et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
 
 ## État validé
 
+- Lot 79 terminé : [PR #16](https://github.com/Coubiac/mailtrace/pull/16) fusionnée,
+  tête `fd57bd4488ffd0cdd59a0c36a134eeb9c5730f0a`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262803722).
+  Main `677a61833f93e6114b7cdc88414ecc0b2dbd6e05` vérifié ;
+  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262983824),
+  vérifiée REST. Branche `codex/m2-import-application` depuis main.
 - Lot 78 : publié `8425fd5df073c80a690faf3f4342df2d1f2528b8`,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262628894), #16.
   Correctif ACK reproduit/corrigé/relu ; sept tests nouveaux dont régression/reuse,
@@ -2491,15 +2496,33 @@ actualiser documentation puis ready/fusion après CI exacte finale. Référence 
 `8425fd5` propre ; sept fichiers runtime identiques, nouveau test reuse relu.
 Aucun blocage ni risque nécessitant rerun. CI78 complète success ; corrections NUL
 et ACK consignées, suite future corrigée. Diff documentaire/commit/push/CI finale
-et fusion encore à constater. Pas d'ingestion/fichier/parser/CLI changés.
+et fusion initialement à vérifier. Clôture `fd57bd4` publiée, CI 37262803722 success,
+ready/fusion #16, main `677a618` et CI push 37262983824 success vérifiés REST.
+Pas d'ingestion/fichier/parser/CLI changés par ce lot documentaire.
+
+## Lot 80 : préparation d'ingestor sur copie validée
+
+Résultat attendu : lier la copie heldcallerowned au run/content/CP prouvés sans
+normalizer/Commit/Sink ; reprenez pas sur path/inode. NewIngestor développé :
+kind/source/runrunning/timeNano, bytes/SHAentier/partial/idDerived, CPoffsetExact/
+anchorcanonique/windowmatch/LFavantoffsetpositif/taillecopie contrôlés avant Seek.
+Zéro autorisé par identité entière validée, pas par une ancre vide live. LineReader
+créé, getters état acquitté/Contentcopié. Caller conserve Close/exclusivité/bytes
+immutables, cancellationaprèsSeekpeutmover ; constructeurne rehashpaslacopie.
+Trois TestNewImportIngestor* Windows/suite/vet/diff réussis : plain/gzip/vide0/5/EOF/
+partial/window4096+, sourceoriginalemodifiée, seek/gettersnoparse, dix-neuf refus
++midline, cancel/nilnormalizer/copyclosed/sizechanged. Revue indépendante sans blocage,
+trois tests ciblés Windows/diff propres, aucun contrôle supplémentaire nécessaire.
+Publication/CI à vérifier.
+Dernier état publié validé = main `677a618` après79 ; aucun CommitNext/Run encore.
 
 ## Prochaine action concrète
 
-Publier le lot 79, vérifier CI exacte puis ready/fusion #16 avec tête attendue.
-Lot suivant : préparation d'un ingestor sur copie détenue/content validé et position
-prouvée, sans lecture/parsing/CommitNext ; application et orchestration en lots distincts.
+Publier/vérifier CI du lot80 dans une PR application réutilisable.
+Lot 81 : CommitNext records/CP/manifest, pending exact sur ACK perdu et EOF/partial ;
+orchestration globale ordre/nombre/durée en lots distincts ensuite.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-manifest.
+pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
 
 ## Suite à découper au fil des reprises
 
