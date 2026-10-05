@@ -9,7 +9,8 @@ et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 ter
 Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés #21,
 clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
 #22, clôture102 terminée, CI finale et main réussies. Clés103 et composition104
-fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 en revue.
+fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 publiée
+dans #24/CI verte ; schéma107 testé et relu, documentation validée.
 Trois jalons restent : M3–M5, environ37–65 lots au chantier103–105, dont12–22 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
@@ -28,6 +29,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 106 publié : `e2426b5c04273d96a81feccacc51c4205579647f`,
+  [PR #24](https://github.com/Coubiac/mailtrace/pull/24) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37333408517).
+  Six tests CorrelationFacts, suite/vet/diff et revue code/docs sans blocage.
 - Lot 105 terminé : [PR #23](https://github.com/Coubiac/mailtrace/pull/23) fusionnée,
   tête `72ee7ef2710cc71dce8f1bd282d6e3098738326b`,
   [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37330738903).
@@ -3061,15 +3066,28 @@ et Scan citant la valeur ; régressions root échouées avant correctif. JSON to
 stricts, maps nulles entières admises/entrées nulles et doublons refusés, Scan erreur
 fixe/annulation distincte. Six tests et suite pass après correctifs ; delta relu sans
 blocage, deux régressions via overlay isolé pass par auditeur (cinq tests initiaux
-réutilisés). Documentation validée sans blocage, aucun test relancé ; non publié,
-CI106 non vérifiée. Fusionné105.
+réutilisés). Documentation validée sans blocage, aucun test relancé ; publié
+e2426b5 dans #24, CI37333408517 entière success vérifiée. Fusionné105.
 Aucun schéma/write de projection/source/UI changé ; coverage/continuity non prouvées.
+
+## Lot 107 : schéma des manifests de révision
+
+Résultat attendu : migration v4 conservant faits/checkpoints et contraintes des
+révisions/preuves. Cinq tables sans sérialisation dérivée ; périmètre/options BLOB,
+bounds/hashes/formats, current appartient au scope, memberships vers raw ET event,
+suppression/mutation des faits référencés refusées. Invalidation explicite obligatoire
+avant rétention ; aucune API de rétention encore livrée. Cinq tests nouveaux et
+compatibilité migrations existantes, suite SQLite/vet/diff Windows pass. Auditeur :
+cinq tests via overlay isolé pass, aucun blocage code/migration. Fact_count vs lignes,
+hash canonique et fraîcheur après ajout restent aux API futures. Documentation
+relue indépendamment sans blocage, aucun test relancé ; non publié, CI107 non
+vérifiée. Publié validé106/fusionné105.
 
 ## Prochaine action concrète
 
-Terminer revue106/docs, commit/push et ouvrir la PR du chantier stockage, puis CI
-exacte. Lot107 : tables/contraintes de révision et preuves ; ensuite remplacement
-transactionnel/recalcul, sans fusion d'origines ou de parcours non prouvée.
+Terminer revue107/docs, commit/push dans #24, puis CI exacte. Lot108 : installation
+atomique d'un manifest sous contrôle des faits courants, avec refus d'entrée obsolète.
+Ensuite lecture/reconstruction et contrôle de fraîcheur ; aucun parcours non prouvé.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-storage.

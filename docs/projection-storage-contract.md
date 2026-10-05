@@ -48,9 +48,33 @@ instances nécessaires aux relations ; les réserves de couverture restent exig�
 La lecture ne modifie ni faits, checkpoints, manifests ni schéma. Aucun stockage
 de projection, recalcul transactionnel, rétention ou interface livré par106.
 
+## Lot107 : schéma v4 des manifests de révision
+
+Migration transactionnelle v3 vers v4 : faits, événements et checkpoints conservés,
+cinq tables de manifests initialement vides. Aucun résultat dérivé n'est sérialisé.
+Le périmètre, ses parties, les révisions, leurs mappings et tous les faits d'entrée
+ont des tables distinctes. Instance/queue/relay sont des BLOB pour préserver leurs
+octets, y compris UTF8 invalide ; les limites et caractères de contrôle refusés
+du contrat106 restent appliqués. SHA256 stricts, format1, parties/mappings0..63,
+nombre de faits0..4096 et fenêtre positive <=24h sont contraints.
+
+La révision courante appartient obligatoirement au même périmètre grâce à une
+clé étrangère composite. Un membership référence à la fois raw_records et events ;
+supprimer un parent ou modifier un fait référencé est refusé. La rétention devra,
+dans une transaction, retirer le pointeur courant et les manifests concernés avant
+de supprimer leurs faits. Le test SQL vérifie ce protocole de contraintes ; aucune
+API de rétention n'est encore livrée. Voir les [clés étrangères SQLite](https://www.sqlite.org/foreignkeys.html).
+
+Les IDs SQLite servent aux références internes ; FactRef reste l'identité publique.
+Les memberships devront inclure tous les faits, y compris Other et Unresolved,
+et pas seulement les preuves positives. Le schéma borne fact_count mais ne vérifie
+pas sa concordance avec les lignes, ni le hash ou l'ordre canonique des parties.
+Ces contrôles appartiennent à la future API. Ajouter un fait ne déclenche pas les
+contraintes de suppression/mutation : la fraîcheur doit être contrôlée séparément.
+
 ## Suite
 
-Définir les tables et contraintes des révisions/projections, puis remplacement
-atomique sous contrôle des faits courants et lecture cohérente. La rétention doit
-invalider une projection dont des preuves disparaissent. Garder les réserves et
-les références physiques, sans identité globale créée depuis du texte identique.
+Installer atomiquement un manifest après relecture des faits courants sous verrou
+d'écriture ; refuser une entrée devenue obsolète. Puis lire/reconstruire une révision
+en vérifiant sa fraîcheur. Aucun write public, cache dérivé ou recalcul transactionnel
+n'est livré par107. Couverture, continuité et parcours global restent non prouvés.

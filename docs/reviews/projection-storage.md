@@ -23,7 +23,27 @@ cas liés de doublons/casse/membre manquant. Lecture JSON par tokens à types ex
 et erreurs fixes corrigent ces défauts ; six tests et suite passent après correction.
 Delta final sans blocage, deux régressions ciblées via overlay isolé pass, résultats
 initiaux réutilisés/root inchangé. Documentation alignée, avis final favorable sans
-nouveau test. Publication/CI106 à vérifier.
+nouveau test. Publié e2426b5 dans #24 ; CI37333408517 entière success vérifiée.
 
 Les valeurs de test sont synthétiques ; aucune couverture, continuité ou persistance
 de projection annoncée. Une base dont la forme est valide n'est pas authentifiée.
+
+## Lot107 : migration et contraintes des manifests
+
+Résultat attendu : schéma v4 conservant les faits existants, ownership des révisions
+et intégrité de leurs entrées ; aucune sérialisation des résultats dérivés.
+Cinq tables, configuration BLOB, hashes/formats/bornes, FK composite du current,
+double référence raw/event et triggers contre UPDATE des faits référencés.
+
+Cinq tests ciblés et suite SQLite/vet/diff Windows pass. Migration v3/reopen conserve
+faits/checkpoint, échec provoqué revient entièrement à v3 ; current étranger refusé ;
+suppression/mutation des parents et suppression de la révision courante refusées ;
+invalidation explicite SQL permet ensuite la suppression ; événement manquant,
+doublon, mauvais types/bornes refusés ; octets invalides UTF8 BLOB conservés.
+Compatibilité v1/v2/v3 et refus d'une base plus récente vérifiés par les tests existants.
+
+Auditeur indépendant : cinq tests via overlay Windows isolé pass, aucun blocage
+concret sur le schéma/migration, root inchangé. La concordance de fact_count et
+la fraîcheur après ajout de faits restent à vérifier par les API futures. Aucun
+stockage de projection dérivée ni API de rétention annoncé. Documentation relue
+indépendamment sans blocage, aucun test relancé. Publication/CI107 à vérifier.
