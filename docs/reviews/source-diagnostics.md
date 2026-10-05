@@ -30,9 +30,20 @@ Suite/vet/diff Windows et compilation GOOS=linux réussis à la reprise.
 
 Test Linux FileSource réel sur même texte/offsets/TrustedHost : huit faits et
 origines distinctes, pas de collapse inter-source. Revue statique favorable,
-exécution Linux réservée CI87. Windows Device/Inode indisponible refuse insufficient,
+exécution Linux réussie en CI87. Windows Device/Inode indisponible refuse insufficient,
 restriction de plateforme explicite. Assertion unlink->FDclosed retirée après
 remarque de revue ; preuves ownership FileSource scellées antérieures réutilisées.
 Doc ingestion-contract.md expose décisions, limites, reprises et chevauchement
 incertain sans protocole prouvé entre sources. Revue documentaire terminée sans
-blocage ; publication/CI87 à vérifier. Pas de metrics exporter/CLI/corrélateur ajouté.
+blocage ; publié 0b3e362, CI37287896648 success. Pas de metrics exporter/CLI/corrélateur ajouté.
+
+## Lot88 : clôture du chantier et bilan du socle M2
+
+Checkout isolé propre 0b3e362 ; versions diagnostic/tests pipeline/contrat identiques
+aux versions relues. Aucun delta runtime ni risque nouveau, aucune suite relancée.
+CI87 entière success : intégration Linux exécutée, matrice Go, race FileSource,
+builds statiques et chemins Windows réussis. Revue de clôture sans blocage.
+Bilan du socle M2 conforme aux livrables de la roadmap : sources, checkpoints,
+rotation/copytruncate diagnostiqué, reprise et import. Les issues #4/#5 conservent
+leurs critères applicatifs futurs ; aucune fonctionnalité CLI/exporteur/projection
+ou preuve de chevauchement ajoutée. CI finale88/fusion/main encore à vérifier.

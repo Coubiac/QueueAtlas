@@ -98,7 +98,7 @@ Message-IDs, chemins ou chaînes d'erreur dans les labels.
   CRC et budgets, propriété et cleanup ; CI main après #17 réussie.
 - Diagnostic : quatre tests Windows et correctif de repli reproduit/relu au lot86.
 - Intégration parser/import/SQLite du lot87 : test portable normal/gzip réussi sous
-  Windows ; intégration FileSource/inter-source réservée Linux, CI à vérifier.
+  Windows ; intégration FileSource/inter-source exécutée sous Linux, CI87 réussie.
 - CLI hors service actif, métriques exportées, projection canonique indépendante
   de l'ordre, preuve/affichage des chevauchements et paquet pilote : non livrés.
   Les issues #4/#5 restent ouvertes tant que ces critères ne sont pas intégrés.

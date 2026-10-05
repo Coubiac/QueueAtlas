@@ -1,18 +1,20 @@
 # Avancement et estimation jusqu'au MVP
 
-État au 5 octobre 2026, après import ordonné fusionné au lot85 (PR #17,
-CI finale et main réussies). Référence de périmètre :
+État au 5 octobre 2026, après diagnostic/intégration87 validés (PR #18,
+CI réussie ; clôture88 et fusion en cours). Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
 ## Vue d'ensemble
 
-Six jalons avant le MVP : M0 et M1 terminés, M2 en cours, M3 à M5 à réaliser.
-Il reste donc quatre jalons à clôturer, dont un déjà commencé.
+Six jalons avant le MVP : M0 et M1 terminés, socle M2 validé en bibliothèque,
+fusion de clôture en cours, M3 à M5 à réaliser. Après fusion #18, il reste trois
+jalons à réaliser. Cette sortie M2 suit les livrables de la roadmap ; les issues
+#4/#5 restent ouvertes pour leurs critères applicatifs aux jalons suivants.
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 85 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 88 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -27,11 +29,11 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | --- | --- | --- | ---: |
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
-| M2 — ingestion | En cours : SQLite/FileSource/récupération/end et import ordonné/reprise fusionnés (#10–17) | Compléments/diagnostics de source, état incertain des chevauchements et bilan de sortie M2 | 2–5 |
+| M2 — ingestion | Socle validé : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI verte | Fusion de clôture88 en cours ; CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog | 0 après clôture88 |
 | M3 — reconstruction | À réaliser | Instances/générations, destinataires/tentatives, NOQUEUE, liens prouvés, recalcul, recherche indexée et rétention validés sur corpus | 18–30 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total jusqu'au MVP** | **Quatre jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **45–78, soit environ 45–80** |
+| **Total après clôture88** | **Trois jalons à réaliser** | **Application installable répondant aux critères du cadrage** | **43–73, soit environ 45–75** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -85,12 +87,25 @@ jusqu'aux jalons CLI/service ; aucune CLI import livrée par ce chantier.
 Les ensembles inconnus multiples restent refusés ; leur résolution administrative
 ne doit pas devenir une reprise automatique sans preuves.
 
-M2 réestimé 2–5 pour compléments et bilan : qualification missing/gap/degraded sans
-PII, incertitude de chevauchement et conditions de reprise explicites, puis clôture.
-La CLI hors service actif et la projection canonique indépendante de l'ordre restent
-des dépendances ultérieures des issues #4/#5 ; elles restent ouvertes. Aucun claim
-de déduplication inter-source/FileSource. Les inconnus multiples restent bloqués,
-sans nouveau mécanisme administratif implicite. Autres jalons inchangés.
+Les compléments M2 ont occupé trois lots86–88, dans la prévision 2–5 : qualification
+missing/gap/degraded sans PII, intégration des vrais parsers/import/SQLite et des
+provenances distinctes, contrat de reprise/chevauchement puis clôture. CI87 verte,
+revues sans blocage ; CI finale88/fusion/main à vérifier au point de reprise.
+
+La CLI hors service actif, l'exporteur et la projection canonique indépendante de
+l'ordre restent des dépendances ultérieures des issues #4/#5 ; elles restent
+ouvertes. Aucun claim de déduplication inter-source/FileSource. Les inconnus
+multiples restent refusés, sans nouveau mécanisme administratif implicite.
+
+## Prochain chantier M3
+
+Commencer par les fonctions pures de reconstruction et leurs fixtures : séparer
+instances/générations, conserver toutes les tentatives et qualifier leurs résultats
+sans faux succès. Puis traiter NOQUEUE/liens prouvés, persistance transactionnelle
+et recalcul, recherche indexée et rétention. Chaque lot définit son résultat avant
+code et regroupe tests/revue utiles. L'estimation M3 18–30 reste à réévaluer sur ces
+comportements, pas à partir du numéro de lot. Le backlog applicatif #4/#5 est inclus
+dans les jalons suivants ; aucun critère de MVP n'est supprimé par la clôture M2.
 
 ## Pourquoi les prochains jalons ne devraient pas répéter 53 lots chacun
 
