@@ -4,26 +4,38 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Prévision après le développement de l'import ordonné (lots80–84, clôture85) : quatre
-jalons à clôturer (M2 en cours, M3–M5), environ 45–80 petits lots jusqu'au MVP,
-dont 2–5 pour compléments/diagnostics et bilan M2. Application/reprise/orchestration
-a demandé six lots avec clôture, dans la prévision 4–6 après79. Fourchettes de
-planification incertaines ; AD/OIDC reste après MVP.
+Après diagnostic/intégration87, le socle M2 est validé en bibliothèque ; clôture88
+et fusion #18 en cours. Après fusion, trois jalons restent : M3–M5, environ 43–73
+petits lots jusqu'au MVP. Les compléments86–88 ont demandé trois lots dans la
+prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
 ## Avancement du jalon M2
 
-M1 (parseurs), socle SQLite M2, FileSource, récupération unique et départ initial
-end, prévalidation/copie/manifest d'import sont fusionnés dans main (#9–16).
-Bibliothèque seule, sans CLI/service. Lots 80–82 publiés dans #17, revues sans
-blocage et CI vertes. Lots83–84 pilote/list ordonnée publiés, CI vertes. Lot85 clôture
-documentaire et référence isolée vérifiée, ready/fusion après CI finale à vérifier.
+M1 (parseurs), socle SQLite M2, FileSource/récupération/end et import normal/gzip
+ordonné en bibliothèque fusionnés dans main (#9–17). Aucun CLI/service.
+Lot87 parser/import/SQLite et contrat d'exploitation publiés dans #18, CI verte
+avec intégration FileSource Linux exécutée. Clôture88 sans modification runtime.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
-M2 inclut les autres décisions encore ouvertes
-et l'import historique ; corrélation, API/Web et distribution sont des jalons suivants.
+Le socle M2 correspond aux livrables de la roadmap ; les issues #4/#5 restent
+ouvertes pour les critères CLI/métriques/projections/chevauchement prouvé applicatif.
+Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 87 publié : `0b3e362fe9ccfc40ce87a72bba78e113702c6beb`, #18,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37287896648).
+  Test portable Windows et intégration FileSource Linux réussis, revue sans blocage.
+- Lot 86 publié : `541a24ec2f4829d9354e86a12c8492ea3813a9b2`,
+  [PR #18](https://github.com/Coubiac/mailtrace/pull/18) en brouillon,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37266530472).
+  Correctif de repli reproduit/corrigé/relu, quatre tests/suite/vet/diff Windows réussis.
+- Lot 85 terminé : [PR #17](https://github.com/Coubiac/mailtrace/pull/17) fusionnée,
+  tête `5b28ee79920b859e1bd13babd15de3aca6c8b3bd`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265820369).
+  Main `fcb6ad9bfdc488c21cdf352d8bef2ada9487c574` et
+  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265917012),
+  vérifiée REST. Branche `codex/m2-source-diagnostics` depuis ce main.
 - Lot 84 publié : `84f091b86c26a9bf046595d1aa74574612bf8f81`, #17,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265578493).
   Liste/ordre/borne globale, cinq tests/suite/vet/diff et revue sans blocage.
@@ -2630,25 +2642,85 @@ Résultat attendu : synthèse des revues scellées80–84, CI exacte finale, rea
 de clôture sans blocage, versions runtime/tests identiques, aucun risque nouveau
 nécessitant rerun. Coordinateur compare neuf fichiers Go/test entre root et isolé :
 SHA256 tous identiques. Documentation/README/estimation actualisés, runtime inchangé.
-CI84 success, dernier état publié validé84. Publication/CI85/fusion/main à vérifier.
+CI84 success ; clôture publiée `5b28ee7`, CI finale 37265820369 success,
+ready/fusion #17, main `fcb6ad9` et CI push 37265917012 success vérifiés REST.
 Déduplication source import par contenu uniquement ; FileSource overlap incertain,
 CLI et projection canonique M3 non livrées, issues #4/#5 restent ouvertes.
 
+## Lot 86 : diagnostic fixe missing/gap/degraded sans PII
+
+Résultat attendu : qualifier observation et erreur déjà exposées, sans mutation de
+source ni divulgation de données, pour futurs doctor/métriques. Diagnose développé :
+PathStatus whitelist, Failure enum fixe, bool Missing/Gap/Degraded ; aucun path,
+ID/offset, chaîne d'erreur ou contenu journal. LastPathStatus peut être ancien,
+ce rapport ne certifie ni santé courante ni perte d'octets. Missing par observation
+ou ErrCurrentMissing ; fsNotExist générique ne prouve pas absence du courant.
+Gap = tag de continuité vérifiée refusée, pas scan incomplet/ambigu/limité ni seul
+changement/troncature. Context stop pur non dégradé, contexte joint à vrai échec
+conserve l'échec. Pas d'appel Error/Is/As ; Unwrap des dépendances doit terminer.
+Parcours d'erreur borné64 nœuds y compris nil, cycle/branches invalides et path
+invalide rendent Failure error ; flags déjà rencontrés restent rapports séparés.
+
+Quatre TestFileDiagnostic* Windows réussis : décisions de scan causales, missing
+avec lecture retenue non dégradée, changes sans fauxgap, EOF/fsNotExist erreurs,
+mix contexte/permission/gap/missing/capacité, données hostiles non exposées, cycles/
+branches nil bornés. Revue a trouvé repli non prioritaire après tag gap/missing ;
+régression mixte échoue avant fix puis quatre cas réussissent avec flag unverified.
+Suite/vet/diff réussis, delta correctif relu et quatre cas exécutés par auditeur
+sans blocage. Publié `541a24e`, PR #18 créée/attachée ; CI 37266530472 success vérifiée.
+
+## Lot 87 : intégration réelle et limites de chevauchement
+
+Résultat attendu : relier Parse Postfix/syslog existant à Attempt/import et SQLite,
+préserver faits/hypothèses de date et provenance distincte entre sources, documenter
+les conditions de reprise sans nouvelle fusion ou résolution automatique. Runtime
+inchangé ; deux fichiers de tests nouveaux et docs/ingestion-contract.md.
+
+TestImportPipelineRealParserDurableRestartPreservesTimeHypotheses plain/gzip passé
+Windows : interruption après premier record, nouvel objet/contexte2027 pour suite,
+premier wall_only sans année/UTC inchangé ; CRLF et offsets physiques, deux lignes
+delivery identiques distinctes, host déclaré/instance TrustedHost, RFC5424 explicite
+prioritaire sur année caller ; renamed/recompressed nouvel ID EOF sans reparser.
+Suite/vet/diff Windows réussis, tests compilés GOOS=linux, sans exécution Linux locale.
+TestImportPipelineFileSourceOverlapRetainsSeparateProvenance réservé Linux : même
+texte/TrustedHost/offsets, huit faits distincts import/live, aucun lien ou dédup
+inter-source inféré. Sur Windows identité Device/Inode absente : refus insufficient
+attendu ; test correctement isolé Linux, aucun correctif runtime nécessaire.
+
+Revue portable déjà passée, code Linux statiquement cohérent. Auditeur a relevé
+qu'un unlink Linux ne prouve pas la fermeture FD : assertion retirée, aucun rerun
+nécessaire pour ce delta ; preuves ownership antérieures FileSource réutilisées.
+Doc récapitule propriétés/deadlines/IDrun/states/recovery et incertitude explicite
+du chevauchement. Revue documentaire terminée sans blocage ; publié `0b3e362`,
+CI37287896648 success, intégration Linux exécutée. Interruption quota reprise,
+lot désormais publié/validé.
+
+## Lot 88 : clôture et bilan de sortie du socle M2
+
+Résultat attendu : clôturer #18 avec CI exacte et main vérifiés, consigner la fin
+du socle d'ingestion de la roadmap et les dépendances applicatives encore ouvertes.
+Checkout isolé propre0b3e362, versions identiques aux revues86/87, aucun delta runtime
+ni contrôle supplémentaire justifié. Revue de clôture sans blocage ; CI87 entière
+success, diagnostic/pipeline et contrat validés. Documents/avancement actualisés.
+Publication de clôture, CI finale88, ready/fusion et CI push main restent à vérifier.
+M2 n'est pas un logiciel installable ; #4/#5 restent ouvertes. M3 commence ensuite
+par une projection pure et bornée des faits, avant persistance/recherche.
+
 ## Prochaine action concrète
 
-Publier85, vérifier CI exacte puis ready/fusion #17 et CI main.
-Lot86 : qualifier les diagnostics de source missing/gap/degraded sans PII à partir
-des décisions déjà exposées ; chevauchement inter-source reste incertain sans preuve.
+Publier clôture88, vérifier CI exacte, fusionner #18 sur sa tête attendue et vérifier
+main. Ensuite lot89 : premier comportement de reconstruction M3, défini avant code.
+Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
+pour la tête publiée du nouveau chantier ; principal sur codex/m2-source-diagnostics.
 
 ## Suite à découper au fil des reprises
 
-1. Import historique : application/reprise et budgets globaux, puis CLI au jalon adapté ;
-   copie détenue et manifest réalisés.
-2. Autres décisions insuffisantes/inconnues, dont anciennes empreintes vides et
-   ensembles multiples ; diagnostics/compléments du suivi #4.
-3. Application CLI/service et métriques au jalon adapté.
+1. M3 : projections pures, générations/tentatives/états prudents, NOQUEUE et liens,
+   puis intégration transactionnelle, recherche et rétention.
+2. M4 : CLI/diagnostic/configuration, auth locale et API/Web ; métriques et critères
+   applicatifs #4/#5 conservés explicitement dans le backlog.
+3. M5 : exécutable/service, paquets et installation pilote/sauvegarde/performance.
 
 Chaque demande de continuation traite par défaut un seul petit lot et actualise
 ce point de reprise avec le résultat et la prochaine action.
