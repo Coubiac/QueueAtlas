@@ -10,7 +10,8 @@ Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés 
 clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
 #22, clôture102 terminée, CI finale et main réussies. Clés103 et composition104
 fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 publiée
-dans #24/CI verte ; schéma107 publié/CI verte ; installation108 testée en revue.
+dans #24/CI verte ; schéma107 publié/CI verte ; installation108 publiée/CI en attente,
+lecture/fraîcheur109 testée en revue. Main contient encore la clôture105.
 Trois jalons restent : M3–M5, environ35–63 lots après107, dont10–20 pour M3,
 incluant validation108 ; estimation par comportements restants, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
@@ -30,6 +31,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 108 publié : `1edbed25b4bfbb914a7d5fa83f6d6fe58b1eba51`, #24,
+  six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
+  [CI en file d'attente](https://github.com/Coubiac/mailtrace/actions/runs/37367582155),
+  trois jobs queued observés ; ne pas la présenter verte ni fusionner sur cet état.
 - Lot 107 publié : `8d490396b0be7135a7fdec96a23e1d0c20a093a5`, #24,
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37336085923).
   Cinq tests schéma/migration, suite/vet/diff et revue code/docs sans blocage.
@@ -3100,14 +3105,31 @@ rollbackancien+nouscope, BLOB/framing/empty, refus/annulation, verrou deux conne
 Fixture rollback corrigée pour provoquer l'erreur par révision, pas défaut runtime.
 Première revue interrompue par quota sans résultat ; reprise audit code/docs favorable,
 six nouveaux tests via overlay Windows isolé pass, root inchangé/fondations non relancées.
-Publication/CI108 à vérifier. Dernier validé107/fusionné105.
+Publié1edbed2 dans #24 ; CI37367582155 queued, trois jobs queued vérifiés.
+Dernier publié avec CI verte107/fusionné105.
 Manifest peut devenir obsolète après nouvelle ingestion ; aucun lecteur public encore.
+
+## Lot 109 : lecture de révision et fraîcheur
+
+Résultat attendu : lecture manifest/faits dans le même snapshot ; refus d'obsolescence,
+manifest incohérent, sortie partielle ou recalcul persistant implicite. CurrentProjection
+développé ; readonlyTX, parties/options/ordinals/owner/format/memberships/count exacts,
+facts sélectionnés puis BuildProjection comparé à InputRevision/fullRevision. Absent
+et NULL donnent foundfalse, manifest valide vide foundtrue ; imports tardifs stale,
+installation explicite obligatoire ; copie des sorties et réserves intactes.
+Six tests nouveaux et suite SQLite/vet/diff Windows pass ; conversion window privée
+dans DB malformée ajoutée puis test malformed ciblé pass, zéro PII dans erreur.
+Deux connexions WAL testent snapshot ancien cohérent pendant remplacement puis
+nouvelle révision visible à la prochaine lecture. Revue code/docs indépendante sans
+blocage, six tests via overlay isolé et delta malformed9pass, root inchangé ; docs
+validées sans rerun. Pub/CI109 à vérifier. Dernier publié108/CI queued,
+dernier CI verte107/fusionné105.
 
 ## Prochaine action concrète
 
-Terminer revue108 code/docs, commit/push dans #24, puis CI exacte. Lot109 : lecture
-du manifest et reconstruction vérifiée dans un snapshot cohérent ; contrôler
-sa fraîcheur après nouvelle ingestion, sans parcours ou couverture non prouvés.
+Terminer revue109 code/docs, commit/push dans #24, puis CI exacte ; suivre CI108
+actuellement queued. Lot110 : clôture cohérente106–109, revue finale/CI et fusion
+si verte, puis CI main. Recherche/rétention et continuité restent aux prochains lots.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
 pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-storage.

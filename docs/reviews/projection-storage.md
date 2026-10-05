@@ -68,8 +68,35 @@ Premier test rollback utilisait un compte global=1 et ne provoquait pas l'erreur
 le nouveau scope ; fixture ajustée au compte par NEW.revision_id, aucun défaut runtime.
 
 Revue indépendante code/docs favorable sans blocage, six nouveaux tests via overlay
-Windows isolé pass, fondations réutilisées sans rerun/root inchangé. Publication/CI108
-non vérifiées. Estimation mise à jour séparément dans avancement : 10–20 M3 et35–63
+Windows isolé pass, fondations réutilisées sans rerun/root inchangé. Publié
+1edbed25b4bfbb914a7d5fa83f6d6fe58b1eba51 dans #24 ; CI37367582155 en file d'attente,
+trois jobs queued vérifiés, aucun succès ni échec annoncé. Estimation mise à jour
+séparément dans avancement : 10–20 M3 et35–63
 MVP, incluant validation108 et sans réduire les critères.
 Pas de cache dérivé, d'historique public, de lecture de révision ni de fraîcheur après
 ingestion future annoncé : ces contrôles restent au lot suivant.
+
+## Lot109 : lecture/reconstruction et contrôle de fraîcheur
+
+Résultat attendu : manifest et faits dans le même snapshot, aucun résultat obsolète
+ou partiel, aucun recalcul persistant implicite. CurrentProjection vérifie parties,
+scope propriétaire/format, mappings/ordinals, compte et ensemble complet des entrées,
+puis InputRevision et révision complète de BuildProjection ; absent/currentNULL
+distincts d'un manifest valide vide. Lecture seule, réserves/provenances conservées.
+
+Six tests nouveaux, suite SQLite/vet/diff Windows pass. Corpus11/09/06 égale
+installation, instance étrangère exclue, sortie modifiée sans effet et reopen ;
+import tardif refuse stale puis installation explicite conserve unresolved ; neuf
+manifests malformés (compte, entrée supprimée, hashes, bytes/ordinals/mappings,
+conversion du window avec contrainte volontairement désactivée) refusent sans PII
+ni résultat partiel ; absent/NULL/vide distincts ; limites, annulation/options binaires ;
+deux connexions WAL : ancien manifest et faits restent ensemble dans la transaction
+pendant nouvelle ingestion/remplacement, lecture suivante voit la nouvelle révision.
+Souscas de conversion ajouté après suite : test malformed ciblé repassé ; hash forcé
+à zéro dans la fixture évite une dépendance à un caractère particulier du digest.
+
+Revue indépendante code/docs sans blocage ; six nouveaux tests via overlay Windows
+isolé pass, delta malformed neuf souscas également pass/root inchangé. Documentation
+validée sans nouveau test. Publication/CI109 non vérifiées.
+Pas de garantie de fraîcheur future ou couverture ; pas d'historique/cache dérivé,
+de rétention applicative ou de parcours global. Aucun rerun des fondations demandé.

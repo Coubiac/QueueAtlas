@@ -72,8 +72,6 @@ pas sa concordance avec les lignes, ni le hash ou l'ordre canonique des parties.
 Ces contrôles appartiennent à la future API. Ajouter un fait ne déclenche pas les
 contraintes de suppression/mutation : la fraîcheur doit être contrôlée séparément.
 
-## Suite
-
 ## Lot108 : installation transactionnelle du manifest
 
 `Store.InstallProjection` reçoit le périmètre, tous ses faits, la limite et les
@@ -107,10 +105,35 @@ un test avec deux connexions vérifie le refus de commit concurrent puis la lib�
 au rollback. La sélection/refonte du lecteur conserve sa requête unique et retourne
 les IDs internes uniquement pour les FK, jamais comme identité publique.
 
+## Lot109 : lecteur de révision et fraîcheur au snapshot de lecture
+
+`Store.CurrentProjection` lit le scope, sa révision courante, parties/options,
+memberships et faits dans une seule transaction de lecture. Les SELECT partagent
+un snapshot, même si un autre écrivain valide une ingestion ou un remplacement
+pendant la lecture. Le résultat est actuel pour ce snapshot seulement, pas pour
+un futur commit ni pour tous les journaux. Aucun verrou d'écriture n'est demandé.
+
+Scope absent ou current explicitement NULL : found=false, erreur nil. Un scope
+vide de faits mais muni d'un manifest valide donne found=true et sa révision vide.
+Les bornes du lecteur106 restent appliquées ; aucune page tronquée n'est retournée.
+Parties identiques au scope canonique demandé, ordinals contigus, scope propriétaire,
+format, compte exact des memberships et ordre canonique/borné des mappings vérifiés.
+Les conversions de métadonnées invalides donnent ErrProjectionStoredManifest fixe,
+sans valeur stockée ; context annulé distinct. Les memberships sont comparés à
+l'ensemble complet des IDs sélectionnés et les primitives pures reconstruisent
+la projection. InputRevision différente donne ErrProjectionStale, notamment après
+import tardif ; révision complète incohérente avec options donne erreur de manifest.
+Tout refus retourne found=false, projection zéro, aucune sortie partielle.
+
+Le lecteur ne remplace pas silencieusement un manifest obsolète : installation
+explicite avec les nouveaux faits requise. Il conserve tous les faits/réserves,
+les états natifs et les origines distinctes ; sorties copiées, rien sérialisé en DTO.
+Un hash et des contraintes valides ne constituent toujours pas une authentification
+contre un tiers pouvant réécrire toute la base. Aucune API d'historique ou de cache
+dérivé. Couverture, continuité et parcours global restent non prouvés.
+
 ## Prochaine étape
 
-Lire/reconstruire le manifest et contrôler sa fraîcheur après ingestion ultérieure.
-Un manifest installé peut devenir obsolète dès qu'un fait supplémentaire est ingéré ;
-il ne doit pas être affiché comme actuel sans cette revalidation. Aucun lecteur public
-de manifest ni cache dérivé livré par108. Couverture, continuité et parcours global
-restent non prouvés ; rétention applicative reste à développer.
+Clôturer le chantier106–109 après revues et CI exacte, puis recherche indexée et
+rétention applicative cohérente dans des lots séparés. Une rétention future devra
+invalider les révisions concernées dans la même transaction que la suppression.

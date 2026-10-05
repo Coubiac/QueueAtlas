@@ -8,7 +8,8 @@ Rapports NOQUEUE97 et sessions98 fusionnés #21, clôture99 terminée avec CI fi
 vertes. Indices natifs100 et relations101 fusionnés dans #22, clôture102 terminée,
 CI finale/main réussies. Clés103 et composition104 fusionnées #23, clôture105
 terminée/CI finale et main vertes. Lecture SQLite106 et schéma107 publiés dans #24,
-CI vertes ; installation108 testée et relue, publication/CI à vérifier.
+CI vertes ; installation108 publiée/testée/relue, CI en file d'attente ; lecteur109
+développé/testé en revue. Main contient105, PR #24 encore ouverte en brouillon.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -150,7 +151,8 @@ vérifiées sur les SHA exacts. Clés103/CI37329247549 success, composition104 p
 avec revue favorable et CI37330343331 entière success. Clôture105 terminée,
 #23 fusionnée sur50ba6a7, CI finale37330738903 et main37331003071 success vérifiées.
 Lecture106 et schéma107 publiés dans #24, CI37333408517 et37336085923 success.
-Installation atomique108 développée/testée et relue, publication/CI non vérifiées.
+Installation atomique108 publiée1edbed2/testée et relue, CI37367582155 queued.
+Lecteur/fraîcheur109 développé/testé en revue ; pas encore publié ni validé en CI.
 Le schéma et les memberships conservent tous les faits, y compris les réserves ;
 aucun résultat dérivé n'est sérialisé. Restent lecteur/reconstruction avec fraîcheur,
 clôture de cette PR et corrections éventuelles : 2–4 lots en comptant la validation108.
