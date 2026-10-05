@@ -14,8 +14,9 @@ planification incertaines ; AD/OIDC reste après MVP.
 
 M1 (parseurs), socle SQLite M2, FileSource/récupération/end et import normal/gzip
 ordonné en bibliothèque fusionnés dans main (#9–17). Aucun CLI/service.
-Lot85 clôturé et main/CI vérifiés. Lot86 diagnostic à vocabulaire fixe développé,
-quatre tests Windows/suite/vet/diff réussis ; correctif de repli confirmé par auditeur.
+Lot85 clôturé et main/CI vérifiés. Lot86 diagnostic publié dans #18, CI verte.
+Lot87 intégration réelle parser/import/SQLite et contrat d'exploitation développés,
+test portable Windows/suite/vet/diff et compilation Linux réussis ; revue sans blocage.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 M2 inclut les autres décisions encore ouvertes
@@ -23,6 +24,10 @@ et l'import historique ; corrélation, API/Web et distribution sont des jalons s
 
 ## État validé
 
+- Lot 86 publié : `541a24ec2f4829d9354e86a12c8492ea3813a9b2`,
+  [PR #18](https://github.com/Coubiac/mailtrace/pull/18) en brouillon,
+  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37266530472).
+  Correctif de repli reproduit/corrigé/relu, quatre tests/suite/vet/diff Windows réussis.
 - Lot 85 terminé : [PR #17](https://github.com/Coubiac/mailtrace/pull/17) fusionnée,
   tête `5b28ee79920b859e1bd13babd15de3aca6c8b3bd`,
   [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265820369).
@@ -2660,17 +2665,42 @@ mix contexte/permission/gap/missing/capacité, données hostiles non exposées, 
 branches nil bornés. Revue a trouvé repli non prioritaire après tag gap/missing ;
 régression mixte échoue avant fix puis quatre cas réussissent avec flag unverified.
 Suite/vet/diff réussis, delta correctif relu et quatre cas exécutés par auditeur
-sans blocage ; publication/CI86 à vérifier.
-Dernier état publié validé = main après85, pas ces diagnostics.
+sans blocage. Publié `541a24e`, PR #18 créée/attachée ; CI 37266530472 success vérifiée.
+
+## Lot 87 : intégration réelle et limites de chevauchement
+
+Résultat attendu : relier Parse Postfix/syslog existant à Attempt/import et SQLite,
+préserver faits/hypothèses de date et provenance distincte entre sources, documenter
+les conditions de reprise sans nouvelle fusion ou résolution automatique. Runtime
+inchangé ; deux fichiers de tests nouveaux et docs/ingestion-contract.md.
+
+TestImportPipelineRealParserDurableRestartPreservesTimeHypotheses plain/gzip passé
+Windows : interruption après premier record, nouvel objet/contexte2027 pour suite,
+premier wall_only sans année/UTC inchangé ; CRLF et offsets physiques, deux lignes
+delivery identiques distinctes, host déclaré/instance TrustedHost, RFC5424 explicite
+prioritaire sur année caller ; renamed/recompressed nouvel ID EOF sans reparser.
+Suite/vet/diff Windows réussis, tests compilés GOOS=linux, sans exécution Linux locale.
+TestImportPipelineFileSourceOverlapRetainsSeparateProvenance réservé Linux : même
+texte/TrustedHost/offsets, huit faits distincts import/live, aucun lien ou dédup
+inter-source inféré. Sur Windows identité Device/Inode absente : refus insufficient
+attendu ; test correctement isolé Linux, aucun correctif runtime nécessaire.
+
+Revue portable déjà passée, code Linux statiquement cohérent. Auditeur a relevé
+qu'un unlink Linux ne prouve pas la fermeture FD : assertion retirée, aucun rerun
+nécessaire pour ce delta ; preuves ownership antérieures FileSource réutilisées.
+Doc récapitule propriétés/deadlines/IDrun/states/recovery et incertitude explicite
+du chevauchement. Revue documentaire terminée sans blocage ; publication/CI87 à
+vérifier. Dernier état publié validé = lot86 jusqu'à confirmation de CI87.
+Interruption quota pendant87 sans commit ; reprise terminée, publication en cours.
 
 ## Prochaine action concrète
 
-Publier86 dans une PR cohérente de diagnostics M2, vérifier CI ; revue terminée.
-Lot87 : exposer explicitement l'incertitude de chevauchement inter-source et les
-conditions d'exploitation/reprise dans le bilan M2, sans fusion de provenance.
+Publier lot87 dans #18 et vérifier CI exacte, notamment
+nouvelle intégration Linux exécutée. Lot88 : clôture du chantier diagnostics/contrat,
+bilan du socle M2 et préparation du prochain jalon sans fermer les critères non livrés.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-import-application.
+pour la tête publiée du nouveau chantier ; principal sur codex/m2-source-diagnostics.
 
 ## Suite à découper au fil des reprises
 
