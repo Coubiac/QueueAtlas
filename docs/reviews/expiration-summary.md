@@ -46,4 +46,7 @@ M3 toujours incomplet : synthèse observée, pas couverture certifiée ni état 
 Avis documentaire final favorable : HEADff8e2a1, aucun delta runtime/tests depuis
 revue95, expiration94 inchangée ; aucun test relancé. Résultats94–95 réutilisés,
 CI95 entière success désormais vérifiée. Publication/CI finale96, fusion et CI
-push main restent à vérifier. Revue assistée.
+push main désormais vérifiées : fa34f92, CI finale37295702313 success ; #20
+fusionnée sur b737484c7703f5e739e9c96a7c66077b5364cd17,
+CI push main37295859068 success vérifiée REST sur SHA exact. Commentaire de
+revue5413020142 ; revue assistée. Lot96 terminé.

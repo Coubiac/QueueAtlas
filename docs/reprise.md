@@ -6,8 +6,9 @@ Git et GitHub avant de modifier une branche ou de fusionner une PR.
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
 et CI main vérifiées. Premier chantier M3 pur89–92 fusionné, clôture93 terminée.
-Expiration94 et synthèse95 publiées/relues, clôture96 en cours dans #20.
-Trois jalons restent : M3–M5, environ 39–68 lots après96, dont14–25 pour M3.
+Expiration94 et synthèse95 fusionnées, clôture96 terminée dans #20. NOQUEUE97 publié
+avec CI verte #21 ; sessions98 publiées/relues, clôture99 en cours.
+Trois jalons restent : M3–M5, environ 38–66 lots après99, dont13–23 pour M3.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -25,6 +26,19 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 98 publié : `7486fe2d5f83c20e5231255604c981779285fc35`, #21.
+  Quatre tests PrequeueSessions, suite/vet/diff et revue code/docs sans blocage.
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323131066).
+- Lot 97 publié : `3ef8b1e48e6c63450920d13cef31c356a44fd741`,
+  [PR #21](https://github.com/Coubiac/mailtrace/pull/21) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37296483561).
+  Quatre tests Prequeue, suite/vet/diff et revue code/docs sans blocage.
+- Lot 96 terminé : [PR #20](https://github.com/Coubiac/mailtrace/pull/20) fusionnée,
+  tête `fa34f92ad6906702531554fbe9fa5583f9f79421`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295702313).
+  Main `b737484c7703f5e739e9c96a7c66077b5364cd17`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295859068),
+  vérifiée REST. Branche suivante `codex/m3-prequeue` depuis ce main.
 - Lot 95 publié : `ff8e2a1ad5476a61028b4836302959467c358e50`, #20.
   Quatre tests Summaries, suite/vet/diff et revue code/docs sans blocage.
   [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295460030).
@@ -2859,20 +2873,62 @@ Doc immédiate ajoutée, DB/source/Web inchangés.
 Résultat attendu : bilan cohérent, avis final/CI exacte, fusion #20 sur tête
 attendue puis CI push main. Runtime inchangé depuis94–95 relus. Documentation
 et estimation actualisées, avis documentaire final favorable sans delta runtime/
-tests depuis95, aucun test relancé. Publication/CI finale/fusion/main à vérifier.
+tests depuis95, aucun test relancé. Publiéfa34f92, CI finale37295702313 success,
+commentaire5413020142/ready puis fusion #20 surb737484,
+CI push main37295859068 success vérifiée REST. Lot96 terminé.
 M3 restant14–25 :
 NOQUEUE/sessions, identités/continuité/liens, stockage/recalcul, recherche/rétention
 et intégration/mesures/clôture. Total39–68 avec M4/M5 ; fourchette de planification,
 aucun critère retiré. Aucun état final/global ni preuve de couverture nouvelle.
 
+## Lot 97 : rapports NOQUEUE séparés
+
+Résultat attendu : garder reject et reject_warning avec métadonnées/date/provenance,
+sans les rattacher au destinataire/file accepté par PID seul. BuildPrequeue développé,
+borné/validé ; instance configurée et références, métadonnées présentes/vide, date
+copiée, messages/PID simples valeurs. Warning distinct d'un rejet. Queued/Other
+conservés, origines/PID/adresses n'unifient rien. Quatre tests et suite correlation/
+vet/diff Windows réussis ; revue code/docs indépendante sans blocage, quatre tests
+via overlay checkout isolé propre par auditeur : pass. Publié3ef8b1e dans #21
+créée/attachée, CI37296483561 success ; dernier état fusionné validé96.
+Pas de session/DB/Web livré par97.
+
+## Lot 98 : sessions candidates dans une origine
+
+Résultat attendu : fenêtre fermée sur connect/disconnect natifs et clients/date
+concordants, jamais identité/file attribuée par PID seul. BuildPrequeueSessions
+développé, mêmes bornes/refus, partition97 conservée. Ancre connect, fenêtre fermée,
+client host[address] littéral sans DNS, dates connues dans leur intervalle et
+fermeture strictement plus tardive. Couverture toujours non prouvée ; hypothèse de
+date conservée. Un rapport douteux rend tous les rapports de la fenêtre Unassigned ;
+rapport orphelin, fenêtre ouverte ou double connect préservent faits et motifs.
+Quatre tests et suite correlation/vet/diff Windows pass. Motif de client connect
+absent écrasé par mismatch reproduit/corrigé (premier motif préservé), sans fausse
+attribution. Revue code/tests favorable, quatre tests via overlay isolé pass ; docs
+alignées après précision de la priorité du motif (fenêtre fermée seulement, frontière
+absente/interrompue impose boundary_unproven). Aucun test relancé. Publié7486fe2,
+CI37323131066 success ; état publié avec CI verte98/fusionné96. Aucun lien vers
+file acceptée, identité globale, DB/Web.
+
+## Lot 99 : clôture du chantier NOQUEUE et sessions candidates
+
+Résultat attendu : bilan fidèle, avis documentaire/CI exacte, fusion #21 sur tête
+attendue puis CI push main. Runtime inchangé depuis97–98 relus, aucun nouveau test
+des fondations nécessaire. Avis documentaire final favorable, HEAD7486fe2, delta
+limité aux trois documents. CI98 entière success vérifiée. Publication99/CI finale,
+fusion et main restent à vérifier.
+M3 reste incomplet,13–23 lots estimés après99 ; M4 15–25 et M5 10–18, total38–66.
+NOQUEUE/sessions pures réalisées ; complétude applicative, identités/continuité/liens,
+stockage/recalcul, recherche/rétention et intégration/mesures/clôture encore requis.
+
 ## Prochaine action concrète
 
-CI95 vérifiée success. Terminer revue documentaire96, commit/push sur #20, CI finale puis
-fusion attendue/mainCI. Lot97 projetera les
-rejets NOQUEUE distincts, sans les rattacher par PID seul à une file acceptée.
+CI98 et revue99 validées. Commit/push sur #21 puis CI finale,
+fusion attendue et CI main. Lot100 : liens candidats de réinjection
+avec preuves, sans fusion depuis un ID distant ou Message-ID seul.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-expiration.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-prequeue.
 
 ## Suite à découper au fil des reprises
 
