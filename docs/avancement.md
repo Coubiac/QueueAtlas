@@ -1,15 +1,15 @@
 # Avancement et estimation jusqu'au MVP
 
-État au 5 octobre 2026, après diagnostic/intégration87 validés (PR #18,
-CI réussie ; clôture88 et fusion en cours). Référence de périmètre :
+État au 5 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
+(PR #18, CI finale et main réussies). M3 commence au lot89. Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
 
 ## Vue d'ensemble
 
-Six jalons avant le MVP : M0 et M1 terminés, socle M2 validé en bibliothèque,
-fusion de clôture en cours, M3 à M5 à réaliser. Après fusion #18, il reste trois
-jalons à réaliser. Cette sortie M2 suit les livrables de la roadmap ; les issues
+Six jalons avant le MVP : M0 et M1 terminés, socle M2 fusionné en bibliothèque,
+M3 commencé, M4/M5 à réaliser. Il reste trois jalons à clôturer. Cette sortie M2
+suit les livrables de la roadmap ; les issues
 #4/#5 restent ouvertes pour leurs critères applicatifs aux jalons suivants.
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
@@ -29,8 +29,8 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | --- | --- | --- | ---: |
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
-| M2 — ingestion | Socle validé : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI verte | Fusion de clôture88 en cours ; CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog | 0 après clôture88 |
-| M3 — reconstruction | À réaliser | Instances/générations, destinataires/tentatives, NOQUEUE, liens prouvés, recalcul, recherche indexée et rétention validés sur corpus | 18–30 |
+| M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
+| M3 — reconstruction | Commencé : résultat d'une tentative au lot89 en développement/revue | Instances/générations, destinataires/tentatives, NOQUEUE, liens prouvés, recalcul, recherche indexée et rétention validés sur corpus | 18–30 depuis la sortie M2 ; réévaluation à la clôture du premier chantier |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture88** | **Trois jalons à réaliser** | **Application installable répondant aux critères du cadrage** | **43–73, soit environ 45–75** |
@@ -90,7 +90,8 @@ ne doit pas devenir une reprise automatique sans preuves.
 Les compléments M2 ont occupé trois lots86–88, dans la prévision 2–5 : qualification
 missing/gap/degraded sans PII, intégration des vrais parsers/import/SQLite et des
 provenances distinctes, contrat de reprise/chevauchement puis clôture. CI87 verte,
-revues sans blocage ; CI finale88/fusion/main à vérifier au point de reprise.
+revues sans blocage. PR #18 fusionnée sur `8886427`, CI finale37288318666 et push
+main37288519438 success vérifiés sur les SHA exacts.
 
 La CLI hors service actif, l'exporteur et la projection canonique indépendante de
 l'ordre restent des dépendances ultérieures des issues #4/#5 ; elles restent

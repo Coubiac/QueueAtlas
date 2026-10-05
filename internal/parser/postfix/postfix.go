@@ -130,7 +130,12 @@ func setField(o *model.Observation, key, value string) {
 	if o.Present[key] {
 		return // a second key in untrusted text must not replace an observed value
 	}
-	o.Fields[key] = trimAngle(value)
+	// The enclosing brackets belong to addresses/IDs, never to a delivery
+	// reply. Its punctuation must survive unchanged for later projections.
+	if key != "reply" {
+		value = trimAngle(value)
+	}
+	o.Fields[key] = value
 	o.Present[key] = true
 }
 
@@ -139,6 +144,25 @@ func trimAngle(v string) string {
 		return v[1 : len(v)-1]
 	}
 	return v
+}
+
+// HasExactStatusReply checks the first native status field using the same bounded
+// field boundaries as Parse, without address/ID normalisation. It supports
+// conservative projections of legacy observations whose reply was normalised;
+// a later status-looking fragment cannot replace the first field's evidence.
+func HasExactStatusReply(message, status, reply string) bool {
+	if len(message) > model.MaxLineBytes || len(status) > model.MaxLineBytes ||
+		len(reply) > model.MaxLineBytes || len(status)+len(reply)+3 > model.MaxLineBytes {
+		return false
+	}
+	for _, part := range topLevelParts(message, 32) {
+		part = strings.TrimSpace(part)
+		i := strings.IndexByte(part, '=')
+		if i > 0 && part[:i] == "status" {
+			return strings.TrimSpace(part[i+1:]) == status+" ("+reply+")"
+		}
+	}
+	return false
 }
 
 func parseCommaFields(o *model.Observation, message string) {

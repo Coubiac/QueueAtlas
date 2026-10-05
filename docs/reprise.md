@@ -4,8 +4,8 @@ Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; véri
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
-Après diagnostic/intégration87, le socle M2 est validé en bibliothèque ; clôture88
-et fusion #18 en cours. Après fusion, trois jalons restent : M3–M5, environ 43–73
+Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
+et CI main vérifiées. Trois jalons restent : M3–M5, environ 43–73
 petits lots jusqu'au MVP. Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -13,8 +13,8 @@ prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
 M1 (parseurs), socle SQLite M2, FileSource/récupération/end et import normal/gzip
 ordonné en bibliothèque fusionnés dans main (#9–17). Aucun CLI/service.
-Lot87 parser/import/SQLite et contrat d'exploitation publiés dans #18, CI verte
-avec intégration FileSource Linux exécutée. Clôture88 sans modification runtime.
+Lots86–88 diagnostic/parser/import/SQLite et contrat fusionnés dans #18, CI finale
+et main vertes avec intégration FileSource Linux exécutée. M3 commence au lot89.
 Critère de fin du chantier : contenu validé ingéré, reprise/provenance/ACK, EOF/partial,
 ordre et bornes globaux, CI verte et PR cohérente fusionnée.
 Le socle M2 correspond aux livrables de la roadmap ; les issues #4/#5 restent
@@ -23,6 +23,12 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 88 terminé : [PR #18](https://github.com/Coubiac/mailtrace/pull/18) fusionnée,
+  tête `b1544a7f3821753467355c0837e49a31d02549dc`,
+  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37288318666).
+  Main `8886427ab7efee72b95597bdb3c1996176aeefdb`,
+  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37288519438),
+  vérifiée REST. Nouvelle branche `codex/m3-recipient-attempts` depuis main.
 - Lot 87 publié : `0b3e362fe9ccfc40ce87a72bba78e113702c6beb`, #18,
   [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37287896648).
   Test portable Windows et intégration FileSource Linux réussis, revue sans blocage.
@@ -2702,17 +2708,38 @@ du socle d'ingestion de la roadmap et les dépendances applicatives encore ouver
 Checkout isolé propre0b3e362, versions identiques aux revues86/87, aucun delta runtime
 ni contrôle supplémentaire justifié. Revue de clôture sans blocage ; CI87 entière
 success, diagnostic/pipeline et contrat validés. Documents/avancement actualisés.
-Publication de clôture, CI finale88, ready/fusion et CI push main restent à vérifier.
+Clôture publiée `b1544a7`, CI37288318666 success ; ready/fusion #18 sur `8886427`,
+CI push main37288519438 success vérifiée REST.
 M2 n'est pas un logiciel installable ; #4/#5 restent ouvertes. M3 commence ensuite
 par une projection pure et bornée des faits, avant persistance/recherche.
 
+## Lot 89 : résultat et portée d'une tentative de remise
+
+Résultat attendu : projeter une seule observation de remise, préserver destinataire,
+status natif, présence/vide orig_to/DSN/relay/reply et distinguer transport de boîte.
+DeliveryFrom développé, quatre tests et suite parser/vet/diff Windows réussis.
+Dix fixtures conservent toutes tentatives ; unknown natif reste unknown, removed/
+bounce/NOQUEUE exclus. SMTP/LMTP/pipe sent ne prouvent jamais la boîte ; local/virtual
+requièrent phrase exacte et premier champ status natif concordant, sinon sent de cet agent.
+
+Revue a découvert trimAngle de reply, surclassement reproduit par deux sous-cas
+avant correction. Parser préserve désormais chevrons reply, adresses/IDs inchangés ;
+guard Message protège les champs durables déjà normalisés ou privés de texte.
+Première garde HasSuffix contournable par xstatus ultérieur, reproduit/corrigé :
+HasExactStatusReply compare premier vrai champ status avec frontières parser32.
+Test parser cinq cas, matching neuf cas et legacy quatre combinaisons/xstatus réussis.
+Delta final relu sans blocage et régressions helper/legacy exécutées par auditeur.
+docs/correlation-contract.md et rapport recipient-projection.md alignés.
+Publication/CI89 à vérifier ; dernier état validé publié/fusionné = lot88.
+Aucune génération/chronologie, regroupement destinataire, projection DB ou Web.
+
 ## Prochaine action concrète
 
-Publier clôture88, vérifier CI exacte, fusionner #18 sur sa tête attendue et vérifier
-main. Ensuite lot89 : premier comportement de reconstruction M3, défini avant code.
+Publier lot89 et créer PR cohérente M3, vérifier CI exacte.
+Ensuite séparer instances/générations avant regroupement de résultats par destinataire.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m2-source-diagnostics.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-recipient-attempts.
 
 ## Suite à découper au fil des reprises
 
