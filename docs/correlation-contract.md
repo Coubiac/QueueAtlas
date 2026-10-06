@@ -386,6 +386,11 @@ aucun parcours/statut global, persistance, API ou schéma SQLite ajouté.
 
 ## Suite concrète
 
+Le lot 120 ajoute un [contrôle d'attestations explicites de continuité](continuity-contract.md).
+Il vérifie révision, références et graphe des frontières ; il ne produit pas une
+preuve physique et ne change pas les générations/projections existantes. La
+production fiable des attestations et leur consommation restent à raccorder.
+
 Les chantiers purs #19–22 sont fusionnés. Clôturer clés/composition après CI,
 puis traiter lecture et persistance transactionnelles des projections, sans
 fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de

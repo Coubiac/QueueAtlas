@@ -92,7 +92,11 @@ Bilan116–119 couvre rétention en bibliothèque, quatre lots dans l'estimation
 Quatretests116/six117/cinq118/trois119, audits code/docs au fil des lots. CI116
 37498495532 et11737499111912 entières réussies exactes ; CI11837499748326 entièrement réussie sur la tête exacte.
 Revue documentaire finale favorable après trois précisions de reprise/API.
-Publication/finaleCI/fusion/main119 restent à vérifier.
+Lot119 publié ff229381dc703472a5278669613a5480e892b4c7 ; CI37500212011
+entièrement réussie sur cette tête. PR #27 fusionnée sur
+5667e2da711150303447d7ca2c1184f5eed3f108 ; CI push main37500456255
+entièrement réussie, vérifiée sur le merge exact. Branche distante supprimée
+automatiquement après fusion ; checkout principal actualisé et propre avant120.
 Aucune mesure Linux locale/charge/effacement sécurisé, service/API HTTP applicative/CLI/Web livré.
 Retrait d'historique et reconstruction des faits restants ne prouvent pas une
 complétude globale. M3 continuité/critères applicatifs/validation finale encore ouverts.

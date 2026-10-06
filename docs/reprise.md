@@ -13,9 +13,12 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111–115 fusionnée dans #25, CI finale/main vertes ; preview116/garde117 publiés/CI vertes, purge118 publiée/CI verte ; intégration119 testée/revue favorable.
-Trois jalons restent : M3–M5, environ32–57 lots après clôture115, dont7–14 pour M3 ;
-estimation par comportements restants, après clôture115 validée, pas pourcentage livré.
+Recherche111–115 fusionnée dans #25, CI finale/main vertes ; rétention116–119
+fusionnée dans #27, CI finale et main entièrement réussies. Lot120 : contrôle
+pur d'attestations de continuité développé/testé, publication et CI à terminer.
+Trois jalons restent : M3–M5, environ29–53 lots après clôture119, dont4–10 pour M3 ;
+estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
+produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -3263,17 +3266,18 @@ dans #27, CI37498495532 entièrement réussie vérifiée REST exacte. Dernier fu
 
 ## Prochaine action concrète
 
-Terminer revue documentaire119, publier dans PR #27, vérifier CI finale entière
-puis ready/fusion/main. Lots116–117 CI vertes, 118 publié/CI verte ;119 intégration
-testée/revue code favorable. Prévision rétention3–4 après115,
-quatre lots désormais planifiés116–119 ; ne pas confondre preview et suppression.
+Lot119 clôturé : PR #27 fusionnée, CI finale et main vertes (SHA/run ci-dessous).
+Publier le lot120 sur codex/m3-continuity, ouvrir la PR du chantier et vérifier la
+CI exacte. Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
+automatique. L'intégration pure aux clés révisables reste un comportement séparé.
+Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-retention.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m3-continuity.
 
 ## Suite à découper au fil des reprises
 
@@ -3345,7 +3349,7 @@ Dernier publié/CI verte118 3f39363c2d93afc481cab8fef965f2abed7f3ef4/37499748326
 Prochaine action : lot119 intégration WAL/recherche/
 reconstruction et bilan/clôture CI/fusion/main.
 
-## Lot119 : intégration et bilan rétention (en cours)
+## Lot119 : intégration et bilan rétention (fusionné, CI finale/main vertes)
 
 Résultat attendu : WALsnapshot cohérent, recherche/reconstruction après purge et
 retry import réel/reopen puis clôture #27. Trois tests119 Windows/vet/diff réussis,
@@ -3355,11 +3359,42 @@ snapshot puis lit nouvel état sans réparation implicite ; search→purge→old
 refusé→scopecomplet12dont8undated→manifest12memberships/4markers ; importcompletenonvide
 purgé/reopen/lostACKsamebytes reconnu, ancrefausse et rawdiff refusés distinctement.
 Fixture119 variable/période2jours corrigées, aucun défaut runtime.
-Docs/bilan119 écrits, revue documentaire finale favorable ; publication/CI/fusion/main attendues ; dernier CI
-entièrement vert118, 118publié3f39363c2d93afc481cab8fef965f2abed7f3ef4/37499748326verte.
+Docs/bilan119 et revue documentaire finale favorables. Publié
+ff229381dc703472a5278669613a5480e892b4c7 ; CI37500212011 entièrement réussie.
+PR #27 fusionnée sur 5667e2da711150303447d7ca2c1184f5eed3f108 ; CI push main
+37500456255 entièrement réussie vérifiée sur le merge exact. Branche distante
+supprimée automatiquement, branche locale supprimée après fast-forward de main.
 Après clôture119 : rétention116–119 aura pris4lots dansprévision3–4. M3 reste4–10
 (continuité1–3, complétudeapplicative0–1, intégration/validationfinale3–6), M4 15–25,
 M5 10–18, total29–53 après119 ; fourchettesincertaines, troisjalonsàclôturer.
-Prochaine action : revue docs119/commit/push/CI exacte/ready/fusion #27/CI main,
-puis lot120 contrat de preuve explicite de continuité entre origines (aucune fusion
-sur queueID/date/PID seuls), tests et intégration aux clés révisables à découper.
+La clôture119 est terminée ; prochain comportement120 ci-dessous.
+
+## Lot120 : cohérence d'attestations explicites de continuité
+
+Résultat attendu : contrôler les frontières physiques déclarées, leur révision
+et l'absence de contradictions, sans produire une preuve depuis les logs.
+`CheckContinuityClaims` développé : validation de tous les faits, révision103
+exacte, au plus256frontières, même source/instance et origines distinctes,
+From dernier fait/To premier à zéro, références complètes, graphe sans
+embranchement/jonction/doublon/cycle. Plan copié/canonique et digest versionné
+sur faits ET attestations ; erreurs fixes sans résultat partiel ni donnée privée.
+
+Six tests synthétiques Windows et suite complète de corrélation réussis,
+ainsi que vet/diff. Ils couvrent ordre,
+propriété/révisions, graphes contradictoires, namespaces/frontières incluant
+NOQUEUE, révision périmée/limites/overlap, aucune fusion sur corpus d'ID recyclés,
+256frontières puis séparation en deux chaînes. Les projections existantes et
+SQLite restent inchangés ; pas de test des fondations relancé sans risque précis.
+Contrat : docs/continuity-contract.md. Publication/CI120 restant à terminer au
+moment de ce point ; dernier état fusionné/CI main validés119, SHA5667e2d.
+
+Limite essentielle : l'attestation vient d'un appelant de confiance. La fonction
+vérifie sa cohérence, sans authentifier son producteur ni établir fin définitive,
+absence de fichier intermédiaire ou couverture des bytes. Aucun producteur fiable
+automatique n'existe encore ; la continuité actuelle reste incertaine. L'intégration
+aux clés révisables et la revalidation applicative sont séparées. M3 ne doit pas
+être présenté terminé parce qu'un plan cohérent peut être construit.
+
+Prochaine action : après publication/CI120, lot121 intégration pure des
+attestations aux clés révisables avec réserves conservées ; préciser le producteur
+fiable avant tout raccordement applicatif. Réutiliser la PR du chantier.
