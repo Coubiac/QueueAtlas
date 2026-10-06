@@ -1,6 +1,6 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 6 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 7 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
@@ -15,7 +15,7 @@ lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière ve
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
 Recherche111–115 fusionnée dans #25, CI finale/main vertes ; rétention116–119
 fusionnée dans #27, CI finale et main entièrement réussies. Lot120 : contrôle
-pur d'attestations de continuité développé/testé, publication et CI à terminer.
+pur d'attestations de continuité publié dans #28, CI entière réussie sur le code.
 Trois jalons restent : M3–M5, environ29–53 lots après clôture119, dont4–10 pour M3 ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3267,8 +3267,8 @@ dans #27, CI37498495532 entièrement réussie vérifiée REST exacte. Dernier fu
 ## Prochaine action concrète
 
 Lot119 clôturé : PR #27 fusionnée, CI finale et main vertes (SHA/run ci-dessous).
-Publier le lot120 sur codex/m3-continuity, ouvrir la PR du chantier et vérifier la
-CI exacte. Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
+Lot120 publié sur codex/m3-continuity dans #28, CI37537740519 entière réussie.
+Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
 automatique. L'intégration pure aux clés révisables reste un comportement séparé.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
@@ -3385,8 +3385,12 @@ propriété/révisions, graphes contradictoires, namespaces/frontières incluant
 NOQUEUE, révision périmée/limites/overlap, aucune fusion sur corpus d'ID recyclés,
 256frontières puis séparation en deux chaînes. Les projections existantes et
 SQLite restent inchangés ; pas de test des fondations relancé sans risque précis.
-Contrat : docs/continuity-contract.md. Publication/CI120 restant à terminer au
-moment de ce point ; dernier état fusionné/CI main validés119, SHA5667e2d.
+Contrat : docs/continuity-contract.md. Publié
+16784eb297dfc0aead2212e63c13bb828899f936 dans PR #28 créée/attachée ;
+CI37537740519 entièrement réussie, SHA exact et trois jobs vérifiés REST.
+PR en brouillon pour le chantier, pas fusionnée ; dernier main validé119,
+SHA5667e2da711150303447d7ca2c1184f5eed3f108. Cet enregistrement documentaire
+sera publié séparément ; consulter les checks de #28 pour la CI de la tête finale.
 
 Limite essentielle : l'attestation vient d'un appelant de confiance. La fonction
 vérifie sa cohérence, sans authentifier son producteur ni établir fin définitive,
@@ -3395,6 +3399,7 @@ automatique n'existe encore ; la continuité actuelle reste incertaine. L'intég
 aux clés révisables et la revalidation applicative sont séparées. M3 ne doit pas
 être présenté terminé parce qu'un plan cohérent peut être construit.
 
-Prochaine action : après publication/CI120, lot121 intégration pure des
+Prochaine action : vérifier la tête finale/documentaire de #28 si nécessaire,
+puis lot121 intégration pure des
 attestations aux clés révisables avec réserves conservées ; préciser le producteur
 fiable avant tout raccordement applicatif. Réutiliser la PR du chantier.

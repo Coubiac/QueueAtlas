@@ -1,6 +1,6 @@
 # Avancement et estimation jusqu'au MVP
 
-État au 6 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
+État au 7 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
 (PR #18, CI finale et main réussies). Projections pures M3 validées aux lots89–92,
 CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration94 et
 synthèse95 fusionnées dans #20 ; clôture96 terminée, CI finale/main réussies.
@@ -11,8 +11,8 @@ terminée/CI finale et main vertes. Lecture SQLite106 et schéma107 publiés dan
 CI vertes ; installation108/lecteur109 et clôture110 fusionnés dans #24 après
 CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111–115
 fusionnée/CI finale et main vertes ; rétention116–119 fusionnée #27, CI finale/main
-vertes. Contrat120 de cohérence d'attestations de continuité testé localement,
-publication/CI à terminer.
+vertes. Contrat120 de cohérence d'attestations de continuité publié dans #28,
+CI37537740519 entièrement réussie ; PR ouverte pour la suite d'intégration.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -42,7 +42,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25 et rétention #27 fusionnés, CI finale/main vertes ; contrat120 testé localement | Continuité conditionnée à des attestations fiables, complétude applicative, intégration/validation finale | 4–10 après clôture119 |
+| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25 et rétention #27 fusionnés, CI finale/main vertes ; contrat120 publié #28, CI entière verte | Continuité conditionnée à des attestations fiables, complétude applicative, intégration/validation finale | 4–10 après clôture119 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture119** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **29–53** |
@@ -202,7 +202,8 @@ applicative0–1 et intégration/mesures/revue finale M3 3–6. M4 reste15–25 
 soit29–53 lots MVP. Réévaluation par comportements restants, pas pourcentage livré
 ni garantie de durée. Trois jalons demeurent ; AD/OIDC/Keycloak aprèsMVP exclus.
 
-Lot120 livre le contrat de cohérence d'attestations, six tests Windows réussis.
+Lot120 livre le contrat de cohérence d'attestations, six tests Windows réussis,
+publié16784eb297dfc0aead2212e63c13bb828899f936 dans #28 avec CI37537740519 verte.
 Il ne produit pas une preuve physique et ne fusionne aucune génération. La
 prévision de continuité1–3 reste incertaine : le raccordement à un producteur fiable
 nécessitera une réévaluation si son périmètre dépasse l'intégration pure. Les

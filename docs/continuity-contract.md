@@ -72,8 +72,13 @@ frontières et namespaces exacts incluant NOQUEUE, fraîcheur/limites/provenance
 absence d'inférence/fusion sur le corpus synthétique d'ID recyclés et chaîne de
 256 frontières avec séparation en deux chaînes. La suite complète
 `go test ./internal/correlation -count=1`, `go vet ./internal/correlation`
-et `git diff --check` réussis. Les fondations SQLite/rétention ne sont pas relancées :
-aucun de leurs comportements n'est changé. La CI de publication reste à vérifier.
+et `git diff --check` réussis. Les fondations SQLite/rétention ne sont pas relancées
+localement : aucun de leurs comportements n'est changé. Publication dans
+[PR #28](https://github.com/Coubiac/QueueAtlas/pull/28) sur
+16784eb297dfc0aead2212e63c13bb828899f936 ;
+[CI37537740519](https://github.com/Coubiac/QueueAtlas/actions/runs/37537740519)
+entièrement réussie, trois jobs Windows/stable/Go1.26 vérifiés sur cette tête exacte.
+La CI exécute la suite complète requise. La PR reste ouverte pour la suite du chantier.
 
 ## Prochaine étape
 
