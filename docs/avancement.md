@@ -15,6 +15,8 @@ vertes. Contrat120 de cohérence d'attestations de continuité publié dans #28,
 CI37537740519 entièrement réussie ; PR ouverte pour la suite d'intégration.
 Lot121 lie les clés au contexte d'attestation, publié720a054 dans #28,
 CI37540913337 entièrement réussie ; clôture du chantier prévue122 dans la même PR.
+Relecture et bilan122 favorables ; CI finale/fusion/main de #28 consignées dans
+la PR après publication. La clôture porte sur contrat/clés, sans preuve physique.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -28,7 +30,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 121 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 122 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -44,10 +46,10 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25 et rétention #27 fusionnés, CI finale/main vertes ; contrat/clés120–121 publiés #28, CI entière verte | Continuité conditionnée à des attestations fiables, complétude applicative, intégration/validation finale | 4–10 après clôture119 |
+| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25 et rétention #27 fusionnés ; contrat/clés120–121 et bilan122 dans #28 | Critères/complétude, intégration ciblée, mesures et revue finale ; origines non prouvées distinctes | 3–7 après clôture122 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après clôture119** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **29–53** |
+| **Total après clôture122** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **28–50** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -215,3 +217,28 @@ Lot121 : intégration pure du contexte aux clés, cinq tests Windows et suite de
 corrélation réussis, CI37540913337 entière verte sur720a054. Cette intégration ne fusionne pas les générations et n'apporte
 pas une preuve physique. Réestimer à la clôture122 du chantier ; le dernier bilan
 après119 reste la référence, sans soustraire mécaniquement les deux lots de contrat.
+
+## Bilan122 du chantier contrat/clés et sortie M3
+
+Trois lots120–122 : deux comportements de bibliothèque et leur revue/clôture.
+Onze tests synthétiques, suites locales acquises et CI12137541123250 entière
+réussie ; runtime inchangé à la relecture122, aucun défaut bloquant. Publication122,
+CI finale/fusion/main à consulter dans le bilan de #28. La table ci-dessus est
+l'estimation après cette clôture ; ne pas supposer la fusion depuis la relecture.
+
+Ce chantier ne livre pas la continuité physique automatique. Le cadrage demande
+des états prudents et l'absence de faux parcours/succès sur logs incomplets ; les
+origines non prouvées restent distinctes dans le MVP. Une future intégration de
+preuves fiables exige un producteur, revalidation et règles de fusion propres ;
+elle n'est pas comptée comme livrée ou incluse implicitement dans cette fourchette.
+
+| Travail M3 restant après122 | Lots estimés |
+| --- | ---: |
+| Matrice de critères, complétude et intégration ciblée sur les risques non couverts | 1–2 |
+| Mesures de reconstruction/intégration sur corpus synthétique borné | 1–3 |
+| Revue et clôture du jalon M3 | 1–2 |
+| **M3** | **3–7** |
+
+M4 15–25 et M5 10–18 donnent28–50 lots MVP ; estimation par travail restant,
+pas pourcentage ni garantie. Le lot123 commence par la matrice de sortie et
+réutilise les validations déjà acquises. Le pilote Linux représentatif reste M5.

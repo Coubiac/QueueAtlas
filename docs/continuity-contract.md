@@ -78,7 +78,7 @@ localement : aucun de leurs comportements n'est changé. Publication dans
 16784eb297dfc0aead2212e63c13bb828899f936 ;
 [CI37537740519](https://github.com/Coubiac/QueueAtlas/actions/runs/37537740519)
 entièrement réussie, trois jobs Windows/stable/Go1.26 vérifiés sur cette tête exacte.
-La CI exécute la suite complète requise. La PR reste ouverte pour la suite du chantier.
+La CI exécute la suite complète requise. Le bilan de clôture figure ci-dessous.
 
 L'enregistrement documentaire120 ec56b35e50d14dc2ac167a5a676f93bcdb68b28a a aussi
 passé la [CI37537911013](https://github.com/Coubiac/QueueAtlas/actions/runs/37537911013)
@@ -128,8 +128,11 @@ entièrement réussie sur cette tête, trois jobs vérifiés REST.
 
 ## Prochaine étape
 
-Lot122 : bilan/relecture et clôture de la PR du contrat et des clés120–121, après
-CI finale entière, puis validation d'ensemble M3. Avant toute utilisation applicative ou
+Lot122 : [relecture et bilan de clôture](reviews/continuity.md) sans défaut bloquant,
+runtime inchangé. Publication122, CI finale entière, fusion et CI main sont
+consignées dans la PR #28 ; ne pas les supposer réussies depuis la seule relecture.
+Ensuite, lot123 : matrice de sortie M3 et choix du premier risque d'intégration
+non couvert. Avant toute utilisation applicative ou
 persistance d'un plan, définir le producteur fiable et sa revalidation. Tant que
 ces propriétés ne sont pas établies, garder les origines distinctes. Le MVP
 conservateur peut afficher cette incertitude ; le contrat ne promet pas une

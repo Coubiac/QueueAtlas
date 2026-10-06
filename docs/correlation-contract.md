@@ -394,8 +394,10 @@ candidates à ce contexte via `BuildQueueInstancesWithContinuity`, sans fusion n
 suppression de réserves. Garder le plan avec ses clés ; les clés ordinaires et
 contextuelles restent distinctes. `BuildProjection` et SQLite restent inchangés.
 
-Les chantiers purs #19–22 sont fusionnés. Clôturer clés/composition après CI,
-puis traiter lecture et persistance transactionnelles des projections, sans
-fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Les chantiers purs, stockage, recherche et rétention #19–27 sont fusionnés.
+Le bilan122 du contrat et des clés120–121 est dans docs/reviews/continuity.md ;
+CI finale/fusion/main de #28 sont consignées dans la PR. Lot123 confronte les
+critères M3 aux vérifications acquises et identifie les risques d'intégration
+restants, sans fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

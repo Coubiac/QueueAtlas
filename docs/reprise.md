@@ -18,7 +18,9 @@ fusionnée dans #27, CI finale et main entièrement réussies. Lot120 : contrôl
 pur d'attestations de continuité publié dans #28, CI entière réussie sur le code.
 Lot121 : clés liées au contexte d'attestation publiées dans #28,
 CI37540913337 entièrement réussie sur le code ; clôture du chantier prévue122.
-Trois jalons restent : M3–M5, environ29–53 lots après clôture119, dont4–10 pour M3 ;
+Lot122 : relecture/bilan favorables, runtime inchangé ; publication/CI/fusion/main
+à vérifier dans le bilan de #28. Si ces étapes sont vertes, passer au lot123.
+Trois jalons restent : M3–M5, environ28–50 lots après clôture122, dont3–7 pour M3 ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3272,7 +3274,8 @@ Lot119 clôturé : PR #27 fusionnée, CI finale et main vertes (SHA/run ci-desso
 Lot120 publié sur codex/m3-continuity dans #28, CI37537740519 entière réussie.
 Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
 automatique. L'intégration pure aux clés révisables121 est publiée dans la même PR,
-CI entière réussie ; clôture du chantier prévue122.
+CI entière réussie ; bilan/relecture122 favorables, publication et CI de clôture,
+fusion/main à vérifier dans #28 avant de passer au lot123.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3425,15 +3428,43 @@ pas de relance locale de leurs tests sans risque concret.
 Contrat actualisé docs/continuity-contract.md. Lot121 publié
 720a0544e7674f18ab3a159cb1e7cbea8b83f24f ; CI37540913337 entière réussie,
 trois jobs vérifiés REST sur la tête exacte. PR #28 ouverte en brouillon,
-branche codex/m3-continuity ; main reste119 fusionné/CI verte. Cet enregistrement
-documentaire sera publié séparément ; état CI de la tête finale dans les checks
-et le bilan de la PR, à contrôler si nécessaire à la reprise.
+branche codex/m3-continuity ; main reste119 fusionné/CI verte à cette étape.
+Enregistrement121 publié114357d46b2862d95f82287c0fb49a7431f7d6e0 ;
+CI37541123250 entière réussie, SHA et trois jobs vérifiés REST à la reprise122.
 Ne pas appeler l'API une preuve de collecte : les origines restent distinctes,
 leur continuité incertaine ; production fiable/revalidation applicative encore
 nécessaires avant consommation du contexte par les projections/persistance.
 
-Prochaine action : vérifier la CI de la tête documentaire finale si nécessaire,
-puis lot122 bilan/relecture/clôture de ce chantier de contrat et clés,
-CI finale/fusion/main.
+La CI finale121 est vérifiée ; action122 ci-dessous.
 M3 reste ouvert pour complétude et intégration/mesures/validation finale ; ne pas
 confondre contrat de cohérence et certification automatique des rotations/imports.
+
+## Lot122 : revue et clôture du contrat et des clés
+
+Résultat attendu : relecture du diff, bilan exact des limites, publication de la
+clôture puis CI finale/fusion/main, sans réunir un nouveau comportement au chantier.
+Relecture locale favorable, aucun défaut bloquant : provenance, limites/graphe,
+révisions/fraîcheur, copies, erreurs et réserves conformes au contrat. Revue assistée,
+pas approbation humaine indépendante. Synthèse docs/reviews/continuity.md.
+
+Runtime120–121 inchangé, onze tests et suites locales précédentes réutilisés ;
+CI finale121 37541123250 entièrement réussie, SHA exact114357d et trois jobs
+revérifiés. Lot122 documentaire : git diff --check ; pas de nouveau test local
+ni mesure des fondations. Publication et CI122/fusion/main seront consignées
+dans le bilan de la PR #28 ; au moment de ce point, ces opérations restent à faire.
+
+Clôture limitée au contrat et aux clés sous attestations. Aucune production
+automatique fiable, consommation dans BuildProjection/SQLite ou fusion d'origines
+livrée. Ne pas présenter ces limites comme une preuve de collecte. Le MVP conserve
+les réserves sur les logs manquants, conformément au cadrage ; une future voie
+prouvée demandera producteur/revalidation/règles propres et réestimation.
+
+Après clôture122 : M3 3–7 lots (critères/intégration ciblée1–2, mesures1–3,
+revue/clôture1–2), M4 15–25, M5 10–18, soit28–50 MVP ; trois jalons restent,
+fourchettes incertaines. La clôture122 est une revue et fusion, pas une nouvelle
+fonctionnalité. Raccordement d'un producteur fiable non inclus implicitement.
+
+Prochaine action : vérifier bilan #28 fusionné/CI main verte et Git propre ;
+si ces conditions sont déjà acquises, ne pas refaire122. Lot123 : matrice de
+sortie M3, relier critères aux preuves déjà acquises et choisir le premier risque
+d'intégration non couvert. Aucun test du corpus à répéter sans risque nouveau.
