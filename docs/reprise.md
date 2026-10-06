@@ -1,6 +1,6 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 6 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 7 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
@@ -13,9 +13,16 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111–115 fusionnée dans #25, CI finale/main vertes ; preview116/garde117 publiés/CI vertes, purge118 publiée/CI verte ; intégration119 testée/revue favorable.
-Trois jalons restent : M3–M5, environ32–57 lots après clôture115, dont7–14 pour M3 ;
-estimation par comportements restants, après clôture115 validée, pas pourcentage livré.
+Recherche111–115 fusionnée dans #25, CI finale/main vertes ; rétention116–119
+fusionnée dans #27, CI finale et main entièrement réussies. Lot120 : contrôle
+pur d'attestations de continuité publié dans #28, CI entière réussie sur le code.
+Lot121 : clés liées au contexte d'attestation publiées dans #28,
+CI37540913337 entièrement réussie sur le code ; clôture du chantier prévue122.
+Lot122 : relecture/bilan favorables, runtime inchangé ; publication/CI/fusion/main
+à vérifier dans le bilan de #28. Si ces étapes sont vertes, passer au lot123.
+Trois jalons restent : M3–M5, environ28–50 lots après clôture122, dont3–7 pour M3 ;
+estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
+produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -3263,17 +3270,20 @@ dans #27, CI37498495532 entièrement réussie vérifiée REST exacte. Dernier fu
 
 ## Prochaine action concrète
 
-Terminer revue documentaire119, publier dans PR #27, vérifier CI finale entière
-puis ready/fusion/main. Lots116–117 CI vertes, 118 publié/CI verte ;119 intégration
-testée/revue code favorable. Prévision rétention3–4 après115,
-quatre lots désormais planifiés116–119 ; ne pas confondre preview et suppression.
+Lot119 clôturé : PR #27 fusionnée, CI finale et main vertes (SHA/run ci-dessous).
+Lot120 publié sur codex/m3-continuity dans #28, CI37537740519 entière réussie.
+Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
+automatique. L'intégration pure aux clés révisables121 est publiée dans la même PR,
+CI entière réussie ; bilan/relecture122 favorables, publication et CI de clôture,
+fusion/main à vérifier dans #28 avant de passer au lot123.
+Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-retention.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m3-continuity.
 
 ## Suite à découper au fil des reprises
 
@@ -3345,7 +3355,7 @@ Dernier publié/CI verte118 3f39363c2d93afc481cab8fef965f2abed7f3ef4/37499748326
 Prochaine action : lot119 intégration WAL/recherche/
 reconstruction et bilan/clôture CI/fusion/main.
 
-## Lot119 : intégration et bilan rétention (en cours)
+## Lot119 : intégration et bilan rétention (fusionné, CI finale/main vertes)
 
 Résultat attendu : WALsnapshot cohérent, recherche/reconstruction après purge et
 retry import réel/reopen puis clôture #27. Trois tests119 Windows/vet/diff réussis,
@@ -3355,11 +3365,106 @@ snapshot puis lit nouvel état sans réparation implicite ; search→purge→old
 refusé→scopecomplet12dont8undated→manifest12memberships/4markers ; importcompletenonvide
 purgé/reopen/lostACKsamebytes reconnu, ancrefausse et rawdiff refusés distinctement.
 Fixture119 variable/période2jours corrigées, aucun défaut runtime.
-Docs/bilan119 écrits, revue documentaire finale favorable ; publication/CI/fusion/main attendues ; dernier CI
-entièrement vert118, 118publié3f39363c2d93afc481cab8fef965f2abed7f3ef4/37499748326verte.
+Docs/bilan119 et revue documentaire finale favorables. Publié
+ff229381dc703472a5278669613a5480e892b4c7 ; CI37500212011 entièrement réussie.
+PR #27 fusionnée sur 5667e2da711150303447d7ca2c1184f5eed3f108 ; CI push main
+37500456255 entièrement réussie vérifiée sur le merge exact. Branche distante
+supprimée automatiquement, branche locale supprimée après fast-forward de main.
 Après clôture119 : rétention116–119 aura pris4lots dansprévision3–4. M3 reste4–10
 (continuité1–3, complétudeapplicative0–1, intégration/validationfinale3–6), M4 15–25,
 M5 10–18, total29–53 après119 ; fourchettesincertaines, troisjalonsàclôturer.
-Prochaine action : revue docs119/commit/push/CI exacte/ready/fusion #27/CI main,
-puis lot120 contrat de preuve explicite de continuité entre origines (aucune fusion
-sur queueID/date/PID seuls), tests et intégration aux clés révisables à découper.
+La clôture119 est terminée ; prochain comportement120 ci-dessous.
+
+## Lot120 : cohérence d'attestations explicites de continuité
+
+Résultat attendu : contrôler les frontières physiques déclarées, leur révision
+et l'absence de contradictions, sans produire une preuve depuis les logs.
+`CheckContinuityClaims` développé : validation de tous les faits, révision103
+exacte, au plus256frontières, même source/instance et origines distinctes,
+From dernier fait/To premier à zéro, références complètes, graphe sans
+embranchement/jonction/doublon/cycle. Plan copié/canonique et digest versionné
+sur faits ET attestations ; erreurs fixes sans résultat partiel ni donnée privée.
+
+Six tests synthétiques Windows et suite complète de corrélation réussis,
+ainsi que vet/diff. Ils couvrent ordre,
+propriété/révisions, graphes contradictoires, namespaces/frontières incluant
+NOQUEUE, révision périmée/limites/overlap, aucune fusion sur corpus d'ID recyclés,
+256frontières puis séparation en deux chaînes. Les projections existantes et
+SQLite restent inchangés ; pas de test des fondations relancé sans risque précis.
+Contrat : docs/continuity-contract.md. Publié
+16784eb297dfc0aead2212e63c13bb828899f936 dans PR #28 créée/attachée ;
+CI37537740519 entièrement réussie, SHA exact et trois jobs vérifiés REST.
+PR en brouillon pour le chantier, pas fusionnée ; dernier main validé119,
+SHA5667e2da711150303447d7ca2c1184f5eed3f108. Enregistrement documentaire publié
+ec56b35e50d14dc2ac167a5a676f93bcdb68b28a ; CI37537911013 entière réussie,
+trois jobs vérifiés sur cette tête exacte. Checkout propre avant121.
+
+Limite essentielle : l'attestation vient d'un appelant de confiance. La fonction
+vérifie sa cohérence, sans authentifier son producteur ni établir fin définitive,
+absence de fichier intermédiaire ou couverture des bytes. Aucun producteur fiable
+automatique n'existe encore ; la continuité actuelle reste incertaine. L'intégration
+aux clés révisables et la revalidation applicative sont séparées. M3 ne doit pas
+être présenté terminé parce qu'un plan cohérent peut être construit.
+
+L'action suivante121 est décrite ci-dessous ; la CI finale120 est vérifiée.
+
+## Lot121 : clés candidates liées aux attestations
+
+Résultat attendu : changer les clés dès qu'une attestation change, sans modifier
+les générations ou les faits natifs. Développé : nouvelle API pure
+`BuildQueueInstancesWithContinuity` qui recontrôle les claims120, reconstruit la
+partition ordinaire et associe toutes ses clés à une révision distincte versionnant
+faits ET attestations. Retour `ContinuityInstances` avec partition et plan détenus.
+Contexte vide distinct de la voie ordinaire ; nouvelle observation requiert une
+réattestation explicite. Aucune acceptation d'un plan forgé comme jeton de validation.
+
+Cinq tests Windows121 et suite entière de corrélation/vet/format/diff réussis :
+cycle coupé conservé en deux candidats avec réserves, attestations retirées→clés
+nouvelles, fait tardif refusé puis réattesté→clés nouvelles, permutations/copies
+incluant Removed/Unresolved/NOQUEUE, refus/limites et snapshot vide. Aucune erreur
+de test ni correction des fondations ; SQLite et BuildProjection inchangés,
+pas de relance locale de leurs tests sans risque concret.
+
+Contrat actualisé docs/continuity-contract.md. Lot121 publié
+720a0544e7674f18ab3a159cb1e7cbea8b83f24f ; CI37540913337 entière réussie,
+trois jobs vérifiés REST sur la tête exacte. PR #28 ouverte en brouillon,
+branche codex/m3-continuity ; main reste119 fusionné/CI verte à cette étape.
+Enregistrement121 publié114357d46b2862d95f82287c0fb49a7431f7d6e0 ;
+CI37541123250 entière réussie, SHA et trois jobs vérifiés REST à la reprise122.
+Ne pas appeler l'API une preuve de collecte : les origines restent distinctes,
+leur continuité incertaine ; production fiable/revalidation applicative encore
+nécessaires avant consommation du contexte par les projections/persistance.
+
+La CI finale121 est vérifiée ; action122 ci-dessous.
+M3 reste ouvert pour complétude et intégration/mesures/validation finale ; ne pas
+confondre contrat de cohérence et certification automatique des rotations/imports.
+
+## Lot122 : revue et clôture du contrat et des clés
+
+Résultat attendu : relecture du diff, bilan exact des limites, publication de la
+clôture puis CI finale/fusion/main, sans réunir un nouveau comportement au chantier.
+Relecture locale favorable, aucun défaut bloquant : provenance, limites/graphe,
+révisions/fraîcheur, copies, erreurs et réserves conformes au contrat. Revue assistée,
+pas approbation humaine indépendante. Synthèse docs/reviews/continuity.md.
+
+Runtime120–121 inchangé, onze tests et suites locales précédentes réutilisés ;
+CI finale121 37541123250 entièrement réussie, SHA exact114357d et trois jobs
+revérifiés. Lot122 documentaire : git diff --check ; pas de nouveau test local
+ni mesure des fondations. Publication et CI122/fusion/main seront consignées
+dans le bilan de la PR #28 ; au moment de ce point, ces opérations restent à faire.
+
+Clôture limitée au contrat et aux clés sous attestations. Aucune production
+automatique fiable, consommation dans BuildProjection/SQLite ou fusion d'origines
+livrée. Ne pas présenter ces limites comme une preuve de collecte. Le MVP conserve
+les réserves sur les logs manquants, conformément au cadrage ; une future voie
+prouvée demandera producteur/revalidation/règles propres et réestimation.
+
+Après clôture122 : M3 3–7 lots (critères/intégration ciblée1–2, mesures1–3,
+revue/clôture1–2), M4 15–25, M5 10–18, soit28–50 MVP ; trois jalons restent,
+fourchettes incertaines. La clôture122 est une revue et fusion, pas une nouvelle
+fonctionnalité. Raccordement d'un producteur fiable non inclus implicitement.
+
+Prochaine action : vérifier bilan #28 fusionné/CI main verte et Git propre ;
+si ces conditions sont déjà acquises, ne pas refaire122. Lot123 : matrice de
+sortie M3, relier critères aux preuves déjà acquises et choisir le premier risque
+d'intégration non couvert. Aucun test du corpus à répéter sans risque nouveau.

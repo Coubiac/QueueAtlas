@@ -386,8 +386,18 @@ aucun parcours/statut global, persistance, API ou schéma SQLite ajouté.
 
 ## Suite concrète
 
-Les chantiers purs #19–22 sont fusionnés. Clôturer clés/composition après CI,
-puis traiter lecture et persistance transactionnelles des projections, sans
-fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
+Le lot 120 ajoute un [contrôle d'attestations explicites de continuité](continuity-contract.md).
+Il vérifie révision, références et graphe des frontières ; il ne produit pas une
+preuve physique et ne change pas les générations/projections existantes. La
+production fiable des attestations reste à raccorder. Le lot121 lie les clés
+candidates à ce contexte via `BuildQueueInstancesWithContinuity`, sans fusion ni
+suppression de réserves. Garder le plan avec ses clés ; les clés ordinaires et
+contextuelles restent distinctes. `BuildProjection` et SQLite restent inchangés.
+
+Les chantiers purs, stockage, recherche et rétention #19–27 sont fusionnés.
+Le bilan122 du contrat et des clés120–121 est dans docs/reviews/continuity.md ;
+CI finale/fusion/main de #28 sont consignées dans la PR. Lot123 confronte les
+critères M3 aux vérifications acquises et identifie les risques d'intégration
+restants, sans fusion d'origines non prouvée. Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.
