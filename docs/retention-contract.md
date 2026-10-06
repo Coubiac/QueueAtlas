@@ -58,3 +58,47 @@ Pas de purge automatique, CLI, calendrier ou VACUUM dans116. La durée globale d
 purge, la conservation des dates inconnues, le devenir des métadonnées de provenance
 et la restauration WAL restent des politiques distinctes à documenter. Sauvegarde
 et pilote représentatif restent àM5 ; M3 n'est pas clôturé par ce premier aperçu.
+
+## Lot117 : provenance persistée et rejeu après suppression
+
+La migration v7 ajoute purged_records, initialement vide, sans toucher les faits,
+checkpoints, imports ou manifests. Clé physique source/origine/start, end exact et
+empreinte SHA256 binaire32. Préimage versionnée avec longueurs séparées pour raw et
+read_error ; aucune concaténation ambiguë. ReadAt, observation parsée et verdict ne
+font pas partie de l'identité de rejeu, comme pour les doublons raw existants.
+
+Le helper interne rememberPurgedRecord lit les octets persistés et le checkpoint
+exact source/origine sous la transaction fournie, exige couverture/ancre non vide,
+vérifie conversions et forme, puis mémorise la provenance. Le marqueur doit être
+écrit AVANT le DELETE du même raw dans la future transaction de purge. La couverture
+checkpoint ne qualifie pas l'origine terminée : ce contrôle supplémentaire reste118.
+Le helper ne supprime rien et aucune API publique de purge n'est livrée117.
+
+Commit consulte la provenance persistée avant INSERT. End et empreinte identiques :
+record déjà appliqué, pas de résurrection raw/event/domaines. End, octets ou erreur
+lecture différents : ErrPurgedRecordCollision fixe ; marqueur malformé/conversion
+invalide : ErrPurgedRecordState fixe. La transaction complète est annulée, y compris
+faits précédents du lot, nom de source et checkpoint. Contexte annulé reste distinct.
+La progression d'import conserve ses propres conditions de manifest/checkpoint :
+le marqueur ne permet pas de contourner un conflit d'import ni d'acquitter sur le
+seul offset. Tests couvrent également le rejeu d'un import complete après ACK perdu.
+
+L'origine/source/start reste le périmètre : aucune déduplication inter-origines ou
+reconnaissance d'une lecture resegmentée. Un offset différent demeure une autre
+provenance selon le contrat d'ingestion existant. Aucun fait n'est recréé depuis
+l'empreinte et aucune projection historique supprimée n'est restaurée par un retry.
+
+FK vers l'origine conservée et trigger UPDATE immutable. Pas de suppression ou
+d'expiration de marqueur par API ; leur durée est actuellement celle du namespace
+physique dans la DB. Leur volume peut croître avec les purges. Le digest non clé
+n'est ni anonymisation ni authentification contre une modification externe de la
+DB : des octets connus peuvent être testés par dictionnaire. Répertoire protégé,
+politique de métadonnées/sauvegarde et migrations futures restent nécessaires.
+Aucune promesse d'effacement sécurisé des pages SQLite, du WAL ou des sauvegardes.
+
+Les six tests117 simulent le DELETE sous transaction uniquement pour vérifier le
+garde de rejeu. Migration/rollback/reopen préservent facts/CP/manifests ; aucune
+purge applicative automatique. Le benchmark de migration repart désormais de v5
+vers la version courante7 et son reset retire aussi v7. Son smoke1x vérifie le
+fonctionnement, pas une nouvelle mesure représentative ; les mesures115 restent
+historiquement celles de v5→v6 et leurs sorties brutes ne sont pas réécrites.

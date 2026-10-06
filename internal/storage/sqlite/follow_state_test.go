@@ -182,13 +182,13 @@ func seedV1FollowStore(t *testing.T) (*sql.DB, string) {
 	}
 	// The current writer also requires its derived search table. Create it only
 	// for fixture insertion, then remove it to leave an actual legacy v1 schema.
-	if _, err := db.Exec(schemaV6); err != nil {
+	if _, err := db.Exec(schemaV6 + schemaV7); err != nil {
 		t.Fatal(err)
 	}
 	if err := (&Store{db: db}).Commit(context.Background(), testBatch()); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.Exec(`DROP TABLE event_search_domains`); err != nil {
+	if _, err := db.Exec(`DROP TABLE event_search_domains; DROP TABLE purged_records;`); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.Chmod(path, 0600); err != nil {
@@ -209,11 +209,11 @@ func TestFollowStateMigrationV1PreservesUnknownAndExistingData(t *testing.T) {
 	defer s.Close()
 	assertFollowState(t, s, source.FollowUnknown)
 	position, found, err := s.Checkpoint(context.Background(), "mail", "gen-1")
-	if err != nil || !found || position != testBatch().Checkpoints[0] || count(t, s, "raw_records") != 1 || count(t, s, "events") != 1 || count(t, s, "schema_migrations") != 6 {
+	if err != nil || !found || position != testBatch().Checkpoints[0] || count(t, s, "raw_records") != 1 || count(t, s, "events") != 1 || count(t, s, "schema_migrations") != schemaVersion {
 		t.Fatal("v1 data lost or changed", position, found, err)
 	}
 	var version int
-	if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != 6 {
+	if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != schemaVersion {
 		t.Fatal("migration version", version, err)
 	}
 }

@@ -70,7 +70,7 @@ func TestRetentionPreviewBoundedReadOnlyScopeAndUnknownDates(t *testing.T) {
 	if err != nil || afterFound != found || after != checkpoint {
 		t.Fatal("preview changed checkpoint", err)
 	}
-	if count(t, s, "events") != 24 || count(t, s, "raw_records") != 24 || count(t, s, "event_search_domains") != 24 || count(t, s, "projection_revision_facts") != 16 || count(t, s, "schema_migrations") != 6 {
+	if count(t, s, "events") != 24 || count(t, s, "raw_records") != 24 || count(t, s, "event_search_domains") != 24 || count(t, s, "projection_revision_facts") != 16 || count(t, s, "schema_migrations") != schemaVersion {
 		t.Fatal("preview modified stored data")
 	}
 }

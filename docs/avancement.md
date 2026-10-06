@@ -9,7 +9,7 @@ vertes. Indices natifs100 et relations101 fusionnés dans #22, clôture102 termi
 CI finale/main réussies. Clés103 et composition104 fusionnées #23, clôture105
 terminée/CI finale et main vertes. Lecture SQLite106 et schéma107 publiés dans #24,
 CI vertes ; installation108/lecteur109 et clôture110 fusionnés dans #24 après
-CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111–115 fusionnée/CI finale et main vertes ; preview116 testé/relu.
+CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111–115 fusionnée/CI finale et main vertes ; preview116 publié/CI verte, garde117 développé/testé.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -23,7 +23,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 116 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 117 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -39,7 +39,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections pures et stockage #19–24 fusionnés, CI finale/main vertes ; recherche111–115 fusionnée/CI finale et main vertes, preview rétention116 testé | Rétention, continuité prouvée, complétude applicative, intégration/validation finale | 7–14 après clôture115 |
+| M3 — reconstruction | En cours : projections pures et stockage #19–24 fusionnés, CI finale/main vertes ; recherche111–115 fusionnée/CI finale et main vertes, preview rétention116 publié/CI verte, garde117 testé | Rétention, continuité prouvée, complétude applicative, intégration/validation finale | 7–14 après clôture115 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture115** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **32–57** |

@@ -151,7 +151,7 @@ func seedV5DomainStore(t *testing.T) (*Store, string) {
 func TestSearchDomainsMigrationBackfillsBatchesAndPreservesProjection(t *testing.T) {
 	s, path := seedV5DomainStore(t)
 	// Current writer creates 300 additional legacy facts for the fixture only.
-	if _, err := s.db.Exec(schemaV6); err != nil {
+	if _, err := s.db.Exec(schemaV6 + schemaV7); err != nil {
 		t.Fatal(err)
 	}
 	values := make([]string, 300)
@@ -161,7 +161,7 @@ func TestSearchDomainsMigrationBackfillsBatchesAndPreservesProjection(t *testing
 		dates[i] = eventSearchQuery(SearchSenderDomain, "").From.Add(time.Hour)
 	}
 	seedSearchEvents(t, s, values, dates)
-	if _, err := s.db.Exec(`DROP TABLE event_search_domains`); err != nil {
+	if _, err := s.db.Exec(`DROP TABLE event_search_domains; DROP TABLE purged_records;`); err != nil {
 		t.Fatal(err)
 	}
 	ctx := context.Background()
@@ -194,7 +194,7 @@ func TestSearchDomainsMigrationBackfillsBatchesAndPreservesProjection(t *testing
 	if err != nil || !found || cp != testBatch().Checkpoints[0] {
 		t.Fatal("checkpoint lost", err)
 	}
-	if count(t, s, "event_search_domains") != 301 || count(t, s, "schema_migrations") != 6 {
+	if count(t, s, "event_search_domains") != 301 || count(t, s, "schema_migrations") != schemaVersion {
 		t.Fatal("backfill missed batch boundary")
 	}
 	query := eventSearchQuery(SearchRecipientDomain, "example.net")
@@ -225,7 +225,7 @@ func TestSearchDomainsMigrationBackfillsBatchesAndPreservesProjection(t *testing
 		t.Fatal(err)
 	}
 	defer s.Close()
-	if count(t, s, "event_search_domains") != 301 || count(t, s, "schema_migrations") != 6 {
+	if count(t, s, "event_search_domains") != 301 || count(t, s, "schema_migrations") != schemaVersion {
 		t.Fatal("reopen duplicated backfill")
 	}
 }
