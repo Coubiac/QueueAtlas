@@ -1,6 +1,6 @@
 # QueueAtlas — conception de phase 0
 
-**Statut : validé par le propriétaire le 3 octobre 2026.** Ce document décrit une cible de développement ; il ne décrit pas un logiciel déjà disponible. Le nom QueueAtlas et la licence MIT sont confirmés. Le dépôt GitHub conserve pour l'instant son URL historique [Coubiac/mailtrace](https://github.com/Coubiac/mailtrace).
+**Statut : validé par le propriétaire le 3 octobre 2026.** Ce document décrit une cible de développement ; il ne décrit pas un logiciel déjà disponible. Le nom QueueAtlas et la licence MIT sont confirmés. Le dépôt GitHub conserve pour l'instant son URL historique [Coubiac/mailtrace](https://github.com/Coubiac/QueueAtlas).
 
 ## 1. Nom et licence
 

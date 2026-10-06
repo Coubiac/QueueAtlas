@@ -6,8 +6,8 @@ import (
 	"io/fs"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/source/file"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source/file"
 )
 
 // CheckpointReader supplies one source-scoped committed position. The caller

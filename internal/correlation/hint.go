@@ -3,8 +3,8 @@ package correlation
 import (
 	"strings"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/parser/postfix"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/parser/postfix"
 )
 
 type QueueHintKind string

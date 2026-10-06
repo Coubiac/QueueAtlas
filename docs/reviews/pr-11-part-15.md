@@ -19,7 +19,7 @@ Coordinateur et auditeur : cinq tests portables TestFollowOpened*/TestFollowMiss
 -count=1 réussis sous Windows ; diff propre. Intégrations Linux relues : ajout tardif
 sur 1–2 fichiers, ordre du courant inversé, retrait du seul ancien, disparition/retour
 et checkpoints SQLite conservés, fermeture sans fuite. Exécutées par la
-[CI de référence](https://github.com/Coubiac/mailtrace/actions/runs/37221589000) verte,
+[CI de référence](https://github.com/Coubiac/QueueAtlas/actions/runs/37221589000) verte,
 pas localement. Aucun changement d'exécution ni nouveau test sans défaut reproduit.
 CI de publication à consulter sur #11.
 

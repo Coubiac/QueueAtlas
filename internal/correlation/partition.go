@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 const MaxPartitionFacts = 4096

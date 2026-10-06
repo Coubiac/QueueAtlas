@@ -7,9 +7,9 @@ import (
 	"io/fs"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/source/file"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source/file"
 )
 
 var ErrImportResume = errors.New("validated import content and resume state do not match")

@@ -6,7 +6,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 type Source interface {

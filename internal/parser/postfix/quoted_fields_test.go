@@ -3,7 +3,7 @@ package postfix
 import (
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 func TestQuotedSenderCannotCreateObservedFields(t *testing.T) {

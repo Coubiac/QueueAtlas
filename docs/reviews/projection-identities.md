@@ -22,7 +22,7 @@ frontières de champs et insertion des maps ; cinq refus sans sortie partielle e
 snapshot vide versionné. Données synthétiques. Revue code indépendante sans blocage ;
 cinq tests via overlay isolé Windows pass, root inchangé. Documentation alignée,
 avis final favorable sans nouveau test.
-Publié76055c0 dans [PR #23](https://github.com/Coubiac/mailtrace/pull/23) créée/attachée,
+Publié76055c0 dans [PR #23](https://github.com/Coubiac/QueueAtlas/pull/23) créée/attachée,
 CI37329247549 entière success vérifiée sur la tête exacte ; fusionné validé102.
 
 ## Lot104 : composition cohérente et options versionnées

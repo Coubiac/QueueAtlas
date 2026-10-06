@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 var ErrInvalidFollowCurrent = errors.New("valid current file decision is required")

@@ -45,7 +45,7 @@ contrainte de colonne, annulation, rollback état/record/event/checkpoints et ba
 corrigé ; migration v1 avec données conservées, échec d'historique via trigger
 synthétique avec DDL/version annulés, refus d'historique v2 manquant.
 
-La [CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37202826203)
+La [CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37202826203)
 a réussi : tests/vet Linux Go 1.26.x/stable, race FileSource, builds Linux amd64/arm64
 sans CGO et job Windows ciblé chemins. Code inchangé dans ce lot ; consulter la
 PR #11 pour la CI de publication du rapport.

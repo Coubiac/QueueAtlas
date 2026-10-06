@@ -9,8 +9,8 @@ import (
 	"io"
 	"math"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 // Internal scheduling boundary, not EOF or a failed physical read. The partial

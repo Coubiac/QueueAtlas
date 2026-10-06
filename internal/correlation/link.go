@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 const MaxSMTPBindings = 64

@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/correlation"
-	"github.com/Coubiac/mailtrace/internal/parser/postfix"
-	"github.com/Coubiac/mailtrace/internal/parser/syslog"
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/correlation"
+	"github.com/Coubiac/QueueAtlas/internal/parser/postfix"
+	"github.com/Coubiac/QueueAtlas/internal/parser/syslog"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func storeCorrelationCorpus(t *testing.T, s *Store, name, sourceID, instance string, knownDate, reverse bool) []correlation.Fact {

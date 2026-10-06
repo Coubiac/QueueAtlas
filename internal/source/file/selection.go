@@ -5,7 +5,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 // MaxResumeCandidates bounds both work and the number of pages in one scan.

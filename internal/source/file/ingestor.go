@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 // Normalize interprets one bounded complete line. Its result becomes owned by

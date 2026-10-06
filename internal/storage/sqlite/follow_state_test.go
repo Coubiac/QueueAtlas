@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func assertFollowState(t *testing.T, s *Store, want source.FollowState) {

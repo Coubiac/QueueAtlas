@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/correlation"
+	"github.com/Coubiac/QueueAtlas/internal/correlation"
 )
 
 func TestCurrentProjectionReconstructsCompleteSnapshotAndCopiesOutput(t *testing.T) {

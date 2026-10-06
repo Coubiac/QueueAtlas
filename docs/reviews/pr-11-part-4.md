@@ -49,7 +49,7 @@ ressemblant à du SQL conservés comme valeurs littérales. Coordinateur : test
 TestLoadPathOriginsWithSQLiteAndReducedFinalPage -count=1 également réussi, pour
 101 origines et plafond 100 sans résultat partiel. git diff --check réussi.
 
-La [CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37202460211)
+La [CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37202460211)
 a réussi : tests/vet Linux Go 1.26.x/stable, race FileSource, builds Linux amd64/arm64
 sans CGO et job Windows ciblé sur les chemins. Ce lot change uniquement des
 commentaires et la documentation ; consulter la PR #11 pour la CI de publication.

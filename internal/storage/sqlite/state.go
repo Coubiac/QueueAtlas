@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 var _ source.StateReader = (*Store)(nil)

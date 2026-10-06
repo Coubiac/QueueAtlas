@@ -16,7 +16,7 @@ Coordinateur et auditeur : TestFollowNew* -count=1 portable Windows réussi, hui
 sous-cas ; diff propre. Intégrations Linux relues : courant vide/non vide, acquisition
 avant ligne, écritures anciennes tardives, registration/acquisition/EOF/annulation
 avant et après acquittement, checkpoint insuffisant et fermeture. Exécutées par la
-[CI de référence](https://github.com/Coubiac/mailtrace/actions/runs/37221815044) verte,
+[CI de référence](https://github.com/Coubiac/QueueAtlas/actions/runs/37221815044) verte,
 pas localement. Code inchangé, aucun nouveau test sans défaut concret reproduit.
 CI de publication à consulter sur #11.
 

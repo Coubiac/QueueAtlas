@@ -36,7 +36,7 @@ annulation, copies indépendantes et collision de chemin couverts.
 Tests Linux relus : 1–2 fichiers courant/renommé réellement localisés, métadonnées
 inchangées, absence/réécriture/nil/zéro/hard links/génération partagée/limite et
 fermeture de tous les fichiers/répertoire. Pas d'exécution locale Linux sous Windows.
-La [CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37220323146)
+La [CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37220323146)
 a réussi : tests/vet Linux Go 1.26.x/stable, race FileSource, builds Linux amd64/arm64
 sans CGO et job Windows chemins. Les intégrations Linux y sont exécutées.
 Ce lot modifie uniquement la documentation ; consulter la PR #11 pour sa CI de publication.

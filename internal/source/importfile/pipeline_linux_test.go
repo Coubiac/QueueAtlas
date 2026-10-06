@@ -7,8 +7,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/source/file"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source/file"
 )
 
 func TestImportPipelineFileSourceOverlapRetainsSeparateProvenance(t *testing.T) {

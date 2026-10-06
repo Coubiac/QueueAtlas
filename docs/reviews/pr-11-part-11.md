@@ -57,10 +57,10 @@ vérifié ensuite par le coordinateur.
 Tests Linux relus : renommage/append, absence/différence/zéro, hard links, budget,
 gzip nom/signature, sous-répertoire/lien, disparition/substitution d'entrée et
 fermeture des fichiers/répertoire. Pas d'exécution locale Linux sous Windows.
-La [CI de la référence initiale](https://github.com/Coubiac/mailtrace/actions/runs/37205110566)
+La [CI de la référence initiale](https://github.com/Coubiac/QueueAtlas/actions/runs/37205110566)
 était verte ; elle ne valide pas le correctif. Le correctif publié
 `de81c4e86fc3deab0692bf471ae5ffeb6aa8f6b9` a sa
-[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37220202856) :
+[CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37220202856) :
 tests/vet Linux Go 1.26.x/stable, race FileSource, builds Linux amd64/arm64 sans CGO
 et job Windows étendu exécutant les trois nouveaux tests. Lot clos sur cette référence.
 Consulter la PR #11 pour la CI de publication de cette clôture documentaire.

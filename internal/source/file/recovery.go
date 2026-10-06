@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 // RecoveryDecisionError is a fixed lifecycle classification, not log content.

@@ -16,7 +16,7 @@ Coordinateur et auditeur : deux TestPrepareFollowResume* -count=1 Windows réuss
 19 sous-cas ; diff propre. Intégrations Linux relues : 1–2 connus/nouveau vide/non vide,
 positions/checkpoints conservés, aucun nouveau courant ouvert, refus filesystem et
 observation/annulation/cleanup joints. Tests Linux exécutés par la
-[CI de référence](https://github.com/Coubiac/mailtrace/actions/runs/37221985374) verte,
+[CI de référence](https://github.com/Coubiac/QueueAtlas/actions/runs/37221985374) verte,
 pas localement sous Windows. Code inchangé,
 aucun nouveau test sans défaut concret. CI de publication du rapport sur #11.
 

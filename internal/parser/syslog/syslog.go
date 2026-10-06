@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 // TimeContext contains only caller-provided facts. Reference enables nearest-

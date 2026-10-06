@@ -37,7 +37,7 @@ avec priorités, nil/zéro et copies indépendantes, dernière page inconnue au-
 d'un budget réduit, erreur/page incohérente/annulation. SQLite : 101 états dont
 99 retirés et deux following, limite 100 refusée, isolation source et état inchangé.
 
-La [CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37204843549)
+La [CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37204843549)
 a réussi : tests/vet Linux Go 1.26.x/stable, race FileSource, builds Linux amd64/arm64
 sans CGO et job Windows chemins. Ce lot modifie uniquement la documentation ;
 consulter la PR #11 pour la CI de publication du rapport.

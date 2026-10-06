@@ -10,12 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/parser/postfix"
-	"github.com/Coubiac/mailtrace/internal/parser/syslog"
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/source/file"
-	"github.com/Coubiac/mailtrace/internal/storage/sqlite"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/parser/postfix"
+	"github.com/Coubiac/QueueAtlas/internal/parser/syslog"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source/file"
+	"github.com/Coubiac/QueueAtlas/internal/storage/sqlite"
 )
 
 const pipelineFirst = "Dec 31 23:59:58 mx-declared postfix/qmgr[1]: A1B2C3: from=<alice@invalid.example>, size=42, nrcpt=1 (queue active)\n"

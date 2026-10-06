@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/correlation"
+	"github.com/Coubiac/QueueAtlas/internal/correlation"
 )
 
 var ErrProjectionStoredManifest = errors.New("invalid stored correlation revision manifest")
