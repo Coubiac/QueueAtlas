@@ -9,7 +9,7 @@ vertes. Indices natifs100 et relations101 fusionnés dans #22, clôture102 termi
 CI finale/main réussies. Clés103 et composition104 fusionnées #23, clôture105
 terminée/CI finale et main vertes. Lecture SQLite106 et schéma107 publiés dans #24,
 CI vertes ; installation108/lecteur109 et clôture110 fusionnés dans #24 après
-CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111–115 fusionnée/CI finale et main vertes ; preview116 publié/CI verte, garde117 publié/CI verte, purge118 testée.
+CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111–115 fusionnée/CI finale et main vertes ; preview116 publié/CI verte, garde117 publié/CI verte, purge118 publiée/CI verte, intégration119 testée.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -23,7 +23,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 118 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 119 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -39,7 +39,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections pures et stockage #19–24 fusionnés, CI finale/main vertes ; recherche111–115 fusionnée/CI finale et main vertes, preview rétention116 publié/CI verte, garde117 publié/CI verte, purge118 testée | Rétention, continuité prouvée, complétude applicative, intégration/validation finale | 7–14 après clôture115 |
+| M3 — reconstruction | En cours : projections pures et stockage #19–24 fusionnés, CI finale/main vertes ; recherche111–115 fusionnée/CI finale et main vertes, preview rétention116 publié/CI verte, garde117 publié/CI verte, purge118 publiée/CI verte, intégration119 testée | Rétention, continuité prouvée, complétude applicative, intégration/validation finale | 7–14 après clôture115 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture115** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **32–57** |
@@ -153,7 +153,7 @@ avec revue favorable et CI37330343331 entière success. Clôture105 terminée,
 Lecture106 et schéma107 publiés dans #24, CI37333408517 et37336085923 success.
 Installation108/lecteur109 et clôture110 fusionnés dans #24 suraaa95f8,
 CI finale37368191438 entière success après relance d'une annulation de runner stable.
-CI main37372128796 entière success vérifiée REST. Recherche111–115 fusionnée dans #25 surf68ae85, CI finale37423566878 et main37423754491 entières success. Preview rétention116 testé/relu, publication/CI à vérifier.
+CI main37372128796 entière success vérifiée REST. Recherche111–115 fusionnée dans #25 surf68ae85, CI finale37423566878 et main37423754491 entières success. Rétention116–117 publiés/CI vertes, purge118 publiée/CI verte, intégration119 testée/revue favorable.
 Le schéma et les memberships conservent tous les faits, y compris les réserves ;
 aucun résultat dérivé n'est sérialisé. Le chantier de stockage est fusionné ; CI main
 vérifiée. La prévision2–4 lots après107 a couvert108–110. Recherche111 développée
@@ -185,3 +185,15 @@ fusion de #11, puis à chaque clôture de jalon ou changement de périmètre sub
 Une revue sans changement de comportement ne doit pas être présentée comme une
 nouvelle fonctionnalité livrée. Une mise à jour d'estimation seule n'incrémente
 pas les lots ; le lot 60 clôture la revue et la fusion FileSource.
+
+## Bilan prévu après clôture rétention119
+
+Quatre lots116–119 dans la prévision3–4 : aperçu readonly, protection persistée des
+rejeux, purge/invalidation transactionnelles et intégration WAL/recherche/import.
+Publication/CI finale/fusion/main119 restent à vérifier ; ne pas compter #27 fusionnée
+avant ces validations. Rétention en bibliothèque, pas un service ni une tâche cron.
+
+Après clôture119, le reste prévu est M3 4–10 : continuité prouvée1–3, complétude
+applicative0–1 et intégration/mesures/revue finale M3 3–6. M4 reste15–25 et M5 10–18,
+soit29–53 lots MVP. Réévaluation par comportements restants, pas pourcentage livré
+ni garantie de durée. Trois jalons demeurent ; AD/OIDC/Keycloak aprèsMVP exclus.

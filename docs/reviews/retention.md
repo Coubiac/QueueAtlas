@@ -71,5 +71,28 @@ par le schéma, aucune correction runtime associée. Pas de changement116/117.
 
 Revue indépendante code favorable, cinq tests overlay Windows isolé pass, root/Git
 inchangés. Revue documentaire finale favorable ; action obsolète117 corrigée.
-Publication et CI118 en attente. Intégration WAL,
+Publié3f39363c2d93afc481cab8fef965f2abed7f3ef4 dans #27 ;
+CI37499748326 entièrement réussie, vérifiée REST sur cette tête exacte. Intégration WAL,
 recherche/reconstruction et clôture119 restent à vérifier ; aucun CLI/service livré.
+
+## Lot119 : intégration et clôture
+
+Trois nouveaux tests Windows/vet/diff réussis, runtime118 inchangé ; revue code/
+intégration indépendante favorable, trois tests overlay isolé Windows réussis,
+root/Git inchangés. Fondations/tests de charge non relancés. DeuxconnWAL gardent
+inventairefacts/revisions/current cohérent ancien puis nouveau snapshot, CPintact ;
+search2jours/page2 avantpurge, vieuxscope16 Installstale refusé, cursor pagination
+pas historique, reload12facts dont8undated et manifest12memberships/4markers ;
+importcompletenonvide réellement purgé/reopen/lostACKidentique reconnu, ancrefausse
+ErrImportConflict et rawdiff ErrPurgedCollision sansrésurrection/manifestmutation.
+Deux erreurs de préparation de test corrigées (déclaration de variable et période
+initiale trop courte pourOct4), aucune correction runtime ou défaut parser.
+
+Bilan116–119 couvre rétention en bibliothèque, quatre lots dans l'estimation3–4.
+Quatretests116/six117/cinq118/trois119, audits code/docs au fil des lots. CI116
+37498495532 et11737499111912 entières réussies exactes ; CI11837499748326 entièrement réussie sur la tête exacte.
+Revue documentaire finale favorable après trois précisions de reprise/API.
+Publication/finaleCI/fusion/main119 restent à vérifier.
+Aucune mesure Linux locale/charge/effacement sécurisé, service/API HTTP applicative/CLI/Web livré.
+Retrait d'historique et reconstruction des faits restants ne prouvent pas une
+complétude globale. M3 continuité/critères applicatifs/validation finale encore ouverts.

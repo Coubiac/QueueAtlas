@@ -149,3 +149,34 @@ associés, le coût SQL, les octets WAL ni la durée totale. Aucun loop global, 
 recherche sans hits ne prouve pas l'absence historique. L'empreinte de provenance
 survit, de même que certaines métadonnées de fichiers/imports ; effacement sécurisé,
 rotation des sauvegardes et politique d'expiration des métadonnées ne sont pas livrés.
+
+## Lot119 : intégration et bilan du chantier
+
+Trois tests d'intégration vérifient les API existantes ensemble, runtime118 inchangé :
+
+- Deux connexions WAL : le lecteur conserve facts/revisions/current de son ancien
+  snapshot pendant la purge writer ; après clôture de sa transaction, il voit les
+  faits supprimés, le marqueur et current absent, sans reconstruction implicite.
+- Recherche paginée sur deux jours, purge des quatre faits du premier jour : l'ancien
+  curseur reste une pagination sur un nouveau snapshot, pas un accès historique.
+  InstallProjection refuse les16 anciens faits ; la reconstruction explicite relit
+  les12 faits restants dont8 non datés, et son manifest garde les12 memberships.
+- Import complete avec batch non vide et ACK perdu : après vraie purge/réouverture,
+  retry identique ne recrée aucun fait. Mauvaise ancre reste ErrImportConflict et
+  octets différents ErrPurgedRecordCollision ; manifest/checkpoint restent stables.
+
+La rétention constitue un retrait volontaire d'historique. Un nouveau résumé est
+celui des faits RESTANTS, sans reconstruction des événements supprimés depuis les
+empreintes. found=false est l'absence du manifest courant, pas une preuve de
+non-existence historique de message. Aucun résultat de recherche, état retired ou
+manifest d'import complete ne certifie la couverture ni la complétude du suivi.
+Les réserves de reconstruction restent celles des API existantes ; consultation,
+continuité entre origines et critères applicatifs restent dans le backlog M3/M4.
+
+Bilan116–119 : aperçu readonly, garde de provenance v7, purge/invalidation atomiques,
+intégration. Quatre petits lots dans la prévision3–4 après115. Les limites sont
+maintenues : dates inconnues non purgées, métadonnées/empreintes persistantes,
+coût SQL/révisions/WAL non indépendamment borné, deadline caller, aucune purge
+automatique/service/CLI/VACUUM/effacement sécurisé ni mesure pilote. MIT et extensions
+AD/OIDC aprèsMVP inchangées. Publication/CI finale/fusion/main restent à vérifier
+avant de présenter le chantier comme fusionné.

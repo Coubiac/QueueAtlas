@@ -13,7 +13,7 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111–115 fusionnée dans #25, CI finale/main vertes ; preview116 et garde117 publiés/CI vertes, purge118 développée/testée.
+Recherche111–115 fusionnée dans #25, CI finale/main vertes ; preview116/garde117 publiés/CI vertes, purge118 publiée/CI verte ; intégration119 testée/revue favorable.
 Trois jalons restent : M3–M5, environ32–57 lots après clôture115, dont7–14 pour M3 ;
 estimation par comportements restants, après clôture115 validée, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3263,9 +3263,9 @@ dans #27, CI37498495532 entièrement réussie vérifiée REST exacte. Dernier fu
 
 ## Prochaine action concrète
 
-Terminer revue code/docs118, commit/push dans PR #27 et vérifier CI exacte.
-Lots116–117 publiés/CI vertes, purge118 développée/testée ;
-suppression/invalidation118, intégration/clôture119. Prévision rétention3–4 après115,
+Terminer revue documentaire119, publier dans PR #27, vérifier CI finale entière
+puis ready/fusion/main. Lots116–117 CI vertes, 118 publié/CI verte ;119 intégration
+testée/revue code favorable. Prévision rétention3–4 après115,
 quatre lots désormais planifiés116–119 ; ne pas confondre preview et suppression.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3324,10 +3324,10 @@ fixtures legacy writer tables temporaires retirées. Revue code indépendante fa
 inchangés. Revue documentaire finale favorable ; publié d82ae70c7d2ee4be603b98b164afa8c8e9ac4861,
 CI37499111912 entièrement verte vérifiée REST exacte.
 Le volume/durée des marqueurs et leur digest nonclé nonanonymisant sont documentés.
-Suite117 validée : lot118 dans #27, puis lot119
-suppression et invalidation atomiques ; lot119 intégration/clôture du chantier.
+Suite117 validée : suppression/invalidation atomiques au lot118 ;
+intégration/clôture du chantier au lot119.
 
-## Lot118 : purge transactionnelle (en cours)
+## Lot118 : purge transactionnelle (validé, CI verte)
 
 Résultat attendu : supprimer au plus256faits datés anciens pour instance exacte,
 éligibilité revalidée sous writer et manifests invalidés atomiquement. Développé :
@@ -3339,7 +3339,27 @@ Politique conservative, pas preuvecoverage/secureerase ; bornefaits sans borneSQ
 metadata/WAL/durée. Cinq tests118 et suiteSQLite/vet/diff Windows pass. Fixturehistory
 corrigée car InstallProjection remplace ses anciennes révisions ; seed historique
 explicite autorisé par schéma, aucune correction runtime. Revue code indépendante favorable, cinq tests overlay Windows isolé pass, root/Git
-inchangés. Revue documentaire finale favorable ; publication/CI118 attendues.
-Dernier publié/CI verte117 d82ae70c7d2ee4be603b98b164afa8c8e9ac4861/37499111912.
-Prochaine action : terminer118 dans #27, puis119 intégration WAL/recherche/
+inchangés. Revue documentaire finale favorable ; publié3f39363c2d93afc481cab8fef965f2abed7f3ef4
+dans #27, CI37499748326 entièrement réussie, vérifiée REST sur la tête exacte.
+Dernier publié/CI verte118 3f39363c2d93afc481cab8fef965f2abed7f3ef4/37499748326.
+Prochaine action : lot119 intégration WAL/recherche/
 reconstruction et bilan/clôture CI/fusion/main.
+
+## Lot119 : intégration et bilan rétention (en cours)
+
+Résultat attendu : WALsnapshot cohérent, recherche/reconstruction après purge et
+retry import réel/reopen puis clôture #27. Trois tests119 Windows/vet/diff réussis,
+revue indépendante code favorable, trois tests overlay isolé pass root/Git inchangés.
+Runtime118 inchangé ; fondations/mesures115 non relancées. WAL lecteur garde ancien
+snapshot puis lit nouvel état sans réparation implicite ; search→purge→oldfactsstale
+refusé→scopecomplet12dont8undated→manifest12memberships/4markers ; importcompletenonvide
+purgé/reopen/lostACKsamebytes reconnu, ancrefausse et rawdiff refusés distinctement.
+Fixture119 variable/période2jours corrigées, aucun défaut runtime.
+Docs/bilan119 écrits, revue documentaire finale favorable ; publication/CI/fusion/main attendues ; dernier CI
+entièrement vert118, 118publié3f39363c2d93afc481cab8fef965f2abed7f3ef4/37499748326verte.
+Après clôture119 : rétention116–119 aura pris4lots dansprévision3–4. M3 reste4–10
+(continuité1–3, complétudeapplicative0–1, intégration/validationfinale3–6), M4 15–25,
+M5 10–18, total29–53 après119 ; fourchettesincertaines, troisjalonsàclôturer.
+Prochaine action : revue docs119/commit/push/CI exacte/ready/fusion #27/CI main,
+puis lot120 contrat de preuve explicite de continuité entre origines (aucune fusion
+sur queueID/date/PID seuls), tests et intégration aux clés révisables à découper.
