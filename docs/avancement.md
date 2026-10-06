@@ -1,6 +1,6 @@
 # Avancement et estimation jusqu'au MVP
 
-État au 5 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
+État au 6 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
 (PR #18, CI finale et main réussies). Projections pures M3 validées aux lots89–92,
 CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration94 et
 synthèse95 fusionnées dans #20 ; clôture96 terminée, CI finale/main réussies.
@@ -9,7 +9,7 @@ vertes. Indices natifs100 et relations101 fusionnés dans #22, clôture102 termi
 CI finale/main réussies. Clés103 et composition104 fusionnées #23, clôture105
 terminée/CI finale et main vertes. Lecture SQLite106 et schéma107 publiés dans #24,
 CI vertes ; installation108/lecteur109 et clôture110 fusionnés dans #24 après
-CI finale entière réussie. Main110 actualisé, CI push en attente ; recherche111 en revue.
+CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111 publiée et extension112 testée/relue.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -153,10 +153,10 @@ avec revue favorable et CI37330343331 entière success. Clôture105 terminée,
 Lecture106 et schéma107 publiés dans #24, CI37333408517 et37336085923 success.
 Installation108/lecteur109 et clôture110 fusionnés dans #24 suraaa95f8,
 CI finale37368191438 entière success après relance d'une annulation de runner stable.
-CI main37372128796 en attente ; recherche111 développée/testée en revue.
+CI main37372128796 entière success vérifiée REST. Recherche111 publiée dans #25 ; extension112 testée/relue, publication/CI à vérifier.
 Le schéma et les memberships conservent tous les faits, y compris les réserves ;
 aucun résultat dérivé n'est sérialisé. Le chantier de stockage est fusionné ; CI main
-à vérifier. La prévision2–4 lots après107 a couvert108–110. Recherche111 développée
+vérifiée. La prévision2–4 lots après107 a couvert108–110. Recherche111 développée
 et testée ; autres critères/index/domaines et rétention explicitement séparés :
 6–8 lots au lieu de4–6, incluant validation111 et clôture de ces chantiers.
 Continuité entre origines, recherche et rétention restent séparées. Réestimation

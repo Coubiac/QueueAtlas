@@ -20,6 +20,28 @@ inexistant, remplacé par model.Kind avant tests ; aucun défaut runtime associ�
 
 Revue indépendante code/docs favorable sans blocage ; six tests via overlay Windows
 isolé pass, checkout propre/root inchangé. Deux mentions obsolètes de reprise
-corrigées (CI108 et branche courante) ; publication/CI111 à vérifier.
+corrigées (CI108 et branche courante). Publié28eddb9 dans #25 créée/attachée.
+CI37372754946 : Windows pass, deux jobs Linux annulés sans runner acquis,
+annotations GitHub vérifiées ; aucune étape de test dans ces deux jobs.
+Le commit112 déclenchera la validation entière111–112, sans rerun local des fondations.
 Pas de mesure de charge ni couverture, pas de snapshot conservé entre pages.
 Les adresses sont exactes et présentes, jamais normalisées depuis l'absence.
+
+## Lot112 : identifiants exacts et index v5
+
+Résultat attendu : Queue ID/Message-ID littéraux, résultats non fusionnés, index
+temps et pagination, migration sans changement des faits existants. Enum fermée,
+non vides32/1024, Queue ID <>'' pour index existant ; nouvel index Message-ID/temps
+non unique uniquement, historique/user_version dans la même transaction.
+
+Cinq nouveaux tests et suite SQLite/vet/diff Windows pass : corpus13 huit faits
+de deux cycles conservés/instance étrangère exclue ; corpus11 deux files avec même
+Message-ID paginées distinctes ; SQL/wildcards/octet invalide littéraux, bornes et
+curseur incompatible ; EXPLAIN avec/sans curseur pour deux index sans tri ; v4→v5
+préserve faits/CP/projection et reopen ; échec provoqué rollback index/historique/version.
+Premiers tests corrigés : nom du corpus13 et attente Message-ID avec angles alors
+que le parser existant les retire. Aucun parser changé. Assertions courantes à5,
+version6 refusée. Revue code indépendante favorable, cinq tests via overlay isolé
+Windows pass, root/Git inchangés, fondations non relancées. Revue documentaire finale
+favorable après précision du rollback vers la version initiale (cas v4 testé).
+Aucun test relancé ; publication/CI112 à vérifier.

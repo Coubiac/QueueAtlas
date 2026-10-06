@@ -51,9 +51,28 @@ Sur erreur/annulation, page zéro sans résultat partiel ; contexte annulé dist
 Une ligne supplémentaire n'est pas décodée avant la page suivante. Ces contrôles
 ne constituent pas une authentification contre une réécriture externe de la base.
 
-## Suite
+## Lot112 : Queue ID et Message-ID exacts
 
-Ajouter séparément les critères Queue ID/Message-ID, recherche de domaine avec
+SearchQueueID et SearchMessageID : critères fermés, non vides, limites32/1024 octets,
+contrôles/instance/période/curseur identiques à111. Valeurs persistées exactes sans
+nouvelle normalisation. Le parser Postfix historique retire les délimiteurs `< >`
+du Message-ID avant stockage : `filter-11@example.net` est la valeur du corpus11,
+distincte de `<filter-11@example.net>` dans la recherche. Aucun parser modifié.
+
+Un Queue ID recyclé conserve tous ses événements ; un Message-ID répété peut
+retrouver plusieurs files. Aucun DISTINCT, fusion ou identité globale déduite du
+critère. Dates inconnues et limites de snapshot/page restent celles de111.
+
+Queue ID utilise explicitement le prédicat non vide de events_queue existant.
+Migration v5 ajoute seulement events_message_id_time(message_id,time_utc_ns,id),
+partiel sur Message-ID non NULL et non unique ; anciens schémas/index conservés.
+DDL, historique5 et user_version atomiques. Faits/checkpoints/manifests préservés,
+échec entièrement rollback à la version initiale ; cas v4 testé. EXPLAIN vérifie index et absence de tri temporaire
+avec et sans curseur sur le pilote installé, sans prétendre à une mesure de charge.
+
+## Prochaine étape
+
+Ajouter la recherche de domaine avec
 colonnes dédiées, intégration à la reconstruction et mesures sur corpus représentatif.
 Rétention cohérente et lecture des dates inconnues restent des comportements distincts.
 API/Web/authentification et politique de période par défaut restent au jalon M4.

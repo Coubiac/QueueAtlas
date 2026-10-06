@@ -202,11 +202,11 @@ func TestFollowStateMigrationV1PreservesUnknownAndExistingData(t *testing.T) {
 	defer s.Close()
 	assertFollowState(t, s, source.FollowUnknown)
 	position, found, err := s.Checkpoint(context.Background(), "mail", "gen-1")
-	if err != nil || !found || position != testBatch().Checkpoints[0] || count(t, s, "raw_records") != 1 || count(t, s, "events") != 1 || count(t, s, "schema_migrations") != 4 {
+	if err != nil || !found || position != testBatch().Checkpoints[0] || count(t, s, "raw_records") != 1 || count(t, s, "events") != 1 || count(t, s, "schema_migrations") != 5 {
 		t.Fatal("v1 data lost or changed", position, found, err)
 	}
 	var version int
-	if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != 4 {
+	if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != 5 {
 		t.Fatal("migration version", version, err)
 	}
 }

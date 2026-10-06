@@ -1,6 +1,6 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 6 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
@@ -12,7 +12,8 @@ clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fu
 fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 publiée
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
-Main110 actualisé ; sa CI push en attente. Recherche111 développée/testée/relue.
+Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
+Recherche111 publiée dans #25, CI Linux annulée faute de runner ; extension112 testée/relue.
 Trois jalons restent : M3–M5, environ35–61 lots après110, dont10–18 pour M3,
 incluant validation111 ; estimation par comportements restants, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
@@ -36,7 +37,8 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
   tête `f813a7d6c749a95cf0895a0a3bbfc3bbd2bf4aa6`,
   [CI finale entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37368191438).
   Main `aaa95f88d561e75ca4080013e4737d08836fc8e7`,
-  [CI push en attente](https://github.com/Coubiac/mailtrace/actions/runs/37372128796).
+  [CI push entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37372128796),
+  vérifiée REST sur la tête exacte après relance du job Go1.26 sans runner.
   Nouvelle branche `codex/m3-search` depuis ce main ; Git initial propre.
 - Lot 109 publié : `8f1ed84518f15a0005dccbcda242cdcc0662affc`, #24,
   six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
@@ -3150,7 +3152,8 @@ Annotation GitHub confirme absence d'acquisition du runner ; logs stables indisp
 aucune étape de test exécutée dans ce job initial. Relance du job stable demandée ;
 dernière tentative trois jobs entiers success, CI37368191438 entière success sur
 tête exacte. Commentaire assisté5420339349/ready, fusion #24 suraaa95f8 ; CI main
-37372128796 queued au dernier contrôle. Runtime/fondations locaux non relancés.
+37372128796 entière success vérifiée REST le6octobre après relance du job Go1.26
+annulé sans runner acquis. Runtime/fondations locaux non relancés.
 
 ## Lot 111 : recherche paginée par adresse exacte
 
@@ -3164,15 +3167,33 @@ avant cursor impose nouvelle recherche. Pas de conservation du snapshot entre pa
 Six tests Windows pass et suite SQLite/vet/diff avant ajustement tuple ; six tests/vet/
 diff tuple final pass. Revue indépendante code/docs favorable sans blocage, six tests
 via overlay Windows isolé pass, root inchangé ; deux mentions obsolètes du point de
-reprise corrigées (CI108 historique/main fusionné et branche courante). Publication/CI111
-à vérifier. Aucun contrôle Linux ni charge exécuté par cet audit.
-Dernier fusionné110, CI finale verte ; mainCI en attente, aucune release installable.
+reprise corrigées (CI108 historique/main fusionné et branche courante). Publié28eddb9
+dans #25 créée/attachée ; CI37372754946 Windows pass, deux jobs Linux annulés sans
+runner acquis (annotations vérifiées). Aucun contrôle Linux ni charge dans cet audit.
+Le commit112 validera111–112 ; dernier fusionné110/CI main verte, pas de release.
+
+## Lot 112 : Queue ID/Message-ID exacts et index temps
+
+Résultat attendu : critères exacts paginés, événements non fusionnés, migration
+indexée préservant faits/CP/manifests. Non vides32/1024, enum fermé/paramètres littéraux,
+index partiel queue existant explicitement choisi ; nouvel index Message-ID/temps
+non unique en migrationv5 atomique, schémas antérieurs inchangés. Normalisations
+persistées conservées (parser Message-ID déjà sans angles), aucun parser modifié.
+Cinq nouveaux tests et suite SQLite/vet/diff Windows pass ; versions courantes5,
+plus récente6 refusée. Réutilisation ID8faits/MessageID2files, pagination/index,
+literalSQL/bounds/cursor, migration préserve projection/reopen et rollback index/history.
+Deux attentes de fixture corrigées, aucun défaut runtime/parser associé. Revue code
+indépendante favorable, cinq tests overlay isolé Windows pass, root inchangé/fondations
+non relancées. Revue documentaire finale favorable après précision du rollback vers
+la version initiale (cas v4 testé), aucun test relancé. Publication/CI112 à vérifier ;
+dernier publié111 CI partielle, main110 verte.
 
 ## Prochaine action concrète
 
-Suivre CI push main110, commit/push111 sur codex/m3-search après revue favorable,
-ouvrir/attacher la PR du chantier et vérifier CI exacte. Lot112 : recherche exacte
-Queue ID/Message-ID avec index adapté ; domaine, intégration et rétention ensuite.
+Terminer commit/push112 dans #25 sur codex/m3-search puis CI
+exacte. Lot113 : recherche de domaine avec colonnes dédiées ; intégration/revue du
+chantier et rétention ensuite. Main110/CI push validés ; date inconnue exclue d'une
+recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.

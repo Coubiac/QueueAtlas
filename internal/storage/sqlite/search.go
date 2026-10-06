@@ -23,6 +23,8 @@ type SearchField string
 const (
 	SearchSender    SearchField = "sender"
 	SearchRecipient SearchField = "recipient"
+	SearchQueueID   SearchField = "queue_id"
+	SearchMessageID SearchField = "message_id"
 )
 
 var (
@@ -68,7 +70,7 @@ type SearchPage struct {
 	Next *SearchCursor
 }
 
-// SearchEvents uses the existing sender/recipient+time indexes. No raw log is
+// SearchEvents uses field/time indexes. No raw log is
 // reparsed. Values are literal parameters and columns come from a closed enum.
 // Only events with a stored UTC instant in the window are included; missing
 // dates do not mean absence in the logs. Caller provides its context/deadline.
@@ -120,17 +122,28 @@ func (s *Store) SearchEvents(ctx context.Context, query SearchQuery) (SearchPage
 
 func eventSearchSelection(query SearchQuery) (string, []any, string, error) {
 	column := ""
+	maxValue := 1024
+	condition := ""
 	switch query.Field {
 	case SearchSender:
 		column = "e.sender"
 	case SearchRecipient:
 		column = "e.recipient"
+	case SearchQueueID:
+		column = "e.queue_id"
+		maxValue = 32
+		// Match the existing partial index predicate explicitly. Queue-less
+		// events are not searched as if they had a queue identity.
+		condition = ` AND e.queue_id <> ''`
+	case SearchMessageID:
+		column = "e.message_id"
 	default:
 		return "", nil, "", ErrSearchQuery
 	}
 	from, fromOK := searchTimeNS(query.From)
 	until, untilOK := searchTimeNS(query.Until)
-	if query.Instance == "" || len(query.Instance) > 1024 || len(query.Value) > 1024 ||
+	if query.Instance == "" || len(query.Instance) > 1024 || len(query.Value) > maxValue ||
+		((query.Field == SearchQueueID || query.Field == SearchMessageID) && query.Value == "") ||
 		strings.ContainsAny(query.Instance+query.Value, "\x00\r\n\t") || query.Limit < 1 || query.Limit > MaxSearchResults ||
 		!fromOK || !untilOK || !query.Until.After(query.From) || query.Until.Sub(query.From) > MaxSearchWindow {
 		return "", nil, "", ErrSearchQuery
@@ -141,6 +154,7 @@ func eventSearchSelection(query SearchQuery) (string, []any, string, error) {
 	}
 	revision := hex.EncodeToString(h.Sum(nil))
 	where := column + ` = ? AND e.instance = ? AND e.time_utc_ns >= ? AND e.time_utc_ns < ?`
+	where += condition
 	args := []any{query.Value, query.Instance, from, until}
 	if query.After != nil {
 		cursor := *query.After
