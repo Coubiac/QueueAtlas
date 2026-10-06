@@ -13,7 +13,7 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111 publiée dans #25, CI Linux annulée faute de runner ; extension112 publiée/testée/relue.
+Recherche111–112 publiée dans #25, CI finale112 entière verte ; domaines113 testés/relus.
 Trois jalons restent : M3–M5, environ35–61 lots après110, dont10–18 pour M3,
 incluant validation111 ; estimation par comportements restants, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3187,16 +3187,34 @@ indépendante favorable, cinq tests overlay isolé Windows pass, root inchangé/
 non relancées. Revue documentaire finale favorable après précision du rollback vers
 la version initiale (cas v4 testé), aucun test relancé. Implémentation publiée
 `c44746d602a2a6e4d6867af756baaef7135f20a8` dans #25 ; CI37415832690 en cours,
-trois jobs démarrés. Commit documentaire de reprise ajouté ensuite : vérifier sa
-tête exacte et sa CI avant clôture. Dernier fusionné110/CI main verte.
+trois jobs démarrés à publication. Bilan13bce0d publié ensuite, CI37415877709 entière
+success vérifiée REST sur tête exacte. Lot112 validé ; dernier fusionné110/CI main verte.
 Signature interactive 1Password indisponible dans cette exécution ; commit112
 non signé comme111, sans changement de configuration Git globale.
 
+## Lot 113 : domaines exacts, stockage dérivé v6
+
+Résultat attendu : domaine complet normalisé ASCII, colonnes/index dédiés, adresses
+natives et manifests intacts. SearchSenderDomain/SearchRecipientDomain développés,
+subsetDNS253/labels63, casseASCII seule, formes citées/ambiguës/Unicode de domaine
+non extractiblesNULL ; adresse native conservée, recherche exacte sous les bornes
+du critère adresse111. Tableevent_search_domains
+copie instance/date, index instance/domain/date/id, FKcascade, aucune UPDATE facts.
+Migrationv6/backfill/history/versionTX, lots256mémoire mais parcours DB entier ;
+même helper ingestion, write dérivée dansTX facts/CP, replayphysiqueidempotent.
+Cinq tests nouveaux et suite SQLite/vet/diff Windows pass ; revue indépendante
+code favorable, cinq tests via overlay Windows isolé pass, root inchangé. Aucune
+mesure charge ou Linux local. Versions courantes6/newer7 ; fixturelegacy temporaire
+retirée avantmigration. Revue documentaire finale favorable après précision des
+bornes de recherche d'adresse111, aucun test relancé. Commit du lot prévu dans #25 ;
+vérifier sa dernière tête/CI lors de la reprise. Dernier publié validé112, fusionné110
+au moment de ce bilan ; voir contrat/revue pour limites et scénarios exacts.
+
 ## Prochaine action concrète
 
-Vérifier la CI de la dernière tête112 dans #25 sur codex/m3-search.
-Lot113 : recherche de domaine avec colonnes dédiées ; intégration/revue du
-chantier et rétention ensuite. Main110/CI push validés ; date inconnue exclue d'une
+Vérifier commit113/branche codex/m3-search dans #25 et CI de sa dernière tête.
+Lot114 : intégration/revue de la recherche ; rétention ensuite.
+Main110/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.

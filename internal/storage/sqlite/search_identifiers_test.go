@@ -180,7 +180,7 @@ func TestSearchMigrationV4PreservesManifestFactsAndCheckpoint(t *testing.T) {
 	}
 	defer s.Close()
 	got, found, err := s.CurrentProjection(ctx, scope, 10)
-	if err != nil || !found || !reflect.DeepEqual(got, want) || count(t, s, "schema_migrations") != 5 {
+	if err != nil || !found || !reflect.DeepEqual(got, want) || count(t, s, "schema_migrations") != 6 {
 		t.Fatal("index migration changed projection", err)
 	}
 	after, err := s.CorrelationFacts(ctx, scope, 10)
@@ -198,8 +198,8 @@ func TestSearchMigrationV4PreservesManifestFactsAndCheckpoint(t *testing.T) {
 		t.Fatal("old Message-ID missing after migration", err)
 	}
 	var version int
-	if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != 5 {
-		t.Fatal("v5 not recorded", err)
+	if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != 6 {
+		t.Fatal("current schema version not recorded", err)
 	}
 	if err := s.Close(); err != nil {
 		t.Fatal(err)
@@ -209,7 +209,7 @@ func TestSearchMigrationV4PreservesManifestFactsAndCheckpoint(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer s.Close()
-	if count(t, s, "schema_migrations") != 5 {
+	if count(t, s, "schema_migrations") != 6 {
 		t.Fatal("reopen migrated again")
 	}
 }

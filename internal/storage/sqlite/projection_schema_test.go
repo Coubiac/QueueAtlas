@@ -50,7 +50,7 @@ func TestProjectionMigrationV3PreservesFactsAndReopens(t *testing.T) {
 		t.Fatal(err)
 	}
 	after, err := s.CorrelationFacts(context.Background(), scope, 10)
-	if err != nil || !reflect.DeepEqual(before, after) || count(t, s, "schema_migrations") != 5 {
+	if err != nil || !reflect.DeepEqual(before, after) || count(t, s, "schema_migrations") != 6 {
 		t.Fatal("migration changed immutable facts/history", err)
 	}
 	for _, table := range []string{"projection_scopes", "projection_scope_parts", "projection_revisions", "projection_revision_bindings", "projection_revision_facts"} {
@@ -71,7 +71,7 @@ func TestProjectionMigrationV3PreservesFactsAndReopens(t *testing.T) {
 	}
 	defer s.Close()
 	var version, bad int
-	if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != 5 {
+	if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != 6 {
 		t.Fatal("reopen version", version, err)
 	}
 	if err := s.db.QueryRow(`SELECT count(*) FROM pragma_foreign_key_check`).Scan(&bad); err != nil || bad != 0 {

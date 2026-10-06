@@ -21,10 +21,12 @@ const (
 type SearchField string
 
 const (
-	SearchSender    SearchField = "sender"
-	SearchRecipient SearchField = "recipient"
-	SearchQueueID   SearchField = "queue_id"
-	SearchMessageID SearchField = "message_id"
+	SearchSender          SearchField = "sender"
+	SearchRecipient       SearchField = "recipient"
+	SearchQueueID         SearchField = "queue_id"
+	SearchMessageID       SearchField = "message_id"
+	SearchSenderDomain    SearchField = "sender_domain"
+	SearchRecipientDomain SearchField = "recipient_domain"
 )
 
 var (
@@ -35,7 +37,8 @@ var (
 
 // SearchQuery selects exact persisted field values, not inferred identities.
 // From is inclusive, Until exclusive; both must fit stored UTC nanoseconds.
-// Value may be explicitly empty. SQL NULL (native field absent) never matches.
+// Native address values may be explicitly empty; identifiers cannot. Domain
+// criteria use a normalized ASCII DNS subset. SQL NULL never matches.
 type SearchQuery struct {
 	Instance    string
 	Field       SearchField
@@ -83,8 +86,8 @@ func (s *Store) SearchEvents(ctx context.Context, query SearchQuery) (SearchPage
 	rows, err := s.db.QueryContext(ctx, `SELECT e.id, e.time_utc_ns,
 		r.source_id, r.generation_id, r.start_offset, r.end_offset,
 		e.instance, e.queue_id, e.no_queue, e.time_quality, e.kind
-		FROM events e JOIN raw_records r ON r.id=e.raw_record_id WHERE `+where+
-		` ORDER BY e.time_utc_ns, e.id LIMIT ?`, args...)
+		FROM `+eventSearchFrom(query.Field)+` WHERE `+where+
+		` ORDER BY `+eventSearchOrder(query.Field)+` LIMIT ?`, args...)
 	if err != nil {
 		return SearchPage{}, err
 	}
@@ -124,6 +127,7 @@ func eventSearchSelection(query SearchQuery) (string, []any, string, error) {
 	column := ""
 	maxValue := 1024
 	condition := ""
+	instanceColumn, timeColumn, idColumn := "e.instance", "e.time_utc_ns", "e.id"
 	switch query.Field {
 	case SearchSender:
 		column = "e.sender"
@@ -137,6 +141,18 @@ func eventSearchSelection(query SearchQuery) (string, []any, string, error) {
 		condition = ` AND e.queue_id <> ''`
 	case SearchMessageID:
 		column = "e.message_id"
+	case SearchSenderDomain, SearchRecipientDomain:
+		var ok bool
+		query.Value, ok = normalizeSearchDomain(query.Value)
+		if !ok {
+			return "", nil, "", ErrSearchQuery
+		}
+		column = "d.sender_domain"
+		if query.Field == SearchRecipientDomain {
+			column = "d.recipient_domain"
+		}
+		maxValue = 253
+		instanceColumn, timeColumn, idColumn = "d.instance", "d.time_utc_ns", "d.event_id"
 	default:
 		return "", nil, "", ErrSearchQuery
 	}
@@ -153,7 +169,7 @@ func eventSearchSelection(query SearchQuery) (string, []any, string, error) {
 		projectionScopeFrame(h, value)
 	}
 	revision := hex.EncodeToString(h.Sum(nil))
-	where := column + ` = ? AND e.instance = ? AND e.time_utc_ns >= ? AND e.time_utc_ns < ?`
+	where := column + ` = ? AND ` + instanceColumn + ` = ? AND ` + timeColumn + ` >= ? AND ` + timeColumn + ` < ?`
 	where += condition
 	args := []any{query.Value, query.Instance, from, until}
 	if query.After != nil {
@@ -161,10 +177,28 @@ func eventSearchSelection(query SearchQuery) (string, []any, string, error) {
 		if cursor.QueryRevision != revision || cursor.TimeNS < from || cursor.TimeNS >= until {
 			return "", nil, "", ErrSearchCursor
 		}
-		where += ` AND (e.time_utc_ns, e.id) > (?, ?)`
+		where += ` AND (` + timeColumn + `, ` + idColumn + `) > (?, ?)`
 		args = append(args, cursor.TimeNS, cursor.RowID)
 	}
 	return where, args, revision, nil
+}
+
+func isDomainSearch(field SearchField) bool {
+	return field == SearchSenderDomain || field == SearchRecipientDomain
+}
+
+func eventSearchFrom(field SearchField) string {
+	if isDomainSearch(field) {
+		return `event_search_domains d JOIN events e ON e.id=d.event_id JOIN raw_records r ON r.id=e.raw_record_id`
+	}
+	return `events e JOIN raw_records r ON r.id=e.raw_record_id`
+}
+
+func eventSearchOrder(field SearchField) string {
+	if isDomainSearch(field) {
+		return `d.time_utc_ns, d.event_id`
+	}
+	return `e.time_utc_ns, e.id`
 }
 
 func searchTimeNS(value time.Time) (int64, bool) {

@@ -45,5 +45,24 @@ version6 refusée. Revue code indépendante favorable, cinq tests via overlay is
 Windows pass, root/Git inchangés, fondations non relancées. Revue documentaire finale
 favorable après précision du rollback vers la version initiale (cas v4 testé).
 Aucun test relancé ; implémentation112 publiéec44746d dans #25,
-CI37415832690 en cours (trois jobs démarrés). Dernière tête incluant ce bilan
-documentaire à valider en CI avant clôture du chantier.
+CI initiale37415832690 en cours à publication ; bilan final13bce0d publié,
+CI37415877709 entière success vérifiée REST sur cette tête. Lot112 validé.
+
+## Lot113 : domaines et migration dérivée v6
+
+Résultat attendu : critères domaine exacts normalisés ASCII, pas de suffixe/LIKE,
+colonnes dédiées indexées sans modification de facts référencés. Table dérivée,
+indexes instance/domaine/date/ID ; même helper extraction migration/ingestion,
+backfill par256 dansTX, writes/CP atomiques. NULL pour formes non extractibles,
+adresse native conservée ; aucune validation complète RFC/IDNA ou couverture.
+
+Cinq nouveaux tests Windows et suite SQLite/vet/diff pass : casse/curseur/ties,
+suffixes/malformés exclus, NOQUEUE/instances/dates, adresse native inchangée ;
+subset253/labels63/valeurs hostiles/UTF8/cancel ; EXPLAIN deux index avec/sanscurseur
+sans tri ; migration301 faits/manifest/CP/immutabilité/reopen ; rollback migration
+et ingestion/retry/cascade. Assertions version courante6/newer7, fixture v1 crée
+temporairement puis retire table dérivée pour laisser un vrai ancien schéma avantOpen.
+Revue indépendante code favorable, cinq tests Windows via overlay isolé pass,
+root/Git inchangés, aucune fondation relancée. Pas de charge ni Linux local mesuré.
+Revue documentaire finale favorable après précision des bornes d'adresse111 ;
+aucun test relancé. Publication/CI113 à vérifier au moment de ce bilan.

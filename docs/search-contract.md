@@ -70,9 +70,44 @@ DDL, historique5 et user_version atomiques. Faits/checkpoints/manifests préserv
 échec entièrement rollback à la version initiale ; cas v4 testé. EXPLAIN vérifie index et absence de tri temporaire
 avec et sans curseur sur le pilote installé, sans prétendre à une mesure de charge.
 
+## Lot113 : domaines exacts dans des colonnes dédiées
+
+SearchSenderDomain et SearchRecipientDomain recherchent un domaine complet,
+pas ses sous-domaines ni un suffixe. Normalisation ASCII en minuscules uniquement,
+appliquée au critère et au domaine extrait ; le curseur est lié au critère normalisé,
+donc EXAMPLE.ORG et example.org sont équivalents. Instance/période/page restent111.
+
+Sous-ensemble DNS accepté : 1..253 octets, labels1..63, lettres ASCII/chiffres/tirets,
+sans tiret au début/fin ; label unique tel localhost admis. A-labels `xn--` littéraux
+admis sans validation IDNA. Aucun trim, point final, Unicode de domaine, wildcard,
+underscore ou conversion de littéral entre crochets. Requête hors sous-ensemble
+refusée ErrSearchQuery ; ce contrat ne constitue pas une validation DNS réseau.
+
+Extraction depuis sender/recipient natifs persistés : exactement un @, partie locale
+non vide, UTF8 valide, aucun espace/control/angle/guillemet. Partie locale Unicode
+admise si ces conditions sont respectées ; domaine ASCII obligatoire. Ce n'est pas
+un parseur complet RFC : les formes citées/ambiguës sont exclues, conservées en
+adresse native et accessibles par recherche exacte sous les bornes du critère
+adresse111 (<=1024 octets, aucun NUL/CR/LF/tab). Champ absent,
+vide ou non extractible donne domaine NULL ; aucune invention de domaine.
+
+La migrationv6 crée event_search_domains : event_id FK events avec cascade,
+instance/date copiées, sender_domain et recipient_domain. Index partiels distincts
+(instance,domaine,time_utc_ns,event_id), parcours temps/ID avec et sans curseur sans
+tri temporaire vérifié par EXPLAIN. Pas de LIKE, calcul à chaque recherche ou fusion.
+Les adresses/events/raw restent inchangés, y compris ceux référencés par un manifest.
+
+Backfill des colonnes natives dans une transaction, mémoire par lots de256 ; tous
+les événements existants sont parcourus, temps de migration non borné indépendamment
+de la taille DB. Table/index/backfill/history6/user_version6 atomiques. Même helper
+d'extraction pour migration et nouvelles observations ; ligne dérivée écrite dans
+la transaction d'ingestion, échec annule faits et checkpoint, doublon physique ne
+réécrit pas. FK cascade évite les lignes orphelines quand une suppression est permise ;
+ce mécanisme n'est pas encore une API de rétention. Date inconnue reste NULL, rejet
+NOQUEUE reste événement distinct, réserves de couverture et de snapshot inchangées.
+
 ## Prochaine étape
 
-Ajouter la recherche de domaine avec
-colonnes dédiées, intégration à la reconstruction et mesures sur corpus représentatif.
+Intégration de la recherche à la reconstruction et mesures sur corpus représentatif.
 Rétention cohérente et lecture des dates inconnues restent des comportements distincts.
 API/Web/authentification et politique de période par défaut restent au jalon M4.
