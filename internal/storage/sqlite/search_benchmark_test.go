@@ -93,7 +93,7 @@ func BenchmarkSearchEventsIndexed(b *testing.B) {
 }
 
 // Fixture/reset/verification are excluded; the timed operation is the actual
-// v5->v6 migration including indexes, backfill, history/version and commit.
+// v5->current migration including indexes, backfill, history/version and commit.
 func BenchmarkSearchDomainMigration(b *testing.B) {
 	for _, size := range []int{1000, 10000} {
 		b.Run(fmt.Sprintf("rows%d", size), func(b *testing.B) {
@@ -103,7 +103,7 @@ func BenchmarkSearchDomainMigration(b *testing.B) {
 			b.ReportAllocs()
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
-				if _, err := s.db.Exec(`DROP TABLE event_search_domains; DELETE FROM schema_migrations WHERE version=6; PRAGMA user_version=5;`); err != nil {
+				if _, err := s.db.Exec(`DROP TABLE event_search_domains; DROP TABLE purged_records; DELETE FROM schema_migrations WHERE version>=6; PRAGMA user_version=5;`); err != nil {
 					b.Fatal(err)
 				}
 				b.StartTimer()
@@ -116,7 +116,7 @@ func BenchmarkSearchDomainMigration(b *testing.B) {
 				if err := s.db.QueryRow(`SELECT count(*) FROM event_search_domains`).Scan(&count); err != nil || count != size {
 					b.Fatal("benchmark backfill count", err)
 				}
-				if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != 6 {
+				if err := s.db.QueryRow(`PRAGMA user_version`).Scan(&version); err != nil || version != schemaVersion {
 					b.Fatal("benchmark version", err)
 				}
 			}

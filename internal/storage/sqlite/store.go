@@ -209,6 +209,13 @@ func (s *Store) Commit(ctx context.Context, batch source.Batch) error {
 		}
 	}
 	for _, record := range batch.Records {
+		purged, err := checkPurgedRecord(ctx, tx, batch.Source.ID, record)
+		if err != nil {
+			return err
+		}
+		if purged {
+			continue
+		}
 		result, err := tx.ExecContext(ctx, `INSERT INTO raw_records(source_id, generation_id, start_offset, end_offset, raw, read_error, observed_at_ns)
 			VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT(source_id, generation_id, start_offset) DO NOTHING`,
 			batch.Source.ID, record.OriginID, record.Start, record.End, record.Raw, record.Error, record.ReadAt.UTC().UnixNano())

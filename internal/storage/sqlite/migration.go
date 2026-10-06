@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-const schemaVersion = 6
+const schemaVersion = 7
 
 func preflight(ctx context.Context, db *sql.DB) error {
 	var version int
@@ -323,6 +323,17 @@ func migrate(ctx context.Context, db *sql.DB, nowNS int64) error {
 			return err
 		}
 		if _, err := tx.ExecContext(ctx, `PRAGMA user_version = 6`); err != nil {
+			return err
+		}
+	}
+	if version < 7 {
+		if _, err := tx.ExecContext(ctx, schemaV7); err != nil {
+			return fmt.Errorf("apply schema v7: %w", err)
+		}
+		if _, err := tx.ExecContext(ctx, `INSERT INTO schema_migrations(version, applied_at_ns) VALUES(7, ?)`, nowNS); err != nil {
+			return err
+		}
+		if _, err := tx.ExecContext(ctx, `PRAGMA user_version = 7`); err != nil {
 			return err
 		}
 	}

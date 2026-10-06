@@ -155,7 +155,8 @@ intégrale. Aucun budget SQL autonome ou seuil de production déduit de ce profi
 
 Chantier111–115 : six critères indexés, domaine dérivé/migrations atomiques, limites,
 pagination et chaîne de reconstruction explicite testées/documentées. La clôture
-de #25 nécessite CI entière sur tête finale, revue finale et fusion/main vérifiées.
+de #25 est vérifiée : CI finale37423566878 entière verte, fusion surf68ae85,
+CI main37423754491 entière verte et revues finales favorables.
 Ce bilan ne clôture pas M3 ; pas de performance MVP représentative ou API livrée.
 
 ## Prochaine étape
