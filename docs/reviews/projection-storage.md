@@ -108,8 +108,12 @@ Runtime109 relu inchangé ; résultats23 tests ciblés106–109 (6+5+6+6), suite
 et avis indépendants code/docs réutilisés. README aligné sur chantier publié mais
 non fusionné ; contrats conservés : entrées exactes/BLOB, transaction manifeste,
 reconstruction au snapshot, aucun résultat partiel ou réparation implicite.
-CI108/109 en file d'attente, sans résultat ; finale110 et fusion/main restent à vérifier.
+Finale11037368191438 entière success sur f813a7d : job stable initial annulé sans
+runner acquis (annotation GitHub), relance ciblée demandée puis trois jobs success.
+Commentaire assisté5420339349/ready, fusion #24 suraaa95f8 ; CI main37372128796
+success vérifiée REST sur tête exacte le6octobre après relance du job Go1.26 annulé
+sans runner acquis. Runtime/local/fondations non relancés.
 Revue documentaire finale indépendante favorable après correction d'une phrase
 obsolète d'avancement (lecteur109 publié, validation distante encore attendue).
-Aucun test relancé ; publication/CI finale110 encore à vérifier.
+Aucun test local relancé ; publication/CI finale/fusion110 et CI main validées.
 M3 inachevé, aucun Web/service/paquet, rétention ou continuité prouvée annoncé.

@@ -81,7 +81,7 @@ func TestImportMigrationPreservesV1V2LegacyWithoutAssociation(t *testing.T) {
 			if err := s.db.QueryRow(`SELECT count(*) FROM pragma_foreign_key_check`).Scan(&integrity); err != nil || integrity != 0 {
 				t.Fatal("foreign key check", integrity, err)
 			}
-			if count(t, s, "schema_migrations") != 4 || count(t, s, "raw_records") != 1 || count(t, s, "events") != 1 {
+			if count(t, s, "schema_migrations") != 6 || count(t, s, "raw_records") != 1 || count(t, s, "events") != 1 {
 				t.Fatal("migration lost observations or history")
 			}
 			for _, id := range []int64{2, 3} {

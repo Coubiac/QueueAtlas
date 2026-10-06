@@ -1,6 +1,6 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 5 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 6 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
@@ -10,11 +10,12 @@ Expiration94 et synthèse95 fusionnées #20. NOQUEUE97 et sessions98 fusionnés 
 clôture99 terminée, CI finale et main réussies. Indices100 et relations101 fusionnés
 #22, clôture102 terminée, CI finale et main réussies. Clés103 et composition104
 fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite106 publiée
-dans #24/CI verte ; schéma107 publié/CI verte ; installation108 publiée/CI en attente,
-lecture/fraîcheur109 publiée/testée/relue, CI en attente. Clôture110 documentaire
-en préparation ; main contient encore la clôture105, PR #24 non fusionnée.
-Trois jalons restent : M3–M5, environ35–63 lots après107, dont10–20 pour M3,
-incluant validation108 ; estimation par comportements restants, pas pourcentage livré.
+dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
+lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
+Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
+Recherche111–114 publiée dans #25, CI finale114 entière verte ; mesures/correctif115 testés/relus.
+Trois jalons restent : M3–M5, environ32–57 lots après clôture115, dont7–14 pour M3 ;
+estimation par comportements restants, sous réserve de clôture115, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -32,6 +33,13 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot 110 fusionné : [PR #24](https://github.com/Coubiac/mailtrace/pull/24),
+  tête `f813a7d6c749a95cf0895a0a3bbfc3bbd2bf4aa6`,
+  [CI finale entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37368191438).
+  Main `aaa95f88d561e75ca4080013e4737d08836fc8e7`,
+  [CI push entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37372128796),
+  vérifiée REST sur la tête exacte après relance du job Go1.26 sans runner.
+  Nouvelle branche `codex/m3-search` depuis ce main ; Git initial propre.
 - Lot 109 publié : `8f1ed84518f15a0005dccbcda242cdcc0662affc`, #24,
   six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
   [CI en file d'attente](https://github.com/Coubiac/mailtrace/actions/runs/37368041134).
@@ -3138,21 +3146,116 @@ réutilisés sans relance locale. Quatre comportements en bibliothèque, tous fa
 référencés, pas de sérialisation dérivée ni recalcul implicite. M3 reste incomplet :
 continuité, recherche/rétention et intégration/mesures encore à réaliser ; M4/M5 futurs.
 Documents de clôture relus indépendamment, avis favorable après actualisation d'une
-phrase de l'avancement sur lecteur109 déjà publié ; aucun test relancé. Publication110
-et CI finale à vérifier.
-CI10837367582155 et10937368041134 toujours queued au dernier contrôle ; la clôture
-et la fusion ne sont pas terminées. Dernière tête CI verte107, main105 inchangé.
+phrase de l'avancement sur lecteur109 déjà publié ; aucun test local relancé.
+Publiéf813a7d puis reprise CI110 : Windows/Go1.26 success, stable annulé sans runner.
+Annotation GitHub confirme absence d'acquisition du runner ; logs stables indisponibles,
+aucune étape de test exécutée dans ce job initial. Relance du job stable demandée ;
+dernière tentative trois jobs entiers success, CI37368191438 entière success sur
+tête exacte. Commentaire assisté5420339349/ready, fusion #24 suraaa95f8 ; CI main
+37372128796 entière success vérifiée REST le6octobre après relance du job Go1.26
+annulé sans runner acquis. Runtime/fondations locaux non relancés.
+
+## Lot 111 : recherche paginée par adresse exacte
+
+Résultat attendu : critères sender/recipient exacts, instance/période explicites,
+pagination liée aux critères et index existants ; pas de reconstruction partielle.
+SearchEvents développé, paramètres littéraux/enum fermé, From inclusif/Until exclusif
+<=31j/instants UTC exacts, limit1..200, tuple(time,id) et curseur SHA encadré/versionné.
+Adresse vide explicite vsNULL natif distincts ; champs/provenances/NOQUEUE/datequality
+dans les hits, aucun brut ni résultat global. Chaque page snapshot propre, import tardif
+avant cursor impose nouvelle recherche. Pas de conservation du snapshot entre pages.
+Six tests Windows pass et suite SQLite/vet/diff avant ajustement tuple ; six tests/vet/
+diff tuple final pass. Revue indépendante code/docs favorable sans blocage, six tests
+via overlay Windows isolé pass, root inchangé ; deux mentions obsolètes du point de
+reprise corrigées (CI108 historique/main fusionné et branche courante). Publié28eddb9
+dans #25 créée/attachée ; CI37372754946 Windows pass, deux jobs Linux annulés sans
+runner acquis (annotations vérifiées). Aucun contrôle Linux ni charge dans cet audit.
+Le commit112 validera111–112 ; dernier fusionné110/CI main verte, pas de release.
+
+## Lot 112 : Queue ID/Message-ID exacts et index temps
+
+Résultat attendu : critères exacts paginés, événements non fusionnés, migration
+indexée préservant faits/CP/manifests. Non vides32/1024, enum fermé/paramètres littéraux,
+index partiel queue existant explicitement choisi ; nouvel index Message-ID/temps
+non unique en migrationv5 atomique, schémas antérieurs inchangés. Normalisations
+persistées conservées (parser Message-ID déjà sans angles), aucun parser modifié.
+Cinq nouveaux tests et suite SQLite/vet/diff Windows pass ; versions courantes5,
+plus récente6 refusée. Réutilisation ID8faits/MessageID2files, pagination/index,
+literalSQL/bounds/cursor, migration préserve projection/reopen et rollback index/history.
+Deux attentes de fixture corrigées, aucun défaut runtime/parser associé. Revue code
+indépendante favorable, cinq tests overlay isolé Windows pass, root inchangé/fondations
+non relancées. Revue documentaire finale favorable après précision du rollback vers
+la version initiale (cas v4 testé), aucun test relancé. Implémentation publiée
+`c44746d602a2a6e4d6867af756baaef7135f20a8` dans #25 ; CI37415832690 en cours,
+trois jobs démarrés à publication. Bilan13bce0d publié ensuite, CI37415877709 entière
+success vérifiée REST sur tête exacte. Lot112 validé ; dernier fusionné110/CI main verte.
+Signature interactive 1Password indisponible dans cette exécution ; commit112
+non signé comme111, sans changement de configuration Git globale.
+
+## Lot 113 : domaines exacts, stockage dérivé v6
+
+Résultat attendu : domaine complet normalisé ASCII, colonnes/index dédiés, adresses
+natives et manifests intacts. SearchSenderDomain/SearchRecipientDomain développés,
+subsetDNS253/labels63, casseASCII seule, formes citées/ambiguës/Unicode de domaine
+non extractiblesNULL ; adresse native conservée, recherche exacte sous les bornes
+du critère adresse111. Tableevent_search_domains
+copie instance/date, index instance/domain/date/id, FKcascade, aucune UPDATE facts.
+Migrationv6/backfill/history/versionTX, lots256mémoire mais parcours DB entier ;
+même helper ingestion, write dérivée dansTX facts/CP, replayphysiqueidempotent.
+Cinq tests nouveaux et suite SQLite/vet/diff Windows pass ; revue indépendante
+code favorable, cinq tests via overlay Windows isolé pass, root inchangé. Aucune
+mesure charge ou Linux local. Versions courantes6/newer7 ; fixturelegacy temporaire
+retirée avantmigration. Revue documentaire finale favorable après précision des
+bornes de recherche d'adresse111, aucun test relancé. Publié
+`eca2e7cb627879b40b442daa80e414e940cf22bb` dans #25 ; CI37418164349 entière success
+vérifiée REST sur tête exacte. Lot113 validé, fusionné110 ; voir contrat/revue.
+
+## Lot 114 : intégration de la recherche à la reconstruction
+
+Résultat attendu : chaîne de bibliothèque existante testée/documentée ; page et
+critère temporel ne tronquent pas CorrelationScope. Trois tests nouveaux Windows
+pass et vet/diff pass ; runtime111–113 inchangé, aucun pilote ou API ajouté. Six
+critères→QueueKeyexplicit→16facts/8undated/4horspériode→2cycles+unresolved1 ; SMTPsent
+et localdelivered restent distincts, réserve coverage et manifestALLfacts gardés.
+NOQUEUE→scopeunqueuedexplicit6facts/2reports/sessioncandidate1+undatedunassigned1,
+pasqueuedforeign. MessageIDpage1→filechoisie4faits sans élargissement implicite ;
+lateimport stale/limite/readnil/ancienmanifestintact ; refresh8facts/2origines distinctes.
+Revue indépendante favorable, trois tests Windows via overlay isolé pass,
+root/Git inchangés ; fondations scellées non relancées. Revue documentaire finale
+favorable, aucun test relancé. Publié7d029b896c039da3c4af427e74e5a01149195ff0,
+CI37420603702 entière success vérifiée REST exacte. Lot114 validé, fusionné110.
+Pas de mesure de performance ou Linux local dans114.
+
+## Lot 115 : mesures, seek resserré et bilan du chantier recherche
+
+Résultat attendu : benchmarks reproductibles, limites documentées et CI exacte avant
+clôture #25. Deux benchmarks1k/10k, six critères page100 chaude/première etseek avec
+50%foreignavanttrusted ; migration réellev5→v6TX, préparation/reset horsmesure.
+Smoke1x, mesures3x100 pages avant/après et3x1 migrations pass, raw+rapport conservés.
+Mesure seekinitialcroissant→borne scalaire cursor.TimeNS aprèsvalidation, tuple et
+hashoriginalinchangés. SuiteSQLite/vet/diff Windows aprèscorrectif pass ; revue
+code/méthode favorable, douze tests recherche overlay isolé pass, rawlus sans remesure
+indépendante, root inchangé. Seek10k0,214–0,220ms vs0,470–1,118 avant ; premièrespages
+adresse/MsgID~2,1–2,2msforeignfilter limitation conservée. Migration8,484/87,684ms,
+allocations cumulées paspicRSS ; pascorpusMVP/Linux/concurrence/tempsglobalborné.
+Revue documentaire finale indépendante favorable, aucun test relancé. Publication/
+CI finale/fusion/main115 à vérifier au moment du commit ; #25 passe ready puis fusion
+seulement après CI entière de tête finale verte. Dernier publié validé114, fusionné110.
+Réestimation après clôture115 : M3 7–14 (rétention3–4, continuité1–3, complétude0–1,
+intégration/validation finale3–6), M4 15–25/M5 10–18, total32–57 ; échéance non garantie.
 
 ## Prochaine action concrète
 
-Commit/push110 dans #24 puis vérifier CI exacte110 ; revue documentaire terminée.
-Les jobs108/109 attendent les runners GitHub ; ne pas annoncer une réussite avant
-résultat. Fusionner #24 seulement après CI finale verte/revue, puis vérifier CI main.
-Recherche/rétention et continuité restent aux prochains lots ; aucun nouveau runtime
-nécessaire pour clôturer ce chantier. Pas de tests optionnels des fondations à relancer.
+Vérifier lot115/dernière tête #25 et CI entière/fusion/main ; revues finales scellées.
+Lot116 : première opération bornée de rétention, manifests affectés invalidés dansTX,
+faits/raw supprimés ensemble, checkpoints conservés ; périmètre explicite à définir.
+Main110/CI push validés ; date inconnue exclue d'une
+recherche temporelle ne signifie pas absence dans les journaux.
+Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots
+complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-projection-storage.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-search.
 
 ## Suite à découper au fil des reprises
 

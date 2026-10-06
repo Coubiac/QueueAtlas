@@ -322,7 +322,7 @@ func insertEvent(ctx context.Context, tx *sql.Tx, recordID int64, instance strin
 	if quality == "" {
 		quality = model.TimeUnknown
 	}
-	_, err = tx.ExecContext(ctx, `INSERT INTO events(raw_record_id, time_utc_ns, time_raw, time_quality, time_year, time_zone,
+	result, err := tx.ExecContext(ctx, `INSERT INTO events(raw_record_id, time_utc_ns, time_raw, time_quality, time_year, time_zone,
 		host, instance, program, service, pid, kind, queue_id, no_queue, message,
 		message_id, sender, recipient, status, fields_json, parse_error)
 		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -330,7 +330,14 @@ func insertEvent(ctx context.Context, tx *sql.Tx, recordID int64, instance strin
 		o.Service, o.PID, o.Kind, o.QueueID, o.NoQueue, o.Message,
 		fieldOrNull(o, "message-id"), fieldOrNull(o, "from"), fieldOrNull(o, "to"), fieldOrNull(o, "status"),
 		string(fields), o.ParseError)
-	return err
+	if err != nil {
+		return err
+	}
+	eventID, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+	return insertSearchDomains(ctx, tx, eventID, instance, utcNS, fieldOrNull(o, "from"), fieldOrNull(o, "to"))
 }
 
 func fieldOrNull(o model.Observation, key string) any {
