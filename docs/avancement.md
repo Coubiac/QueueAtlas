@@ -13,6 +13,8 @@ CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111
 fusionnée/CI finale et main vertes ; rétention116–119 fusionnée #27, CI finale/main
 vertes. Contrat120 de cohérence d'attestations de continuité publié dans #28,
 CI37537740519 entièrement réussie ; PR ouverte pour la suite d'intégration.
+Lot121 lie les clés au contexte d'attestation, testé localement ; publication/CI
+à terminer, clôture du chantier prévue122 dans la même PR.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -26,7 +28,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 120 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 121 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -208,3 +210,8 @@ Il ne produit pas une preuve physique et ne fusionne aucune génération. La
 prévision de continuité1–3 reste incertaine : le raccordement à un producteur fiable
 nécessitera une réévaluation si son périmètre dépasse l'intégration pure. Les
 rotations/imports non prouvés doivent conserver leurs réserves dans le MVP.
+
+Lot121 : intégration pure du contexte aux clés, cinq tests Windows et suite de
+corrélation réussis. Cette intégration ne fusionne pas les générations et n'apporte
+pas une preuve physique. Réestimer à la clôture122 du chantier ; le dernier bilan
+après119 reste la référence, sans soustraire mécaniquement les deux lots de contrat.

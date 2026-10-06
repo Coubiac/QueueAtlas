@@ -1,4 +1,4 @@
-# Continuité entre origines — lot 120
+# Continuité entre origines — lots 120–121
 
 ## Résultat livré
 
@@ -80,10 +80,54 @@ localement : aucun de leurs comportements n'est changé. Publication dans
 entièrement réussie, trois jobs Windows/stable/Go1.26 vérifiés sur cette tête exacte.
 La CI exécute la suite complète requise. La PR reste ouverte pour la suite du chantier.
 
+L'enregistrement documentaire120 ec56b35e50d14dc2ac167a5a676f93bcdb68b28a a aussi
+passé la [CI37537911013](https://github.com/Coubiac/QueueAtlas/actions/runs/37537911013)
+entière, trois jobs réussis sur cette tête exacte.
+
+## Lot121 : clés liées au contexte d'attestation
+
+`BuildQueueInstancesWithContinuity(facts, limit, claims)` rend un
+`ContinuityInstances` contenant le plan contrôlé et une partition de candidats.
+La fonction recontrôle les attestations sur le snapshot ; elle n'accepte pas un
+plan fabriqué par l'appelant comme jeton de validation.
+
+La révision des clés utilise le domaine `queue-instances-with-continuity-v1` et
+la révision du plan120, avec le cadrage par longueur existant. Elle versionne donc
+tous les faits et toutes les frontières. Modifier ou retirer une attestation
+invalide toutes les anciennes clés, même si les faits et ordinaux restent
+identiques. Réordonner les mêmes entrées conserve les clés. Faire évoluer le
+domaine si les règles d'identité sous ce contexte changent.
+
+Une nouvelle observation exige une réattestation explicite par l'appelant :
+l'ancienne révision est refusée, sans sortie partielle. Un contexte explicite vide
+reçoit lui aussi une révision distincte de la voie ordinaire et de la révision du
+plan ; ne pas mélanger ces namespaces de clés. Garder le plan avec la partition.
+
+Le plan ne fusionne aucun candidat et ne réordonne pas les ordinaux selon la
+succession déclarée. Générations, ancres, retrait observé, réserves de date et
+`CrossStreamUncertain`, flux non résolus et autres faits sont conservés. Même un
+cycle coupé entre deux origines demeure deux candidats sous ce contexte, en
+l'absence de producteur fiable et de règles de fusion justifiées. Les observations
+et attestations doivent rester immuables pendant l'appel ; les références, listes
+et pointeurs de sortie appartiennent au résultat.
+
+Cette API pure n'est raccordée ni à `BuildProjection` ni aux manifests SQLite.
+La voie existante `BuildQueueInstances` conserve ses révisions et comportements.
+Aucun jeton de preuve, conclusion de livraison, déduplication ou réparation de
+couverture n'est ajouté. Les erreurs120/provenance/limites sont conservées, avec
+résultat entièrement vide sur refus.
+
+Cinq tests Windows121 et suite complète de corrélation réussis, ainsi que vet,
+format et diff : clés contextuelles sans fusion sur un cycle synthétique coupé,
+changement d'attestation, fait tardif/réattestation, permutations/propriété avec
+NOQUEUE/non résolu, refus/limites et snapshot vide. Fondations SQLite/rétention
+non relancées localement, puisque leur code et leurs entrées publiques ne changent
+pas. Publication/CI121 à terminer au moment de cet enregistrement.
+
 ## Prochaine étape
 
-Intégrer séparément les attestations à la reconstruction pure et à ses clés
-révisables, avec réserves explicites. Avant toute utilisation applicative ou
+Lot122 : bilan/relecture et clôture de la PR du contrat et des clés120–121, après
+CI finale entière, puis validation d'ensemble M3. Avant toute utilisation applicative ou
 persistance d'un plan, définir le producteur fiable et sa revalidation. Tant que
 ces propriétés ne sont pas établies, garder les origines distinctes. Le MVP
 conservateur peut afficher cette incertitude ; le contrat ne promet pas une
