@@ -3,7 +3,7 @@ package correlation
 import (
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 type GenerationReason string

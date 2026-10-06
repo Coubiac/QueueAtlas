@@ -11,10 +11,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/source/file"
-	"github.com/Coubiac/mailtrace/internal/storage/sqlite"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source/file"
+	"github.com/Coubiac/QueueAtlas/internal/storage/sqlite"
 )
 
 type importSinkFunc func(context.Context, source.Batch) error

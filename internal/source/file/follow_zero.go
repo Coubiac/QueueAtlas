@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io/fs"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 // Called only after a complete lifecycle scan found exactly one following state

@@ -2,7 +2,7 @@
 
 Revue du 4 octobre 2026. Référence initiale :
 `932bef1e20c3573b243d1ddbdfd6ec42e4fdb4d6`, PR
-[QueueAtlas : conception validée et fondations des parseurs Postfix](https://github.com/Coubiac/mailtrace/pull/9).
+[QueueAtlas : conception validée et fondations des parseurs Postfix](https://github.com/Coubiac/QueueAtlas/pull/9).
 
 ## Périmètre
 

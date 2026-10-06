@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Coubiac/mailtrace/internal/source/file"
+	"github.com/Coubiac/QueueAtlas/internal/source/file"
 )
 
 type PrepareOptions struct {

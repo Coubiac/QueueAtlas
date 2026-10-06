@@ -19,7 +19,7 @@ sous-cas après correctif : n+readErr et writer error/short/invalid/cancel, plai
 EOF exact jamais joint comme échec. Les causes simultanées sont désormais jointes.
 Copie normal/gzip/vide/partial/large, bytes et hash concordants, limites et output
 tentatif corrompu couverts. Pas de risque restant identifié.
-[CI du lot 72 réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245062246)
+[CI du lot 72 réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37245062246)
 sur `8aa3fc8b57512eedadc66fe4e5f25df208b84da6`, PR #15 : tests Copy Linux exécutés.
 
 Limites : fermeture/cleanup/output partiel restent au caller jusqu'au lot 73,
@@ -46,7 +46,7 @@ large, entrée changée après préparation, read-only/ReadAt/Seek/getters/Close
 douze refus options/ctx/input/temp/budgets/CRC/header, close déjà fermé et foreign file
 préservé. Première attente de test header corrigée : six octets donnaient UnexpectedEOF,
 header invalide complet choisi pour ErrHeader ; pas de changement runtime requis.
-[CI du lot 73 réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245585832)
+[CI du lot 73 réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37245585832)
 sur `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745` : suite Linux et vérification des
 bits privés Unix exécutées, ainsi que les autres contrôles du workflow Go.
 

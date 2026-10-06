@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 func TestParseEnvelopeAndTimeQuality(t *testing.T) {

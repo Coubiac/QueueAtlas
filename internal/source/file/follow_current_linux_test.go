@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 func TestReopenedSetObservesCurrentMissingCapacityAndRetainedReturn(t *testing.T) {

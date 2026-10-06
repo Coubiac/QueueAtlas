@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 var ErrInvalidRecoveryOrigin = errors.New("classified current recovery origin is required")

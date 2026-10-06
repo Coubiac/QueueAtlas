@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 // Dense equal criteria with all foreign-instance events ordered before matching

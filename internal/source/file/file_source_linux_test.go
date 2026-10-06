@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/storage/sqlite"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/storage/sqlite"
 )
 
 func TestFileSourceStartsAndResumesCommittedGeneration(t *testing.T) {

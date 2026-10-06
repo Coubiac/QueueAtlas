@@ -17,7 +17,7 @@ Aucun changement d'exécution ni nouveau test sans défaut concret à reproduire
 Coordinateur et auditeur : quatre TestObserveCurrent* -count=1 réussis sous Windows ;
 git diff --check réussi, checkout isolé propre. Tests Linux réouverture réelle,
 missing/capacité/retour du retenu, symlinks/FIFO et cleanup relus, pas exécutés localement.
-[CI de référence](https://github.com/Coubiac/mailtrace/actions/runs/37221250736) verte :
+[CI de référence](https://github.com/Coubiac/QueueAtlas/actions/runs/37221250736) verte :
 tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO et
 Windows chemins ; intégrations Linux exécutées. CI de publication à consulter sur #11.
 

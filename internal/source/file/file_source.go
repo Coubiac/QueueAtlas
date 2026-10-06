@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 type Config struct {

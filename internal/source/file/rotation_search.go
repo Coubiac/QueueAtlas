@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 const MaxRotationEntries = 1000

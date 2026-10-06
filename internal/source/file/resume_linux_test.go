@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func resumeFixture(t *testing.T) (*os.File, source.OriginState) {

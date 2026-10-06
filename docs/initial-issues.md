@@ -1,8 +1,8 @@
 # Premières issues à publier après validation
 
-Ces fiches décrivent les [issues #1 à #8 publiées sur GitHub](https://github.com/Coubiac/mailtrace/issues). Le [cadrage de phase 0](phase-0-proposal.md) fixe les contrats communs. Chaque PR doit indiquer la fixture utilisée, le résultat des tests et les limites restantes.
+Ces fiches décrivent les [issues #1 à #8 publiées sur GitHub](https://github.com/Coubiac/QueueAtlas/issues). Le [cadrage de phase 0](phase-0-proposal.md) fixe les contrats communs. Chaque PR doit indiquer la fixture utilisée, le résultat des tests et les limites restantes.
 
-## 1. [Corpus synthétique de référence](https://github.com/Coubiac/mailtrace/issues/1)
+## 1. [Corpus synthétique de référence](https://github.com/Coubiac/QueueAtlas/issues/1)
 
 **Label :** `area:qa`, `priority:P0` — **Jalon :** M0 — **Dépendance :** validation des identifiants et du format de fixture.
 
@@ -10,7 +10,7 @@ Créer sous `testdata/` des extraits Postfix synthétiques couvrant les 25 scén
 
 **Acceptation :** chaque fixture a un nom, un court manifeste de provenance et un résultat attendu par destinataire ; deux files avec même Queue ID sur hôtes distincts restent distinctes ; deux messages avec le même Message-ID restent distincts ; les payloads hostiles sont présents mais non exécutables.
 
-## 2. [Enveloppes syslog et parseurs Postfix](https://github.com/Coubiac/mailtrace/issues/2)
+## 2. [Enveloppes syslog et parseurs Postfix](https://github.com/Coubiac/QueueAtlas/issues/2)
 
 **Labels :** `area:parser`, `priority:P0` — **Jalon :** M1 — **Dépendance :** issue 1.
 
@@ -18,7 +18,7 @@ Implémenter la séparation enveloppe syslog / message Postfix. Les parseurs pur
 
 **Acceptation :** tests table-driven sur fixtures, passage d'année et date sans fuseau, réponse SMTP contenant virgules/`=`/parenthèses, champ malformé et ligne très longue ; fuzz du parseur sans crash ni allocations non bornées.
 
-## 3. [Migration SQLite v1 et contrat de stockage](https://github.com/Coubiac/mailtrace/issues/3)
+## 3. [Migration SQLite v1 et contrat de stockage](https://github.com/Coubiac/QueueAtlas/issues/3)
 
 **Labels :** `area:storage`, `priority:P0` — **Jalon :** M1/M2 — **Dépendance :** ADR-004 revu.
 
@@ -26,7 +26,7 @@ Créer migration versionnée pour sources, origines de fichiers, checkpoints, ob
 
 **Acceptation :** tests migration fraîche et reprise, FK effectives, `PRAGMA integrity_check`, refus version supérieure, transaction rollbackée sans checkpoint avancé, build `CGO_ENABLED=0` Linux amd64 et arm64.
 
-## 4. [Sink transactionnel et FileSource](https://github.com/Coubiac/mailtrace/issues/4)
+## 4. [Sink transactionnel et FileSource](https://github.com/Coubiac/QueueAtlas/issues/4)
 
 **Labels :** `area:source`, `priority:P0` — **Jalon :** M2 — **Dépendances :** issues 2 et 3.
 
@@ -34,7 +34,7 @@ Implémenter `Source.Run(ctx, Sink)` et `Sink.Commit(ctx, Batch)`. Le lot porte 
 
 **Acceptation :** crash avant/après commit sans ligne perdue ni doublon persistant, ligne partielle reprise, écriture tardive sur ancien fichier, rotation double pendant arrêt, troncature/copytruncate diagnostiquée, inode réutilisé détecté ou signalé ambigu, permission retirée puis rétablie, métriques de lacune sans PII.
 
-## 5. [Import historique normal et gzip](https://github.com/Coubiac/mailtrace/issues/5)
+## 5. [Import historique normal et gzip](https://github.com/Coubiac/QueueAtlas/issues/5)
 
 **Labels :** `area:source`, `priority:P0` — **Jalon :** M2 — **Dépendances :** issues 3 et 4.
 
@@ -42,7 +42,7 @@ Ajouter `queueatlas import <files...>` hors service actif pour le MVP. Accepter 
 
 **Acceptation :** import répété identique sans doublon, renommage/recompression reconnue, reprise après interruption, gzip corrompu en erreur explicite, bombe gzip stoppée par les bornes, ordre d'import différent donnant la même projection canonique.
 
-## 6. [Corrélation Postfix révisable](https://github.com/Coubiac/mailtrace/issues/6)
+## 6. [Corrélation Postfix révisable](https://github.com/Coubiac/QueueAtlas/issues/6)
 
 **Labels :** `area:correlation`, `priority:P0` — **Jalon :** M3 — **Dépendances :** issues 1–5.
 
@@ -50,7 +50,7 @@ Produire QueueInstances par `(instance, queue_id, génération)`, tentatives et 
 
 **Acceptation :** fixtures multi-recipient partiel, deferred→sent, ID réutilisé, Message-ID dupliqué, deux hôtes, bounce, NOQUEUE et logs manquants ; jamais de « livré en boîte » sur simple `smtp sent`, jamais de faux succès global sur résultat partiel.
 
-## 7. [Authentification, API et rendu sûr](https://github.com/Coubiac/mailtrace/issues/7)
+## 7. [Authentification, API et rendu sûr](https://github.com/Coubiac/QueueAtlas/issues/7)
 
 **Labels :** `area:security`, `area:web`, `priority:P0` — **Jalon :** M4 — **Dépendances :** issues 3 et 6, ADR-006 validé.
 
@@ -58,7 +58,7 @@ Ajouter compte administrateur local créé par CLI, sessions révocables, limita
 
 **Acceptation :** 401 sur chaque route sensible non authentifiée, test d'en-tête proxy forgé, expiration/logout, recherche SQL hostile, limites de période/taille, XSS testé dans un navigateur réel de la source jusqu'au rendu, en-têtes CSP/`no-store`/anti-framing et accessibilité clavier de base.
 
-## 8. [Authentification Active Directory et OIDC (release future)](https://github.com/Coubiac/mailtrace/issues/8)
+## 8. [Authentification Active Directory et OIDC (release future)](https://github.com/Coubiac/QueueAtlas/issues/8)
 
 **Labels :** `area:security`, `area:identity`, `priority:P1` — **Jalon :** après M5 — **Dépendances :** auth locale MVP et ADR-008 détaillée avec l'environnement AD cible.
 

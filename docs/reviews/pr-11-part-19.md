@@ -20,7 +20,7 @@ concurrent explicitement ignoré sous Windows (identités persistantes Linux), p
 présenté comme exécuté. Intégrations Linux relues : 1–2 connus/nouveau vide/non vide,
 checkpoint sans replay/acquisition répétée, blockers sans mutation/fallback, refus
 avant transfert/cleanup, attente vide/cancel et garde concurrente. Exécutées par la
-[CI de référence](https://github.com/Coubiac/mailtrace/actions/runs/37222118286) verte,
+[CI de référence](https://github.com/Coubiac/QueueAtlas/actions/runs/37222118286) verte,
 pas localement. Code inchangé ; diff propre, aucun nouveau test sans défaut concret.
 CI de publication du rapport à consulter sur #11.
 

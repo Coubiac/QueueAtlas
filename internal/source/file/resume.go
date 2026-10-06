@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 type ResumeStatus string

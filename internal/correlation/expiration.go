@@ -1,8 +1,8 @@
 package correlation
 
 import (
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/parser/postfix"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/parser/postfix"
 )
 
 // QueueExpiration reports an explicit qmgr observation for a candidate queue.

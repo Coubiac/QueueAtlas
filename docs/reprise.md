@@ -33,198 +33,198 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
-- Lot 110 fusionné : [PR #24](https://github.com/Coubiac/mailtrace/pull/24),
+- Lot 110 fusionné : [PR #24](https://github.com/Coubiac/QueueAtlas/pull/24),
   tête `f813a7d6c749a95cf0895a0a3bbfc3bbd2bf4aa6`,
-  [CI finale entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37368191438).
+  [CI finale entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37368191438).
   Main `aaa95f88d561e75ca4080013e4737d08836fc8e7`,
-  [CI push entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37372128796),
+  [CI push entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37372128796),
   vérifiée REST sur la tête exacte après relance du job Go1.26 sans runner.
   Nouvelle branche `codex/m3-search` depuis ce main ; Git initial propre.
 - Lot 109 publié : `8f1ed84518f15a0005dccbcda242cdcc0662affc`, #24,
   six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
-  [CI en file d'attente](https://github.com/Coubiac/mailtrace/actions/runs/37368041134).
+  [CI en file d'attente](https://github.com/Coubiac/QueueAtlas/actions/runs/37368041134).
   Dernière tête avec CI verte107 ; derniers lots fusionnés105.
 - Lot 108 publié : `1edbed25b4bfbb914a7d5fa83f6d6fe58b1eba51`, #24,
   six tests nouveaux/suite/vet/diff et revue indépendante code/docs favorables.
-  [CI en file d'attente](https://github.com/Coubiac/mailtrace/actions/runs/37367582155),
+  [CI en file d'attente](https://github.com/Coubiac/QueueAtlas/actions/runs/37367582155),
   trois jobs queued observés ; ne pas la présenter verte ni fusionner sur cet état.
 - Lot 107 publié : `8d490396b0be7135a7fdec96a23e1d0c20a093a5`, #24,
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37336085923).
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37336085923).
   Cinq tests schéma/migration, suite/vet/diff et revue code/docs sans blocage.
 - Lot 106 publié : `e2426b5c04273d96a81feccacc51c4205579647f`,
-  [PR #24](https://github.com/Coubiac/mailtrace/pull/24) créée/attachée en brouillon,
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37333408517).
+  [PR #24](https://github.com/Coubiac/QueueAtlas/pull/24) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37333408517).
   Six tests CorrelationFacts, suite/vet/diff et revue code/docs sans blocage.
-- Lot 105 terminé : [PR #23](https://github.com/Coubiac/mailtrace/pull/23) fusionnée,
+- Lot 105 terminé : [PR #23](https://github.com/Coubiac/QueueAtlas/pull/23) fusionnée,
   tête `72ee7ef2710cc71dce8f1bd282d6e3098738326b`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37330738903).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37330738903).
   Main `50ba6a782371962f130abe79de6d81c7f1aaddb9`,
-  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37331003071),
+  [CI push réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37331003071),
   vérifiée REST. Branche suivante `codex/m3-projection-storage` depuis ce main.
 - Lot 104 publié : `e344ed773b1d98dc1a657dddfa701530705c05d9`, #23,
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37330343331).
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37330343331).
   Quatre tests Projection, suite/vet/diff et revue code/docs sans blocage.
 - Lot 103 publié : `76055c0a28e4fe917f6d4f70383e8103d4a93a46`,
-  [PR #23](https://github.com/Coubiac/mailtrace/pull/23) créée/attachée en brouillon,
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37329247549).
+  [PR #23](https://github.com/Coubiac/QueueAtlas/pull/23) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37329247549).
   Cinq tests QueueInstances, suite/vet/diff et revue code/docs sans blocage.
-- Lot 102 terminé : [PR #22](https://github.com/Coubiac/mailtrace/pull/22) fusionnée,
+- Lot 102 terminé : [PR #22](https://github.com/Coubiac/QueueAtlas/pull/22) fusionnée,
   tête `fced137d2936cc1aad565f67eab5d6b942d123b2`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37327741368).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37327741368).
   Main `a979827c28fa1ba7f05b3fdaf6994d0c10d564ae`,
-  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37328022256),
+  [CI push réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37328022256),
   vérifiée REST. Branche suivante `codex/m3-projection-identities` depuis ce main.
 - Lot 101 publié : `d07f6bdf6c689eacf3041fa7768e17d4f9b4d66f`, #22,
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37326579775).
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37326579775).
   Six tests QueueLinks, suite/vet/diff, revue code/docs et correctif des preuves
   répétées validés. Dernier état fusionné validé99.
 - Lot 100 publié : `bfdb9e0d9e4674aa3614da6816750f4c19cfc0de`,
-  [PR #22](https://github.com/Coubiac/mailtrace/pull/22) créée/attachée en brouillon,
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37324927168).
+  [PR #22](https://github.com/Coubiac/QueueAtlas/pull/22) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37324927168).
   Quatre tests QueueHints, suites/vet/diff et revue code/docs sans blocage.
-- Lot 99 terminé : [PR #21](https://github.com/Coubiac/mailtrace/pull/21) fusionnée,
+- Lot 99 terminé : [PR #21](https://github.com/Coubiac/QueueAtlas/pull/21) fusionnée,
   tête `884a8c1738e91ae833ee64197b1a0050e8714b0b`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323621470).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37323621470).
   Main `43f5155e423075c60c96e465e5562672da6706b7`,
-  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323880818),
+  [CI push réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37323880818),
   vérifiée REST. Branche suivante `codex/m3-queue-links` depuis ce main.
 - Lot 98 publié : `7486fe2d5f83c20e5231255604c981779285fc35`, #21.
   Quatre tests PrequeueSessions, suite/vet/diff et revue code/docs sans blocage.
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37323131066).
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37323131066).
 - Lot 97 publié : `3ef8b1e48e6c63450920d13cef31c356a44fd741`,
-  [PR #21](https://github.com/Coubiac/mailtrace/pull/21) créée/attachée en brouillon,
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37296483561).
+  [PR #21](https://github.com/Coubiac/QueueAtlas/pull/21) créée/attachée en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37296483561).
   Quatre tests Prequeue, suite/vet/diff et revue code/docs sans blocage.
-- Lot 96 terminé : [PR #20](https://github.com/Coubiac/mailtrace/pull/20) fusionnée,
+- Lot 96 terminé : [PR #20](https://github.com/Coubiac/QueueAtlas/pull/20) fusionnée,
   tête `fa34f92ad6906702531554fbe9fa5583f9f79421`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295702313).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37295702313).
   Main `b737484c7703f5e739e9c96a7c66077b5364cd17`,
-  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295859068),
+  [CI push réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37295859068),
   vérifiée REST. Branche suivante `codex/m3-prequeue` depuis ce main.
 - Lot 95 publié : `ff8e2a1ad5476a61028b4836302959467c358e50`, #20.
   Quatre tests Summaries, suite/vet/diff et revue code/docs sans blocage.
-  [CI entière réussie](https://github.com/Coubiac/mailtrace/actions/runs/37295460030).
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37295460030).
 - Lot 94 publié : `076275911319b29970b4bf56f3edfbbd20db8fec`,
-  [PR #20](https://github.com/Coubiac/mailtrace/pull/20) créée/attachée en brouillon,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37294712566).
+  [PR #20](https://github.com/Coubiac/QueueAtlas/pull/20) créée/attachée en brouillon,
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37294712566).
   Quatre tests Expirations, suite/vet/diff et revue code/docs sans blocage.
-- Lot 93 terminé : [PR #19](https://github.com/Coubiac/mailtrace/pull/19) fusionnée,
+- Lot 93 terminé : [PR #19](https://github.com/Coubiac/QueueAtlas/pull/19) fusionnée,
   tête `9fd0259ef3b8e5186c8b327dc8fa08e9644bddff`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37293504453).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37293504453).
   Main `8b2d969e12960b4efe52c700c90c4fd9d26d4667`,
-  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37294124969),
+  [CI push réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37294124969),
   vérifiée REST. Branche suivante `codex/m3-expiration` depuis ce main.
-- Lot 88 terminé : [PR #18](https://github.com/Coubiac/mailtrace/pull/18) fusionnée,
+- Lot 88 terminé : [PR #18](https://github.com/Coubiac/QueueAtlas/pull/18) fusionnée,
   tête `b1544a7f3821753467355c0837e49a31d02549dc`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37288318666).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37288318666).
   Main `8886427ab7efee72b95597bdb3c1996176aeefdb`,
-  [CI push réussie](https://github.com/Coubiac/mailtrace/actions/runs/37288519438),
+  [CI push réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37288519438),
   vérifiée REST. Nouvelle branche `codex/m3-recipient-attempts` depuis main.
 - Lot 89 publié : `f6c888bb8f86d789e5ba22dfb0f5ebcfa989fa40`,
-  [PR #19](https://github.com/Coubiac/mailtrace/pull/19) créée/attachée en brouillon,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37289790856).
+  [PR #19](https://github.com/Coubiac/QueueAtlas/pull/19) créée/attachée en brouillon,
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37289790856).
   Résultat d'une tentative, deux défauts de preuve reproduits/corrigés/relus.
 - Lot 90 publié : `83c101141989ad156301a664326a562daa0441f5`, #19,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37290765408).
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37290765408).
   Index candidat/provenances séparées, quatre tests/revue sans blocage.
 - Lot 91 publié : `34c3f7217a6fdec8f5797ce616613683112eea7d`, #19,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37291866747).
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37291866747).
   Générations candidates et frontières contradictoires, cinq tests/revue sans blocage.
 - Lot 92 publié : `df0bc0ef3556eb662d2d6e10d6cc160dac0cb556`, #19,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37293123113).
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37293123113).
   Tentatives/dernier résultat observé, quatre tests/revue finale sans blocage,
   statut natif malformé reproduit/corrigé et gardes historiques vérifiées.
 - Lot 87 publié : `0b3e362fe9ccfc40ce87a72bba78e113702c6beb`, #18,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37287896648).
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37287896648).
   Test portable Windows et intégration FileSource Linux réussis, revue sans blocage.
 - Lot 86 publié : `541a24ec2f4829d9354e86a12c8492ea3813a9b2`,
-  [PR #18](https://github.com/Coubiac/mailtrace/pull/18) en brouillon,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37266530472).
+  [PR #18](https://github.com/Coubiac/QueueAtlas/pull/18) en brouillon,
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37266530472).
   Correctif de repli reproduit/corrigé/relu, quatre tests/suite/vet/diff Windows réussis.
-- Lot 85 terminé : [PR #17](https://github.com/Coubiac/mailtrace/pull/17) fusionnée,
+- Lot 85 terminé : [PR #17](https://github.com/Coubiac/QueueAtlas/pull/17) fusionnée,
   tête `5b28ee79920b859e1bd13babd15de3aca6c8b3bd`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265820369).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37265820369).
   Main `fcb6ad9bfdc488c21cdf352d8bef2ada9487c574` et
-  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265917012),
+  [CI push main réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37265917012),
   vérifiée REST. Branche `codex/m2-source-diagnostics` depuis ce main.
 - Lot 84 publié : `84f091b86c26a9bf046595d1aa74574612bf8f81`, #17,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265578493).
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37265578493).
   Liste/ordre/borne globale, cinq tests/suite/vet/diff et revue sans blocage.
 - Lot 83 publié : `1e6bc8ff4e83c1a1df9ed96f902b8460f097ed96`, #17,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37265252402).
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37265252402).
   Pilote un fichier et cleanup/retry, cinq tests/suite/vet/diff et revue sans blocage.
 - Lot 82 publié : `e8e54694f0f19d9823131deb282d91111fae13c7`, #17,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37264777146).
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37264777146).
   Association/reprise prouvées, trois tests/suite/vet/diff et revue sans blocage.
 - Lot 81 publié : `2a80042b243b4b073cd39150ea633762a918dced`, #17,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37264301733).
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37264301733).
   Revue/runtime et régression sentinelles Sink terminées sans blocage.
 - Lot 80 publié : `357bde7cabcc941904b4d62a5db28cdf13c39642`,
-  [PR #17](https://github.com/Coubiac/mailtrace/pull/17) en brouillon,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37263556572).
+  [PR #17](https://github.com/Coubiac/QueueAtlas/pull/17) en brouillon,
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37263556572).
   Revue sans blocage et contrôles Windows réussis ; constructeur seul.
-- Lot 79 terminé : [PR #16](https://github.com/Coubiac/mailtrace/pull/16) fusionnée,
+- Lot 79 terminé : [PR #16](https://github.com/Coubiac/QueueAtlas/pull/16) fusionnée,
   tête `fd57bd4488ffd0cdd59a0c36a134eeb9c5730f0a`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262803722).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37262803722).
   Main `677a61833f93e6114b7cdc88414ecc0b2dbd6e05` vérifié ;
-  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262983824),
+  [CI push main réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37262983824),
   vérifiée REST. Branche `codex/m2-import-application` depuis main.
 - Lot 78 : publié `8425fd5df073c80a690faf3f4342df2d1f2528b8`,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262628894), #16.
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37262628894), #16.
   Correctif ACK reproduit/corrigé/relu ; sept tests nouveaux dont régression/reuse,
   vérifications Windows et suite Linux en CI réussies. Aucun importeur livré.
 - Lot 77 : publié `6fbf38a8d8df05122c4c7771e97b5a9182765b39`,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261638578), #16.
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37261638578), #16.
   Revue indépendante sans blocage, quatre tests ciblés/suite/vet/diff Windows réussis.
 - Lot 76 : publié `91bfdaa717bc6eb30a8b222eaa7fe10cdd6ef097`,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261183931), #16.
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37261183931), #16.
   Deux contournements NUL reproduits/corrigés, revue terminée sans blocage,
   quatre tests ciblés et régressions/suite/vet/diff Windows réussis.
 - Lot 75 : identité publiée `8797183d65b6a2cfd79f85fc94df913c7d764ccd`, PR #16
-  créée/attachée ; [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246530486).
+  créée/attachée ; [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37246530486).
   Revue indépendante sans blocage, deux tests Windows/suite/vet/diff/golden réussis.
-- Lot 74 terminé : [PR #15](https://github.com/Coubiac/mailtrace/pull/15) fusionnée,
+- Lot 74 terminé : [PR #15](https://github.com/Coubiac/QueueAtlas/pull/15) fusionnée,
   tête `6fb1bb3e1836e7ccaeb64df1b32aa9b26095ce47`,
-  [CI finale réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246043524).
+  [CI finale réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37246043524).
   Main `f8e58e30a8e85bac6d67fe1c30e5ce64ff2e4c7a` vérifié ;
-  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246230592),
+  [CI push main réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37246230592),
   vérifiée via API REST. Branche `codex/m2-import-manifest` depuis main.
 - Lot 73 : PrepareRegular/PreparedContent développés/relus sans blocage, trois tests
   ciblés Windows/suite/vet/diff réussis. Publié `93cf83cec9a1a39dff5600f93ddd5a0bb93fc745`,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245585832), bits privés
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37245585832), bits privés
   Unix exécutés Linux. Manifest/ingestion non implémentés.
 - Lot 72 : CopyPlain/CopyGzip développés/relus, quatre tests Copy ciblés et suite/vet/diff
   Windows réussis. Correctif des causes lecture+écriture jointes relu, régression
   douze sous-cas passée par auditeur. Publié `8aa3fc8b57512eedadc66fe4e5f25df208b84da6`,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37245062246), PR #15.
-- Lot 71 terminé : [PR #14](https://github.com/Coubiac/mailtrace/pull/14) fusionnée
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37245062246), PR #15.
+- Lot 71 terminé : [PR #14](https://github.com/Coubiac/QueueAtlas/pull/14) fusionnée
   avec tête `e980c0d545329e4b5a3ab013b2b81ef545696399`, CI 37244524828 verte.
   Main `85effe5b62e0786f32d8cd9bcbf8a0fe7c1c26fb` vérifié ;
-  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37244663400),
+  [CI push main réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37244663400),
   vérifiée via API REST publique. Branche suivante `codex/m2-import-snapshot` depuis main.
 - Lot 70 : InspectGzip développé/relu sans blocage, quatre tests gzip et trois normal
   Windows, suite/vet/diff réussis après correctif no-progress d'en-tête.
   Publié `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37244378495), PR #14.
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37244378495), PR #14.
 - Lot 69 : InspectPlain développé/relu sans blocage, trois tests Windows/suite/vet/diff
   réussis. Publié `e5541f73d3738bdb5f48ded5c332f5193fb5d76c`,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37243851152), PR #14.
-- Lot 68 terminé : [PR #13](https://github.com/Coubiac/mailtrace/pull/13) fusionnée
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37243851152), PR #14.
+- Lot 68 terminé : [PR #13](https://github.com/Coubiac/QueueAtlas/pull/13) fusionnée
   avec tête `356f1d62e3575fff57862e69654fb1cf464d51c5`, CI 37243392217 verte.
   Main `df7e8a3076d27da4c28c3a8aa6c48e2cb7b4aa30` vérifié ;
-  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37243526553),
+  [CI push main réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37243526553),
   vérifiée via API REST publique. Branche suivante `codex/m2-import-preflight` depuis main.
 - Lot 67 : intégration initiale développée/relue sans blocage, tests portables/suite/vet/diff
   Windows et compilation des tests Linux réussis. Publié `564ad5a`, CI Linux
   37243261005 verte (tests, race, builds sans CGO et Windows chemins).
 - Lot 66 : capture privée d'EOF complet implémentée, trois tests portables Windows,
   suite/vet/diff et revue indépendante réussis ; publié `daa35f1a5872bd1880e0ba471b009eef56598f2e`,
-  [CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37242844389), PR #13.
+  [CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37242844389), PR #13.
   Run inchangé, aucun saut à EOF encore activable. Prochain : intégration initiale.
-- Lot 65 terminé : [PR #12](https://github.com/Coubiac/mailtrace/pull/12) fusionnée
+- Lot 65 terminé : [PR #12](https://github.com/Coubiac/QueueAtlas/pull/12) fusionnée
   avec tête `ca5db281d776e9e5c27874386212d78f520eedbc`, CI 37242452694 verte.
   Main `69dfe6bb056e4de326f2d77fc8aaf3433c2bf8b3` vérifié ;
-  [CI push main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37242571458),
+  [CI push main réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37242571458),
   vérifiée via API REST publique. Branche suivante `codex/m2-start-at-end` depuis main.
 - Lot 64 : RecoverUnknownCurrent développé/relu, test portable onze cas, suite/vet/diff
   et compilation Linux réussis. Application seule sans ingestion, ACK/réessai couvert
@@ -235,15 +235,15 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 - Lot 62 : LoadRecoveryOrigin implémenté/relu indépendamment, trois tests ciblés
   Windows, go test ./..., go vet ./... et diff réussis. Rapport PR #12 ; aucune
   ouverture/preuve/transition encore. Prochaine : ouverture et preuves du courant.
-- Lot 60 terminé : [PR #11](https://github.com/Coubiac/mailtrace/pull/11) fusionnée
+- Lot 60 terminé : [PR #11](https://github.com/Coubiac/QueueAtlas/pull/11) fusionnée
   dans main sur `27b9d98bba1f51749f10e8b9930e9c4da0302068`, après CI finale
   37222534218 verte sur `12eba5a`. Résultat GitHub et origin/main vérifiés.
-  [CI main réussie](https://github.com/Coubiac/mailtrace/actions/runs/37222669898),
+  [CI main réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37222669898),
   vérifiée via l'API REST publique (le connecteur ne listait pas le run push).
 - Lot 61 terminé : contrat standalone RecoverUnknownCurrent cadré et relu
   indépendamment, aucun comportement encore implémenté. Branche
   `codex/m2-unknown-recovery` depuis ce main ; documentation/estimation mises à jour.
-  Diff propre ; [CI de publication réussie](https://github.com/Coubiac/mailtrace/actions/runs/37241041999),
+  Diff propre ; [CI de publication réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37241041999),
   commit `51933e0d03f00ff7b3896f993cd7eaf22486c403`, PR #12 en brouillon.
 - Lot 59 : New/Run/configuration relus sur `c1782f7`, sans blocage concret.
   Deux tests portables Windows réussis, concurrence réservée Linux/CI verte.
@@ -320,13 +320,13 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
   PR #11 reste en brouillon ; prochaine revue : sélection et registration.
 - Nom QueueAtlas, licence MIT et conception de phase 0 approuvés.
 - M1 : enveloppes syslog, parseurs Postfix, corpus synthétique et tests/fuzz.
-  [PR #9](https://github.com/Coubiac/mailtrace/pull/9), branche
+  [PR #9](https://github.com/Coubiac/QueueAtlas/pull/9), branche
   `m1-parser-foundation`, revue terminée et correctif des senders entre guillemets
   `0c224a213d3148cef866f72f48e28fd0ced26a78`. Fusionnée dans main le 4 octobre,
   commit `b52e7fb78022049146d87eb69de002fc239e0f12`.
 - Socle M2 : migration SQLite v1, contrat `Source`/`Sink`, insertion idempotente
   des observations et commit atomique des checkpoints.
-  [PR #10](https://github.com/Coubiac/mailtrace/pull/10), branche
+  [PR #10](https://github.com/Coubiac/QueueAtlas/pull/10), branche
   `codex/m2-sqlite-storage`, relue et corrigée sur
   `463d767418cb366b87aaf983530a42da6bba2f35`, tête finale
   `44e54f7b3b551ec5d073a616b18a67842026ad76`. Fusionnée dans main le 4 octobre,
@@ -334,7 +334,7 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 - Premier lot FileSource : lecteur de lignes borné dans
   `internal/source/file/reader.go`, commit
   `dfacfa20575529b421d7a6f0dedef8e7f476ddcc`.
-  [PR #11](https://github.com/Coubiac/mailtrace/pull/11), branche
+  [PR #11](https://github.com/Coubiac/QueueAtlas/pull/11), branche
   `codex/m2-file-source`, désormais basée sur main après fusion de la PR #10.
 - Deuxième lot FileSource : identité physique et empreinte de début bornée dans
   `internal/source/file/identity*.go`, sur la même branche et dans la PR #11.
@@ -422,79 +422,79 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
   `f1794ab23aaa42aae2ba4fefdbd2884cb908abda`. Fixtures de date corrigées dans
   `f10ea5e0b16d6b9d5a65ee16b35cd3795e1fb2db`, toujours dans la PR #11.
 - Validation du lot acquisition : contrôles locaux et
-  [CI](https://github.com/Coubiac/mailtrace/actions/runs/37173188977) réussis sur
+  [CI](https://github.com/Coubiac/QueueAtlas/actions/runs/37173188977) réussis sur
   `f10ea5e0b16d6b9d5a65ee16b35cd3795e1fb2db`, incluant tests Linux, détecteur de
   courses FileSource et builds Linux amd64/arm64 sans CGO.
 - Vingt-septième lot FileSource : retrait durable après EOF stable/grâce et avant
   fermeture/libération de capacité dans `grace.go`, commit
   `baf30a13353d9a16fa6216670529a6789132cdd2`, toujours dans la PR #11.
-  [CI retrait](https://github.com/Coubiac/mailtrace/actions/runs/37173662429)
+  [CI retrait](https://github.com/Coubiac/QueueAtlas/actions/runs/37173662429)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource, builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Vingt-huitième lot FileSource : `LoadFollowOrigins`, préparation bornée des
   candidats durables en suivi à partir des états par chemin, commit
   `addd572898b0095c71952b232d1f5d26e066b710`, toujours dans la PR #11.
-  [CI candidats en suivi](https://github.com/Coubiac/mailtrace/actions/runs/37174070307)
+  [CI candidats en suivi](https://github.com/Coubiac/QueueAtlas/actions/runs/37174070307)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Vingt-neuvième lot FileSource : `LocateFollowOrigins`, localisation de l'ensemble
   en suivi avec budget partagé et aucun chemin partiel utilisable, commit
   `10885fd205025ede06eb0be25a3cc3dd15279a0e`, toujours dans la PR #11.
-  [CI localisation](https://github.com/Coubiac/mailtrace/actions/runs/37174564943)
+  [CI localisation](https://github.com/Coubiac/QueueAtlas/actions/runs/37174564943)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Trentième lot FileSource : `OpenFollowLocations` et propriétaire opaque
   `OpenedFollowSet`, réouverture/revérification sans consommation et nettoyage
   complet sur erreur, commit `35fc07be34b38672e6e9586783dc5490dd7719d2`, dans la PR #11.
-  [CI réouverture](https://github.com/Coubiac/mailtrace/actions/runs/37175078596)
+  [CI réouverture](https://github.com/Coubiac/QueueAtlas/actions/runs/37175078596)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Lot 31 FileSource : `OpenedFollowSet.ObserveCurrent`, courant identifié par
   métadonnées physiques, absence/nouvelle génération/capacité explicites sans
   modification des fichiers détenus, commit `3f3d72704c658e6fd03accd96883420a2be34f47`.
-  [CI courant](https://github.com/Coubiac/mailtrace/actions/runs/37175634122)
+  [CI courant](https://github.com/Coubiac/QueueAtlas/actions/runs/37175634122)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous. PR #11.
 - Lot 32 FileSource : `FileSource.FollowOpened`, transfert d'un ensemble rouvert
   avec courant connu au scheduler commun, commit
   `dbf85d443adf0194d4f40a73e5e4552b08450b5a`, toujours dans la PR #11.
-  [CI transfert](https://github.com/Coubiac/mailtrace/actions/runs/37176322112)
+  [CI transfert](https://github.com/Coubiac/QueueAtlas/actions/runs/37176322112)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Lot 33 FileSource : `FollowOpened` ajoute un nouveau courant à une génération
   conservée, ouverture vérifiée avant transfert et préparation/acquisition avant
   toute ligne, commit `c3791358b3c4d6b60c76d894109b1fe9ea9006e7`, dans la PR #11.
-  [CI nouveau courant](https://github.com/Coubiac/mailtrace/actions/runs/37176769622)
+  [CI nouveau courant](https://github.com/Coubiac/QueueAtlas/actions/runs/37176769622)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Lot 34 FileSource : diagnostic `ErrCurrentMissing` au démarrage, recontrôle de
   la décision sans courant arbitraire et propriété conservée, commit
   `14204b35911620242e73325b1f602ca3a34c15af`, toujours dans la PR #11.
-  [CI courant absent](https://github.com/Coubiac/mailtrace/actions/runs/37177140539)
+  [CI courant absent](https://github.com/Coubiac/QueueAtlas/actions/runs/37177140539)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Lot 35 FileSource : `PrepareFollowResume`, orchestrateur isolé et borné de
   préparation de reprise, commit `bbbdc66c33547a1703d7dc81f8d32af2704500c9`, PR #11.
-  [CI préparation](https://github.com/Coubiac/mailtrace/actions/runs/37177688035)
+  [CI préparation](https://github.com/Coubiac/QueueAtlas/actions/runs/37177688035)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
   Le raccordement à Run reste le prochain lot.
 - Lot 36 FileSource : Run prépare/reprend l'ensemble persisté sous une seule garde,
   PathStateReader requis et budgets configurés, commit
   `ddf00f313195df21c8100833842180efe9dbfb74`, toujours dans la PR #11.
-  [CI démarrage Run](https://github.com/Coubiac/mailtrace/actions/runs/37178273467)
+  [CI démarrage Run](https://github.com/Coubiac/QueueAtlas/actions/runs/37178273467)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Lot 37 FileSource : ErrFollowResumeGap, diagnostic de génération en suivi non
   localisable avec cause de sélection conservée, commit
   `86ff3b1ccac62dba97491309c2f8b5e1ff3419dc`, toujours dans la PR #11.
-  [CI lacune de reprise](https://github.com/Coubiac/mailtrace/actions/runs/37178727644)
+  [CI lacune de reprise](https://github.com/Coubiac/QueueAtlas/actions/runs/37178727644)
   réussie (Go 1.26.x/stable, détecteur de courses FileSource et builds Linux
   amd64/arm64 sans CGO), ainsi que les contrôles locaux décrits ci-dessous.
 - Lot 38 FileSource : reprise zéro explicite d'une seule génération en suivi
   courante, préfixe revérifié avant transfert et tant que l'acquittement reste zéro.
   Commit `a56bf17815510eb48e1d2562e44055c62c1f7132`, dans la PR #11.
-  [CI reprise zéro](https://github.com/Coubiac/mailtrace/actions/runs/37185193175)
+  [CI reprise zéro](https://github.com/Coubiac/QueueAtlas/actions/runs/37185193175)
   réussie : tests Linux Go 1.26.x/stable, détecteur de courses FileSource et builds
   Linux amd64/arm64 sans CGO ; contrôles locaux également réussis.
 - Lot 39 : revue/correctif/clôture de M1. PR #9 fusionnée après revue coordinateur,
@@ -505,119 +505,119 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 - Seule PR #11 reste en brouillon et cible désormais main. La revue FileSource
   commence par contrats/lecteur/identité, en lots courts, avant clôture d'ensemble.
 - Validation du lecteur : `go test ./...` et `go vet ./...` réussis localement.
-  [CI du commit de code](https://github.com/Coubiac/mailtrace/actions/runs/37142141635)
+  [CI du commit de code](https://github.com/Coubiac/QueueAtlas/actions/runs/37142141635)
   réussie, incluant les builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot identité : `go test ./...`, `go vet ./...` et builds
   Linux amd64/arm64 avec `CGO_ENABLED=0` réussis.
-  [CI identité](https://github.com/Coubiac/mailtrace/actions/runs/37154817870)
+  [CI identité](https://github.com/Coubiac/QueueAtlas/actions/runs/37154817870)
   réussie, notamment les tests d'identité Linux.
 - Validation locale du lot lecture d'état : `go test ./...` et `go vet ./...`
-  réussis. [CI lecture d'état](https://github.com/Coubiac/mailtrace/actions/runs/37155184130)
+  réussis. [CI lecture d'état](https://github.com/Coubiac/QueueAtlas/actions/runs/37155184130)
   réussie, incluant les builds Linux sans CGO.
 - Validation locale du lot ancres : `go test ./...` et `go vet ./...` réussis.
-  [CI ancres](https://github.com/Coubiac/mailtrace/actions/runs/37155582363)
+  [CI ancres](https://github.com/Coubiac/QueueAtlas/actions/runs/37155582363)
   réussie.
 - Validation locale du lot candidat : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource pour Linux amd64 sans CGO réussis.
-  [CI candidat](https://github.com/Coubiac/mailtrace/actions/runs/37156132714)
+  [CI candidat](https://github.com/Coubiac/QueueAtlas/actions/runs/37156132714)
   réussie, incluant les cas device/inode sur Linux et les builds sans CGO.
 - Validation locale du lot sélection : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI sélection](https://github.com/Coubiac/mailtrace/actions/runs/37156470072)
+  [CI sélection](https://github.com/Coubiac/QueueAtlas/actions/runs/37156470072)
   réussie, incluant les preuves réelles sur Linux et les builds sans CGO.
 - Validation locale du lot génération : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI génération](https://github.com/Coubiac/mailtrace/actions/runs/37156904624)
+  [CI génération](https://github.com/Coubiac/QueueAtlas/actions/runs/37156904624)
   réussie, incluant la réouverture SQLite sur Linux et les builds sans CGO.
   La CI du commit documentaire `02c4744` est aussi confirmée réussie.
 - Validation locale du lot ingestion : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI ingestion](https://github.com/Coubiac/mailtrace/actions/runs/37157404479)
+  [CI ingestion](https://github.com/Coubiac/QueueAtlas/actions/runs/37157404479)
   réussie, incluant le réessai idempotent SQLite et les builds sans CGO.
 - Validation locale du lot suivi ouvert : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI suivi ouvert](https://github.com/Coubiac/mailtrace/actions/runs/37157772435)
+  [CI suivi ouvert](https://github.com/Coubiac/QueueAtlas/actions/runs/37157772435)
   réussie, incluant attente/append/annulation et builds Linux sans CGO.
 - Validation locale du lot fichier vide : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI fichier vide](https://github.com/Coubiac/mailtrace/actions/runs/37158062815)
+  [CI fichier vide](https://github.com/Coubiac/QueueAtlas/actions/runs/37158062815)
   réussie, incluant attente sans écriture, append et builds Linux sans CGO.
 - Validation locale du lot politique zéro : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI politique zéro](https://github.com/Coubiac/mailtrace/actions/runs/37158472028)
+  [CI politique zéro](https://github.com/Coubiac/QueueAtlas/actions/runs/37158472028)
   réussie, incluant relecture réelle après réouverture SQLite et builds sans CGO.
 - Validation locale du lot ouverture : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI ouverture](https://github.com/Coubiac/mailtrace/actions/runs/37158920606)
+  [CI ouverture](https://github.com/Coubiac/QueueAtlas/actions/runs/37158920606)
   réussie, incluant remplacement/FIFO/symlink Linux et builds sans CGO.
 - Validation locale du lot démarrage : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI démarrage](https://github.com/Coubiac/mailtrace/actions/runs/37159624661)
+  [CI démarrage](https://github.com/Coubiac/QueueAtlas/actions/runs/37159624661)
   réussie, incluant démarrage/reprise SQLite, attente initiale/append/annulation,
   concurrence, diagnostics, politique zéro et builds Linux sans CGO.
 - Validation locale du lot observation : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI observation](https://github.com/Coubiac/mailtrace/actions/runs/37159970805)
+  [CI observation](https://github.com/Coubiac/QueueAtlas/actions/runs/37159970805)
   réussie, incluant rename/create, disparition/réapparition, ancien descripteur,
   liens/FIFO Linux et builds amd64/arm64 sans CGO.
 - Validation locale du lot polling : `go test ./...`, `go vet ./...` et compilation
   des tests FileSource Linux amd64 sans CGO réussis.
-  [CI polling](https://github.com/Coubiac/mailtrace/actions/runs/37160397278)
+  [CI polling](https://github.com/Coubiac/QueueAtlas/actions/runs/37160397278)
   réussie, incluant disparition/append/réapparition SQLite, remplacement, erreurs
   au polling et builds Linux sans CGO. L'étape `go test -race ./internal/source/file`
   est confirmée réussie sur le job Go 1.26.x.
 - Validation locale du lot bascule : `go test ./...`, `go vet ./...` et compilation
   des tests FileSource Linux amd64 sans CGO réussis.
-  [CI bascule](https://github.com/Coubiac/mailtrace/actions/runs/37161105324)
+  [CI bascule](https://github.com/Coubiac/QueueAtlas/actions/runs/37161105324)
   réussie, incluant rotations/SQLite, attente vide, capacité, retour d'identité
   conservée, erreurs/fermeture, détecteur de courses et builds Linux sans CGO.
 - Validation locale du lot suivi conjoint : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI suivi conjoint](https://github.com/Coubiac/mailtrace/actions/runs/37161595157)
+  [CI suivi conjoint](https://github.com/Coubiac/QueueAtlas/actions/runs/37161595157)
   réussie, incluant append tardif/ligne partielle, équité, sérialisation, checkpoints
   SQLite, successeur vide, erreurs/pending, détecteur de courses et builds sans CGO.
 - Validation locale du lot grâce : `go test ./...`, `go vet ./...` et compilation
   des tests FileSource Linux amd64 sans CGO réussis.
-  [CI grâce](https://github.com/Coubiac/mailtrace/actions/runs/37162405314) réussie,
+  [CI grâce](https://github.com/Coubiac/QueueAtlas/actions/runs/37162405314) réussie,
   incluant horloge contrôlée, délai/append/capacité réutilisée, partiels/pending,
   chemin absent, détecteur de courses et builds Linux sans CGO.
 - Validation locale du lot flux continu : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI flux continu](https://github.com/Coubiac/mailtrace/actions/runs/37163133260)
+  [CI flux continu](https://github.com/Coubiac/QueueAtlas/actions/runs/37163133260)
   réussie, incluant attente restante, rotation avant EOF, expiration en progression,
   Sink EOF prioritaire, détecteur de courses et builds Linux sans CGO.
 - Validation locale du lot troncature : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI troncature](https://github.com/Coubiac/mailtrace/actions/runs/37163693457)
+  [CI troncature](https://github.com/Coubiac/QueueAtlas/actions/runs/37163693457)
   réussie : tests sur Linux (Go 1.26.x/stable), checkpoints SQLite conservés,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot ancre en suivi : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI ancre en suivi](https://github.com/Coubiac/mailtrace/actions/runs/37164079280)
+  [CI ancre en suivi](https://github.com/Coubiac/QueueAtlas/actions/runs/37164079280)
   réussie : tests sur Linux (Go 1.26.x/stable), checkpoints SQLite conservés,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot recherche de rotation : `go test ./...`, `go vet ./...`
   et compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI recherche de rotation](https://github.com/Coubiac/mailtrace/actions/runs/37170755564)
+  [CI recherche de rotation](https://github.com/Coubiac/QueueAtlas/actions/runs/37170755564)
   réussie : tests Linux (Go 1.26.x/stable), renommage/preuves/exclusions/fermeture,
   détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot lecture par chemin : `go test ./...`, `go vet ./...` et
   compilation des tests SQLite Linux amd64 sans CGO réussis.
-  [CI lecture par chemin](https://github.com/Coubiac/mailtrace/actions/runs/37171180557)
+  [CI lecture par chemin](https://github.com/Coubiac/QueueAtlas/actions/runs/37171180557)
   réussie : tests Linux (Go 1.26.x/stable), pagination/isolation/littéraux SQL,
   détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot parcours des états : `go test ./...`, `go vet ./...` et
   compilation des tests FileSource Linux amd64 sans CGO réussis.
-  [CI parcours des états](https://github.com/Coubiac/mailtrace/actions/runs/37171671535)
+  [CI parcours des états](https://github.com/Coubiac/QueueAtlas/actions/runs/37171671535)
   réussie : tests Linux (Go 1.26.x/stable), pagination/budget/alias et intégration
   SQLite sur 101 états, détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - Validation locale du lot état de suivi : `go test ./...`, `go vet ./...` et
   compilation des tests SQLite Linux amd64 sans CGO réussis.
-  [CI état de suivi](https://github.com/Coubiac/mailtrace/actions/runs/37172442015)
+  [CI état de suivi](https://github.com/Coubiac/QueueAtlas/actions/runs/37172442015)
   réussie : tests Linux (Go 1.26.x/stable), migration v1/v2 et rollback des
   transitions/checkpoints, détecteur de courses et builds Linux amd64/arm64 sans CGO.
 - AD et fournisseur OIDC externe, dont Keycloak :
-  [issue #8](https://github.com/Coubiac/mailtrace/issues/8) et ADR-008.
+  [issue #8](https://github.com/Coubiac/QueueAtlas/issues/8) et ADR-008.
 
 Le suivi des fichiers, l'import, la corrélation, l'authentification locale,
 l'interface et les paquets installables restent à développer. Le pilote SQLite
@@ -1396,7 +1396,7 @@ de l'état invalide, de l'acquittement déjà présent et de l'annulation préal
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
 des tests FileSource Linux amd64 sans CGO. Exécution des nouveaux cas Linux,
 détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI](https://github.com/Coubiac/mailtrace/actions/runs/37173188977) Go 1.26.x/stable
+[CI](https://github.com/Coubiac/QueueAtlas/actions/runs/37173188977) Go 1.26.x/stable
 du commit `f10ea5e0b16d6b9d5a65ee16b35cd3795e1fb2db`.
 Premier passage CI `37173131616` : échec de l'assertion de provenance des nouveaux
 tests d'erreur, dû à une date zéro du helper hors plage UnixNano. Fixtures du lot
@@ -1443,7 +1443,7 @@ le descripteur de la collection. Données synthétiques, aucune migration/dépen
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation des
 tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses et
 builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI retrait](https://github.com/Coubiac/mailtrace/actions/runs/37173662429)
+[CI retrait](https://github.com/Coubiac/QueueAtlas/actions/runs/37173662429)
 Go 1.26.x/stable sur `baf30a13353d9a16fa6216670529a6789132cdd2`.
 
 Limites : taille, transaction du Sink et fermeture ne sont pas atomiques avec les
@@ -1491,7 +1491,7 @@ ou migration ajoutée.
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
 des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
 et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI candidats en suivi](https://github.com/Coubiac/mailtrace/actions/runs/37174070307)
+[CI candidats en suivi](https://github.com/Coubiac/QueueAtlas/actions/runs/37174070307)
 Go 1.26.x/stable sur `addd572898b0095c71952b232d1f5d26e066b710`.
 
 Limites : seuls les états de suivi sont classés. Un ensemble complet ne prouve
@@ -1544,7 +1544,7 @@ Tous les fichiers sont synthétiques, aucune migration/dépendance ajoutée.
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
 des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
 et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI localisation](https://github.com/Coubiac/mailtrace/actions/runs/37174564943)
+[CI localisation](https://github.com/Coubiac/QueueAtlas/actions/runs/37174564943)
 Go 1.26.x/stable sur `10885fd205025ede06eb0be25a3cc3dd15279a0e`.
 
 Limites : la vérification stricte et les exclusions du chercheur existant sont
@@ -1604,7 +1604,7 @@ Données synthétiques, aucune migration/dépendance ajoutée.
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
 des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
 et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI réouverture](https://github.com/Coubiac/mailtrace/actions/runs/37175078596)
+[CI réouverture](https://github.com/Coubiac/QueueAtlas/actions/runs/37175078596)
 Go 1.26.x/stable sur `35fc07be34b38672e6e9586783dc5490dd7719d2`.
 
 Limites : fenêtres bornées et contrôles successifs, pas de verrou/snapshot atomique
@@ -1656,7 +1656,7 @@ synthétiques, aucune migration/dépendance ajoutée.
 Vérifications locales réussies : `go test ./...`, `go vet ./...` et compilation
 des tests FileSource Linux amd64 sans CGO. Exécution Linux, détecteur de courses
 et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI courant](https://github.com/Coubiac/mailtrace/actions/runs/37175634122)
+[CI courant](https://github.com/Coubiac/QueueAtlas/actions/runs/37175634122)
 Go 1.26.x/stable sur `3f3d72704c658e6fd03accd96883420a2be34f47`.
 
 Limites : snapshots de métadonnées successifs, pas de verrou ni preuve de
@@ -1697,7 +1697,7 @@ courant toujours en suivi, annulation et absence de fuite/double fermeture.
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
 détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI transfert](https://github.com/Coubiac/mailtrace/actions/runs/37176322112)
+[CI transfert](https://github.com/Coubiac/QueueAtlas/actions/runs/37176322112)
 Go 1.26.x/stable sur `dbf85d443adf0194d4f40a73e5e4552b08450b5a`.
 
 Limites : ce transfert exige un courant connu ; décisions missing/new/capacity
@@ -1735,7 +1735,7 @@ zéro insuffisant, sans consommation/retrait ni fuite/double fermeture.
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
 détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI nouveau courant](https://github.com/Coubiac/mailtrace/actions/runs/37176769622)
+[CI nouveau courant](https://github.com/Coubiac/QueueAtlas/actions/runs/37176769622)
 Go 1.26.x/stable sur `c3791358b3c4d6b60c76d894109b1fe9ea9006e7`.
 
 Limites : enregistrement/acquisition distincts ; un échec après enregistrement
@@ -1774,7 +1774,7 @@ aucune acquisition/enregistrement répété ni fuite/double fermeture.
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
 détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI courant absent](https://github.com/Coubiac/mailtrace/actions/runs/37177140539)
+[CI courant absent](https://github.com/Coubiac/QueueAtlas/actions/runs/37177140539)
 Go 1.26.x/stable sur `14204b35911620242e73325b1f602ca3a34c15af`.
 
 Limites : diagnostic d'une observation non atomique, pas preuve de stabilité ni
@@ -1817,7 +1817,7 @@ jointes, fermeture de tous les descripteurs et état conservé.
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
 détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI préparation](https://github.com/Coubiac/mailtrace/actions/runs/37177688035)
+[CI préparation](https://github.com/Coubiac/QueueAtlas/actions/runs/37177688035)
 Go 1.26.x/stable sur `bbbdc66c33547a1703d7dc81f8d32af2704500c9`.
 
 Limites : Run n'utilise pas encore cet orchestrateur. `absent` ne prouve pas la
@@ -1859,7 +1859,7 @@ cause conservée sans double fermeture.
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
 détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI démarrage Run](https://github.com/Coubiac/mailtrace/actions/runs/37178273467)
+[CI démarrage Run](https://github.com/Coubiac/QueueAtlas/actions/runs/37178273467)
 Go 1.26.x/stable sur `ddf00f313195df21c8100833842180efe9dbfb74`.
 
 Limites : nil/zéro en suivi et lifecycle inconnu exigent encore une récupération
@@ -1896,7 +1896,7 @@ source neuve, courant missing après localisation et répertoire vidé avec éta
 Vérifications locales réussies : `go test ./...`, `go vet ./...`, `git diff --check`
 et compilation des tests FileSource Linux amd64 sans CGO. Exécution des tests Linux,
 détecteur de courses et builds Linux amd64/arm64 sans CGO confirmés réussis par la
-[CI lacune de reprise](https://github.com/Coubiac/mailtrace/actions/runs/37178727644)
+[CI lacune de reprise](https://github.com/Coubiac/QueueAtlas/actions/runs/37178727644)
 Go 1.26.x/stable sur `86ff3b1ccac62dba97491309c2f8b5e1ff3419dc`.
 
 Limites : lacune de continuité vérifiable, pas preuve de suppression/perte ni
@@ -1934,7 +1934,7 @@ conservée. Ancien test d'archive zéro distincte du courant reste bloquant (dif
 Vérifications locales réussies : go test ./..., go vet ./..., git diff --check,
 compilation des tests FileSource Linux amd64 sans CGO. Tests Linux Go 1.26.x/stable,
 détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO confirmés
-réussis par la [CI reprise zéro](https://github.com/Coubiac/mailtrace/actions/runs/37185193175)
+réussis par la [CI reprise zéro](https://github.com/Coubiac/QueueAtlas/actions/runs/37185193175)
 sur `a56bf17815510eb48e1d2562e44055c62c1f7132`. Lot terminé et publié.
 
 Limites : politique explicitement opt-in, pas preuve de continuité par ancre positive
@@ -1962,20 +1962,20 @@ analyse assistée par agents, sans prétendre à une approbation humaine externe
 Sur M1 corrigé : go test ./..., go vet ./..., builds Linux amd64/arm64 sans CGO,
 fuzz Postfix/syslog trois secondes chacun (deux workers), git diff --check réussis.
 Manifest de 30 scénarios vérifié : fichiers présents, gzip identique au fichier normal.
-La [CI du correctif](https://github.com/Coubiac/mailtrace/actions/runs/37185777332)
+La [CI du correctif](https://github.com/Coubiac/QueueAtlas/actions/runs/37185777332)
 réussit sur `0c224a213d3148cef866f72f48e28fd0ced26a78` (Go 1.26.x/stable,
 tests/vet/builds Linux). PR sortie du brouillon, fusion par merge avec SHA de tête
 attendu, commit `b52e7fb78022049146d87eb69de002fc239e0f12`. Arbre de main identique
-à la tête revue ; [CI main](https://github.com/Coubiac/mailtrace/actions/runs/37185831304)
+à la tête revue ; [CI main](https://github.com/Coubiac/QueueAtlas/actions/runs/37185831304)
 également réussie. Les fichiers sont désormais visibles sur la branche principale.
 
 PR #10 reciblée vers main ; intégration du correctif par merge de main dans sa
 branche, commit `6b861179f915917aae5f8c7452194e939b93681e`, sans clôturer sa revue.
 Cette branche est intégrée à #11 : pas de réintroduction du parseur vulnérable.
-[CI SQLite intégrée](https://github.com/Coubiac/mailtrace/actions/runs/37185908928)
+[CI SQLite intégrée](https://github.com/Coubiac/QueueAtlas/actions/runs/37185908928)
 réussie sur `6b861179f915917aae5f8c7452194e939b93681e`.
 go test ./..., go vet ./... et git diff --check réussis après intégration dans
-FileSource ; parseurs identiques à main. [CI FileSource intégrée](https://github.com/Coubiac/mailtrace/actions/runs/37185969499)
+FileSource ; parseurs identiques à main. [CI FileSource intégrée](https://github.com/Coubiac/QueueAtlas/actions/runs/37185969499)
 réussie sur `89816990fda14fa09a32ae6e5c873877a62b6803` : tests Linux
 Go 1.26.x/stable, détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
 Lot terminé et publié ; descriptions des trois PR actualisées.
@@ -2007,9 +2007,9 @@ sans blocage concret restant. Rapport docs/reviews/pr-10.md et revue COMMENT Git
 sans prétendre à une approbation humaine externe.
 
 go test ./..., go vet ./..., git diff --check, builds Linux amd64/arm64 sans CGO
-et compilation des tests SQLite Linux réussis localement. [CI du correctif](https://github.com/Coubiac/mailtrace/actions/runs/37186524966)
+et compilation des tests SQLite Linux réussis localement. [CI du correctif](https://github.com/Coubiac/QueueAtlas/actions/runs/37186524966)
 réussie sur 463d767418cb366b87aaf983530a42da6bba2f35, incluant tous les tests Unix.
-[CI finale de PR](https://github.com/Coubiac/mailtrace/actions/runs/37186639855)
+[CI finale de PR](https://github.com/Coubiac/QueueAtlas/actions/runs/37186639855)
 réussie sur 44e54f7b3b551ec5d073a616b18a67842026ad76 (Go 1.26.x/stable,
 tests/vet/builds Linux). PR sortie du brouillon puis fusion avec SHA de tête attendu,
 merge 69ab91e6a830914102ac96f4b9434be89f5702e6 dans main.
@@ -2018,10 +2018,10 @@ PR #11 reciblée vers main. Merge de main dans FileSource : code fusionné sans
 conflit, historique détaillé de ce point de reprise conservé pour résoudre le seul
 conflit documentaire. Schéma v2/état de suivi restent propres à #11 ; aucune
 modification du schéma v1 ni dépendance. go test ./..., go vet ./... et git diff
---check réussis après intégration. [CI FileSource intégrée](https://github.com/Coubiac/mailtrace/actions/runs/37186772554)
+--check réussis après intégration. [CI FileSource intégrée](https://github.com/Coubiac/QueueAtlas/actions/runs/37186772554)
 réussie sur bcda85b0e4b80f30d67a44b9bc6145d1753f3346 : Go 1.26.x/stable,
 tests Linux, détecteur de courses FileSource et builds Linux amd64/arm64 sans CGO.
-Arbre de main identique à la tête SQLite revue ; [CI main](https://github.com/Coubiac/mailtrace/actions/runs/37186695880)
+Arbre de main identique à la tête SQLite revue ; [CI main](https://github.com/Coubiac/QueueAtlas/actions/runs/37186695880)
 réussie sur 69ab91e6a830914102ac96f4b9434be89f5702e6. Lot terminé et publié,
 descriptions des PR actualisées. Les branches #9/#10 sont conservées.
 
@@ -2040,7 +2040,7 @@ sans modification de comportement. Rapport docs/reviews/pr-11-part-1.md.
 Tests FileSource et vet sources réussis sur la référence isolée sous Windows ;
 auditeur : tests ciblés -count=1 et diff propre. Vérifications finales locales
 go test ./..., go vet ./... et git diff --check réussies. Commit du lot
-3fe6a7063f88f2c396e18b8a386ebf95a2cd2cc2 publié ; [CI Linux](https://github.com/Coubiac/mailtrace/actions/runs/37187398041)
+3fe6a7063f88f2c396e18b8a386ebf95a2cd2cc2 publié ; [CI Linux](https://github.com/Coubiac/QueueAtlas/actions/runs/37187398041)
 réussie : Go 1.26.x/stable, tests/vet, détecteur de courses FileSource et builds
 Linux amd64/arm64 sans CGO. Tests spécifiques d'identité Linux et de vérification
 positive exécutés par cette CI. Aucun test nouveau sans défaut concret à reproduire.
@@ -2058,7 +2058,7 @@ attente sur fichier vide et politique zéro explicite. Rapport
 docs/reviews/pr-11-part-2.md. Code inchangé, aucun test ajouté sans défaut concret.
 
 Tests portables ciblés Windows -count=1 réussis pour les deux relecteurs.
-[CI Linux de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37187511562)
+[CI Linux de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37187511562)
 réussie : Go 1.26.x/stable, tests/vet, détecteur de courses FileSource et builds
 amd64/arm64 sans CGO, incluant tests Linux de génération et preuves réelles.
 Consulter la PR #11 pour le résultat de la CI du commit documentaire publié.
@@ -2083,7 +2083,7 @@ Job CI Windows ciblé ajouté. Rapport docs/reviews/pr-11-part-3.md.
 Relecture du patch sans autre blocage concret. Tests ciblés Windows -count=1 pour
 les deux relecteurs, go test ./..., go vet ./..., git diff --check et compilation
 des tests FileSource Linux amd64 sans CGO réussis localement. Correctif publié sur
-cded0a87fd22f96220d3f519cb70b85f55f2cf3b ; [CI du correctif](https://github.com/Coubiac/mailtrace/actions/runs/37202322863)
+cded0a87fd22f96220d3f519cb70b85f55f2cf3b ; [CI du correctif](https://github.com/Coubiac/QueueAtlas/actions/runs/37202322863)
 réussie : nouveau job windows-path (substitution et chemin long réellement exécutés),
 Linux Go 1.26.x/stable, tests/vet, race FileSource et builds amd64/arm64 sans CGO.
 Consulter la PR #11 pour la CI de publication du point de reprise final.
@@ -2102,7 +2102,7 @@ Rapport docs/reviews/pr-11-part-4.md, aucun comportement modifié ni test ajout�
 Tests TestFileOrigins* sous Windows -count=1 réussis pour les deux relecteurs.
 TestLoadPathOriginsWithSQLiteAndReducedFinalPage -count=1 réussi pour le coordinateur,
 avec 101 origines et plafond 100 sans résultat partiel. git diff --check réussi.
-[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37202460211)
+[CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37202460211)
 verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
 et job Windows ciblé chemins. Consulter la PR #11 pour la CI du rapport publié.
 
@@ -2122,7 +2122,7 @@ sans défaut concret à reproduire.
 
 Coordinateur : TestFollow(Transitions|StateMigration) -count=1 ; auditeur : TestFollow*
 -count=1, réussis sous Windows. git diff --check réussi, checkout isolé propre.
-[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37202826203)
+[CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37202826203)
 verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
 et job Windows chemins. Consulter la PR #11 pour la CI de publication du rapport.
 
@@ -2144,7 +2144,7 @@ vérifiés. Rapport docs/reviews/pr-11-part-6.md, code inchangé et aucun nouvea
 Coordinateur : TestAcquisitionRejectsInvalidStateAndHonorsCancellation -count=1 ;
 auditeur : ce test et TestRunOpenedClosesOwnedDescriptorOnCancellation, réussis sous
 Windows. git diff --check réussi, checkout isolé propre.
-[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37203133730)
+[CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37203133730)
 verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
 et job Windows chemins. Intégrations Linux acquisition/erreurs/cleanup relues et
 exécutées par cette CI, pas localement sous Windows. Consulter la PR #11 pour la CI
@@ -2166,7 +2166,7 @@ docs/reviews/pr-11-part-7.md, code inchangé et aucun nouveau test.
 
 Coordinateur et auditeur : les trois tests portables TestGrace* -count=1 réussis
 sous Windows. git diff --check réussi, checkout isolé propre.
-[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37203460955)
+[CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37203460955)
 verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
 et job Windows chemins. Intégrations Linux grâce/erreurs/cleanup relues et exécutées
 par cette CI, pas localement sous Windows. Consulter la PR #11 pour la CI du rapport.
@@ -2188,7 +2188,7 @@ docs/reviews/pr-11-part-8.md, code inchangé et aucun nouveau test.
 Coordinateur : tests SourcePathFollow, PollStopsOnCurrent, SizeCheck et LiveAnchor
 -count=1 réussis sous Windows ; auditeur : tests portables observation/suivi du
 chemin/tailles/ancres réussis. git diff --check réussi, checkout isolé propre.
-[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37203882023)
+[CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37203882023)
 verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
 et job Windows chemins. Intégrations Linux rotation/capacité/retour/erreurs/contrôles
 relues et exécutées par cette CI, pas localement sous Windows. Consulter la PR #11
@@ -2216,7 +2216,7 @@ blocage restant. Nouveau test conjoint Linux exécuté en CI : longue ligne de
 l'ancien cède au successeur sans avancer son checkpoint ni fuite.
 Rapport docs/reviews/pr-11-part-9.md. Correctif publié
 cd931e08886677511b8521b32553c3714c0d3019 et
-[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37204731135) :
+[CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37204731135) :
 tests/vet Linux Go 1.26.x/stable, nouveaux scénarios Linux, race FileSource, builds
 amd64/arm64 sans CGO et job Windows chemins. Consulter la PR #11 pour la CI de la
 clôture documentaire.
@@ -2236,7 +2236,7 @@ Coordinateur : TestLoadFollowOrigins* -count=1 ; auditeur : ces tests et
 TestLoadPathOrigins*, intégration SQLite incluse, réussis sous Windows. 101 états
 dont 99 retired et deux following, limite 100 refusée, isolation source et aucune
 mutation vérifiées. git diff --check réussi, checkout isolé propre.
-[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37204843549)
+[CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37204843549)
 verte : tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO
 et Windows chemins. Consulter la PR #11 pour la CI de publication du rapport.
 
@@ -2260,7 +2260,7 @@ go vet ./..., git diff --check et compilation des tests Linux sans CGO réussis.
 Patch relu indépendamment sans blocage restant ; job Windows étendu aux régressions.
 Rapport docs/reviews/pr-11-part-11.md. Correctif publié
 de81c4e86fc3deab0692bf471ae5ffeb6aa8f6b9 et
-[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37220202856) :
+[CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37220202856) :
 tests/vet Linux Go 1.26.x/stable, race FileSource, builds amd64/arm64 sans CGO et
 job Windows étendu exécutant les trois nouveaux tests. Consulter la PR #11 pour
 la CI de publication de cette clôture documentaire.
@@ -2282,7 +2282,7 @@ code inchangé et aucun nouveau test.
 Coordinateur et auditeur : quatre tests portables TestLocateFollowOrigins* -count=1
 réussis sous Windows. git diff --check réussi, checkout isolé propre. Intégrations
 Linux localisation réelle/1–2 fichiers/refus/limite/fermeture relues et exécutées par
-la [CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37220323146),
+la [CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37220323146),
 pas localement sous Windows. CI verte : tests/vet Linux Go 1.26.x/stable, race FileSource,
 builds amd64/arm64 sans CGO et Windows chemins. Consulter la PR #11 pour la CI du rapport.
 
@@ -2302,7 +2302,7 @@ docs/reviews/pr-11-part-13.md, code inchangé et aucun nouveau test.
 Coordinateur et auditeur : deux tests portables ciblés -count=1 réussis sous Windows.
 git diff --check réussi, checkout isolé propre. Intégrations Linux réouverture réelle,
 copies, collisions/échec du second fichier et fermeture relues et exécutées par la
-[CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37220607670),
+[CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37220607670),
 pas localement sous Windows. CI verte : tests/vet Linux Go 1.26.x/stable, race FileSource,
 builds amd64/arm64 sans CGO et Windows chemins. Consulter la PR #11 pour la CI du rapport.
 
@@ -3267,3 +3267,22 @@ pour la tête publiée du nouveau chantier ; principal sur codex/m3-search.
 
 Chaque demande de continuation traite par défaut un seul petit lot et actualise
 ce point de reprise avec le résultat et la prochaine action.
+
+## Maintenance du dépôt : renommage QueueAtlas (6 octobre 2026)
+
+À la demande du propriétaire, les 17 branches distantes des PR #9–25 ont été
+supprimées après vérification que toutes leurs têtes étaient des ancêtres de main.
+Aucune PR ouverte lors du nettoyage ; suppression Git atomique avec contrôle des
+SHA attendus. Le dépôt est renommé Coubiac/QueueAtlas, même identifiant GitHub,
+main et historique conservés. Origin utilise https://github.com/Coubiac/QueueAtlas.git ;
+suppression automatique des branches après fusion activée.
+
+Ce changement séparé actualise le module Go et ses imports, ainsi que les liens
+documentaires. Les sorties brutes des benchmarks historiques conservent leur nom
+de paquet d'origine. Aucun comportement métier modifié. Suite go test ./..., go vet ./..., format et
+git diff --check Windows réussis. Publication et CI distante à vérifier avant fusion.
+
+Le checkout principal reste sur codex/m3-retention avec le lot 116 non committé :
+prévisualisation readonly développée, quatre tests/vet et revue du code favorables ;
+revue documentaire, publication et CI restant à terminer. Reprendre ce lot après
+intégration du renommage ; ne pas le confondre avec cette maintenance du dépôt.

@@ -18,7 +18,7 @@ ADR-011 précise le format durable et contrat du manifest suivant. L'identité
 n'est pas une preuve de validation/EOF ni de chevauchement avec le suivi live ;
 elle ne déduplique aucune ligne. SQL, manifest et ingestion restent futurs.
 Publié `8797183d65b6a2cfd79f85fc94df913c7d764ccd`,
-[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37246530486).
+[CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37246530486).
 Audit assisté, sans certification externe.
 
 ## Lot 76 : migration v3 et lecture source-scopée
@@ -43,7 +43,7 @@ Revue finale terminée sans autre blocage : auditeur quatre tests nouveaux Windo
 deux régressions NUL ciblées et diff propres. Null branches/FK/offsets/statuts
 cohérents ; SQL v1/v2 inchangés. ID run global dans la base précisé dans le contrat.
 Publié `91bfdaa717bc6eb30a8b222eaa7fe10cdd6ef097`,
-[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261183931).
+[CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37261183931).
 Manifest-write/application et preuve EOF restent futurs à cette étape historique.
 
 ## Lot 77 : trace transactionnelle de préparation
@@ -59,7 +59,7 @@ ACK perdu/retry/reopen, global ID/legacy/foreign/stale, trigger insert/update et
 source rollback, cancel et dix-huit refus contenus/provenance/dates/immutabilité.
 Revue indépendante terminée sans blocage : quatre tests ciblés Windows/diff propres,
 contrat/rollback/immutabilité/retry relus, aucun edit. Publié `6fbf38a8d8df05122c4c7771e97b5a9182765b39`,
-[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37261638578). Mono-écrivain et ownership
+[CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37261638578). Mono-écrivain et ownership
 du batch au caller, audit assisté sans certification externe.
 
 ## Lot 78 : association et progression atomiques
@@ -86,7 +86,7 @@ auditeur régression corrigée exécutée Windows et diff propre. Test suppléme
 réutilisation contenu : taille/partial changés ou fingerprint/device stockés
 incohérents refusés, quatre sous-cas Windows passent ; runtime inchangé après revue.
 Publié `8425fd5df073c80a690faf3f4342df2d1f2528b8`,
-[CI réussie](https://github.com/Coubiac/mailtrace/actions/runs/37262628894), tests Linux exécutés.
+[CI réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37262628894), tests Linux exécutés.
 Mono-écrivain/preuves/batch possédé par caller requis.
 
 ## Lot 79 : synthèse et clôture du manifest

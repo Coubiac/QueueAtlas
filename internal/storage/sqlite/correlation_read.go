@@ -10,7 +10,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/Coubiac/mailtrace/internal/correlation"
+	"github.com/Coubiac/QueueAtlas/internal/correlation"
 )
 
 const MaxCorrelationScopeParts = 64

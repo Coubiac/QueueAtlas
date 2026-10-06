@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 const (

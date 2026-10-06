@@ -6,7 +6,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func TestZeroReplayPrefixRecheckUntilPositiveAcknowledgement(t *testing.T) {

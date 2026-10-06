@@ -22,7 +22,7 @@ Coordinateur et auditeur : TestZeroReplayPrefix* et TestFollowLocationError*,
 avant premier record puis arrêt/replay explicite/positif/ajout strict, preuves
 incomplètes/modifiées, annulation/remplacement, lacune 1–2 fichiers/restauration,
 diagnostic distinct du courant absent et absence d'historique, cleanup sans fuite.
-Exécutées par la [CI de référence](https://github.com/Coubiac/mailtrace/actions/runs/37221985374)
+Exécutées par la [CI de référence](https://github.com/Coubiac/QueueAtlas/actions/runs/37221985374)
 verte, pas localement. Code inchangé ; aucun nouveau test sans défaut concret.
 CI de publication à consulter sur #11.
 

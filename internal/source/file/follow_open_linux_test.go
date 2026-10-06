@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/model"
 )
 
 func locatedOpenFixture(t *testing.T) (string, FollowLocations) {

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/correlation"
+	"github.com/Coubiac/QueueAtlas/internal/correlation"
 )
 
 func installedRevision(t *testing.T, s *Store, scope CorrelationScope) (string, int) {

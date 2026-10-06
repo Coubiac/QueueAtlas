@@ -11,7 +11,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/correlation"
+	"github.com/Coubiac/QueueAtlas/internal/correlation"
 )
 
 var (

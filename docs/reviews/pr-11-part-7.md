@@ -43,7 +43,7 @@ surdimensionnés ; courant absent ; erreurs/EOF/conflit/annulation avant et apr�
 acquittement et Close défaillant sans fuite ni modification de checkpoint.
 Ils ne s'exécutent pas localement sous Windows.
 
-La [CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37203460955)
+La [CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37203460955)
 a réussi : tests/vet Linux Go 1.26.x/stable, race FileSource, builds Linux amd64/arm64
 sans CGO et job Windows ciblé chemins. Les intégrations Linux y sont exécutées.
 Ce lot modifie uniquement la documentation ; consulter la PR #11 pour la CI de

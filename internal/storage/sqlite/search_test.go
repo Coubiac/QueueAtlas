@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/correlation"
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/correlation"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func eventSearchQuery(field SearchField, value string) SearchQuery {

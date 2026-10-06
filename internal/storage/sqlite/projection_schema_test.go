@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/correlation"
+	"github.com/Coubiac/QueueAtlas/internal/correlation"
 )
 
 func seedV3ProjectionStore(t *testing.T) (*sql.DB, string) {

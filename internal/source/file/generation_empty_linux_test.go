@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/storage/sqlite"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/storage/sqlite"
 )
 
 func TestEnsureGenerationDefersEmptyCaptureThenRegistersAfterAppend(t *testing.T) {

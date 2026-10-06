@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/parser/syslog"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/parser/syslog"
 )
 
 type Options struct {

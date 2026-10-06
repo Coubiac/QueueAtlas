@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func TestAcquisitionRejectsInvalidStateAndHonorsCancellation(t *testing.T) {

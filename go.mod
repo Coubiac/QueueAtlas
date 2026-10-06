@@ -1,4 +1,4 @@
-module github.com/Coubiac/mailtrace
+module github.com/Coubiac/QueueAtlas
 
 go 1.26.0
 

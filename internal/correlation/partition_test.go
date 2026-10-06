@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/parser/postfix"
-	"github.com/Coubiac/mailtrace/internal/parser/syslog"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/parser/postfix"
+	"github.com/Coubiac/QueueAtlas/internal/parser/syslog"
 )
 
 func corpusFacts(t *testing.T, name, sourceID, instance string, knownDate bool) []Fact {

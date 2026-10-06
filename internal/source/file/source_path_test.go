@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func pathFollower(t *testing.T, contents string) (*FileSource, *Ingestor, *os.File) {

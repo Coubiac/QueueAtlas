@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/parser/postfix"
+	"github.com/Coubiac/QueueAtlas/internal/parser/postfix"
 )
 
 func TestForeignSchemaObjectsRefusedBeforeWAL(t *testing.T) {

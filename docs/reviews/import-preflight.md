@@ -19,7 +19,7 @@ LF/CRLF/partiel, lectures courtes/données+EOF, limite exacte/excès/read borné
 int64, entrée invalide, erreur/cancel/deadline/no-progress/EOF joint couverts.
 Coordinateur : suite go test ./..., go vet ./... et diff propres. Durcissement avant
 revue : abandon du succès errors.Is(EOF) et régression EOF joint. CI à publication.
-[CI du lot 69 réussie](https://github.com/Coubiac/mailtrace/actions/runs/37243851152)
+[CI du lot 69 réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37243851152)
 sur `e5541f73d3738bdb5f48ded5c332f5193fb5d76c`, PR #14.
 
 Limites : deadline et fichier régulier à fournir par appelant, syscall bloquant
@@ -51,7 +51,7 @@ timeout10s a échoué. CompressedReader borne maintenant 100 lectures vides : te
 réussi après correctif, ancien processus bloqué arrêté via PID/commande vérifiés.
 Source standard Go gunzip.go consultée pour EOF/CRC/multistream et rôle de Close.
 Exécution Linux vérifiée par la
-[CI du lot 70 réussie](https://github.com/Coubiac/mailtrace/actions/runs/37244378495)
+[CI du lot 70 réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37244378495)
 sur `8c48d1d7bdefa8e27aa21f0a8c3efd0a56ef4466`.
 
 Limites : ratio de consommation, prélectures internes distinctes des Reader

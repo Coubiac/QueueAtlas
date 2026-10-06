@@ -12,10 +12,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/parser/postfix"
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/storage/sqlite"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/parser/postfix"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/storage/sqlite"
 )
 
 func ingestState(t *testing.T, f *os.File, offset int64) source.OriginState {

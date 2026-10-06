@@ -3,7 +3,7 @@ package file
 import (
 	"context"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 type FollowOriginsStatus string

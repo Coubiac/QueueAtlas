@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/storage/sqlite"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/storage/sqlite"
 )
 
 func recoveryStoredFixture(t *testing.T, offset int64) (*FileSource, *sqlite.Store, source.OriginState, *int) {

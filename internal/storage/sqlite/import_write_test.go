@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func preparationBatch() source.Batch {

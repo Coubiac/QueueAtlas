@@ -44,7 +44,7 @@ go test ./internal/source/file -run 'Test(ResumeSelection|SelectResume|EnsureGen
 Ces tests Windows vérifient notamment pagination, limites, copies, erreurs,
 annulation et refus sur plateforme sans identité persistante. Les tests marqués
 Linux de registration SQLite et de preuves réelles ne s'exécutent pas sous Windows.
-La [CI Linux de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37187511562)
+La [CI Linux de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37187511562)
 a réussi : Go 1.26.x/stable, tests/vet, détecteur de courses FileSource et builds
 Linux amd64/arm64 sans CGO. Ce lot modifie uniquement la documentation ; consulter
 la PR #11 pour le résultat de la CI déclenchée par la publication du rapport.

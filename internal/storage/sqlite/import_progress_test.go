@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func attachedImportBatch(t *testing.T, begin source.Batch, payload string) source.Batch {

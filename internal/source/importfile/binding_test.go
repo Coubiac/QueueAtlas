@@ -8,8 +8,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 type checkpointFunc func(context.Context, string, string) (source.Position, bool, error)

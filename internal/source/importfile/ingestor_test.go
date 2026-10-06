@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Coubiac/mailtrace/internal/model"
-	"github.com/Coubiac/mailtrace/internal/source"
-	"github.com/Coubiac/mailtrace/internal/source/file"
+	"github.com/Coubiac/QueueAtlas/internal/model"
+	"github.com/Coubiac/QueueAtlas/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source/file"
 )
 
 func importIngestorFixture(t *testing.T, payload string, zipped bool, offset int64) (*PreparedContent, source.Identity, source.ImportRun, source.Position) {

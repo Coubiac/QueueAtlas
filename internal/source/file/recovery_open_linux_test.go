@@ -11,7 +11,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Coubiac/mailtrace/internal/source"
+	"github.com/Coubiac/QueueAtlas/internal/source"
 )
 
 func recoveryOpenFixture(t *testing.T, offset int64) (string, RecoveryOrigin) {

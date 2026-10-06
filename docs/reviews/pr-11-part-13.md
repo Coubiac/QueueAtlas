@@ -41,7 +41,7 @@ checkpoint conservés sans normalisation, lecture seule ; copie du second checkp
 avant première ouverture ; second fichier absent/remplacé/réécrit/tronqué/nil/zéro/
 ancre invalide, collision physique, erreur/annulation et cause de cleanup sans fuite
 ni ensemble partiel. Pas d'exécution locale Linux sous Windows.
-La [CI de la référence revue](https://github.com/Coubiac/mailtrace/actions/runs/37220607670)
+La [CI de la référence revue](https://github.com/Coubiac/QueueAtlas/actions/runs/37220607670)
 a réussi : tests/vet Linux Go 1.26.x/stable, race FileSource, builds Linux amd64/arm64
 sans CGO et job Windows chemins. Les intégrations Linux y sont exécutées.
 Ce lot modifie uniquement la documentation ; consulter la PR #11 pour sa CI de publication.
