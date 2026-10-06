@@ -19,9 +19,10 @@ pur d'attestations de continuité publié dans #28, CI entière réussie sur le 
 Lot121 : clés liées au contexte d'attestation publiées dans #28,
 CI37540913337 entièrement réussie sur le code ; chantier120–122 fusionné #28,
 CI finale37543845063 et main37543982877 entièrement réussies.
-Lot123 : matrice de sortie M3 rédigée et vérifiée ; premier contrôle manquant124
-identifié, publication/CI à terminer dans le chantier de validation M3.
-Trois jalons restent : M3–M5, environ28–49 lots après123, dont3–6 pour M3 ;
+Lot123 publié dans #29 sur d9fde2f, CI37546917054 entièrement réussie.
+Lot124 : conflit à date égale vérifié après stockage/reconstruction/reopen et
+insertion inverse ; tests/suite/vet SQLite locaux réussis, publication/CI à terminer.
+Trois jalons restent : M3–M5, environ27–48 lots après124, dont2–5 pour M3 ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -41,6 +42,11 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot123 publié : `d9fde2f9b190a9fca17a2699e5d2954f797d0fb3`,
+  [PR #29](https://github.com/Coubiac/QueueAtlas/pull/29) en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37546917054).
+  Trois jobs et SHA exact vérifiés REST. Lot124 validé localement, publication/CI
+  encore à terminer lors de cet enregistrement ; dernier main validé122.
 - Lot 110 fusionné : [PR #24](https://github.com/Coubiac/QueueAtlas/pull/24),
   tête `f813a7d6c749a95cf0895a0a3bbfc3bbd2bf4aa6`,
   [CI finale entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37368191438).
@@ -3276,8 +3282,10 @@ Lot120 publié sur codex/m3-continuity dans #28, CI37537740519 entière réussie
 Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
 automatique. L'intégration pure aux clés révisables121 est publiée dans la même PR,
 CI entière réussie ; clôture122 fusionnée #28, CI finale et main vertes.
-Matrice123 rédigée ; publication/CI à terminer, puis contrôle124 du conflit de
-résultats à date égale après persistance/reopen. Branche codex/m3-validation.
+Matrice123 publiée/CI entière réussie ; contrôle124 du conflit après
+persistance/reopen validé localement. Publier/vérifierCI124 dans la même PR #29,
+puis lot125 protocole et benchmarks bornés de reconstruction pure/installation/lecture.
+Branche codex/m3-validation. M3 reste ouvert jusqu'aux mesures et à la clôture.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3285,7 +3293,7 @@ Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des s
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour une éventuelle revue du nouveau chantier ; principal sur codex/m3-continuity.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m3-validation.
 
 ## Suite à découper au fil des reprises
 
@@ -3495,7 +3503,36 @@ Après123 : contrôle124 un lot, mesures1–3, revue/clôture1–2, soit3–6 M3
 M4 15–25, M5 10–18 donnent28–49 MVP, estimation incertaine et aucun SLA.
 Pas de preuve physique automatique ni de nouveau consommateur d'attestations.
 
-Au moment de cet enregistrement123, publication/CI restent à terminer sur
-codex/m3-validation ; dernier main validé122 7ec6dd7/37543982877.
-Prochaine action : publier/vérifierCI123 dans la PR de validation M3, puis lot124
-contrôle ciblé décrit ci-dessus. Réutiliser cette PR pour validation/mesures/clôture.
+Publication123 validée : d9fde2f9b190a9fca17a2699e5d2954f797d0fb3 dans #29,
+CI37546917054 entièrement réussie, SHA exact et trois jobs vérifiés REST.
+Dernier main validé122 7ec6dd7/37543982877 ; PR29 encore en brouillon.
+
+## Lot124 : conflit à date égale après persistance et réouverture
+
+Résultat attendu et acquis localement : deux rapports natifs deferred/sent de
+date maximale égale restent deux tentatives/Latest, résultat unknown et
+OrderUncertain, compte Unknown=1 et aucun succès. Réserves coverage_unproven,
+non_explicit_time, latest_order_uncertain et unknown_result conservées, malgré
+réception/retrait observés. DSN/réponses/relais SMTP et références préservés.
+
+Test `TestProjectionPersistedEqualDateConflictSurvivesInsertionOrderAndReopen`
+dans internal/storage/sqlite/projection_integration_test.go : variante07 modifiée
+avant parsing/Commit, fixture commune inchangée. Deux bases, ordres d'insertion
+inversés réellement vérifiés par les IDs SQL. Commit → CorrelationFacts →
+InstallProjection → CurrentProjection → Close/Open → CurrentProjection ;
+projections complètes et révisions identiques. Voie ordinaire sans attestations.
+Helper partagé de tests extrait pour accepter les octets natifs ; aucun runtime
+modifié et aucun défaut runtime reproduit.
+
+Vérifications Windows : test ciblé/deux sous-cas, `go test ./internal/storage/sqlite
+-count=1`, `go vet ./internal/storage/sqlite`, gofmt et diff réussis. Suite SQLite
+justifiée par le helper partagé ; fondations hors SQLite non relancées localement.
+Matrice et avancement actualisés. Aucune mesure de performance faite dans124.
+
+Au moment de cet enregistrement124, commit/publication/CI restent à terminer sur
+codex/m3-validation dans #29. Dernier publié validé123 d9fde2f/37546917054 ;
+dernier fusionné122 7ec6dd7/37543982877. Ne pas confondre état local et CI acquise.
+Après124 : mesures1–3 et revue/clôture1–2, soit2–5 M3 ; M4 15–25/M5 10–18,
+total27–48 MVP, estimation incertaine. Prochaine action : publier/vérifierCI124,
+puis lot125 protocole/benchmarks bornés, préparation hors chronométrage. Mesures
+Windows synthétiques distinctes du pilote Linux M5, aucun SLA. Réutiliser #29.

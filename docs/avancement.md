@@ -13,7 +13,8 @@ CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111
 fusionnée/CI finale et main vertes ; rétention116–119 fusionnée #27, CI finale/main
 vertes. Contrat et clés120–122 fusionnés dans #28, CI finale37543845063 et main
 37543982877 entièrement réussies. La clôture porte sur contrat/clés, sans preuve
-physique. Matrice123 rédigée/vérifiée ; publication/CI à terminer, contrôle124 choisi.
+physique. Matrice123 publiée dans #29, CI37546917054 entière réussie. Contrôle124
+du conflit persistant/reopen acquis localement ; publication/CI124 à terminer.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -27,7 +28,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 123 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 124 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -43,10 +44,10 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25, rétention #27 et contrat/clés #28 fusionnés ; matrice123 vérifiée | Contrôle124 du conflit après persistance/reopen, mesures et revue finale ; origines non prouvées distinctes | 3–6 après123 |
+| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25, rétention #27 et contrat/clés #28 fusionnés ; matrice123 publiée/CI verte, intégration124 acquise localement | Publication/CI124, mesures et revue finale ; origines non prouvées distinctes | 2–5 après124 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après123** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **28–49** |
+| **Total après124** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **27–48** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -222,7 +223,7 @@ Onze tests synthétiques, suites locales acquises et CI12137541123250 entière
 réussie ; runtime inchangé à la relecture122, aucun défaut bloquant. PR #28
 fusionnée sur7ec6dd737681f4af878b8cdc4c8b71de0deb4308 après CI37543845063 verte ;
 CI push main37543982877 entièrement réussie. Le tableau historique ci-dessous
-décrit l'estimation après122 ; la table de tête utilise le bilan123.
+décrit l'estimation après122 ; la table de tête utilise le bilan124.
 
 Ce chantier ne livre pas la continuité physique automatique. Le cadrage demande
 des états prudents et l'absence de faux parcours/succès sur logs incomplets ; les
@@ -252,3 +253,17 @@ Les mesures115 ne concernent que recherche/migration ; reconstruction,
 installation et lecture du manifest restent à mesurer. Reste M3 : contrôle124
 un lot, mesures1–3, revue/clôture1–2, soit3–6 ; total MVP28–49 avec M4/M5.
 Ce bilan ne ferme pas M3 et ne certifie pas la couverture des journaux.
+
+## Bilan124 — conflit persistant à date égale
+
+Contrôle ciblé SQLite réussi dans les deux ordres d'insertion puis après reopen :
+deux tentatives et deux Latest, verdict unknown/OrderUncertain et quatre réserves
+conservés, aucun succès comptabilisé. Références et révisions identiques ; DSN,
+réponses et relais natifs préservés. Aucun correctif runtime nécessaire.
+Test ciblé, suite/vet SQLite et diff locaux réussis ; publication/CI124 à terminer
+dans #29. Matrice123 déjà publiée avec CI entière37546917054 réussie.
+
+Reste M3 après124 : mesures1–3, revue/clôture1–2, soit2–5 lots ; M4 15–25 et
+M5 10–18 donnent27–48 MVP. Prochain lot125 : protocole/benchmarks de reconstruction
+pure, installation et lecture ; mesures synthétiques bornées, aucun SLA ni pilote
+Linux livré. M3 toujours ouvert. Cette prévision remplace le reste après123.

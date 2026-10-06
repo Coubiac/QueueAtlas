@@ -24,6 +24,11 @@ func storeCorrelationCorpus(t *testing.T, s *Store, name, sourceID, instance str
 	if err != nil {
 		t.Fatal(err)
 	}
+	return storeCorrelationRaw(t, s, raw, name, sourceID, instance, knownDate, reverse)
+}
+
+func storeCorrelationRaw(t *testing.T, s *Store, raw []byte, name, sourceID, instance string, knownDate, reverse bool) []correlation.Fact {
+	t.Helper()
 	when := time.Date(2026, 10, 5, 0, 0, 0, 0, time.UTC)
 	origin := sourceID + "-" + name
 	batch := source.Batch{Source: source.Identity{ID: sourceID, Kind: "file", Name: "synthetic", TrustedHost: instance},

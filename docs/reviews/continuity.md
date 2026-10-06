@@ -61,9 +61,9 @@ fausses associations/succès. La voie actuelle reste donc conservatrice. Une
 intégration future de preuves de collecte fiables nécessitera producteur,
 revalidation et règles de fusion propres, à estimer avant développement.
 
-La [matrice123](../m3-exit-checklist.md) relie les critères aux vérifications.
-Le premier contrôle d'intégration manquant124 concerne le conflit de résultats à
-date égale après persistance et reopen. Ne pas répéter les mêmes contrôles du
-corpus sans risque nouveau.
-M3 demeure ouvert pour ce bilan, les vérifications/mesures d'ensemble et sa revue
+La [matrice de sortie M3](../m3-exit-checklist.md) relie les critères aux vérifications.
+Le contrôle124 du conflit à date égale après persistance et reopen est acquis
+localement dans la voie ordinaire, sans consumer d'attestations. Ne pas répéter
+les mêmes contrôles du corpus sans risque nouveau.
+M3 demeure ouvert pour les mesures d'ensemble et sa revue
 finale. Les estimations sont révisées dans docs/avancement.md.
