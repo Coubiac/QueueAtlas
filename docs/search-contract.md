@@ -106,8 +106,46 @@ réécrit pas. FK cascade évite les lignes orphelines quand une suppression est
 ce mécanisme n'est pas encore une API de rétention. Date inconnue reste NULL, rejet
 NOQUEUE reste événement distinct, réserves de couverture et de snapshot inchangées.
 
+## Lot114 : enchaînement explicite avec la reconstruction
+
+Les API de bibliothèque existantes s'enchaînent ainsi ; ce lot ajoute des tests
+d'intégration et ce contrat, sans modifier leur runtime ou créer un pilote applicatif.
+
+1. SearchEvents retourne les observations correspondantes, par pages. Un hit désigne
+   une provenance physique et propose une instance/file ; ni page ni curseur ne
+   définit une identité globale, une génération ou une entrée complète de projection.
+2. Le caller choisit explicitement CorrelationScope. Une QueueKey sélectionne tous
+   les faits persistés de cette instance/Queue ID, toutes origines et cycles recyclés,
+   y compris hors période et sans date. Ne pas transmettre les filtres temporels ou
+   les seules adresses/Message-ID de la recherche à cette lecture. Un Message-ID
+   répété ou un lien candidat n'élargit pas implicitement le scope aux autres files.
+3. CorrelationFacts relit ce périmètre au snapshot SQL courant, avec sa propre limite
+   1..4096 indépendante de la taille de page. Dépassement : ErrPartitionLimit et nil,
+   aucune entrée tronquée installable. InstallProjection revalide ces faits sous
+   réservation d'écriture puis installe le manifest ; ajout de faits dans ce périmètre
+   après leur lecture donne ErrProjectionStale, sortie zéro et ancien manifest intact.
+4. CurrentProjection reconstruit le manifest vérifié dans son snapshot de lecture.
+   Ajout postérieur de faits dans le scope le rend périmé ; relecture complète et installation
+   explicite sont nécessaires. Il ne répare pas implicitement une ancienne révision.
+
+Pour NOQUEUE, aucune QueueKey vide ni session déduite du hit. Le caller peut choisir
+UnqueuedInstances explicitement : tous les faits sans file des instances choisies,
+pas seulement ce rejet, PID ou cette fenêtre. Ce périmètre peut dépasser la limite.
+Les sessions restent candidates avec couverture non prouvée ; les rapports sans date
+restent non assignés, sans rattachement à une file acceptée.
+
+Les appels recherche/lecture/installation/lecture courante n'ont pas un snapshot
+global commun. Une sélection signifie un choix de périmètre, pas l'existence future
+garantie du hit ni une preuve de complétude des journaux. Limites d'origine, liens,
+dates et réserve coverage_unproven restent celles de la reconstruction.
+
+Trois tests synthétiques vérifient les six critères vers une même file recyclée
+(16 faits dont8 sans date et4 hors période), NOQUEUE vers un scope explicite de6 faits,
+et un import tardif après sélection (4→8 faits, refus stale/limite, refresh distinct
+par origine). Aucun nouveau statut, comportement de corrélation ou parcours ajouté.
+
 ## Prochaine étape
 
-Intégration de la recherche à la reconstruction et mesures sur corpus représentatif.
+Mesures ciblées de recherche/migration, puis bilan et clôture du chantier.
 Rétention cohérente et lecture des dates inconnues restent des comportements distincts.
 API/Web/authentification et politique de période par défaut restent au jalon M4.

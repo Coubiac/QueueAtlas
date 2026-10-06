@@ -13,7 +13,7 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111–112 publiée dans #25, CI finale112 entière verte ; domaines113 testés/relus.
+Recherche111–113 publiée dans #25, CI finale113 entière verte ; intégration114 testée/relue.
 Trois jalons restent : M3–M5, environ35–61 lots après110, dont10–18 pour M3,
 incluant validation111 ; estimation par comportements restants, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3206,14 +3206,29 @@ Cinq tests nouveaux et suite SQLite/vet/diff Windows pass ; revue indépendante
 code favorable, cinq tests via overlay Windows isolé pass, root inchangé. Aucune
 mesure charge ou Linux local. Versions courantes6/newer7 ; fixturelegacy temporaire
 retirée avantmigration. Revue documentaire finale favorable après précision des
-bornes de recherche d'adresse111, aucun test relancé. Commit du lot prévu dans #25 ;
-vérifier sa dernière tête/CI lors de la reprise. Dernier publié validé112, fusionné110
-au moment de ce bilan ; voir contrat/revue pour limites et scénarios exacts.
+bornes de recherche d'adresse111, aucun test relancé. Publié
+`eca2e7cb627879b40b442daa80e414e940cf22bb` dans #25 ; CI37418164349 entière success
+vérifiée REST sur tête exacte. Lot113 validé, fusionné110 ; voir contrat/revue.
+
+## Lot 114 : intégration de la recherche à la reconstruction
+
+Résultat attendu : chaîne de bibliothèque existante testée/documentée ; page et
+critère temporel ne tronquent pas CorrelationScope. Trois tests nouveaux Windows
+pass et vet/diff pass ; runtime111–113 inchangé, aucun pilote ou API ajouté. Six
+critères→QueueKeyexplicit→16facts/8undated/4horspériode→2cycles+unresolved1 ; SMTPsent
+et localdelivered restent distincts, réserve coverage et manifestALLfacts gardés.
+NOQUEUE→scopeunqueuedexplicit6facts/2reports/sessioncandidate1+undatedunassigned1,
+pasqueuedforeign. MessageIDpage1→filechoisie4faits sans élargissement implicite ;
+lateimport stale/limite/readnil/ancienmanifestintact ; refresh8facts/2origines distinctes.
+Revue indépendante favorable, trois tests Windows via overlay isolé pass,
+root/Git inchangés ; fondations scellées non relancées. Revue documentaire finale
+favorable, aucun test relancé. Publication/CI114 à vérifier au moment de ce bilan,
+pas de mesure de performance ou Linux local. Dernier publié validé113, fusionné110.
 
 ## Prochaine action concrète
 
-Vérifier commit113/branche codex/m3-search dans #25 et CI de sa dernière tête.
-Lot114 : intégration/revue de la recherche ; rétention ensuite.
+Vérifier commit114/branche codex/m3-search dans #25 et CI de sa dernière tête.
+Lot115 : mesures ciblées et bilan de recherche ; rétention ensuite.
 Main110/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots

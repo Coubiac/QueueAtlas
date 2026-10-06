@@ -65,4 +65,25 @@ temporairement puis retire table dérivée pour laisser un vrai ancien schéma a
 Revue indépendante code favorable, cinq tests Windows via overlay isolé pass,
 root/Git inchangés, aucune fondation relancée. Pas de charge ni Linux local mesuré.
 Revue documentaire finale favorable après précision des bornes d'adresse111 ;
-aucun test relancé. Publication/CI113 à vérifier au moment de ce bilan.
+aucun test relancé. Publiéeca2e7cb627879b40b442daa80e414e940cf22bb dans #25,
+CI37418164349 entière success vérifiée REST sur tête exacte. Lot113 validé.
+
+## Lot114 : intégration recherche → scope complet → reconstruction
+
+Résultat attendu : usage explicite des API existantes, sans confondre page/critère
+de recherche et snapshot complet du scope. Runtime111–113 inchangé ; trois tests
+nouveaux Windows pass, vet/diff pass. Pas de relance locale des fondations scellées.
+
+- Six critères limit1/périodeOct3 : scope QueueKey choisi, 16 faits toutes origines,
+  8 sans date/4Oct4 conservés, 2 cycles séparés+1stream non résolu ; counts SMTPsent
+  et localdelivered distincts, revision/coverage reserve et ALL16 memberships.
+- Hit NOQUEUEdomain : unqueuedinstance choisi explicitement, 6faits/2rejets, session
+  candidate1/rapportundatednonassigné1, pasqueuedforeign ni lienfile, Current identique.
+- Message-ID répété/page1 : une file choisie4facts sans suivre l'autre file ; import
+  tardif stale/readlimitnil/installation refusée/ancien manifest intact ; refresh8facts
+  sépare2origins et Current identique à la nouvelle révision.
+
+Revue indépendante favorable, trois tests via overlay Windows isolé pass, root/Git
+inchangés et aucune fondation relancée. Revue documentaire finale favorable,
+aucun test relancé. Publication/CI114 à vérifier au moment de ce bilan.
+Pas de mesure de performance ou exécution Linux locale, aucun pilote/API/Web ajouté.
