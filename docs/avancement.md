@@ -13,8 +13,8 @@ CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111
 fusionnée/CI finale et main vertes ; rétention116–119 fusionnée #27, CI finale/main
 vertes. Contrat120 de cohérence d'attestations de continuité publié dans #28,
 CI37537740519 entièrement réussie ; PR ouverte pour la suite d'intégration.
-Lot121 lie les clés au contexte d'attestation, testé localement ; publication/CI
-à terminer, clôture du chantier prévue122 dans la même PR.
+Lot121 lie les clés au contexte d'attestation, publié720a054 dans #28,
+CI37540913337 entièrement réussie ; clôture du chantier prévue122 dans la même PR.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -44,7 +44,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25 et rétention #27 fusionnés, CI finale/main vertes ; contrat120 publié #28, CI entière verte | Continuité conditionnée à des attestations fiables, complétude applicative, intégration/validation finale | 4–10 après clôture119 |
+| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25 et rétention #27 fusionnés, CI finale/main vertes ; contrat/clés120–121 publiés #28, CI entière verte | Continuité conditionnée à des attestations fiables, complétude applicative, intégration/validation finale | 4–10 après clôture119 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total après clôture119** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **29–53** |
@@ -212,6 +212,6 @@ nécessitera une réévaluation si son périmètre dépasse l'intégration pure.
 rotations/imports non prouvés doivent conserver leurs réserves dans le MVP.
 
 Lot121 : intégration pure du contexte aux clés, cinq tests Windows et suite de
-corrélation réussis. Cette intégration ne fusionne pas les générations et n'apporte
+corrélation réussis, CI37540913337 entière verte sur720a054. Cette intégration ne fusionne pas les générations et n'apporte
 pas une preuve physique. Réestimer à la clôture122 du chantier ; le dernier bilan
 après119 reste la référence, sans soustraire mécaniquement les deux lots de contrat.

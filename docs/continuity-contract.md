@@ -122,7 +122,9 @@ format et diff : clés contextuelles sans fusion sur un cycle synthétique coup�
 changement d'attestation, fait tardif/réattestation, permutations/propriété avec
 NOQUEUE/non résolu, refus/limites et snapshot vide. Fondations SQLite/rétention
 non relancées localement, puisque leur code et leurs entrées publiques ne changent
-pas. Publication/CI121 à terminer au moment de cet enregistrement.
+pas. Lot121 publié720a0544e7674f18ab3a159cb1e7cbea8b83f24f dans #28 ;
+[CI37540913337](https://github.com/Coubiac/QueueAtlas/actions/runs/37540913337)
+entièrement réussie sur cette tête, trois jobs vérifiés REST.
 
 ## Prochaine étape
 

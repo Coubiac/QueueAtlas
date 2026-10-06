@@ -16,8 +16,8 @@ Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runn
 Recherche111–115 fusionnée dans #25, CI finale/main vertes ; rétention116–119
 fusionnée dans #27, CI finale et main entièrement réussies. Lot120 : contrôle
 pur d'attestations de continuité publié dans #28, CI entière réussie sur le code.
-Lot121 : clés liées au contexte d'attestation développées/testées localement,
-publication et CI à terminer dans la même PR.
+Lot121 : clés liées au contexte d'attestation publiées dans #28,
+CI37540913337 entièrement réussie sur le code ; clôture du chantier prévue122.
 Trois jalons restent : M3–M5, environ29–53 lots après clôture119, dont4–10 pour M3 ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3271,8 +3271,8 @@ dans #27, CI37498495532 entièrement réussie vérifiée REST exacte. Dernier fu
 Lot119 clôturé : PR #27 fusionnée, CI finale et main vertes (SHA/run ci-dessous).
 Lot120 publié sur codex/m3-continuity dans #28, CI37537740519 entière réussie.
 Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
-automatique. L'intégration pure aux clés révisables121 est développée/testée,
-publication/CI à terminer dans cette même PR ; clôture du chantier prévue122.
+automatique. L'intégration pure aux clés révisables121 est publiée dans la même PR,
+CI entière réussie ; clôture du chantier prévue122.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3422,14 +3422,18 @@ incluant Removed/Unresolved/NOQUEUE, refus/limites et snapshot vide. Aucune erre
 de test ni correction des fondations ; SQLite et BuildProjection inchangés,
 pas de relance locale de leurs tests sans risque concret.
 
-Contrat actualisé docs/continuity-contract.md. Lot121 non publié au moment de ce
-point ; dernier publié/CI entière validés120 ec56b35/37537911013. PR #28 ouverte
-en brouillon, branche codex/m3-continuity ; main reste119 fusionné/CI verte.
+Contrat actualisé docs/continuity-contract.md. Lot121 publié
+720a0544e7674f18ab3a159cb1e7cbea8b83f24f ; CI37540913337 entière réussie,
+trois jobs vérifiés REST sur la tête exacte. PR #28 ouverte en brouillon,
+branche codex/m3-continuity ; main reste119 fusionné/CI verte. Cet enregistrement
+documentaire sera publié séparément ; état CI de la tête finale dans les checks
+et le bilan de la PR, à contrôler si nécessaire à la reprise.
 Ne pas appeler l'API une preuve de collecte : les origines restent distinctes,
 leur continuité incertaine ; production fiable/revalidation applicative encore
 nécessaires avant consommation du contexte par les projections/persistance.
 
-Prochaine action : publier121 et vérifier CI exacte dans #28, puis lot122
-bilan/relecture/clôture de ce chantier de contrat et clés, CI finale/fusion/main.
+Prochaine action : vérifier la CI de la tête documentaire finale si nécessaire,
+puis lot122 bilan/relecture/clôture de ce chantier de contrat et clés,
+CI finale/fusion/main.
 M3 reste ouvert pour complétude et intégration/mesures/validation finale ; ne pas
 confondre contrat de cohérence et certification automatique des rotations/imports.
