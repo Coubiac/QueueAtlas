@@ -1,0 +1,177 @@
+Measured 2026-10-06; fixture base 7d029b896c039da3c4af427e74e5a01149195ff0; benchmark added in lot115
+go version go1.26.2 windows/amd64
+windows
+amd64
+go1.26.2
+modernc.org/sqlite v1.60.1; temporary file DB; WAL; synchronous FULL; serial hot-cache pages; 100 hits/page
+go test ./internal/storage/sqlite -run ^$ -bench ^BenchmarkSearchEventsIndexed$ -benchtime=100x -count=3 -benchmem
+goos: windows
+goarch: amd64
+pkg: github.com/Coubiac/mailtrace/internal/storage/sqlite
+cpu: 13th Gen Intel(R) Core(TM) i7-13650HX
+BenchmarkSearchEventsIndexed/rows1000/sender/first-20         	     100	    282761 ns/op	   81730 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/first-20         	     100	    281531 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/first-20         	     100	    280243 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/seek-20          	     100	    295359 ns/op	   82096 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/seek-20          	     100	    311485 ns/op	   82101 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/seek-20          	     100	    306949 ns/op	   82098 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/first-20      	     100	    275789 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/first-20      	     100	    277574 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/first-20      	     100	    280472 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/seek-20       	     100	    306787 ns/op	   82178 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/seek-20       	     100	    305515 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/seek-20       	     100	    300150 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/first-20       	     100	    206569 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/first-20       	     100	    210088 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/first-20       	     100	    208733 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/seek-20        	     100	    248920 ns/op	   82264 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/seek-20        	     100	    248015 ns/op	   82264 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/seek-20        	     100	    247397 ns/op	   82264 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/first-20     	     100	    283351 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/first-20     	     100	    281840 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/first-20     	     100	    278602 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/seek-20      	     100	    319467 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/seek-20      	     100	    317379 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/seek-20      	     100	    310501 ns/op	   82129 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/first-20  	     100	    207769 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/first-20  	     100	    212951 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/first-20  	     100	    206574 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/seek-20   	     100	    238785 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/seek-20   	     100	    248883 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/seek-20   	     100	    236779 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/first-20         	     100	    204723 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/first-20         	     100	    209050 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/first-20         	     100	    208001 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/seek-20          	     100	    240537 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/seek-20          	     100	    246915 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/seek-20          	     100	    246347 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/first-20                  	     100	   2219745 ns/op	  104913 B/op	    2354 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/first-20                  	     100	   2207548 ns/op	  104912 B/op	    2354 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/first-20                  	     100	   2209806 ns/op	  104912 B/op	    2354 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/seek-20                   	     100	   1107560 ns/op	   82096 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/seek-20                   	     100	   1102457 ns/op	   82096 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/seek-20                   	     100	   1096584 ns/op	   82096 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/first-20               	     100	   2174352 ns/op	  105152 B/op	    2359 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/first-20               	     100	   2264431 ns/op	  105153 B/op	    2359 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/first-20               	     100	   2213028 ns/op	  105152 B/op	    2359 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/seek-20                	     100	   1100800 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/seek-20                	     100	   1117865 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/seek-20                	     100	   1133546 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/first-20                	     100	    202344 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/first-20                	     100	    211524 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/first-20                	     100	    205865 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/seek-20                 	     100	    527826 ns/op	   82264 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/seek-20                 	     100	    528319 ns/op	   82264 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/seek-20                 	     100	    519741 ns/op	   82264 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/first-20              	     100	   2126463 ns/op	  102324 B/op	    2300 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/first-20              	     100	   2083903 ns/op	  102320 B/op	    2300 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/first-20              	     100	   2082161 ns/op	  102323 B/op	    2300 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/seek-20               	     100	   1098246 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/seek-20               	     100	   1129637 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/seek-20               	     100	   1094567 ns/op	   82128 B/op	    1891 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/first-20           	     100	    205197 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/first-20           	     100	    204960 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/first-20           	     100	    230884 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/seek-20            	     100	    480398 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/seek-20            	     100	    472947 ns/op	   82235 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/seek-20            	     100	    472257 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/first-20        	     100	    208928 ns/op	   81836 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/first-20        	     100	    201801 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/first-20        	     100	    209436 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/seek-20         	     100	    470465 ns/op	   82232 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/seek-20         	     100	    464081 ns/op	   82233 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/seek-20         	     100	    473742 ns/op	   82232 B/op	    1892 allocs/op
+PASS
+ok  	github.com/Coubiac/mailtrace/internal/storage/sqlite	5.860s
+After scalar lower bound tightened to cursor.TimeNS in lot115; same fixture and parameters:
+goos: windows
+goarch: amd64
+pkg: github.com/Coubiac/mailtrace/internal/storage/sqlite
+cpu: 13th Gen Intel(R) Core(TM) i7-13650HX
+BenchmarkSearchEventsIndexed/rows1000/sender/first-20         	     100	    280674 ns/op	   81731 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/first-20         	     100	    284388 ns/op	   81730 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/first-20         	     100	    298899 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/seek-20          	     100	    220927 ns/op	   82163 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/seek-20          	     100	    222387 ns/op	   82114 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender/seek-20          	     100	    219581 ns/op	   82163 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/first-20      	     100	    285588 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/first-20      	     100	    282504 ns/op	   81729 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/first-20      	     100	    279601 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/seek-20       	     100	    217675 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/seek-20       	     100	    213068 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient/seek-20       	     100	    215575 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/first-20       	     100	    205396 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/first-20       	     100	    205830 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/first-20       	     100	    203777 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/seek-20        	     100	    216142 ns/op	   82264 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/seek-20        	     100	    215052 ns/op	   82264 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/queue_id/seek-20        	     100	    218247 ns/op	   82264 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/first-20     	     100	    284272 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/first-20     	     100	    285818 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/first-20     	     100	    288336 ns/op	   81728 B/op	    1871 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/seek-20      	     100	    215183 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/seek-20      	     100	    216568 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/message_id/seek-20      	     100	    219812 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/first-20  	     100	    203532 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/first-20  	     100	    204941 ns/op	   81833 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/first-20  	     100	    203474 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/seek-20   	     100	    213379 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/seek-20   	     100	    216854 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/sender_domain/seek-20   	     100	    216135 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/first-20         	     100	    206849 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/first-20         	     100	    207401 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/first-20         	     100	    202541 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/seek-20          	     100	    211756 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/seek-20          	     100	    227277 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows1000/recipient_domain/seek-20          	     100	    213977 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/first-20                  	     100	   2193423 ns/op	  104912 B/op	    2354 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/first-20                  	     100	   2178749 ns/op	  104913 B/op	    2354 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/first-20                  	     100	   2211427 ns/op	  104911 B/op	    2354 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/seek-20                   	     100	    226883 ns/op	   82112 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/seek-20                   	     100	    215761 ns/op	   82112 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender/seek-20                   	     100	    217589 ns/op	   82113 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/first-20               	     100	   2182292 ns/op	  105152 B/op	    2359 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/first-20               	     100	   2190514 ns/op	  105152 B/op	    2359 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/first-20               	     100	   2266433 ns/op	  105152 B/op	    2359 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/seek-20                	     100	    217607 ns/op	   82129 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/seek-20                	     100	    213995 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient/seek-20                	     100	    213125 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/first-20                	     100	    204914 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/first-20                	     100	    218666 ns/op	   81817 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/first-20                	     100	    209414 ns/op	   81816 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/seek-20                 	     100	    213904 ns/op	   82264 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/seek-20                 	     100	    215323 ns/op	   82264 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/queue_id/seek-20                 	     100	    217466 ns/op	   82264 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/first-20              	     100	   2048896 ns/op	  102320 B/op	    2300 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/first-20              	     100	   2175187 ns/op	  102320 B/op	    2300 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/first-20              	     100	   2079253 ns/op	  102324 B/op	    2300 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/seek-20               	     100	    218939 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/seek-20               	     100	    217075 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/message_id/seek-20               	     100	    218747 ns/op	   82128 B/op	    1892 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/first-20           	     100	    215005 ns/op	   81833 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/first-20           	     100	    206954 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/first-20           	     100	    215150 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/seek-20            	     100	    218867 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/seek-20            	     100	    222664 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/sender_domain/seek-20            	     100	    215929 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/first-20        	     100	    210330 ns/op	   81834 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/first-20        	     100	    211330 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/first-20        	     100	    215252 ns/op	   81832 B/op	    1872 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/seek-20         	     100	    220336 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/seek-20         	     100	    215520 ns/op	   82232 B/op	    1893 allocs/op
+BenchmarkSearchEventsIndexed/rows10000/recipient_domain/seek-20         	     100	    233749 ns/op	   82232 B/op	    1893 allocs/op
+PASS
+ok  	github.com/Coubiac/mailtrace/internal/storage/sqlite	4.700s
+go test ./internal/storage/sqlite -run ^$ -bench ^BenchmarkSearchDomainMigration$ -benchtime=1x -count=3 -benchmem
+goos: windows
+goarch: amd64
+pkg: github.com/Coubiac/mailtrace/internal/storage/sqlite
+cpu: 13th Gen Intel(R) Core(TM) i7-13650HX
+BenchmarkSearchDomainMigration/rows1000-20         	       1	   8722200 ns/op	  717168 B/op	   24846 allocs/op
+BenchmarkSearchDomainMigration/rows1000-20         	       1	   8177800 ns/op	  719376 B/op	   24848 allocs/op
+BenchmarkSearchDomainMigration/rows1000-20         	       1	   8483500 ns/op	  713824 B/op	   24831 allocs/op
+BenchmarkSearchDomainMigration/rows10000-20        	       1	  88233600 ns/op	 7178752 B/op	  252416 allocs/op
+BenchmarkSearchDomainMigration/rows10000-20        	       1	  87402200 ns/op	 7178608 B/op	  252423 allocs/op
+BenchmarkSearchDomainMigration/rows10000-20        	       1	  87684000 ns/op	 7171136 B/op	  252387 allocs/op
+PASS
+ok  	github.com/Coubiac/mailtrace/internal/storage/sqlite	2.486s

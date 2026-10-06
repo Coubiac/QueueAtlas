@@ -177,6 +177,10 @@ func eventSearchSelection(query SearchQuery) (string, []any, string, error) {
 		if cursor.QueryRevision != revision || cursor.TimeNS < from || cursor.TimeNS >= until {
 			return "", nil, "", ErrSearchCursor
 		}
+		// Narrow the scalar index range as well as the tuple predicate. Keeping
+		// the original From here can make SQLite scan earlier matching times
+		// before applying the seek condition. Equal-time IDs still use the tuple.
+		args[2] = cursor.TimeNS
 		where += ` AND (` + timeColumn + `, ` + idColumn + `) > (?, ?)`
 		args = append(args, cursor.TimeNS, cursor.RowID)
 	}

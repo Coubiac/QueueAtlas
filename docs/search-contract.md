@@ -144,8 +144,22 @@ Trois tests synthétiques vérifient les six critères vers une même file recyc
 et un import tardif après sélection (4→8 faits, refus stale/limite, refresh distinct
 par origine). Aucun nouveau statut, comportement de corrélation ou parcours ajouté.
 
+## Lot115 : borne de seek et bilan local
+
+La borne scalaire time_utc_ns>=From est resserrée à cursor.TimeNS pour une page
+avec curseur validé ; tuple(time,id)>cursor conservé. Le hash garde les critères
+d'origine, dont From ; égalités de date et compatibilité des curseurs restent intactes.
+Les [mesures locales avant/après](search-measurements.md) décrivent protocole,
+données brutes, coût des premières pages filtrant une autre instance et migration
+intégrale. Aucun budget SQL autonome ou seuil de production déduit de ce profil.
+
+Chantier111–115 : six critères indexés, domaine dérivé/migrations atomiques, limites,
+pagination et chaîne de reconstruction explicite testées/documentées. La clôture
+de #25 nécessite CI entière sur tête finale, revue finale et fusion/main vérifiées.
+Ce bilan ne clôture pas M3 ; pas de performance MVP représentative ou API livrée.
+
 ## Prochaine étape
 
-Mesures ciblées de recherche/migration, puis bilan et clôture du chantier.
-Rétention cohérente et lecture des dates inconnues restent des comportements distincts.
+Rétention cohérente en lots et invalidation explicite des manifests affectés.
+Lecture des dates inconnues hors recherche temporelle reste un comportement distinct.
 API/Web/authentification et politique de période par défaut restent au jalon M4.

@@ -9,7 +9,7 @@ vertes. Indices natifs100 et relations101 fusionnés dans #22, clôture102 termi
 CI finale/main réussies. Clés103 et composition104 fusionnées #23, clôture105
 terminée/CI finale et main vertes. Lecture SQLite106 et schéma107 publiés dans #24,
 CI vertes ; installation108/lecteur109 et clôture110 fusionnés dans #24 après
-CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111–113 publiée/CI finale verte ; intégration114 testée/relue.
+CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111–114 publiée/CI finale verte ; mesures/correctif115 testés/relus.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -23,7 +23,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 111 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 115 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -39,10 +39,10 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections pures et stockage #19–24 fusionnés, CI finale verte ; recherche111 en revue | Continuité prouvée, complétude applicative, fin recherche et rétention, intégration/mesures | 10–18 après clôture110, incluant validation111 |
+| M3 — reconstruction | En cours : projections pures et stockage #19–24 fusionnés, CI finale/main vertes ; recherche111–114 publiée/CI verte, bilan115 en revue | Rétention, continuité prouvée, complétude applicative, intégration/validation finale | 7–14 après clôture115, sous réserve de validation |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après clôture110** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **35–61** |
+| **Total après clôture115** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **32–57** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -153,14 +153,14 @@ avec revue favorable et CI37330343331 entière success. Clôture105 terminée,
 Lecture106 et schéma107 publiés dans #24, CI37333408517 et37336085923 success.
 Installation108/lecteur109 et clôture110 fusionnés dans #24 suraaa95f8,
 CI finale37368191438 entière success après relance d'une annulation de runner stable.
-CI main37372128796 entière success vérifiée REST. Recherche111–113 publiée dans #25, CI finale11337418164349 entière success ; intégration114 testée/relue, publication/CI à vérifier.
+CI main37372128796 entière success vérifiée REST. Recherche111–114 publiée dans #25, CI finale11437420603702 entière success ; mesures/correctif115 testés/relus, clôture/pub/CI à vérifier.
 Le schéma et les memberships conservent tous les faits, y compris les réserves ;
 aucun résultat dérivé n'est sérialisé. Le chantier de stockage est fusionné ; CI main
 vérifiée. La prévision2–4 lots après107 a couvert108–110. Recherche111 développée
 et testée ; autres critères/index/domaines et rétention explicitement séparés :
 6–8 lots au lieu de4–6, incluant validation111 et clôture de ces chantiers.
 Continuité entre origines, recherche et rétention restent séparées. Réestimation
-10–18 M3, 35–61 total après110, remplace10–20/35–63 après107 ; critères inchangés.
+10–18 M3, 35–61 total après110 était le bilan précédent ; critères inchangés. Après clôture115, réestimation par reste : rétention3–4, continuité1–3, complétude0–1, intégration/validation finale3–6, soit7–14 M3/32–57 total. Recherche111–115 aura pris5 lots ; mesures Windows synthétiques locales ne remplacent pas le pilote Linux représentatif M5. Clôture115 encore soumise à CI entière/fusion/main.
 Les lots de clôture ne livrent pas de nouveaux
 comportements ; le compteur n'est pas décrémenté mécaniquement à chaque PR.
 

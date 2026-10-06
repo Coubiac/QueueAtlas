@@ -13,9 +13,9 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111–113 publiée dans #25, CI finale113 entière verte ; intégration114 testée/relue.
-Trois jalons restent : M3–M5, environ35–61 lots après110, dont10–18 pour M3,
-incluant validation111 ; estimation par comportements restants, pas pourcentage livré.
+Recherche111–114 publiée dans #25, CI finale114 entière verte ; mesures/correctif115 testés/relus.
+Trois jalons restent : M3–M5, environ32–57 lots après clôture115, dont7–14 pour M3 ;
+estimation par comportements restants, sous réserve de clôture115, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -3222,13 +3222,33 @@ pasqueuedforeign. MessageIDpage1→filechoisie4faits sans élargissement implici
 lateimport stale/limite/readnil/ancienmanifestintact ; refresh8facts/2origines distinctes.
 Revue indépendante favorable, trois tests Windows via overlay isolé pass,
 root/Git inchangés ; fondations scellées non relancées. Revue documentaire finale
-favorable, aucun test relancé. Publication/CI114 à vérifier au moment de ce bilan,
-pas de mesure de performance ou Linux local. Dernier publié validé113, fusionné110.
+favorable, aucun test relancé. Publié7d029b896c039da3c4af427e74e5a01149195ff0,
+CI37420603702 entière success vérifiée REST exacte. Lot114 validé, fusionné110.
+Pas de mesure de performance ou Linux local dans114.
+
+## Lot 115 : mesures, seek resserré et bilan du chantier recherche
+
+Résultat attendu : benchmarks reproductibles, limites documentées et CI exacte avant
+clôture #25. Deux benchmarks1k/10k, six critères page100 chaude/première etseek avec
+50%foreignavanttrusted ; migration réellev5→v6TX, préparation/reset horsmesure.
+Smoke1x, mesures3x100 pages avant/après et3x1 migrations pass, raw+rapport conservés.
+Mesure seekinitialcroissant→borne scalaire cursor.TimeNS aprèsvalidation, tuple et
+hashoriginalinchangés. SuiteSQLite/vet/diff Windows aprèscorrectif pass ; revue
+code/méthode favorable, douze tests recherche overlay isolé pass, rawlus sans remesure
+indépendante, root inchangé. Seek10k0,214–0,220ms vs0,470–1,118 avant ; premièrespages
+adresse/MsgID~2,1–2,2msforeignfilter limitation conservée. Migration8,484/87,684ms,
+allocations cumulées paspicRSS ; pascorpusMVP/Linux/concurrence/tempsglobalborné.
+Revue documentaire finale indépendante favorable, aucun test relancé. Publication/
+CI finale/fusion/main115 à vérifier au moment du commit ; #25 passe ready puis fusion
+seulement après CI entière de tête finale verte. Dernier publié validé114, fusionné110.
+Réestimation après clôture115 : M3 7–14 (rétention3–4, continuité1–3, complétude0–1,
+intégration/validation finale3–6), M4 15–25/M5 10–18, total32–57 ; échéance non garantie.
 
 ## Prochaine action concrète
 
-Vérifier commit114/branche codex/m3-search dans #25 et CI de sa dernière tête.
-Lot115 : mesures ciblées et bilan de recherche ; rétention ensuite.
+Vérifier lot115/dernière tête #25 et CI entière/fusion/main ; revues finales scellées.
+Lot116 : première opération bornée de rétention, manifests affectés invalidés dansTX,
+faits/raw supprimés ensemble, checkpoints conservés ; périmètre explicite à définir.
 Main110/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots

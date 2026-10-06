@@ -85,5 +85,26 @@ nouveaux Windows pass, vet/diff pass. Pas de relance locale des fondations scell
 
 Revue indépendante favorable, trois tests via overlay Windows isolé pass, root/Git
 inchangés et aucune fondation relancée. Revue documentaire finale favorable,
-aucun test relancé. Publication/CI114 à vérifier au moment de ce bilan.
+aucun test relancé. Publié7d029b896c039da3c4af427e74e5a01149195ff0 dans #25,
+CI37420603702 entière success vérifiée REST sur tête exacte. Lot114 validé.
 Pas de mesure de performance ou exécution Linux locale, aucun pilote/API/Web ajouté.
+
+## Lot115 : mesures ciblées, correction seek et bilan
+
+Résultat attendu : protocole reproductible et limites honnêtes, pas seuil CI de
+performance. Deux benchmarks1k/10k : six critères/page100/première et seek,50%foreign
+avanttrusted, cache chaud/préparationhorsmesure ; migration réelleDDL/backfill/commit
+avec reset/vérificationhorsmesure. Smoke1x pass, mesures3x100 pages avant/après et
+3x1 migrations. Rapport et sorties brutes liés depuis search-measurements.md.
+
+Coût du seek initial croissant confirmé ; args[2]=cursor.TimeNS après validation
+resserre plage scalaire, tuple/dateégale/hashoriginal conservés. Suite SQLite/vet/
+diff Windows après correctif pass. Douze tests recherche via overlay isolé pass,
+revue code/méthode favorable, mesures lues sans remesure indépendante, root/Git
+inchangés. Seek10k~0,214–0,220ms après vs0,470–1,118ms avant ; premières pages
+adresse/MessageID~2,1–2,2ms filtrentforeignsansindexinstance. Migration~8,484/87,684ms,
+allocations cumulées paspicRSS, aucun seuil/SLA/extrapolation.
+Revue documentaire finale indépendante favorable, médianes/méthode/estimations
+vérifiées sans rerun. Publication115/CI finale/fusion/main à vérifier au moment du
+commit ; #25 passe ready puis fusion seulement après CI entière de tête finale verte.
+M3 encore incomplet.
