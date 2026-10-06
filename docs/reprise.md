@@ -13,7 +13,7 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111 publiée dans #25, CI Linux annulée faute de runner ; extension112 testée/relue.
+Recherche111 publiée dans #25, CI Linux annulée faute de runner ; extension112 publiée/testée/relue.
 Trois jalons restent : M3–M5, environ35–61 lots après110, dont10–18 pour M3,
 incluant validation111 ; estimation par comportements restants, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3185,13 +3185,17 @@ literalSQL/bounds/cursor, migration préserve projection/reopen et rollback inde
 Deux attentes de fixture corrigées, aucun défaut runtime/parser associé. Revue code
 indépendante favorable, cinq tests overlay isolé Windows pass, root inchangé/fondations
 non relancées. Revue documentaire finale favorable après précision du rollback vers
-la version initiale (cas v4 testé), aucun test relancé. Publication/CI112 à vérifier ;
-dernier publié111 CI partielle, main110 verte.
+la version initiale (cas v4 testé), aucun test relancé. Implémentation publiée
+`c44746d602a2a6e4d6867af756baaef7135f20a8` dans #25 ; CI37415832690 en cours,
+trois jobs démarrés. Commit documentaire de reprise ajouté ensuite : vérifier sa
+tête exacte et sa CI avant clôture. Dernier fusionné110/CI main verte.
+Signature interactive 1Password indisponible dans cette exécution ; commit112
+non signé comme111, sans changement de configuration Git globale.
 
 ## Prochaine action concrète
 
-Terminer commit/push112 dans #25 sur codex/m3-search puis CI
-exacte. Lot113 : recherche de domaine avec colonnes dédiées ; intégration/revue du
+Vérifier la CI de la dernière tête112 dans #25 sur codex/m3-search.
+Lot113 : recherche de domaine avec colonnes dédiées ; intégration/revue du
 chantier et rétention ensuite. Main110/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots

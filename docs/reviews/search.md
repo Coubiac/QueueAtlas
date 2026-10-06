@@ -44,4 +44,6 @@ que le parser existant les retire. Aucun parser changé. Assertions courantes à
 version6 refusée. Revue code indépendante favorable, cinq tests via overlay isolé
 Windows pass, root/Git inchangés, fondations non relancées. Revue documentaire finale
 favorable après précision du rollback vers la version initiale (cas v4 testé).
-Aucun test relancé ; publication/CI112 à vérifier.
+Aucun test relancé ; implémentation112 publiéec44746d dans #25,
+CI37415832690 en cours (trois jobs démarrés). Dernière tête incluant ce bilan
+documentaire à valider en CI avant clôture du chantier.
