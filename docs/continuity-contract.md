@@ -128,11 +128,10 @@ entièrement réussie sur cette tête, trois jobs vérifiés REST.
 
 ## Prochaine étape
 
-Lot122 : [relecture et bilan de clôture](reviews/continuity.md) sans défaut bloquant,
-runtime inchangé. Publication122, CI finale entière, fusion et CI main sont
-consignées dans la PR #28 ; ne pas les supposer réussies depuis la seule relecture.
-Ensuite, lot123 : matrice de sortie M3 et choix du premier risque d'intégration
-non couvert. Avant toute utilisation applicative ou
+Lot122 : [relecture et clôture](reviews/continuity.md) sans défaut bloquant,
+runtime inchangé ; PR #28 fusionnée, CI finale37543845063 et main37543982877 entières
+réussies. La [matrice123](m3-exit-checklist.md) identifie le contrôle124 de conflit
+de résultats à date égale après persistance/reopen. Avant toute utilisation applicative ou
 persistance d'un plan, définir le producteur fiable et sa revalidation. Tant que
 ces propriétés ne sont pas établies, garder les origines distinctes. Le MVP
 conservateur peut afficher cette incertitude ; le contrat ne promet pas une
