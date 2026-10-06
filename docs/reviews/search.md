@@ -107,4 +107,8 @@ allocations cumulées paspicRSS, aucun seuil/SLA/extrapolation.
 Revue documentaire finale indépendante favorable, médianes/méthode/estimations
 vérifiées sans rerun. Publication115/CI finale/fusion/main à vérifier au moment du
 commit ; #25 passe ready puis fusion seulement après CI entière de tête finale verte.
+Publié694fb6de0836b5e7773e081f2082be8a39830589, CI finale37423566878 entière success
+vérifiée REST exacte. Commentaire assisté5424580355/ready, #25 fusionnée sur
+f68ae85970e7e5878774ed948330eb7059def21a ; CI pushmain37423754491 entière success
+vérifiée REST exacte. Chantier111–115 terminé, checkout main actualisé/propre avant116.
 M3 encore incomplet.

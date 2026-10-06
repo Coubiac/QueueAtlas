@@ -13,9 +13,9 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111–114 publiée dans #25, CI finale114 entière verte ; mesures/correctif115 testés/relus.
+Recherche111–115 fusionnée dans #25, CI finale/main vertes ; preview rétention116 testé/relu.
 Trois jalons restent : M3–M5, environ32–57 lots après clôture115, dont7–14 pour M3 ;
-estimation par comportements restants, sous réserve de clôture115, pas pourcentage livré.
+estimation par comportements restants, après clôture115 validée, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
 prévision 2–5 après85. Fourchettes incertaines ; AD/OIDC reste après MVP.
 
@@ -3240,22 +3240,40 @@ adresse/MsgID~2,1–2,2msforeignfilter limitation conservée. Migration8,484/87,
 allocations cumulées paspicRSS ; pascorpusMVP/Linux/concurrence/tempsglobalborné.
 Revue documentaire finale indépendante favorable, aucun test relancé. Publication/
 CI finale/fusion/main115 à vérifier au moment du commit ; #25 passe ready puis fusion
-seulement après CI entière de tête finale verte. Dernier publié validé114, fusionné110.
+seulement après CI entière de tête finale verte. Publié694fb6de0836b5e7773e081f2082be8a39830589,
+CI finale37423566878 entière success vérifiée REST exacte ; commentaire assisté
+5424580355/ready, #25 fusionnée surf68ae85970e7e5878774ed948330eb7059def21a.
+CI pushmain37423754491 entière success vérifiée REST exacte, main actualisé/propre.
+Lot115 et chantier111–115 terminés. Nouvelle branche codex/m3-retention depuis ce main.
 Réestimation après clôture115 : M3 7–14 (rétention3–4, continuité1–3, complétude0–1,
 intégration/validation finale3–6), M4 15–25/M5 10–18, total32–57 ; échéance non garantie.
 
+## Lot 116 : prévisualisation de rétention en lecture seule
+
+Résultat attendu : candidats anciens bornés, positions couvertes/refs physiques,
+snapshot unique et zéro mutation. L'enjeu du rejeu après perte d'ACK exige protection
+de provenance avant purge ; périmètre116 ramené au preview, suite117–119 séparée.
+PreviewRetention développé : instanceexacte/cutoffUTCexclusif/limit1..256, oneSELECT
+events/raw/CPsourceETorigin/end<=offset/anchor nonvide, refs/UTC/qualité/More, nullUTC
+et positionsnoncouvertesexclues. Hypothèsesdatesconservées, pas autorisation de purge.
+Quatre tests Windows/vet/diff pass ; revue indépendante favorable, quatre tests
+overlayisoléWindows pass, root/Git inchangés. FixtureCP corrigée pour vérifierfoundtrue,
+aucundéfautruntime ; writer/schémainchangés/fondationsnonrelancées. Docs/pub/CI116
+à vérifier, dernierfusionnévalidé115. Contrat dans docs/retention-contract.md.
+
 ## Prochaine action concrète
 
-Vérifier lot115/dernière tête #25 et CI entière/fusion/main ; revues finales scellées.
-Lot116 : première opération bornée de rétention, manifests affectés invalidés dansTX,
-faits/raw supprimés ensemble, checkpoints conservés ; périmètre explicite à définir.
-Main110/CI push validés ; date inconnue exclue d'une
+Terminer revue documentaire116, commit/push et ouvrir PR du chantier rétention,
+puis vérifier CI exacte. Lot117 : protéger la provenance contre les rejeux aprèspurge ;
+suppression/invalidation118, intégration/clôture119. Prévision rétention3–4 après115,
+quatre lots désormais planifiés116–119 ; ne pas confondre preview et suppression.
+Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour la tête publiée du nouveau chantier ; principal sur codex/m3-search.
+pour la tête publiée du nouveau chantier ; principal sur codex/m3-retention.
 
 ## Suite à découper au fil des reprises
 
@@ -3280,7 +3298,11 @@ suppression automatique des branches après fusion activée.
 Ce changement séparé actualise le module Go et ses imports, ainsi que les liens
 documentaires. Les sorties brutes des benchmarks historiques conservent leur nom
 de paquet d'origine. Aucun comportement métier modifié. Suite go test ./..., go vet ./..., format et
-git diff --check Windows réussis. Publication et CI distante à vérifier avant fusion.
+git diff --check Windows réussis. PR #26 fusionnée sur 0de518079c9eb09f11021e4e9332afa9c8971eb1 après CI
+37497588148 entière réussie sur c1b702d5c976a900d4c0239838eecc04a477ab6a.
+CI push main 37497954166 entièrement réussie, vérifiée sur le merge exact ;
+checkout principal actualisé avec lot 116
+conservé. Ses quatre tests ciblés passent après renommage du module/imports.
 
 Le checkout principal reste sur codex/m3-retention avec le lot 116 non committé :
 prévisualisation readonly développée, quatre tests/vet et revue du code favorables ;
