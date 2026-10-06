@@ -13,7 +13,7 @@ fusionnées #23, clôture105 terminée/CI finale et main vertes. Lecture SQLite1
 dans #24/CI verte ; schéma107 publié/CI verte ; installation108,
 lecture/fraîcheur109 et clôture110 fusionnées dans #24, CI finale entière verte.
 Main110 actualisé, CI push verte après relance du job Go1.26 annulé sans runner.
-Recherche111–115 fusionnée dans #25, CI finale/main vertes ; preview116 publié/CI verte, garde117 testé/relu en cours.
+Recherche111–115 fusionnée dans #25, CI finale/main vertes ; preview116 et garde117 publiés/CI vertes, purge118 développée/testée.
 Trois jalons restent : M3–M5, environ32–57 lots après clôture115, dont7–14 pour M3 ;
 estimation par comportements restants, après clôture115 validée, pas pourcentage livré.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3263,8 +3263,8 @@ dans #27, CI37498495532 entièrement réussie vérifiée REST exacte. Dernier fu
 
 ## Prochaine action concrète
 
-Terminer revue documentaire117, commit/push dans PR #27 et vérifier CI exacte.
-Lot116 publié/CI verte ; garde117 développé/testé/relu ;
+Terminer revue code/docs118, commit/push dans PR #27 et vérifier CI exacte.
+Lots116–117 publiés/CI vertes, purge118 développée/testée ;
 suppression/invalidation118, intégration/clôture119. Prévision rétention3–4 après115,
 quatre lots désormais planifiés116–119 ; ne pas confondre preview et suppression.
 Main115/CI push validés ; date inconnue exclue d'une
@@ -3309,7 +3309,7 @@ avec le lot 116 non committé :
 prévisualisation readonly développée, quatre tests/vet et revue du code favorables ;
 revue documentaire, publication et CI restant à terminer. Il a ensuite été publié et validé par la CI (voir116/117).
 
-## Lot117 : garde de provenance après purge (en cours)
+## Lot117 : garde de provenance après purge (validé)
 
 Lot116 publié50047e670984b41840d2e879fec56ef8f9a7bcec dans PR #27 créée/attachée ;
 CI37498495532 entièrement réussie vérifiée REST exacte. Dernier fusionné main26.
@@ -3321,7 +3321,25 @@ Aucune purge publique : DELETE simulé dans les tests uniquement. Origines à qu
 Six tests117 et suite SQLite/vet/diff Windows réussis ; smoke benchmarkmigration1x
 1k/10k v5→current7 réussi, sans remesure115. Versions courantes des tests actualisées,
 fixtures legacy writer tables temporaires retirées. Revue code indépendante favorable, six tests overlay Windows isolé pass, root/Git
-inchangés. Revue documentaire finale favorable ; publication/CI117 attendues.
+inchangés. Revue documentaire finale favorable ; publié d82ae70c7d2ee4be603b98b164afa8c8e9ac4861,
+CI37499111912 entièrement verte vérifiée REST exacte.
 Le volume/durée des marqueurs et leur digest nonclé nonanonymisant sont documentés.
-Prochaine action : terminer revue117, publier dans #27 et vérifier CI, puis lot118
+Suite117 validée : lot118 dans #27, puis lot119
 suppression et invalidation atomiques ; lot119 intégration/clôture du chantier.
+
+## Lot118 : purge transactionnelle (en cours)
+
+Résultat attendu : supprimer au plus256faits datés anciens pour instance exacte,
+éligibilité revalidée sous writer et manifests invalidés atomiquement. Développé :
+file_retired ou importtoutesattemptscomplete/finalCP/taille/fingerprint cohérents ;
+unknown/following/running/failed non éligibles. Marker117→NULLcurrent→DELETErevisions
+référentes→DELETEraw→events/domaines cascade, scopes/CP/origins/imports conservés.
+Résultat seulement après commit, More snapshot éligible, zéro sur erreur/rollback.
+Politique conservative, pas preuvecoverage/secureerase ; bornefaits sans borneSQL/
+metadata/WAL/durée. Cinq tests118 et suiteSQLite/vet/diff Windows pass. Fixturehistory
+corrigée car InstallProjection remplace ses anciennes révisions ; seed historique
+explicite autorisé par schéma, aucune correction runtime. Revue code indépendante favorable, cinq tests overlay Windows isolé pass, root/Git
+inchangés. Revue documentaire finale favorable ; publication/CI118 attendues.
+Dernier publié/CI verte117 d82ae70c7d2ee4be603b98b164afa8c8e9ac4861/37499111912.
+Prochaine action : terminer118 dans #27, puis119 intégration WAL/recherche/
+reconstruction et bilan/clôture CI/fusion/main.

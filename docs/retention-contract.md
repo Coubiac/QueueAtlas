@@ -102,3 +102,50 @@ purge applicative automatique. Le benchmark de migration repart désormais de v5
 vers la version courante7 et son reset retire aussi v7. Son smoke1x vérifie le
 fonctionnement, pas une nouvelle mesure représentative ; les mesures115 restent
 historiquement celles de v5→v6 et leurs sorties brutes ne sont pas réécrites.
+
+## Lot118 : purge bornée et invalidation atomique
+
+Store.PurgeRetention(ctx, RetentionQuery) utilise les mêmes bornes de requête116.
+Le caller choisit explicitement instance/cutoff/limit et deadline. L'appel réserve
+le writer SQLite AVANT ses lectures, puis sélectionne de nouveau les faits datés
+et leur checkpoint exact/ancre non vide : aucun résultat PreviewRetention ni liste
+d'ID fournie par un caller ne sert d'autorisation.
+
+Qualification supplémentaire sur état persisté, dans cette transaction :
+
+- source file : origine FollowRetired uniquement ; unknown/following exclues ;
+- source import : au moins une tentative associée à cette origine, et toutes
+  complete, position finale égale taille et checkpoint, trailing_partial zéro,
+  fingerprint sha256 cohérent, device/inode vides. Une tentative running ou failed
+  sur le même contenu empêche la purge. Les origines sans tentative ne sont pas
+  adoptées implicitement ; aucun autre kind de source qualifié.
+
+Ces états sont une politique de stockage conservatrice, pas une preuve d'absence
+future d'append, de retry ou de couverture des journaux. Les retries restent soumis
+au garde117 et les acquisitions/réactivations restent les politiques de source.
+La date d'événement hypothétique, son fuseau/année et cutoff exclusif ne changent pas.
+Un import daté partiellement conserve ses faits non datés et son manifest complete.
+
+Ordre date/id, au plus256faits et une ligne supplémentaire pour More. Chaque raw
+sélectionné a son marqueur117 écrit avant suppression. Tous les manifests contenant
+au moins un de ces faits sont invalidés : pointeurs current concernés mis à NULL,
+révisions affectées supprimées, bindings et memberships retirés par FKcascade.
+Les révisions historiques et scopes composites sont inclus. Scopes/parts, CP,
+origines et manifests d'import restent conservés ; une projection indépendante
+reste intacte. DELETE raw entraîne DELETE events et domaines par FKcascade.
+
+PurgeResult contient Deleted, InvalidatedRevisions et More uniquement APRÈS commit.
+Sur toute erreur, y compris échec du dernier DELETE/cancel, résultat zéro et rollback
+facts, marqueurs, invalidations. Rien n'est reconstruit automatiquement ; un lecteur
+voit found=false pour un current invalidé et peut relire/recalculer explicitement.
+La réservation de writer empêche un writer concurrent d'installer un manifest ou de
+changer l'éligibilité entre sélection et suppression ; lecteurs WAL gardent leur
+ancien snapshot tant qu'il reste ouvert, à vérifier dans l'intégration119.
+
+More indique une autre ligne éligible au snapshot de sélection, sans total ou garantie
+sur l'appel suivant. Borne256sur faits, pas sur le nombre de révisions/memberships
+associés, le coût SQL, les octets WAL ni la durée totale. Aucun loop global, horloge,
+âge par défaut, scheduler ou VACUUM. Les faits non datés restent hors purge et une
+recherche sans hits ne prouve pas l'absence historique. L'empreinte de provenance
+survit, de même que certaines métadonnées de fichiers/imports ; effacement sécurisé,
+rotation des sauvegardes et politique d'expiration des métadonnées ne sont pas livrés.
