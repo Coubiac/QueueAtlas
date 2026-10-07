@@ -24,9 +24,11 @@ Lot124 publié dans #29 sur2f573a2, CI37549552434 entière réussie ; conflit à
 égale conservé après stockage/reconstruction/reopen et insertion inverse.
 Lot125 publié suraa5f3c9, CI37552260931 entière réussie, smoke Linux Go1.26 passé.
 Lot126 publié surf4c24d2, CI37554852072 entière réussie ;36échantillons/12cas conservés.
-Lot127 : relecture de sortie M3 favorable en bibliothèque, sans défaut bloquant ;
-CI finale/fusion #29 et CI main à terminer avant clôture effective.
-Après clôture127, deux jalons M4/M5 restent, environ25–43lots, M3 zéro lot restant ;
+Lot127 clôturé : #29 fusionnée sur038c6c9, CI finale37557272778 et main37557390479
+entièrement réussies. M3 terminé en bibliothèque, branche du chantier supprimée.
+Lot128 : point d'entrée CLI version/aide/codes de sortie, quatre tests/vet et
+go run Windows réussis ; publication/CI128 à terminer sur codex/m4-cli.
+Deux jalons M4/M5 restent, environ24–42lots après128, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -46,6 +48,13 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot127 terminé/fusionné : finale `d26e0bd97987b42417853338cab8fac6d7105675`,
+  [CI finale37557272778](https://github.com/Coubiac/QueueAtlas/actions/runs/37557272778)
+  entière réussie. Merge `038c6c90ee515d584669a8d879b5e267d30d8f13`,
+  [CI main37557390479](https://github.com/Coubiac/QueueAtlas/actions/runs/37557390479)
+  entière réussie, SHA/trois jobs vérifiés REST. Revue COMMENT5436561773/ready,
+  main actualisé propre et branche du chantier supprimée local/GitHub.
+  Clôture revérifiée à la reprise128 ; M3 zéro lot restant, pas de rerun de127.
 - Lot126 publié : `f4c24d22e64baa8d09a2ec0583ae46294882dfac`, #29,
   [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37554852072),
   trois jobs/SHA exact vérifiés REST à la reprise127. Relecture127 favorable,
@@ -3299,19 +3308,18 @@ Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
 automatique. L'intégration pure aux clés révisables121 est publiée dans la même PR,
 CI entière réussie ; clôture122 fusionnée #28, CI finale et main vertes.
 Matrice123, contrôle124, benchmarks125 et mesures126 publiés/CI entières réussies.
-Relecture127 favorable : publier/vérifier CI finale127, COMMENT assisté sur tête
-exacte, ready/fusion #29 puis CI main. Après clôture vérifiée, lot128 M4 : CLI
-`queueatlas version`. Branche actuelle codex/m3-validation, main à actualiser après
-fusion ; ne pas refaire le chantier M3 sur la seule lecture des états historiques.
-Branche codex/m3-validation. M3 reste ouvert jusqu'aux mesures et à la clôture.
+M3 clôturé127, fusion/CI finale/main vérifiées. CLI128 développé localement :
+publier/vérifier CI128 et créer/attacher une PR CLI/configuration à réutiliser.
+Branche codex/m4-cli depuis main038c6c9 propre. Prochain lot129 : contrat de
+configuration/valeurs par défaut ; chargement YAML durci séparé ensuite.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
 Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des snapshots
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
-Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
+Exporter métriques, CLI de diagnostic et configuration restent au jalon d'application.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour une éventuelle revue du nouveau chantier ; principal sur codex/m3-validation.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-cli.
 
 ## Suite à découper au fil des reprises
 
@@ -3652,3 +3660,35 @@ Après clôture effective : M3 terminé en bibliothèque,25–43lots estimés po
 résultat/version vérifiables ; découper la configuration dans le lot suivant.
 Premier acte de reprise : contrôler merge/CI main #29 et actualiser cet état,
 puis branche codex/ M4 depuis main validé. MIT conservée, AD/OIDC après MVP.
+Clôture127 effective : finale d26e0bd97987b42417853338cab8fac6d7105675 /
+CI37557272778 et merge038c6c90ee515d584669a8d879b5e267d30d8f13 /
+CI main37557390479 entièrement réussies. Revue COMMENT5436561773/ready/fusion,
+main actualisé propre, branche locale/remote supprimée ; revérifié à la reprise128.
+
+## Lot128 : premier point d'entrée CLI M4
+
+Résultat attendu et acquis localement : `queueatlas version` renvoie sur stdout
+`QueueAtlas dev` par défaut ou une étiquette injectée par `-X main.version=...`.
+`--help`/`-h` affichent l'usage sur stdout ; code0 en succès,2 pour arguments
+absents/inconnus/supplémentaires (usage stderr sans recopier les arguments),1 si
+la sortie d'une commande valide échoue. Le main utilise réellement os.Exit.
+
+Code/test dans cmd/queueatlas, stdlib uniquement pour ce point d'entrée. Quatre
+tests : flux/version/aide, refus des arguments, writer défaillant, compilation
+dans TempDir puis exécution avec étiquette synthétique/codes0et2. Format, tests/vet
+CLI, `go run ./cmd/queueatlas version` et diff Windows réussis. CI Windows ajoute
+une étape CLI ; Linux exécute les tests/binaire via suite existante, builds statiques
+amd64/arm64 existants compilent le nouvel exécutable. Pas de rerun local des
+fondations ni nouvelle dépendance. Contrat dans docs/m4-cli.md.
+
+Version n'ouvre pas de base/configuration/source/réseau. `dev` n'est pas une release,
+étiquette de build déclarée sans certification Git. Configuration/doctor/db stats,
+auth locale/API/Web restent M4, service/paquets/pilote M5. MIT et AD/OIDC après MVP.
+
+Au moment de cet enregistrement128 : développement/tests locaux passés, commit,
+publication, PR CLI/configuration et CI encore à terminer sur codex/m4-cli depuis
+main038c6c9 validé. Dernier fusionné127 #29, CI finale37557272778 et main37557390479.
+Créer/attacher une PR puis la réutiliser pour les lots cohérents de CLI/configuration.
+Prochaine action129 après publication/CI128 : contrat de configuration et valeurs
+par défaut ; chargement YAML à découper ensuite. M4 reste14–24lots estimés/M5 10–18,
+total24–42 après128, deux jalons restants. Aucun service ou paquet installable livré.

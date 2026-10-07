@@ -66,3 +66,15 @@ Après clôture effective : M3 zéro lot restant, M4 15–25 et M5 10–18, soit
 estimations incertaines. Premier lot M4 proposé128 : point d'entrée CLI
 `queueatlas version`, petit lot autonome ; détailler la configuration dans le lot
 suivant. Conserver MIT et l'auth AD/OIDC après MVP.
+
+## Clôture effectivement vérifiée
+
+Lot127 publié surd26e0bd97987b42417853338cab8fac6d7105675,
+[CI finale37557272778](https://github.com/Coubiac/QueueAtlas/actions/runs/37557272778)
+entièrement réussie, trois jobs/SHA exact vérifiés REST. Revue COMMENT assistée
+5436561773, passage ready et fusion #29 sur038c6c90ee515d584669a8d879b5e267d30d8f13.
+[CI main37557390479](https://github.com/Coubiac/QueueAtlas/actions/runs/37557390479)
+entièrement réussie sur ce merge, trois jobs/SHA exact vérifiés. Main local actualisé
+propre, branche du chantier supprimée localement et sur GitHub. M3 terminé en
+bibliothèque ; états conditionnels précédents conservés comme historique précommit.
+Clôture revérifiée à la reprise128, aucun rerun de127.
