@@ -1,11 +1,12 @@
-# Contrat des requêtes de recherche HTTP — lot 154
+# Recherche HTTP authentifiée — lots 154–155
 
 `internal/httpapi.ParseSearchRequest(rawQuery, now)` valide la chaîne
 `URL.RawQuery` et produit un `sqlite.SearchQuery`. Ce lot prépare la recherche
-authentifiée de M4 ; il ne fournit pas encore de handler, de route ou de serveur.
-La sélection porte sur des événements indexés, pas sur une identité de message
-ni une preuve de livraison. Le futur handler devra assembler les résultats avec
-la reconstruction complète avant de présenter des messages.
+authentifiée de M4. Le lot154 définit les entrées ; le lot155 fournit le handler
+de lecture décrit ci-dessous, sans serveur applicatif ni interface Web.
+La sélection porte sur des événements indexés, pas sur une identité globale de
+message ni une preuve de livraison. Le handler rattache chaque événement à un
+candidat reconstruit depuis les faits complets de sa file, ou le laisse non assigné.
 
 ## Paramètres
 
@@ -53,7 +54,7 @@ instance=synthetic-postfix&field=sender&value=synthetic%40example.test&from=2026
 
 ## Pagination
 
-Le futur résultat de première page doit communiquer les dates effectives. La
+Le résultat de première page communique les dates effectives. La
 page suivante transmet ces mêmes dates explicites, instance, critère et valeur,
 plus le curseur retourné. La taille de page peut changer. Une recherche avec un
 curseur et des dates implicites est refusée pour éviter une fenêtre glissante.
@@ -72,22 +73,107 @@ Chaque page utilise un nouveau snapshot SQLite ; les imports tardifs placés ava
 la position demandent de recommencer la recherche. Aucune page n'est à elle seule
 un ensemble complet de faits de corrélation.
 
-## Erreurs et raccordement suivant
+## Erreurs du parseur
 
 Tout échec retourne une requête nulle et une erreur fixe : `ErrSearchRequest`,
 `ErrSearchCursor` ou `ErrSearchClock`. Aucun détail d'entrée, URL, base, compte ou
-parseur sous-jacent n'est repris dans ces erreurs. Ce lot ne choisit pas encore
-de codes HTTP ni de corps JSON. Les filtres d'adresse sont des données privées :
-le futur handler et son infrastructure devront éviter leur journalisation.
+parseur sous-jacent n'est repris dans ces erreurs. Les codes de la route155 sont
+décrits ci-dessous. Les filtres d'adresse sont des données privées : le handler
+ne les journalise pas ; l'infrastructure doit également éviter les journaux d'URL.
 
-Le lot suivant doit fournir un handler de lecture protégé par `auth.Protect`,
-avec méthode/chemin, délai et annulation de requête, conversion de résultats
-bornée et erreurs privées. TLS, montage serveur, permissions et interface restent
-des comportements applicatifs distincts. La validation pure ne les remplace pas.
+## Handler de lecture — lot 155
+
+`NewSearchHandler(guard, store, options)` retourne uniquement un handler déjà
+enveloppé dans `auth.HTTPHandler.Protect`. L'appelant fournit un Store SQLite ouvert,
+partagé, et le garde construit pour son origine HTTPS. Login/logout sont montés
+séparément. La route exacte est `GET /api/v1/messages`, avec `HEAD` de mêmes
+validation/lecture/statut mais sans corps. Toute requête passe par le garde, même
+pour un chemin inexistant : cookie, TLS direct, Host et Origin/metadata selon151.
+Un compte local authentifié accède à cette lecture ; aucun rôle supplémentaire
+ni restriction par instance n'est introduit.
+
+La route refuse méthodes d'écriture, chemin alternatif, corps annoncé non vide,
+longueur inconnue et Transfer-Encoding. Elle ne lit pas de corps et ne le mélange
+pas aux paramètres. Un `SearchOptions` valide a un délai de 1 à 30 secondes,
+un budget global de 1 à 4096 faits et 1 à 8 requêtes simultanées. Défauts : 5 secondes,
+1024 faits et 2 requêtes. Partager un seul handler pour conserver ce budget.
+Admission immédiate sans file d'attente ; le slot est gardé jusqu'au retour.
+
+Le contexte SQL hérite de l'annulation client et du délai. Annulation vérifiée
+avant/après les lectures, entre reconstructions et avant publication JSON ; une
+réussite retournée après expiration est jetée. Les calculs purs restent bornés
+par le nombre de faits, sans interruption au milieu d'un calcul. Le délai de
+contexte ne remplace pas les délais réseau/écriture du futur serveur.
+
+La page sélectionne au plus200 événements, puis leurs files exactes uniques
+(instance/Queue-ID), ou les faits sans file de l'instance pour NOQUEUE. Le scope
+agrégé est limité à64parties ; une seule lecture complète `CorrelationFacts`
+inclut tous les faits stockés des scopes sélectionnés, toutes origines et dates.
+Le budget de faits s'applique à l'ensemble de cette lecture, pas par file. Aucun
+truncate, filtre temporel de reconstruction, parcours implicite de files liées,
+installation de projection ou écriture SQL. Dépassement : échec entier ; réduire
+la taille de page peut réduire les scopes, sans garantir qu'une file très grande
+tienne elle-même dans le budget.
+
+Chaque file est reconstruite séparément avec `BuildProjection`, fenêtre de liens
+1minute sans binding SMTP. Sa révision inclut toutes ses origines/cycles/faits
+sans date et ces options, indépendamment des autres files de la page. Les faits
+sans file sont reconstruits à part. Résumé conservateur : compteurs destinataires,
+rapports d'expiration et réserves existantes ; `sent` SMTP reste distinct de
+`delivered`. Une ambiguïté garde `candidate:null` et `unresolved_reason`. NOQUEUE
+garde `candidate:null`, `no_queue:true` et, si reconnu, `prequeue_disposition`
+(`warning` ou `rejected`) : un warn_if_reject ne devient pas un rejet réel.
+
+### Réponse
+
+JSON contient `from`, `until`, `limit`, `coverage_unproven:true`, `matches:[]` et
+éventuellement `next_cursor`. Les dates effectives permettent la page suivante
+figée. Chaque match contient ref physique, date/qualité, kind, NOQUEUE, candidat
+ou réserve d'assignation. Le candidat contient revision/instance/queue_id/generation,
+compteurs, expiration_reports et reserves. Les offsets de provenance sont des
+chaînes décimales pour préserver int64 dans les clients JavaScript.
+
+Le nombre de matches pagine des événements ; le même candidat peut apparaître
+plusieurs fois, y compris sur plusieurs pages. Pas de total de messages distincts,
+de déduplication interpages ou d'identité globale promise. Les clés de candidat
+sont révisables, pas encore des liens vers une route de détail. Les lignes brutes,
+messages, maps de champs, adresses recherchées, credential et cookie sont exclus
+du DTO. Les données textuelles du DTO sont UTF-8 bornées et encodées par
+`encoding/json` avec son échappement standard, jamais injectées en HTML.
+
+JSON encodé en buffer plafonné à1MiB avant tout succès HTTP ; un dépassement
+retourne une erreur fixe sans préfixe de données. Le garde conserve no-store,
+nosniff et Vary ; aucun CORS, redirection ou cookie n'est ajouté par la recherche.
+Les erreurs du garde151 restent inchangées. Erreurs propres à cette route :
+
+| HTTP | Code JSON fixe | Sens |
+| --- | --- | --- |
+| 400 | `invalid_request` | Paramètres/curseur/corps/chemin encodé invalides |
+| 404 | `not_found` | Chemin inconnu après authentification |
+| 405 | `method_not_allowed` | Méthode autre que GET/HEAD ; Allow GET, HEAD |
+| 422 | `search_too_broad` | Trop de scopes/faits ; aucun résultat partiel |
+| 429 | `busy` | Budget partagé de concurrence occupé |
+| 503 | `unavailable` | Horloge, base, annulation/délai, résultat incohérent ou trop volumineux |
+
+Recherche et faits sont deux snapshots de lecture distincts. Un import tardif
+peut changer la révision ; si une rétention fait disparaître un match entre les
+lectures, toute la réponse est refusée. Cette bibliothèque ne crée pas de listener,
+ne configure pas le YAML ou le service et ne livre pas encore le Web. Prochain156 :
+identifiant révisable et lecture de détail/timeline, dans cette même PR.
 
 ## Vérifications réalisées
 
-Cinq tests HTTP Windows couvrent défauts/valeurs exactes/six critères, paramètres
+Lot155 : sept nouveaux tests de handler, douze tests HTTPAPI au total passés
+Windows Go1.26. SQLite réel avec faits après période/origine sans date/autre
+instance, stabilité de candidat entre tailles de page/scopes différents, pagination,
+budget de reconstruction, NOQUEUE warning/conflits non assignés ; protocole/auth
+avant stockage, HTTPS réel, HEAD, révocation, deadline/cancel/slot occupé/libéré,
+absence de match entre lectures et réponse JSON expansée dépassant1MiB sans fuite.
+Le premier fixture a été corrigé pour donner un ID d'origine distinct par source
+(identité globale immutable SQLite). Vet et format/diff passent. La CI ajoute
+HTTPAPI Windows et race HTTPAPI Linux Go1.26 ; résultat final à vérifier après push.
+
+Lot154 : cinq tests HTTP Windows couvrent défauts/valeurs exactes/six critères, paramètres
 hostiles/dupliqués/bornés, calendrier/précision/horloge, vecteur binaire calculé
 indépendamment, pagination liée au sélecteur et bornes de position. Le vecteur de
 domaine vérifie l'accord avec la normalisation native. Dix-neuf tests de recherche

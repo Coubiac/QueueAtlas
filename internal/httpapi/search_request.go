@@ -1,5 +1,5 @@
-// Package httpapi defines bounded HTTP inputs for the future authenticated API.
-// It creates no listener, handlers, database connections or application routes.
+// Package httpapi provides bounded inputs and authenticated read handlers.
+// It creates no listener or database connections.
 package httpapi
 
 import (

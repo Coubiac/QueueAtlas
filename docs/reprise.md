@@ -63,9 +63,11 @@ SHA exact/race auth réussis, revérifiés REST152. Corpus152 publié sur e4aaa1
 CI37631390279 entière/trois jobs/SHA exact/race auth réussis, revérifiés REST153.
 Clôture153 fusionnée #35 sur81f9f79 ; CI finale37634089599 et main37634433660
 entières/trois jobs/SHA exact/race auth réussis, branche sessions supprimée.
-Lot154 : contrat borné de recherche HTTP validé localement ; publication/CI encore
-à terminer au commit sur codex/m4-search-api. Prochain155 : handler de lecture
-authentifié/borné. Deux jalons M4/M5 restent, environ14–29lots après154/CI,
+Lot154 publié sura2947e4 dans #36, CI37639327832 entière/trois jobs/SHA exact/
+race auth réussis, revérifiés REST155. Lot155 handler de recherche authentifié
+validé localement ; publication/CI encore à terminer au commit sur codex/m4-search-api.
+Prochain156 : identité révisable et détail. Deux jalons M4/M5 restent,
+environ14–29lots après155/CI,
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3417,13 +3419,15 @@ REST152. Corpus152 publié sur e4aaa12, CI37631390279 entière/trois jobs/SHA ex
 race auth réussis, revérifiés REST153. Clôture153 publiée surf49381d, revue COMMENT
 5443572976 sur cette tête, CI finale37634089599 entière réussie. #35 fusionnée sur
 main81f9f79, CI37634433660 entière/trois jobs/SHA exact/race auth réussis, branche
-sessions supprimée. Lot154 contrat de requêtes HTTP validé localement : publier
-sur codex/m4-search-api, ouvrir la PR cohérente du chantier contre main et vérifier
-CI entière/trois jobs/SHA exact. Consigner les preuves dans PR puis reprise155.
-Prochain155 : handler de lecture authentifié, requêtes/délai/résultats/erreurs bornés,
-en réutilisant le contrat154 et la reconstruction complète existante. Ne pas
-présenter SearchHit comme identité de message ni reconstruire depuis une seule page.
-Un seul lot par reprise. Aucun listener/serve/Web/API de messages livré154.
+sessions supprimée. Lot154 publié sura2947e4 dans #36 en brouillon,
+CI37639327832 entière/trois jobs/SHA exact réussis, revérifiés REST155.
+Lot155 handler GET/HEAD de recherche protégé, lecture complète et réponses bornées,
+validé localement : publier sur codex/m4-search-api, réutiliser #36 et vérifier
+CI entière/trois jobs/SHA exact, HTTPAPI Windows et race HTTPAPI Linux1.26.
+Consigner les preuves dans PR puis reprise156. Prochain156 : identité révisable
+et lecture de détail ; timeline et revue ensuite. Ne pas présenter un événement
+trouvé comme identité globale ni reconstruire depuis une seule page.
+Un seul lot par reprise. Handler livré en bibliothèque155 ; aucun listener/serve/Web.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -5054,3 +5058,88 @@ Prochain155 : handler de lecture authentifié/borné avec méthode/chemin, conte
 annulable/délai, reconstruction complète et conversion/erreurs privées. Aucun
 lot155 commencé. M4 reste4–11lots, M5 10–18, total14–29/deux jalons ; contrat pur
 préparatoire, aucune route/serveur/UI livré154. MIT, AD/OIDC/Keycloak après MVP.
+
+## Lot 155 — handler de recherche authentifié et borné
+
+Résultat attendu : raccorder le contrat154 à GET/HEAD `/api/v1/messages`, garde
+auth151, contexte annulable/délai, lecture de faits complète et DTO privé/borné.
+Un comportement de lecture ; pas de stockage nouveau, listener, YAML ou interface.
+
+### État de départ et preuve effective154
+
+Branche `codex/m4-search-api` propre, têtes locale/origin/PR identiques au commit
+`a2947e42b731dd3d6d4483c264e268fa99fa6600`, #36 brouillon contre main15381f9f79.
+[CI37639327832](https://github.com/Coubiac/QueueAtlas/actions/runs/37639327832)
+entière completed/success, trois jobs sur le SHA exact : Windows112853778421,
+Go1.26112853778723, stable112853778928 ; race auth1.26 passée. Preuve154 consignée
+dans #36, état completed/success et tête PR revérifiés REST155 après fetch/prune.
+M4 reste ouvert ; dernier main fusionné et validé15381f9f79.
+
+### Comportement livré localement
+
+`NewSearchHandler` retourne uniquement le handler protégé via `auth.Protect`.
+Store déjà ouvert et options validées, budget partagé par instance. Route exacte
+GET/HEAD, autres chemins privés404 après auth, writes405/AllowGETHEAD, aucun corps
+lu/mergé. Corps annoncé non vide, longueur inconnue et Transfer-Encoding refusés.
+Garde inchangée : TLS/Host/Origin/FetchMetadata/session/no-store/nosniff/Vary.
+Lecture accessible au compte local authentifié ; aucun rôle/filtre de permission
+par instance créé. Les erreurs du garde existant ne sont pas réécrites.
+
+Options bornées délai1..30s/faits1..4096/concurrence1..8, défauts5s/1024/2.
+Admission immédiate429 sans attente, slot libéré au retour. Contexte de requête
+avec deadline transmis aux lectures SQLite ; annulation vérifiée avant/après et
+entre reconstructions/avant JSON, réussite tardive jetée. Calcul pur borné sans
+interruption interne ; délais réseau/écriture restent à configurer au montage.
+
+Recherche native puis déduplication des scopes exacts (64parties maximum) ; une
+lecture `CorrelationFacts` complète sur les files touchées ou l'instance sans
+file, budget global partagé. Toutes origines/dates/faits sans date inclus, pas
+les seuls événements trouvés. Dépassement fait échouer tout le résultat422 ;
+aucun truncate ou installation/écriture de projection. `BuildProjection` par file,
+fenêtre de liens1minute sans binding SMTP, révision indépendante des autres files
+de page ; mêmes faits de la file => même clé malgré changement de page/limit.
+
+DTO : dates effectives/limit/coverage_unproven/matches[]/next_cursor, match avec
+provenance/date/qualité/kind/NOQUEUE ; candidat révisable/instance/file/génération,
+compteurs/expirations/réserves. Offsets int64 sous forme de chaînes décimales.
+Les counts conservent SMTP sent distinct de delivered et coverage_unproven ;
+ambiguïtés restent non assignées avec raison. NOQUEUE garde candidat nul et
+disposition warning/rejected si reconnue, sans transformer un warning en rejet.
+Un candidat peut se répéter : cette pagination compte des événements, pas des
+messages globaux uniques. Identifiant de détail stable/révisable reste au lot156.
+
+Pas de ligne/message brut, maps de champs, adresses de recherche, credential ou
+cookie dans le DTO. JSON échappé par encoding/json, corps complet encodé avant200
+dans buffer limité1MiB. Dépassement503 fixe, pas de préfixe partiel. Erreurs HTTP
+propres fixes400/404/405/422/429/503 sans détails SQL/URL/compte. Pas de logs, CORS,
+redirect ou cookie. Deux snapshots lecture : import tardif peut réviser une clé ;
+disparition d'un match entre recherche/faits =>503 entier, jamais faux succès.
+
+Contrat et limites : [http-search](http-search.md). Filtres statut/direction/IP/SASL,
+etc. du cadrage restent à préciser ; pas de détail/timeline/Web/service livré155.
+
+### Vérifications et prochaine action
+
+Sept nouveaux tests de handler, douze HTTPAPI au total, passés Windows Go1.26 :
+construction/protocole/auth avant stockage, SQLite réel avec livraison après
+période/origine sans date/instance étrangère, candidat indépendant des autres files
+et pagination, scope/faits refusés sans truncate, NOQUEUE warning/conflits, contexte
+deadline/cancel et slot occupé/libéré, retour tardif rejeté, disparition entre
+lectures, réponse JSON expansée >1MiB sans données partielles, HTTPS réel/HEAD et
+révocation. Le premier fixture a été corrigé pour avoir des IDs d'origine uniques
+par source, conformément à l'identité globale immutable existante. Pas de
+modification du stockage ou des constructeurs auth pour faciliter les tests.
+Vet HTTPAPI, format/diff passés. CI ajoute HTTPAPI Windows et race HTTPAPI Go1.26
+Linux. Régressions SQLite154 réutilisées ; aucune exécution Linux locale revendiquée.
+
+Au commit155 : publication/CI encore à terminer sur cette même #36 en brouillon.
+Pousser codex/m4-search-api, vérifier workflow entier/trois jobs/SHA exact et
+étapes HTTPAPI Windows/race Linux1.26. Consigner preuve effective dans PR puis
+reprise156 ; ne pas fusionner ce chantier avant détail/timeline et sa revue.
+Dernier publié validé154a2947e4/CI37639327832, main15381f9f79/CI37634433660.
+
+Prochain156 : contrat d'identité révisable et handler de détail, réutilisant les
+faits complets et même révision de file ; timeline et revue ensuite. Un seul lot
+par reprise, aucun156 commencé. M4 4–11, M5 10–18, total14–29/deux jalons, estimation
+à préciser avec détail/timeline/filtres supplémentaires/raccordement ; MIT,
+AD/OIDC/Keycloak après MVP.
