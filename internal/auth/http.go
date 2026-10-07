@@ -21,9 +21,10 @@ const (
 
 var ErrInvalidHTTPAuth = errors.New("invalid HTTP authentication configuration")
 
-// HTTPHandler provides only login/logout, not a listener or data-route guard.
-// Construct once with a shared login and a trusted canonical HTTPS origin. TLS
-// must terminate here: forwarded headers never establish TLS, identity or origin.
+// HTTPHandler serves login/logout and can protect data handlers with Protect.
+// It creates no listener or application routes. Construct once with a shared
+// login and a trusted canonical HTTPS origin. TLS must terminate here: forwarded
+// headers never establish TLS, identity or origin.
 type HTTPHandler struct {
 	login  *LocalLogin
 	origin string

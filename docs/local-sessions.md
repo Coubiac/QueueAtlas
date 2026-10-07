@@ -100,3 +100,11 @@ SHA exact/race auth réussis, REST revérifié à la reprise149. Le [moteur de l
 partage ce magasin et n'appelle Issue qu'après vérification réussie du compte,
 avec budget d'essais/admission bornés. Le contrat d'Issue reste requis pour tous
 ses appelants. Transport HTTP/cookies150, protections et revue restent à réaliser.
+
+## Relecture du chantier au lot 153
+
+Sessions/login/HTTP/garde/corpus148–152 publiés et CI entières vertes, dernière
+tête e4aaa12/CI37631390279 revérifiée REST153. [Relecture assistée](reviews/m4-local-http.md)
+favorable à la clôture de la bibliothèque. Au commit153, CI finale/fusion/main
+encore à terminer ; preuves effectives dans #35 puis reprise154. Montage réseau,
+API et Web restent à réaliser ; contrat d'Issue et limites de concurrence conservés.

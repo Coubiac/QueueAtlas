@@ -59,9 +59,11 @@ Login149 publié sur94ef705 dans #35, CI37619138226 entière/trois jobs/SHA exac
 race auth réussis, REST revérifié150. HTTP150 publié surc50c678 dans #35,
 CI37623116898 entière/trois jobs/SHA exact/race auth réussis, REST revérifié151.
 Garde HTTP151 publiée sur eb5d29c dans #35, CI37626687859 entière/trois jobs/
-SHA exact/race auth réussis, revérifiés REST152. Corpus152 réalisé/vérifié Windows ;
-publication/CI à terminer au commit. Prochain153 : revue/clôture auth dans #35.
-Deux jalons M4/M5 restent, environ15–30lots après152/CI, M3 zéro lot restant ;
+SHA exact/race auth réussis, revérifiés REST152. Corpus152 publié sur e4aaa12,
+CI37631390279 entière/trois jobs/SHA exact/race auth réussis, revérifiés REST153.
+Revue153 favorable ; publication/CI finale/fusion/main encore à terminer au commit.
+Prochain154 : contrat borné de recherche HTTP. Deux jalons M4/M5 restent,
+environ14–29lots après clôture153/CI, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3408,11 +3410,15 @@ Login149 publié sur94ef705, CI37619138226 entière/trois jobs/SHA exact/race au
 réussis, REST revérifié150. HTTP150 publié surc50c678, CI37623116898 entière/trois
 jobs/SHA exact/race auth réussis, REST revérifié151. Garde HTTP151 publiée sur
 eb5d29c, CI37626687859 entière/trois jobs/SHA exact/race auth réussis, revérifiés
-REST152. Corpus152 réalisé/vérifié Windows : publier sur codex/m4-sessions dans
-#35 réutilisée, vérifier CI entière/trois jobs/SHA exact/race auth ; consigner la
-preuve effective dans PR puis reprise153. Prochain153 : revue/clôture auth et
-corpus dans #35, CI finale, décision de fusion puis CI main/nettoyage.
-Ne pas commencer153 ni fusionner #35 au lot152. Aucun listener/serve/Web/API livré.
+REST152. Corpus152 publié sur e4aaa12, CI37631390279 entière/trois jobs/SHA exact/
+race auth réussis, revérifiés REST153. Revue153 favorable : publier le commit de
+clôture sur codex/m4-sessions dans #35, vérifier CI finale entière/trois jobs/SHA
+exact/race auth ; poster revue COMMENT assistée sur SHA final, rendre prête puis
+fusionner avec SHA attendu et vérifier CI main/nettoyer la branche fusionnée.
+Consigner les preuves effectives dans PR puis reprise154. Prochain154 : contrat
+borné de requêtes de recherche HTTP (filtres/période/limite/curseur/erreurs privées),
+préparant GET /api/v1/messages ; pas de serveur/Web/stockage dans ce lot.
+Ne pas commencer154 au lot153. Aucun listener/serve/Web/API de messages livré.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4913,3 +4919,66 @@ Prochain153 : revue/clôture sessions/login/HTTP/garde/corpus148–152, CI final
 décision de fusion/main/nettoyage. Après152/CI, M4 5–12 (revue puis API2–3/Web/
 revue2–4/marge), M5 10–18, total15–30/deux jalons ; périmètre inchangé. Aucun
 lot153 commencé ni fusion #35 prévue dans152. MIT/AD/OIDC/Keycloak après MVP.
+
+## Lot 153 — revue et clôture du chantier auth148–152
+
+Résultat attendu : relire sessions/login/HTTP/garde/corpus dans #35, corriger les
+écarts concrets, consigner l'évaluation du corpus et les limites ; publier une
+clôture vérifiable puis CI finale/revue/fusion/main/nettoyage si satisfaisants.
+Un seul lot de revue ; aucune API/serveur/Web ou provider externe ajouté.
+
+État initial propre sur codex/m4-sessions, local/origin/#35 sur
+e4aaa12e38892b9ad7f6fe18eb5becb4235704ca, main147
+9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9. #35 ouverte/draft/fusionnable,
+aucune revue ou discussion inline en attente trouvée. Fetch origin/prune fait.
+CI15237631390279 completed/success, ses trois jobs Windows/Linux1.26.x/stable
+completed/success sur le SHA exact et race auth1.26 passée, revérifiés REST153.
+Jobs112826266899/112826267325/112826267485 ; attentes152 terminées.
+
+Relecture assistée par l'agent du chantier, pas un audit indépendant. Code public/
+helpers privés148–152 et tests des frontières/erreurs/bypass/concurrence relus,
+contrats/ADR006/008/provenance/licence/workflow examinés. Avis favorable à la
+clôture de la bibliothèque ; aucun blocage fonctionnel identifié. Deux commentaires
+Go obsolètes du package/HTTPHandler corrigés pour mentionner transport et Protect,
+aucun changement de comportement. Aucun nouveau test miroir ajouté.
+
+Matrice/preuves et décision dans docs/reviews/m4-local-http.md. Token CSPRNG/digest/
+codec/capacité/expiration/révocation, login Argon2id/noms inconnus/budget partagé/
+slots, TLS direct/Host/Origin/metadata/cookies/formulaires bornés, rollback sortie,
+contexte/copiemetadata et refus privés des routes examinés. Validation auth à
+l'entrée ; révocation ne stoppe pas le next déjà admis, nouvelles requêtes refusées.
+Pas de permissions applicatives accordées par metadata, ni confiance proxy.
+
+Corpus152 retenu pour le compte local MVP avec défauts actuels : minimum15,
+10898 digests de valeurs longues/source top1million publique MIT figée, budget5/
+minute/1calcul. Demande147 de corpus/provenance/licence/tests/guide traitée ; aucun
+lot supplémentaire de corpus requis pour clôturer #35 en l'état. Ce choix n'est
+pas preuve statistique, couverture exhaustive/actuelle ou conformité NIST globale.
+Budget renouvelable/burst/restart, liste historique et limites hors ligne restent
+documentés ; réexaminer au pilote ou si essais/bornes/providers/compromission changent.
+Identifiants existants non désactivés par politique d'enrôlement.
+
+Dix tests auth ciblés Windows et un du générateur passés153 : cycles HTTPS auth/
+données/logout, rollback écriture, protocole/bypass/401 privés, concurrence login/
+sessions/garde, intégrité/ancien compte Argon2id/import faux. Vet auth/format/diff
+passés. CI entière152 réutilisée ; pas de rerun local fondations/fuzz/mesures sans
+risque concret, aucune exécution Linux locale revendiquée. CI finale153 couvrira
+full tests/vet/race auth/source-file/smoke/builds amd64/arm64 habituels.
+
+Limites d'assemblage conservées : construire une instance partagée, protéger le
+routeur de données entier, auth montée séparément, GET/HEAD sans mutation ; TLS
+direct même loopback, proxy TLS->HTTP non implémenté. Serveur/certificats/bind/
+headers/deadlines/permissions/rendu échappé/flux navigateur/cache et notices des
+paquets restent aux API/Web/M5. ADR006 précise le chemin réellement livré ; AD/
+OIDC/Keycloak après MVP. M4 reste en cours et #35 n'est pas une release installable.
+
+Au commit153 : publication/CI finale/revue COMMENT assistée/ready/fusion/main/
+nettoyage encore à terminer. Dernier publié validé152e4aaa12/CI37631390279,
+main1479cd6cec/CI37611762238. Vérifier trois jobs/SHA/race puis fusion avec SHA
+attendu, vérifier main et nettoyer seulement branche fusionnée. Consigner preuve
+effective dans #35 puis reprise154. Prochain154 : contrat borné des requêtes de
+recherche HTTP (filtres/période/limite/curseur/erreurs), préparant GET /api/v1/messages.
+Distinguer événements trouvés et messages reconstruits ; adaptateur/raccordement
+dans les lots suivants, aucune relecture de journal depuis Web ni SQL dynamique.
+Après clôture153/CI, M4 4–11 (API2–3/Web/revue2–4/marge), M5 10–18, total14–29,
+deux jalons et périmètre inchangés. Aucun lot154 commencé.

@@ -120,3 +120,12 @@ vérifier après publication. Aucun test de données personnelles ou de fuite r�
 
 Le lot 153 reste la revue/clôture des sessions/login/protections HTTP et de ce
 corpus dans #35. Aucun serveur, API de messages ou interface Web livré dans 152.
+
+## Décision de relecture au lot 153
+
+La [relecture assistée](reviews/m4-local-http.md) retient ce corpus pour le compte
+local MVP avec les défauts actuels de limitation, et traite la demande147.
+Les limites historiques/de couverture/budget renouvelable restent celles ci-dessus.
+CI15237631390279 entière/trois jobs/SHA exact/race auth verts, revérifiés REST153.
+Au commit153, clôture/CI finale/fusion/main encore à terminer ; preuves dans #35
+puis reprise154. Réexamen au pilote ou changement de conditions conservé.

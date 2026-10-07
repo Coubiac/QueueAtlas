@@ -112,3 +112,11 @@ exact/race auth réussis, REST revérifié150. Le [transport HTTP150](local-http
 raccorde ce moteur partagé aux routes POST login/logout et cookies HTTPS ; vérifié
 Windows, publication/CI à terminer au commit150. Garde des routes de données,
 corpus d'enrôlement adapté et revue restent requis avant exposition applicative.
+
+## Relecture du chantier au lot 153
+
+Transport/garde/corpus150–152 publiés et CI vertes, dernière tête e4aaa12/
+CI37631390279 revérifiée REST153. [Relecture assistée](reviews/m4-local-http.md)
+favorable à la clôture ; budget et composants doivent être partagés au démarrage.
+Au commit153, CI finale/fusion/main encore à terminer ; preuves effectives dans
+#35 puis reprise154. Montage/app/API/Web non livrés par cette bibliothèque.

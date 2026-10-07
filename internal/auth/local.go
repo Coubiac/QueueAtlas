@@ -1,5 +1,5 @@
-// Package auth implements local credentials, bounded login and memory sessions.
-// It provides no HTTP transport or application authorization.
+// Package auth implements local credentials, bounded login, memory sessions and
+// HTTP authentication guards. It creates no listener or application permissions.
 package auth
 
 import "errors"

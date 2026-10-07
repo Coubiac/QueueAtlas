@@ -96,3 +96,11 @@ navigateur réel/SameSite/préfixe non testé. Linux45/race/CI entière à véri
 après publication151 ; pas d'exécution Linux locale revendiquée.
 Prochain152 : corpus local d'enrôlement adapté/provenance/licence, puis revue/clôture153.
 CLI/config/SQLite/FileSource/modules/workflow inchangés ; aucun lot152 commencé151.
+
+## Relecture du chantier au lot 153
+
+Garde151 et corpus152 publiés/CI vertes, tête e4aaa12/CI37631390279 revérifiée
+REST153. [Relecture assistée](reviews/m4-local-http.md) favorable à la clôture.
+Montage complet du routeur, permissions/entrées des handlers et essais navigateur
+restent requis dans l'application. Au commit153, CI finale/fusion/main à terminer ;
+preuves effectives dans #35 puis reprise154. Aucune API de messages livrée ici.

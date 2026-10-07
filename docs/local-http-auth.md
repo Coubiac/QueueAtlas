@@ -111,3 +111,11 @@ unique quand présent (absent accepté avec Origin obligatoire) ; same-site/cros
 none/inconnu/dupliqué refusés. Vary Cookie,Origin,Sec-Fetch-Site ajouté. Garde151
 vérifiée Windows, publication/CI à terminer au commit151 ; aucun listener ou
 montage applicatif réel livré. Prochain152 corpus d'enrôlement, puis revue153.
+
+## Relecture du chantier au lot 153
+
+Garde151 et corpus152 publiés/CI vertes ; dernière tête e4aaa12/CI37631390279
+revérifiée REST153. [Relecture assistée](reviews/m4-local-http.md) favorable à la
+clôture de la bibliothèque, avec TLS direct et limites d'assemblage conservées.
+Au commit153, CI finale/fusion/main encore à terminer ; preuves dans #35 puis
+reprise154. Les routes de recherche et les flux navigateur restent à développer.

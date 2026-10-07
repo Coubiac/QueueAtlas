@@ -340,3 +340,12 @@ d'essais avant release/pilote. Garde HTTP151 publiée sur eb5d29c, CI37626687859
 entière/trois jobs/SHA exact/race auth verts, revérifiés REST au début de 152.
 Revue/clôture du chantier dans #35 prévue au lot 153 ; aucun listener/API/Web
 livré ici. MIT, AD/OIDC/Keycloak après MVP.
+
+## Relecture du chantier au lot 153
+
+La [revue sessions/login/HTTP/corpus](reviews/m4-local-http.md) est favorable à la
+clôture148–152. Le corpus est retenu pour le compte local MVP avec défauts actuels
+et limites conservées ; la demande147 est traitée, comptes existants inchangés.
+CI15237631390279 entière/trois jobs/SHA exact/race auth verts, revérifiés REST153.
+Au commit153, CI finale/fusion/main encore à terminer ; preuves dans #35 puis
+reprise154. L'application, le montage réseau et le Web restent à développer.
