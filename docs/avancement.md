@@ -31,8 +31,9 @@ fusionnée #31 sur918ef0c, CI finale37576814504/main37576942301 entières réuss
 branche diagnostics supprimée. Doctor137 publié sur d1feeb9 dans #32,
 CI37579618027 entière réussie. Clôture138 fusionnée #32 sur0d2cad4,
 CI finale37581947764/main37582076645 entières réussies, branche doctor supprimée.
-Contrat pur de source fichier139 implémenté/vérifié localement ; publication/CI
-encore à terminer au commit, chantier codex/m4-source-config.
+Contrat source139 publié surcfd2b39 dans #33, CI37585141938 entière réussie.
+YAML source140 implémenté/vérifié localement, publication/CI à terminer au commit,
+chantier codex/m4-source-config.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -47,7 +48,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 139 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 140 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -64,15 +65,17 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136 et doctor initial137–138 fusionnés/CI main verte ; contrat source139 vérifié localement | YAML/raccordement/revue sources, diagnostic élargi, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 10–18 après139 |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136 et doctor initial137–138 fusionnés/CI main verte ; contrat source139 publié/CI verte, YAML140 vérifié localement | Conversion/revue sources, diagnostic élargi, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 9–17 après140 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après139** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **20–36** |
+| **Total après140** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **19–35** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
 compte/sessions/protections3–5, API2–3, Web et revue2–4, avec marge d'intégration
 jusqu'à18lots M4. La fourchette suit ces comportements restants et ne diminue pas
 automatiquement à chaque numéro de lot. Le périmètre MVP demeure celui du cadrage.
+Après140, le chargement YAML est développé ; deux lots de conversion/clôture
+sources restent, d'où9–17lots pour M4, sans autre changement de périmètre.
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -533,3 +536,18 @@ Aucun raccordement YAML/CLI/ingestion, aucun fichier ouvert/créé ou composant 
 Publication/PR/CI encore à terminer au commit. Prochain lot140 : chargement YAML
 strict/borné, défauts des champs absents et chemins relatifs depuis config, tests/doc.
 M4 reste10–18lots selon découpage explicité ci-dessus, M5 10–18, total20–36 après139.
+
+Validation139 effective : cfd2b39 publié dans #33,
+[CI37585141938](https://github.com/Coubiac/QueueAtlas/actions/runs/37585141938)
+entière réussie/trois jobs/SHA exact. Attentes139 ci-dessus prépublication terminées.
+
+## Bilan140 — chargement YAML source
+
+Section facultative source avec defaults stricts, budgets décimaux canoniques,
+chemins relatifs depuis config, bornes globales conservées et erreur/config zéro.
+Une source fichier uniquement ; aucune ouverture de journal/DB ou ingestion lancée.
+Cinq nouveaux tests, vingt-et-un tests config et quinze tests CLI Windows passés,
+vet/format/diff et exemple check-config passés ; binaire compilé avec log absent.
+Publication/CI dans #33 à terminer au commit. Prochain lot141 : conversion pure
+vers paramètres FileSource, tests/doc ; puis revue/clôture142 du chantier.
+M4 reste9–17lots, M5 10–18, total19–35 après140, estimation incertaine.

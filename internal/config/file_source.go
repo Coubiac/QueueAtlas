@@ -11,8 +11,7 @@ import (
 	filesource "github.com/Coubiac/QueueAtlas/internal/source/file"
 )
 
-// FileSource describes one application's file input. This initial pure contract
-// is not yet part of Config or accepted by the YAML loader. Kind is always file;
+// FileSource describes the optional source section in Config. Kind is always file;
 // zero-checkpoint replay remains disabled when components are wired later.
 type FileSource struct {
 	ID            string

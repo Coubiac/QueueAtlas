@@ -1,0 +1,12 @@
+# Synthetic file input. check-config validates syntax; it does not start ingestion.
+storage:
+  path: queueatlas.db
+source:
+  id: synthetic-postfix
+  name: Synthetic Postfix
+  path: missing-parent/synthetic-mail.log
+  start_at: beginning
+  poll_interval: 1s
+  rotation_grace: 30s
+  resume_origins: 1000
+  resume_entries: 2000

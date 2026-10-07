@@ -130,11 +130,9 @@ les paramètres facultatifs ; ID, Name et Path restent obligatoires. `Validate()
 refuse le premier champ invalide via `ErrInvalid` et une règle fixe, sans recopier
 les valeurs. La valeur est copiée, sans slice/map/pointeur partagé.
 
-Ce contrat est indépendant de `Config` : **le chargeur YAML n'accepte pas encore
-de section source**. Le lot140 ajoutera son chargement strict/borné ; résolution
-des chemins et raccordement FileSource seront vérifiés aux étapes correspondantes.
-Les commandes actuelles conservent leur comportement. Aucun composant n'est lancé
-par ce lot.
+Au lot139 ce contrat était indépendant de `Config`. Le lot140 le charge désormais
+dans la section facultative `source` décrite ci-dessous ; le raccordement à
+FileSource reste au lot141. Aucun composant n'est lancé par validation/chargement.
 
 | Champ Go | Défaut | Contrat |
 | --- | --- | --- |
@@ -180,3 +178,64 @@ et confidentialité, chemins sans IO/mutation/expansion et ambiguïtés Windows,
 bornes inclusives/débordements/zéros/modes. Seize tests config, vet/format/diff
 locaux Windows passés ; CI de publication à vérifier après commit. Aucun changement
 du chargeur, de la CLI, du stockage ou de l'ingestion ; pas de dépendance nouvelle.
+
+Validation139 effective : cfd2b39 publié dans #33,
+[CI37585141938](https://github.com/Coubiac/QueueAtlas/actions/runs/37585141938)
+entière réussie/trois jobs/SHA exact ; les attentes139 ci-dessus sont le snapshot
+prépublication. La même PR est réutilisée pour le chargement140 et la suite.
+
+## Lot140 : section YAML source facultative
+
+Un mapping racine `source` décrit **une source fichier**. Section absente :
+`Config.Source == nil`, aucune source créée implicitement, anciennes configurations
+acceptées. Section présente : ID/nom/chemin obligatoires, autres champs selon
+FileSourceDefaults. Un mapping vide/null, une séquence ou une seconde section
+source sont refusés ; sources multiples et autres types restent à développer.
+
+[Exemple synthétique](../examples/queueatlas-source.yaml) :
+
+```yaml
+source:
+  id: synthetic-postfix
+  name: Synthetic Postfix
+  path: missing-parent/synthetic-mail.log
+  start_at: beginning
+  poll_interval: 1s
+  rotation_grace: 30s
+  resume_origins: 1000
+  resume_entries: 2000
+```
+
+Champ facultatif supplémentaire : `trusted_host`, texte d'instance selon139.
+Type implicite fichier ; aucun champ type ou allow_zero_checkpoint accepté.
+Les textes et durées suivent les scalaires textuels stricts130. Les budgets sont
+des **entiers décimaux non quotés**, sans signe, préfixe hex/octal, séparateur,
+zéro initial superflu ou conversion implicite ; même `!!int '10'` est refusé.
+Leurs valeurs doivent être positives et dans les bornes139. Seuls les champs
+absents conservent les défauts : valeurs null/zéro/mode vide refusées.
+
+Bornes globales inchangées : 64Kio, 128nœuds, profondeur4, un seul document UTF-8.
+Ancres/alias/merge keys, doublons, champs inconnus et tags personnalisés refusés.
+Erreurs ErrInvalid avec champs/règles connus ; aucune valeur, clé inconnue ou
+erreur brute YAML n'est imprimée. Toute erreur renvoie `Config{}`, Source nil.
+
+Validation avant résolution de Path, résolution relative depuis le répertoire
+lexical absolu du YAML, puis validation complète incluant la longueur résolue.
+Un chemin absolu garde sa valeur ; `..` est permis, aucune restriction au répertoire
+de config revendiquée. Variables/tilde/templates restent littéraux. Aucune vérification
+de la source physique, de ses droits/format, ou lecture de journal/checkpoint.
+Chaque chargement alloue sa propre valeur Source ; copier un Config en Go ne fait
+pas une copie profonde du pointeur, l'appelant reste propriétaire de ses paramètres.
+
+`check-config --config examples/queueatlas-source.yaml` accepte cet exemple même
+si le journal est absent, sans créer/ouvrir de source ou base. Le résultat de doctor
+reste limité à config et compatibilité SQLite ; il ne certifie pas la lisibilité
+d'une source désormais configurée. Construction/ingestion et diagnostic élargi
+restent ultérieurs.
+
+Cinq nouveaux tests140 : chargement/defaults/absence sans IO, valeurs/chemins et
+indépendance, refus sûrs/config zéro, limites globales conservées, exemple.
+Vingt-et-un tests config et quinze tests CLI passés Windows ; binaire compilé
+étendu avec une config source et journal absent, codes/effets/confidentialité vérifiés.
+Vet/format/diff ciblés et commande check-config sur l'exemple passés. Stockage,
+FileSource, dépendances et workflow inchangés ; publication/CI140 à terminer au commit.

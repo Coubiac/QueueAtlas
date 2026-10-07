@@ -19,8 +19,9 @@ import (
 var ErrInvalid = errors.New("invalid configuration")
 
 type Config struct {
-	Server  Server  `yaml:"server"`
-	Storage Storage `yaml:"storage"`
+	Server  Server      `yaml:"server"`
+	Storage Storage     `yaml:"storage"`
+	Source  *FileSource `yaml:"source"` // nil means no configured file input
 }
 
 type Server struct {
@@ -95,6 +96,9 @@ func (c Config) Validate() error {
 	base := filepath.Base(p)
 	if base == "." || base == ".." || base == string(filepath.Separator) || strings.HasSuffix(p, string(filepath.Separator)) || (filepath.Separator == '\\' && strings.HasSuffix(p, "/")) {
 		return invalid("storage.path", "expected a file name")
+	}
+	if c.Source != nil {
+		return c.Source.Validate()
 	}
 	return nil
 }

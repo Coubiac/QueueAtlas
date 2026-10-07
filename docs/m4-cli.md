@@ -221,8 +221,12 @@ et [CI main37582076645](https://github.com/Coubiac/QueueAtlas/actions/runs/37582
 entières réussies/trois jobs/SHA exact, branche doctor supprimée.
 La vérification des sources/formats/checkpoints/lacunes du cadrage reste ultérieure.
 Le [contrat source139](configuration.md#lot139--contrat-pur-dune-source-fichier)
-est une valeur Go indépendante ; aucune section source YAML/commande supplémentaire
-n'est acceptée par ce lot. Chargement YAML au lot140 puis raccordement ultérieur.
+était une valeur Go indépendante. Le [chargeur140](configuration.md#lot140--section-yaml-source-facultative)
+accepte désormais une section facultative source pour une entrée fichier.
+`check-config --config examples/queueatlas-source.yaml` valide l'exemple synthétique,
+même avec journal absent, sans lancer d'ingestion. Doctor conserve son périmètre
+config/compatibilité SQLite et ne certifie pas la lisibilité de la source.
+Conversion vers FileSource au lot141, démarrage applicatif ultérieur.
 Configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

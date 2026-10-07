@@ -141,7 +141,11 @@ func TestLinkedBinaryVersionAndProcessExitCodes(t *testing.T) {
 	dir := t.TempDir()
 	valid := filepath.Join(dir, "synthetic-private-valid.yaml")
 	invalid := filepath.Join(dir, "synthetic-private-invalid.yaml")
-	for path, data := range map[string]string{valid: "{}\n", invalid: "synthetic-private-value: true\n"} {
+	// A configured but absent log path validates without starting a source.
+	for path, data := range map[string]string{
+		valid:   "source:\n  id: synthetic-source\n  name: Synthetic Postfix\n  path: missing-parent/synthetic-private-mail.log\n  resume_origins: 1\n",
+		invalid: "synthetic-private-value: true\n",
+	} {
 		if err := os.WriteFile(path, []byte(data), 0600); err != nil {
 			t.Fatal(err)
 		}
