@@ -235,6 +235,10 @@ Vingt-quatre tests config/vet/format/diff Windows passés ; conversion141 publi�
 sur223849c, [CI37591355873](https://github.com/Coubiac/QueueAtlas/actions/runs/37591355873)
 entière réussie/trois jobs/SHA exact. [Relecture142](reviews/m4-source-config.md)
 favorable ; publication/CI finale/fusion/main encore à terminer au commit142.
+Clôture142 effective : #33 fusionnée sur19843d6, CI finale37594338289/main37594545438
+entières réussies, branche sources supprimée. Le [contrat auth143](local-auth.md)
+prépare identité locale/coûts Argon2id en bibliothèque ; aucune commande admin,
+route login ou session n'est encore disponible.
 Configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

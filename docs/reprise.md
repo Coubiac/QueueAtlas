@@ -46,10 +46,11 @@ sur d1feeb9, CI37579618027 entière/trois jobs/SHA exact réussis. Clôture138 f
 doctor supprimée. Contrat source fichier139 publié surcfd2b39 dans #33,
 CI37585141938 entière/trois jobs/SHA exact réussis. YAML source140 publié sur455148a,
 CI37588258338 entière/trois jobs/SHA exact réussis. Conversion141 publiée sur223849c,
-CI37591355873 entière/trois jobs/SHA exact réussis. Relecture142 favorable ;
-publication/CI finale/fusion/main de #33 à terminer au moment du commit.
-Prochain lot143 : contrat pur du compte administrateur local et paramètres de hachage.
-Deux jalons M4/M5 restent, environ17–33lots après142, M3 zéro lot restant ;
+CI37591355873 entière/trois jobs/SHA exact réussis. Clôture142 fusionnée #33 sur19843d6,
+CI finale37594338289/main37594545438 entières réussies, branche sources supprimée.
+Contrat auth143 implémenté/vérifié localement sur codex/m4-local-auth ; publication/
+PR/CI à terminer au commit. Prochain lot144 : hash/vérification et codec Argon2id.
+Deux jalons M4/M5 restent, environ20–36lots après143, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3384,10 +3385,11 @@ Clôture138 terminée : #32 fusionnée sur0d2cad4, CI finale37581947764/main3758
 entières réussies, branche doctor supprimée. Contrat source139 publié surcfd2b39
 dans #33, CI37585141938 entière réussie. YAML source140 publié sur455148a,
 CI37588258338 entière réussie. Conversion141 publiée sur223849c, CI37591355873
-entière réussie. Relecture142 favorable : publier, vérifier CI finale/trois jobs/SHA
-exact, revue COMMENT assistée, ready/fusion #33 puis CI main et nettoyage.
-Prochain lot143 : contrat pur du compte administrateur local et paramètres de
-hachage bornés, tests/doc ; persistance/CLI/sessions dans les lots suivants.
+entière réussie. Clôture142 fusionnée #33 sur19843d6, CI finale37594338289/
+main37594545438 entières réussies, branche sources supprimée. Auth143 validé
+localement : publier/créer et attacher PR cohérente puis vérifier CI entière/SHA.
+Prochain lot144 : hash/vérification et codec strict/borné Argon2id, tests/vecteurs/doc ;
+persistance, CLI d'initialisation et sessions/protections dans des lots suivants.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3395,7 +3397,7 @@ Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des s
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques, CLI de diagnostic et configuration restent au jalon d'application.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-source-config.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-local-auth.
 
 ## Suite à découper au fil des reprises
 
@@ -4318,3 +4320,50 @@ Prochain lot143 : contrat pur compte administrateur local et paramètres de hach
 bornés, tests/doc selon ADR-006 ; persistance/CLI/sessions/protections ensuite.
 M4 reste7–15lots (clôture sources terminée après succès), M5 10–18,
 total17–33 après142, estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Clôture effective142 consignée à la reprise143 :
+`2e813fcc78261281316db61b89cfe4da66c4e7a1` publié dans #33, CI37594338289 entière
+réussie/trois jobs/SHA exact, revue COMMENT assistée5439690236 sur cette tête.
+PR prête puis fusionnée sur `19843d6a012fb3f260173e92055be6b0a5f1d0c3` ;
+CI main37594545438 entière réussie/trois jobs/SHA exact. Main propre/actualisé,
+branche sources supprimée local/GitHub. À la reprise143 : fetch effectué, main/
+origin identiques et PR fusionnée/run main réussis revérifiés REST.
+Les attentes142 précédentes sont le snapshot prépublication, terminé.
+
+## Lot143 : contrat pur de l'identité locale et des coûts de hachage
+
+Résultat attendu : identité du futur compte administrateur local et paramètres
+Argon2id bornés, validations sans IO/mutation/hash, tests/doc. Nouvelle branche
+codex/m4-local-auth depuis main14219843d6 ; pas de stockage/CLI/HTTP dans ce lot.
+
+Nouveau package internal/auth : LocalIdentity/NewLocalIdentity/Validate, identifiant
+ASCII1..64 alphanumérique initial puis ._-, casse conservée, sans compte par défaut.
+Erreurs fixes sans username, construction invalide renvoie valeur zéro ; aucune
+authentification/autorisation/uniqueness accordée par cette identité syntaxique.
+Parameters/DefaultParameters/Validate : mémoire64..256Mio, passes3..6, voies1..4,
+mémoire alignée sur4*voies ; zéros invalides et aucune sélection implicite de défauts.
+Défaut64Mio/3/4, version19/sel16octets/hash32 fixés pour le futur codec, seconde
+recommandation RFC9106 vérifiée avec documentation Go officielle. Les bornes sont
+une politique applicative, pas une garantie de latence ou de mémoire globale.
+
+Quatre tests auth, vet/format/diff Windows passés : identité/casse/indépendance,
+refus privés/zéro, défauts/profil, bornes inclusives/maxima/zéros/alignement.
+Pas d'appel Argon2, de sel généré, de format hash accepté ou dépendance ajoutée.
+CLI/config/SQLite/FileSource/workflow inchangés ; fondations locales non relancées
+sans risque nouveau. CI Linux existante go test/vet ./... couvre le nouveau package.
+Contrat et références dans docs/local-auth.md ; admission/essais/CSRF/sessions requis
+à la frontière HTTP future. MIT conservée, AD/OIDC après MVP selon ADR-008.
+
+Au moment du commit143 : publication/PR/CI à terminer ; dernier main validé142
+19843d6/CI37594545438. Publier/créer et attacher la PR auth cohérente, vérifier
+workflow entier/trois jobs/SHA exact puis consigner dans PR/reprise144.
+Prochain lot144 : hash/vérification Argon2id, codec strict/borné, sel aléatoire,
+comparaison constante et tests/vecteurs/doc ; politique de mot de passe à fixer.
+Puis persistance atomique145 et CLI146, sessions, protections HTTP et revue dans
+des lots distincts. Le contrat143 ne constitue pas un compte utilisable.
+
+Estimation révisée143 : M4 10–18lots, M5 10–18, total20–36, deux jalons.
+La borne7–15 après142 sous-estimait l'auth3–5 : six lots restent au minimum
+hash/codec, persistance, CLI, sessions, protections HTTP et revue, puis API2–3 et
+Web/revue2–4, avec marge d'intégration/diagnostic jusqu'à18. Pas d'élargissement
+fonctionnel ni pourcentage livré ; ce découpage évite de réunir les sous-systèmes.
