@@ -1,0 +1,28 @@
+Lot125: smoke uniquement, une operation par cas, aucune mediane/SLA.
+Commande:
+go test ./internal/storage/sqlite -run '^$' -bench '^BenchmarkProjection(Build|Install|Current)$' -benchtime=1x -count=1 -benchmem
+Fichiers de travail lot125, avant commit; base Git 2f573a2184c96d9cedfdc249dcda98633c6db327.
+Go: go version go1.26.2 windows/amd64; modernc.org/sqlite v1.60.1 (go.mod).
+TEMP: C:\Users\benoi\AppData\Local\Temp; GOMAXPROCS effectif 20 (suffixe du benchmark).
+Stockage et charge du poste non controles; pas de mesure de pic memoire.
+
+goos: windows
+goarch: amd64
+pkg: github.com/Coubiac/QueueAtlas/internal/storage/sqlite
+cpu: 13th Gen Intel(R) Core(TM) i7-13650HX
+BenchmarkProjectionBuild/facts16_scope4-20                 1      132400 ns/op      159752 B/op        2115 allocs/op
+BenchmarkProjectionBuild/facts1024_scope16-20              1     7483000 ns/op     9622904 B/op      107443 allocs/op
+BenchmarkProjectionBuild/facts4096_scope1-20               1    26439100 ns/op    42131040 B/op      420454 allocs/op
+BenchmarkProjectionBuild/facts4096_scope64-20              1    24669900 ns/op    40675136 B/op      429102 allocs/op
+BenchmarkProjectionInstall/facts16_scope4-20               1     1261000 ns/op      432368 B/op        7153 allocs/op
+BenchmarkProjectionInstall/facts1024_scope16-20            1    32640800 ns/op    25872032 B/op      380029 allocs/op
+BenchmarkProjectionInstall/facts4096_scope1-20             1   136265800 ns/op   111999368 B/op     1501842 allocs/op
+BenchmarkProjectionInstall/facts4096_scope64-20            1   140260900 ns/op   108802504 B/op     1521922 allocs/op
+BenchmarkProjectionCurrent/facts16_scope4-20               1      466300 ns/op      265128 B/op        4962 allocs/op
+BenchmarkProjectionCurrent/facts1024_scope16-20            1    21661900 ns/op    15977912 B/op      267413 allocs/op
+BenchmarkProjectionCurrent/facts4096_scope1-20             1    76394700 ns/op    68711464 B/op     1058981 allocs/op
+BenchmarkProjectionCurrent/facts4096_scope64-20            1    75639100 ns/op    66954112 B/op     1070277 allocs/op
+PASS
+ok      github.com/Coubiac/QueueAtlas/internal/storage/sqlite       3.794s
+
+Colonnes numeriques et contenu conserves du tool output; espacement aligne.

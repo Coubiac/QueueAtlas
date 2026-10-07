@@ -13,8 +13,9 @@ CI finale entière réussie. Main110 actualisé, CI push réussie ; recherche111
 fusionnée/CI finale et main vertes ; rétention116–119 fusionnée #27, CI finale/main
 vertes. Contrat et clés120–122 fusionnés dans #28, CI finale37543845063 et main
 37543982877 entièrement réussies. La clôture porte sur contrat/clés, sans preuve
-physique. Matrice123 publiée dans #29, CI37546917054 entière réussie. Contrôle124
-du conflit persistant/reopen acquis localement ; publication/CI124 à terminer.
+physique. Matrice123 et contrôle124 publiés dans #29, CI37546917054 et37549552434
+entières réussies. Benchmarks/protocole125 préparés, smoke12cas/vet locaux réussis ;
+publication/CI125 à terminer, mesures répétées126 encore à faire.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -28,7 +29,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 124 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 125 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -44,10 +45,10 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25, rétention #27 et contrat/clés #28 fusionnés ; matrice123 publiée/CI verte, intégration124 acquise localement | Publication/CI124, mesures et revue finale ; origines non prouvées distinctes | 2–5 après124 |
+| M3 — reconstruction | En cours : projections/stockage #19–24, recherche #25, rétention #27 et contrat/clés #28 fusionnés ; matrice123/intégration124 publiées/CI verte, benchmarks125 préparés | Publication/CI125, mesures répétées/analyse et revue finale ; origines non prouvées distinctes | 2–4 après125 |
 | M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après124** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **27–48** |
+| **Total après125** | **Trois jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **27–47** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -223,7 +224,7 @@ Onze tests synthétiques, suites locales acquises et CI12137541123250 entière
 réussie ; runtime inchangé à la relecture122, aucun défaut bloquant. PR #28
 fusionnée sur7ec6dd737681f4af878b8cdc4c8b71de0deb4308 après CI37543845063 verte ;
 CI push main37543982877 entièrement réussie. Le tableau historique ci-dessous
-décrit l'estimation après122 ; la table de tête utilise le bilan124.
+décrit l'estimation après122 ; la table de tête utilise le bilan125.
 
 Ce chantier ne livre pas la continuité physique automatique. Le cadrage demande
 des états prudents et l'absence de faux parcours/succès sur logs incomplets ; les
@@ -267,3 +268,18 @@ Reste M3 après124 : mesures1–3, revue/clôture1–2, soit2–5 lots ; M4 15�
 M5 10–18 donnent27–48 MVP. Prochain lot125 : protocole/benchmarks de reconstruction
 pure, installation et lecture ; mesures synthétiques bornées, aucun SLA ni pilote
 Linux livré. M3 toujours ouvert. Cette prévision remplace le reste après123.
+
+## Bilan125 — benchmarks et protocole
+
+Lot124 publié sur2f573a2 dans #29, CI37549552434 entière réussie. Trois benchmarks
+préparés pour BuildProjection, InstallProjection et CurrentProjection ; quatre
+profils synthétiques16/1024/4096faits avec1à64parts du scope. Smoke local1x sur les
+12cas et vet réussis. Préparation hors mesure, invariants vérifiés, sortie courte
+conservée ; [protocole](projection-measurements.md). CI125 à vérifier après publication.
+Un smoke Linux Go1.26 ajouté à la CI valide réellement le parcours sans seuil de temps.
+
+La campagne répétée et l'analyse restent au lot126 : ce lot125 prépare la mesure,
+il ne publie pas une capacité ni une comparaison de performance. Reste M3 après125 :
+mesures/analyse1–2, revue/clôture1–2, soit2–4lots ; au moins un lot de mesures et
+un de clôture restent nécessaires. M4 15–25/M5 10–18 donnent27–47MVP, estimation
+incertaine. Le pilote représentatif Linux reste M5 ; AD/OIDC après MVP.

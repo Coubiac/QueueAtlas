@@ -43,6 +43,9 @@ jobs:
         run: go vet ./...
       - name: Test
         run: go test ./...
+      - name: Projection benchmark smoke (no timing threshold)
+        if: matrix.go == '1.26.x'
+        run: go test ./internal/storage/sqlite -run '^$' -bench '^BenchmarkProjection(Build|Install|Current)$' -benchtime=1x -count=1 -benchmem
       - name: File source race test
         if: matrix.go == '1.26.x'
         run: go test -race ./internal/source/file

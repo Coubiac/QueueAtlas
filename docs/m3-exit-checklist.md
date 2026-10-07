@@ -1,8 +1,8 @@
 # Sortie M3 — matrice de vérification
 
-État au lot124, 7 octobre 2026. M3 reste ouvert. Cette matrice inventorie les
-vérifications acquises et les travaux restants. Le contrôle ciblé124 est acquis
-localement ; aucune nouvelle fonction de reconstruction n'a été nécessaire.
+État au lot125, 7 octobre 2026. M3 reste ouvert. Cette matrice inventorie les
+vérifications acquises et les travaux restants. Le contrôle ciblé124 est publié,
+CI entière réussie ; benchmarks125 préparés, mesures répétées encore à faire.
 
 Référence : [roadmap](phase-0-proposal.md#11-roadmap-et-critères-mvp) et
 [ADR-005](adr/ADR-005-postfix-correlation.md). La sortie M3 concerne les API de
@@ -60,19 +60,23 @@ La voie ordinaire, sans attestations, est le périmètre de ce contrôle.
 
 Test ciblé avec ses deux sous-cas, suite SQLite et vet SQLite réussis sous Windows.
 Le helper partagé a changé uniquement dans les tests, ce qui justifie la suite
-SQLite. Aucun code de production modifié, aucune mesure réalisée. CI124 à vérifier
-après publication dans #29 ; [point de reprise](reprise.md).
+SQLite. Aucun code de production modifié, aucune mesure réalisée dans124. Publié
+sur2f573a2184c96d9cedfdc249dcda98633c6db327 dans #29,
+[CI37549552434](https://github.com/Coubiac/QueueAtlas/actions/runs/37549552434)
+entièrement réussie ; [point de reprise](reprise.md).
 
 ## Mesures et décision de sortie
 
-L'inventaire des benchmarks existants ne trouve que recherche et migration de
-domaines. Reconstruction pure, installation et lecture du manifest n'ont pas de
-mesure publiée dans ce dépôt. Les mesures suivantes doivent couvrir ces opérations
-avec protocoles/sorties brutes, tailles synthétiques dans les limites actuelles,
-préparation hors chronométrage et distinction CPU/allocations/IO. Pas de seuil CI
-ni extrapolation en capacité de production depuis un poste Windows.
+L'inventaire123 ne trouvait que recherche et migration de domaines. Le lot125
+ajoute trois benchmarks : reconstruction pure, installation et lecture du manifest,
+quatre profils16/1024/4096faits dans les bornes4096/64parts. Exécution courte locale
+1x réussie sur les12cas ; parcours/générations/tentatives/réserves et cohérence SQL
+vérifiés avant mesure. [Protocole et sortie brute](projection-measurements.md).
+Préparation hors chronométrage, distinction CPU/allocations/IO ; un smoke Linux
+Go1.26 ajouté à la CI, aucun seuil de temps. CI125 à vérifier après publication.
 
-Après124 : mesurer reconstruction/installation/lecture, puis relire la matrice,
+Après125 : mesures répétées/analyse126 de reconstruction/installation/lecture,
+puis relire la matrice,
 les résultats et les limites avant de déclarer M3 terminé. Réutiliser les tests
 scellés ; élargir seulement pour un risque concret. Les logs incomplets demeurent
 un cas avec réserves. Une future fusion prouvée exige producteur fiable,
