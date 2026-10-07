@@ -239,3 +239,32 @@ Vingt-et-un tests config et quinze tests CLI passés Windows ; binaire compilé
 étendu avec une config source et journal absent, codes/effets/confidentialité vérifiés.
 Vet/format/diff ciblés et commande check-config sur l'exemple passés. Stockage,
 FileSource, dépendances et workflow inchangés ; publication/CI140 à terminer au commit.
+
+Validation140 effective : 455148a publié dans #33,
+[CI37588258338](https://github.com/Coubiac/QueueAtlas/actions/runs/37588258338)
+entière réussie/trois jobs/SHA exact ; les attentes140 ci-dessus sont le snapshot
+prépublication, terminé.
+
+## Lot141 : conversion vers FileSource
+
+Après Load/Decode et contrôle de `Config.Source != nil`,
+`Config.Source.LibraryConfig()` renvoie une valeur `filesource.Config` indépendante.
+La méthode revalide tous les champs et exige un chemin absolu déjà résolu ;
+un chemin relatif validé lexicalement au lot139 est refusé ici. Aucun défaut,
+normalisation, résolution, accès aux dépendances ou IO pendant la conversion.
+Toute erreur renvoie la valeur bibliothèque zéro et ErrInvalid/champ-règle fixe,
+sans valeur fournie. L'appelant doit traiter l'erreur avant d'utiliser le résultat.
+
+Copie exacte ID/nom/instance facultative, kind=file, chemin, mode beginning/end
+typé, délais et budgets. Les deux valeurs sont indépendantes après conversion.
+ResumePolicy reste zéro strict : AllowZeroCheckpoint=false, sans paramètre YAML
+pour assouplir la reprise. TrustedHost et end conservent les limites139/140 :
+aucune preuve d'hôte, de fichier lisible ou de conditions physiques/durables.
+
+Trois nouveaux tests : copie/défauts/valeurs explicites/indépendance, revalidation
+et erreurs sûres/zéro, acceptation par le constructeur FileSource beginning/end.
+Le test du constructeur utilise un journal absent et des dépendances sentinelles,
+sans lecture d'état, normalisation, fichier créé ou Run. La méthode de production
+ne construit aucun composant ; l'ingestion applicative reste à développer.
+Vingt-quatre tests config/vet/format/diff locaux Windows passés ; publication/CI141
+à vérifier après commit dans #33, puis revue/clôture142 du chantier139–141.

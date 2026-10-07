@@ -226,7 +226,13 @@ accepte désormais une section facultative source pour une entrée fichier.
 `check-config --config examples/queueatlas-source.yaml` valide l'exemple synthétique,
 même avec journal absent, sans lancer d'ingestion. Doctor conserve son périmètre
 config/compatibilité SQLite et ne certifie pas la lisibilité de la source.
-Conversion vers FileSource au lot141, démarrage applicatif ultérieur.
+YAML140 publié sur455148a dans #33,
+[CI37588258338](https://github.com/Coubiac/QueueAtlas/actions/runs/37588258338)
+entière réussie/trois jobs/SHA exact. La [conversion141](configuration.md#lot141--conversion-vers-filesource)
+est disponible en bibliothèque : copie indépendante revalidée, chemin absolu et
+reprise stricte. Aucun appel CLI ni démarrage applicatif ; doctor garde ses limites.
+Vingt-quatre tests config/vet/format/diff Windows passés ; publication/CI141 à terminer,
+relecture/clôture142 ensuite.
 Configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

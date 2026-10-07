@@ -44,10 +44,11 @@ entières réussies, branche diagnostics supprimée. Lot137 doctor publié dans 
 sur d1feeb9, CI37579618027 entière/trois jobs/SHA exact réussis. Clôture138 fusionnée
 #32 sur0d2cad4, CI finale37581947764/main37582076645 entières réussies, branche
 doctor supprimée. Contrat source fichier139 publié surcfd2b39 dans #33,
-CI37585141938 entière/trois jobs/SHA exact réussis. Chargement YAML source140
-implémenté/vérifié localement sur codex/m4-source-config ; publication/CI à terminer
-au moment du commit. Prochain lot141 : conversion pure vers paramètres FileSource.
-Deux jalons M4/M5 restent, environ19–35lots après140, M3 zéro lot restant ;
+CI37585141938 entière/trois jobs/SHA exact réussis. YAML source140 publié sur455148a,
+CI37588258338 entière/trois jobs/SHA exact réussis. Conversion pure141 implémentée
+et vérifiée localement sur codex/m4-source-config ; publication/CI à terminer
+au moment du commit. Prochain lot142 : relecture/clôture de #33 (lots139–141).
+Deux jalons M4/M5 restent, environ18–34lots après141, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3380,10 +3381,11 @@ main37576942301 entières réussies, branche diagnostics supprimée.
 Doctor137 publié sur d1feeb9 dans #32, CI37579618027 entière/trois jobs/SHA exact.
 Clôture138 terminée : #32 fusionnée sur0d2cad4, CI finale37581947764/main37582076645
 entières réussies, branche doctor supprimée. Contrat source139 publié surcfd2b39
-dans #33, CI37585141938 entière réussie. YAML source140 validé localement : publier
-dans la même PR puis vérifier CI entière/trois jobs/SHA exact, consigner preuve.
-Prochain lot141 : conversion pure du contrat applicatif vers paramètres FileSource
-avec identité/bornes/start et reprise stricte, tests/doc ; pas d'ouverture ou Run.
+dans #33, CI37585141938 entière réussie. YAML source140 publié sur455148a,
+CI37588258338 entière réussie. Conversion141 validée localement : publier dans
+la même PR puis vérifier CI entière/trois jobs/SHA exact, consigner preuve.
+Prochain lot142 : relecture du chantier139–141, clôture de #33 après CI finale
+réussie, fusion, vérification CI main et nettoyage de la branche fusionnée.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4242,3 +4244,42 @@ Prochain lot141 : conversion pure vers paramètres FileSource (identité/start/d
 budgets, reprise stricte), tests/doc ; aucun Run. Puis revue/clôture142 de ce chantier.
 M4 reste9–17lots (sources2lots restants au lieu de3 après139), M5 10–18,
 total19–35 après140, deux jalons, estimation incertaine. MIT, AD/OIDC après MVP.
+
+Validation effective140 consignée à la reprise141 :
+`455148a0f79daebd578e7ad7ae9fb0b25a4cf39d` publié dans #33 en brouillon,
+CI37588258338 entière réussie/trois jobs/SHA exact. Config/CLI Windows et tests,
+vet/format, race/smoke/builds Linux passés. À la reprise141 : fetch effectué,
+checkout propre et têtes locale/origin/PR identiques ; main1380d2cad4 inchangé,
+PR ouverte/brouillon/mergeable/clean et workflow réussi revérifiés REST.
+Les attentes140 précédentes sont le snapshot prépublication, terminé.
+
+## Lot141 : conversion pure vers paramètres FileSource
+
+Résultat attendu : conversion du contrat applicatif chargé en configuration de
+bibliothèque indépendante, identité/start/délais/budgets exacts et reprise stricte.
+Même branche codex/m4-source-config/#33 ; aucun démarrage applicatif.
+
+FileSource.LibraryConfig revalide la valeur puis exige Path absolu déjà résolu
+par le chargeur ; pas de défaut, résolution, mutation ou IO. Toute erreur renvoie
+filesource.Config zéro/ErrInvalid avec champ/règle fixe sans valeur privée.
+Copie explicite ID/Name/TrustedHost, Kind=file, Path, StartAt typé, PollInterval,
+RotationGrace et ResumeLimits ; ResumePolicy zéro strict, aucun assouplissement
+AllowZeroCheckpoint. L'appelant vérifie Config.Source non nil avant conversion.
+
+Trois nouveaux tests141, vingt-quatre tests config, vet/format/diff Windows passés :
+valeurs par défaut/explicites conservées et indépendance dans les deux sens,
+revalidation des champs/refus relatif/config zéro/confidentialité, compatibilité
+avec filesource.New beginning/end sur journal absent. Ce dernier test construit
+le composant avec dépendances sentinelles : aucune lecture d'état/normalisation
+ni fichier créé, aucun Run. La conversion de production ne construit rien.
+CLI/stockage/FileSource/modules/workflow inchangés ; fondations locales non relancées
+sans nouveau risque, CI existante config Windows/Linux couvre les nouveaux tests.
+La validation ne certifie ni fichier physique ni conditions de bootstrap end.
+
+Au moment du commit141 : publication/CI à terminer ; dernier publié validé140
+455148a/CI37588258338, dernier main1380d2cad4/CI37582076645. Publier dans #33,
+vérifier workflow entier/trois jobs/SHA exact, consigner dans PR puis reprise142.
+Prochain lot142 : relecture/clôture139–141, CI finale, fusion et CI main/nettoyage ;
+auth locale/API/Web ensuite, démarrage de source au raccordement applicatif ultérieur.
+M4 reste8–16lots (revue sources1lot au lieu de2 après140), M5 10–18,
+total18–34 après141, deux jalons, estimation incertaine. MIT, AD/OIDC après MVP.

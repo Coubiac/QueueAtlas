@@ -8,6 +8,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"github.com/Coubiac/QueueAtlas/internal/source"
 	filesource "github.com/Coubiac/QueueAtlas/internal/source/file"
 )
 
@@ -17,7 +18,7 @@ type FileSource struct {
 	ID            string
 	Name          string
 	TrustedHost   string // optional configured instance key, never a DNS lookup
-	Path          string // literal OS path, relative to the future YAML directory
+	Path          string // literal OS path; Decode resolves it against the YAML directory
 	StartAt       string
 	PollInterval  time.Duration
 	RotationGrace time.Duration
@@ -87,6 +88,29 @@ func (c FileSource) Validate() error {
 		return invalid("source.resume_entries", fmt.Sprintf("budget must be between 1 and %d", filesource.MaxFollowLocationEntries))
 	}
 	return nil
+}
+
+// LibraryConfig returns an independent FileSource configuration after validation.
+// Require a resolved absolute path so the future constructor cannot rebase the
+// input against a different working directory. No defaults, normalization, IO,
+// dependency access, component construction or ingestion happen here.
+// The caller checks Config.Source for nil before requesting this conversion.
+func (c FileSource) LibraryConfig() (filesource.Config, error) {
+	if err := c.Validate(); err != nil {
+		return filesource.Config{}, err
+	}
+	if !filepath.IsAbs(c.Path) {
+		return filesource.Config{}, invalid("source.path", "expected an absolute path resolved by the configuration loader")
+	}
+	return filesource.Config{
+		Identity: source.Identity{
+			ID: c.ID, Kind: "file", Name: c.Name, TrustedHost: c.TrustedHost,
+		},
+		Path: c.Path, StartAt: filesource.StartAt(c.StartAt),
+		PollInterval: c.PollInterval, RotationGrace: c.RotationGrace,
+		ResumeLimits: filesource.FollowResumeLimits{Origins: c.ResumeOrigins, Entries: c.ResumeEntries},
+		ResumePolicy: filesource.ResumePolicy{},
+	}, nil
 }
 
 func fileSourceToken(value string, max int) bool {
