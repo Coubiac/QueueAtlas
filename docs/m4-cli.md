@@ -100,9 +100,11 @@ Lot131 publié sur53d4ae0 dans #30,
 [CI37567003805](https://github.com/Coubiac/QueueAtlas/actions/runs/37567003805)
 entière réussie/trois jobs/SHA exact et étape Windows CLI vérifiés. Lot132 :
 [relecture du chantier](reviews/m4-cli-config.md) favorable, sans modification de
-code ; publication/CI finale/fusion/main encore à terminer. Prochain lot133 après
-clôture : ouverture SQLite en lecture seule pour les diagnostics db stats/doctor,
-avant raccordement à une commande CLI.
+code ; #30 fusionnée sur118634f, CI finale37569190697/main37569292737 entièrement
+réussies, branche CLI supprimée. Lot133 : [ouverture SQLite de diagnostic](sqlite-diagnostics.md)
+en lecture seule validée localement, sans création/migration de base ; sa
+publication/PR/CI restent à vérifier au moment du commit. Lectures bornées134 puis
+raccordement CLI dans un lot distinct.
 Doctor/db stats, configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.
