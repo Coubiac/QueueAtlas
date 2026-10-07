@@ -215,10 +215,26 @@ workflow inchangés ; lot137 publié sur d1feeb9 dans #32,
 [CI37579618027](https://github.com/Coubiac/QueueAtlas/actions/runs/37579618027)
 entière réussie/trois jobs/SHA exact revérifiés à la reprise138.
 [Relecture138](reviews/m4-doctor.md) favorable sur ce diagnostic initial, sans
-modification de code ; publication/CI finale/fusion #32/CI main à terminer au commit.
+modification de code ; #32 fusionnée sur0d2cad4,
+[CI finale37581947764](https://github.com/Coubiac/QueueAtlas/actions/runs/37581947764)
+et [CI main37582076645](https://github.com/Coubiac/QueueAtlas/actions/runs/37582076645)
+entières réussies/trois jobs/SHA exact, branche doctor supprimée.
 La vérification des sources/formats/checkpoints/lacunes du cadrage reste ultérieure.
-Prochain lot139 : contrat pur de configuration d'une source fichier, tests/doc ;
-YAML et raccordement des composants dans des lots suivants.
+Le [contrat source139](configuration.md#lot139--contrat-pur-dune-source-fichier)
+était une valeur Go indépendante. Le [chargeur140](configuration.md#lot140--section-yaml-source-facultative)
+accepte désormais une section facultative source pour une entrée fichier.
+`check-config --config examples/queueatlas-source.yaml` valide l'exemple synthétique,
+même avec journal absent, sans lancer d'ingestion. Doctor conserve son périmètre
+config/compatibilité SQLite et ne certifie pas la lisibilité de la source.
+YAML140 publié sur455148a dans #33,
+[CI37588258338](https://github.com/Coubiac/QueueAtlas/actions/runs/37588258338)
+entière réussie/trois jobs/SHA exact. La [conversion141](configuration.md#lot141--conversion-vers-filesource)
+est disponible en bibliothèque : copie indépendante revalidée, chemin absolu et
+reprise stricte. Aucun appel CLI ni démarrage applicatif ; doctor garde ses limites.
+Vingt-quatre tests config/vet/format/diff Windows passés ; conversion141 publiée
+sur223849c, [CI37591355873](https://github.com/Coubiac/QueueAtlas/actions/runs/37591355873)
+entière réussie/trois jobs/SHA exact. [Relecture142](reviews/m4-source-config.md)
+favorable ; publication/CI finale/fusion/main encore à terminer au commit142.
 Configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

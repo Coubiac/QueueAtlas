@@ -122,3 +122,156 @@ readonly pour vérifier seulement la configuration et la compatibilité existant
 Les sources, CIDR/domaines, rétention et paramètres d'authentification demanderont
 des contrats séparés selon les composants raccordés. `serve`,
 auth/API/Web restent à développer. AD/OIDC après MVP, MIT conservée.
+
+## Lot139 : contrat pur d'une source fichier
+
+`config.FileSource` décrit une entrée fichier en Go. `FileSourceDefaults()` fournit
+les paramètres facultatifs ; ID, Name et Path restent obligatoires. `Validate()`
+refuse le premier champ invalide via `ErrInvalid` et une règle fixe, sans recopier
+les valeurs. La valeur est copiée, sans slice/map/pointeur partagé.
+
+Au lot139 ce contrat était indépendant de `Config`. Le lot140 le charge désormais
+dans la section facultative `source` décrite ci-dessous ; le raccordement à
+FileSource reste au lot141. Aucun composant n'est lancé par validation/chargement.
+
+| Champ Go | Défaut | Contrat |
+| --- | --- | --- |
+| ID | Aucun, requis | 1–128octets ASCII ; premier caractère alphanumérique, puis alphanumérique, `.`, `_` ou `-` |
+| Name | Aucun, requis | 1–128octets UTF-8, sans espaces périphériques ni caractères de contrôle |
+| TrustedHost | Vide | Facultatif ; identifiant d'instance ASCII, syntaxe de ID, au plus255octets |
+| Path | Aucun, requis | Chemin littéral de fichier selon l'OS, 1–4096octets UTF-8 |
+| StartAt | beginning | beginning ou end seulement |
+| PollInterval | 1s | 10ms–1m inclus |
+| RotationGrace | 30s | 10ms–24h inclus |
+| ResumeOrigins | 1000 | 1–1000 inclus, budget des états parcourus |
+| ResumeEntries | 2000 | 1–2000 inclus, budget partagé des entrées de répertoires |
+
+Les délais/budgets et modes réutilisent les constantes de la bibliothèque FileSource.
+Contrairement aux zéros qui sélectionnent des défauts dans son constructeur,
+le contrat applicatif exige que les champs présents soient valides : durées/budgets
+zéro et StartAt vide sont refusés. Le futur chargeur remplacera seulement les champs
+présents après application des défauts. Les politiques de rejeu d'un checkpoint zéro
+restent strictes ; aucune option applicative de relaxation n'est ajoutée.
+
+ID et TrustedHost sont des clés opaques sensibles à la casse, sans normalisation
+ou résolution DNS ; TrustedHost ne certifie pas un hôte lu dans les logs. Le stockage
+existant utilise TrustedHost comme instance si renseigné, sinon l'ID de source.
+L'opérateur devra garder ces clés stables et attribuer correctement les instances ;
+le contrat d'une seule valeur ne contrôle pas les doublons entre sources.
+
+Path accepte absolu ou relatif, `..`, espaces internes et texte littéral `${...}`,
+`~` ou templates, sans expansion/résolution. Refus : vide, espaces périphériques,
+contrôles, UTF-8 invalide, dépassement4096octets, absence de nom de fichier,
+séparateur final, URI, `:memory:`, UNC et caractères joker `*`/`?`. Sous Windows,
+chemin relatif à un lecteur (`C:fichier.log`) ou enraciné sans lecteur (`\fichier.log`)
+refusé. La borne syntaxique ne garantit pas les limites physiques de l'OS.
+Aucun fichier/parent n'est ouvert, créé ou vérifié ; répertoire, lien, montage réseau,
+droits, lisibilité et format des lignes ne sont pas attestés.
+
+beginning conserve le départ normal. end sera transmis au FileSource existant :
+bootstrap sans historique uniquement, frontière LF complète, reprises/rotations
+inchangées selon [ADR-010](adr/ADR-010-initial-file-end.md). La validation du mot
+end ne démontre pas ces conditions physiques ou durables.
+
+Quatre nouveaux tests139 : défauts indépendants/obligatoires, identité/nom/instance
+et confidentialité, chemins sans IO/mutation/expansion et ambiguïtés Windows,
+bornes inclusives/débordements/zéros/modes. Seize tests config, vet/format/diff
+locaux Windows passés ; CI de publication à vérifier après commit. Aucun changement
+du chargeur, de la CLI, du stockage ou de l'ingestion ; pas de dépendance nouvelle.
+
+Validation139 effective : cfd2b39 publié dans #33,
+[CI37585141938](https://github.com/Coubiac/QueueAtlas/actions/runs/37585141938)
+entière réussie/trois jobs/SHA exact ; les attentes139 ci-dessus sont le snapshot
+prépublication. La même PR est réutilisée pour le chargement140 et la suite.
+
+## Lot140 : section YAML source facultative
+
+Un mapping racine `source` décrit **une source fichier**. Section absente :
+`Config.Source == nil`, aucune source créée implicitement, anciennes configurations
+acceptées. Section présente : ID/nom/chemin obligatoires, autres champs selon
+FileSourceDefaults. Un mapping vide/null, une séquence ou une seconde section
+source sont refusés ; sources multiples et autres types restent à développer.
+
+[Exemple synthétique](../examples/queueatlas-source.yaml) :
+
+```yaml
+source:
+  id: synthetic-postfix
+  name: Synthetic Postfix
+  path: missing-parent/synthetic-mail.log
+  start_at: beginning
+  poll_interval: 1s
+  rotation_grace: 30s
+  resume_origins: 1000
+  resume_entries: 2000
+```
+
+Champ facultatif supplémentaire : `trusted_host`, texte d'instance selon139.
+Type implicite fichier ; aucun champ type ou allow_zero_checkpoint accepté.
+Les textes et durées suivent les scalaires textuels stricts130. Les budgets sont
+des **entiers décimaux non quotés**, sans signe, préfixe hex/octal, séparateur,
+zéro initial superflu ou conversion implicite ; même `!!int '10'` est refusé.
+Leurs valeurs doivent être positives et dans les bornes139. Seuls les champs
+absents conservent les défauts : valeurs null/zéro/mode vide refusées.
+
+Bornes globales inchangées : 64Kio, 128nœuds, profondeur4, un seul document UTF-8.
+Ancres/alias/merge keys, doublons, champs inconnus et tags personnalisés refusés.
+Erreurs ErrInvalid avec champs/règles connus ; aucune valeur, clé inconnue ou
+erreur brute YAML n'est imprimée. Toute erreur renvoie `Config{}`, Source nil.
+
+Validation avant résolution de Path, résolution relative depuis le répertoire
+lexical absolu du YAML, puis validation complète incluant la longueur résolue.
+Un chemin absolu garde sa valeur ; `..` est permis, aucune restriction au répertoire
+de config revendiquée. Variables/tilde/templates restent littéraux. Aucune vérification
+de la source physique, de ses droits/format, ou lecture de journal/checkpoint.
+Chaque chargement alloue sa propre valeur Source ; copier un Config en Go ne fait
+pas une copie profonde du pointeur, l'appelant reste propriétaire de ses paramètres.
+
+`check-config --config examples/queueatlas-source.yaml` accepte cet exemple même
+si le journal est absent, sans créer/ouvrir de source ou base. Le résultat de doctor
+reste limité à config et compatibilité SQLite ; il ne certifie pas la lisibilité
+d'une source désormais configurée. Construction/ingestion et diagnostic élargi
+restent ultérieurs.
+
+Cinq nouveaux tests140 : chargement/defaults/absence sans IO, valeurs/chemins et
+indépendance, refus sûrs/config zéro, limites globales conservées, exemple.
+Vingt-et-un tests config et quinze tests CLI passés Windows ; binaire compilé
+étendu avec une config source et journal absent, codes/effets/confidentialité vérifiés.
+Vet/format/diff ciblés et commande check-config sur l'exemple passés. Stockage,
+FileSource, dépendances et workflow inchangés ; publication/CI140 à terminer au commit.
+
+Validation140 effective : 455148a publié dans #33,
+[CI37588258338](https://github.com/Coubiac/QueueAtlas/actions/runs/37588258338)
+entière réussie/trois jobs/SHA exact ; les attentes140 ci-dessus sont le snapshot
+prépublication, terminé.
+
+## Lot141 : conversion vers FileSource
+
+Après Load/Decode et contrôle de `Config.Source != nil`,
+`Config.Source.LibraryConfig()` renvoie une valeur `filesource.Config` indépendante.
+La méthode revalide tous les champs et exige un chemin absolu déjà résolu ;
+un chemin relatif validé lexicalement au lot139 est refusé ici. Aucun défaut,
+normalisation, résolution, accès aux dépendances ou IO pendant la conversion.
+Toute erreur renvoie la valeur bibliothèque zéro et ErrInvalid/champ-règle fixe,
+sans valeur fournie. L'appelant doit traiter l'erreur avant d'utiliser le résultat.
+
+Copie exacte ID/nom/instance facultative, kind=file, chemin, mode beginning/end
+typé, délais et budgets. Les deux valeurs sont indépendantes après conversion.
+ResumePolicy reste zéro strict : AllowZeroCheckpoint=false, sans paramètre YAML
+pour assouplir la reprise. TrustedHost et end conservent les limites139/140 :
+aucune preuve d'hôte, de fichier lisible ou de conditions physiques/durables.
+
+Trois nouveaux tests : copie/défauts/valeurs explicites/indépendance, revalidation
+et erreurs sûres/zéro, acceptation par le constructeur FileSource beginning/end.
+Le test du constructeur utilise un journal absent et des dépendances sentinelles,
+sans lecture d'état, normalisation, fichier créé ou Run. La méthode de production
+ne construit aucun composant ; l'ingestion applicative reste à développer.
+Vingt-quatre tests config/vet/format/diff locaux Windows passés ; publication/CI141
+à vérifier après commit dans #33, puis revue/clôture142 du chantier139–141.
+
+Validation141 effective : 223849c publié dans #33,
+[CI37591355873](https://github.com/Coubiac/QueueAtlas/actions/runs/37591355873)
+entière réussie/trois jobs/SHA exact revérifiés à la reprise142 ; attentes141
+prépublication terminées. [Relecture142](reviews/m4-source-config.md) favorable
+au chantier139–141, sans changement de code ; publication/CI finale/fusion/main
+à terminer au commit de clôture. Le raccordement à l'ingestion reste ultérieur.

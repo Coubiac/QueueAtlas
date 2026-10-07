@@ -29,8 +29,12 @@ entière réussie. Métadonnées134 publiées sur8e9008b, CI37572091851 entière
 CLI db stats135 publiée surcae194c, CI37574528679 entière réussie. Clôture136
 fusionnée #31 sur918ef0c, CI finale37576814504/main37576942301 entières réussies,
 branche diagnostics supprimée. Doctor137 publié sur d1feeb9 dans #32,
-CI37579618027 entière réussie. Relecture138 favorable ; publication/CI finale/
-fusion/main encore à terminer au moment du commit.
+CI37579618027 entière réussie. Clôture138 fusionnée #32 sur0d2cad4,
+CI finale37581947764/main37582076645 entières réussies, branche doctor supprimée.
+Contrat source139 publié surcfd2b39 dans #33, CI37585141938 entière réussie.
+YAML source140 publié sur455148a, CI37588258338 entière réussie. Conversion141
+publiée sur223849c, CI37591355873 entière réussie. Relecture142 favorable,
+publication/CI finale/fusion/main à terminer au commit dans #33.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -45,7 +49,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 138 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 142 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -62,9 +66,18 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132 et diagnostics133–136 fusionnés/CI main verte ; doctor137 publié/CI verte, relecture138 favorable | Clôture #32/CI main, config des composants/diagnostic élargi, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 4–14 après138 |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136 et doctor initial137–138 fusionnés/CI main verte ; source139–141 publiée/CI verte, relecture142 favorable/fusion à terminer | Diagnostic élargi, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 7–15 après clôture142 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après138** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **14–32** |
+| **Total après clôture142** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **17–33** |
+
+Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
+Le découpage restant compte YAML/raccordement/clôture sources3lots,
+compte/sessions/protections3–5, API2–3, Web et revue2–4, avec marge d'intégration
+jusqu'à18lots M4. La fourchette suit ces comportements restants et ne diminue pas
+automatiquement à chaque numéro de lot. Le périmètre MVP demeure celui du cadrage.
+Après clôture142, contrat/YAML/conversion/revue sources réalisés ; les trois lots
+restants de ce chantier après139 sont terminés, d'où7–15lots pour M4,
+sans autre changement de périmètre. Publication/fusion142 encore à terminer au commit.
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -510,3 +523,61 @@ revérifiée. Publication/CI finale/fusion #32 et CI main encore à terminer au 
 Après succès : M4 toujours en cours. Prochain lot139 : contrat pur de configuration
 d'une source fichier, tests/doc ; YAML et raccordement dans des lots suivants.
 M4 reste4–14lots, M5 10–18, total14–32 après138, estimation incertaine.
+
+Clôture138 effective : #32 fusionnée sur0d2cad4 après revue COMMENT assistée5438508226
+sur84be3c6 ; CI finale37581947764/main37582076645 entières réussies/trois jobs/SHA
+exact. Main actualisé propre, branche doctor supprimée local/GitHub.
+Les attentes138 précédentes sont le snapshot prépublication, terminé.
+
+## Bilan139 — configuration pure de source fichier
+
+Valeur indépendante et défauts/validation sans IO, champs requis, identité stable,
+chemin littéral, politique beginning/end et bornes FileSource réutilisées.
+Quatre nouveaux tests, seize tests config/vet/format/diff Windows passés.
+Aucun raccordement YAML/CLI/ingestion, aucun fichier ouvert/créé ou composant lancé.
+Publication/PR/CI encore à terminer au commit. Prochain lot140 : chargement YAML
+strict/borné, défauts des champs absents et chemins relatifs depuis config, tests/doc.
+M4 reste10–18lots selon découpage explicité ci-dessus, M5 10–18, total20–36 après139.
+
+Validation139 effective : cfd2b39 publié dans #33,
+[CI37585141938](https://github.com/Coubiac/QueueAtlas/actions/runs/37585141938)
+entière réussie/trois jobs/SHA exact. Attentes139 ci-dessus prépublication terminées.
+
+## Bilan140 — chargement YAML source
+
+Section facultative source avec defaults stricts, budgets décimaux canoniques,
+chemins relatifs depuis config, bornes globales conservées et erreur/config zéro.
+Une source fichier uniquement ; aucune ouverture de journal/DB ou ingestion lancée.
+Cinq nouveaux tests, vingt-et-un tests config et quinze tests CLI Windows passés,
+vet/format/diff et exemple check-config passés ; binaire compilé avec log absent.
+Publication/CI dans #33 à terminer au commit. Prochain lot141 : conversion pure
+vers paramètres FileSource, tests/doc ; puis revue/clôture142 du chantier.
+M4 reste9–17lots, M5 10–18, total19–35 après140, estimation incertaine.
+
+Validation140 effective : 455148a publié dans #33,
+[CI37588258338](https://github.com/Coubiac/QueueAtlas/actions/runs/37588258338)
+entière réussie/trois jobs/SHA exact. Attentes140 ci-dessus prépublication terminées.
+
+## Bilan141 — conversion pure FileSource
+
+Paramètres chargés revalidés puis copiés dans une valeur FileSource indépendante,
+chemin absolu exigé, identité/start/délais/budgets conservés et reprise stricte.
+Trois nouveaux tests, vingt-quatre tests config/vet/format/diff Windows passés ;
+constructeur beginning/end accepté sans lecture d'état/normalisation/fichier créé.
+Aucune ingestion applicative ; publication/CI141 dans #33 à terminer au commit.
+Prochain lot142 : relecture/clôture139–141, CI finale/fusion/main et nettoyage.
+M4 reste8–16lots, M5 10–18, total18–34 après141, estimation incertaine.
+
+Validation141 effective : 223849c publié dans #33,
+[CI37591355873](https://github.com/Coubiac/QueueAtlas/actions/runs/37591355873)
+entière réussie/trois jobs/SHA exact. Attentes141 ci-dessus prépublication terminées.
+
+## Bilan142 — relecture/clôture configuration source
+
+[Relecture assistée](reviews/m4-source-config.md) favorable au chantier139–141,
+aucune approbation humaine indépendante revendiquée. Lot documentaire seulement,
+CI141 entière revérifiée ; publication/CI finale/fusion/main à terminer au commit.
+Aucune ingestion applicative ni diagnostic source physique ; M4 reste en cours.
+Prochain lot143 : contrat pur compte administrateur local et paramètres de hachage
+bornés, tests/doc ; persistance/CLI/sessions/protections dans les lots suivants.
+M4 reste7–15lots après succès de clôture, M5 10–18, total17–33, estimation incertaine.

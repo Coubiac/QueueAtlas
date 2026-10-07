@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -19,7 +20,7 @@ const MaxBytes = 64 * 1024
 // ErrRead reports IO failures without including paths or reader error contents.
 var ErrRead = errors.New("cannot read configuration")
 
-// Load reads one regular configuration file. Relative storage paths are resolved
+// Load reads one regular configuration file. Relative storage/source paths are resolved
 // against its lexical absolute directory, not a symlink target's directory.
 // It neither opens the database nor checks the database's permissions.
 func Load(path string) (Config, error) {
@@ -118,6 +119,12 @@ func Decode(r io.Reader, baseDir string) (Config, error) {
 				}
 				return readString(node, "storage.path", &c.Storage.Path)
 			})
+		case "source":
+			settings, err := readFileSource(node)
+			if err == nil {
+				c.Source = &settings
+			}
+			return err
 		default:
 			return invalid("yaml", "unknown field")
 		}
@@ -135,6 +142,9 @@ func Decode(r io.Reader, baseDir string) (Config, error) {
 			return Config{}, invalid("storage.path", "drive-relative or rooted paths without a drive are unsupported")
 		}
 		c.Storage.Path = filepath.Join(baseDir, c.Storage.Path)
+	}
+	if c.Source != nil && !filepath.IsAbs(c.Source.Path) {
+		c.Source.Path = filepath.Join(baseDir, c.Source.Path)
 	}
 	if err := c.Validate(); err != nil {
 		return Config{}, err
@@ -199,5 +209,56 @@ func readDuration(n *yaml.Node, field string, out *time.Duration) error {
 		return invalid(field, "expected a duration with units")
 	}
 	*out = d
+	return nil
+}
+
+func readFileSource(n *yaml.Node) (FileSource, error) {
+	c := FileSourceDefaults()
+	err := readMapping(n, "source", func(key string, node *yaml.Node) error {
+		switch key {
+		case "id":
+			return readString(node, "source.id", &c.ID)
+		case "name":
+			return readString(node, "source.name", &c.Name)
+		case "trusted_host":
+			return readString(node, "source.trusted_host", &c.TrustedHost)
+		case "path":
+			return readString(node, "source.path", &c.Path)
+		case "start_at":
+			return readString(node, "source.start_at", &c.StartAt)
+		case "poll_interval":
+			return readDuration(node, "source.poll_interval", &c.PollInterval)
+		case "rotation_grace":
+			return readDuration(node, "source.rotation_grace", &c.RotationGrace)
+		case "resume_origins":
+			return readBudget(node, "source.resume_origins", &c.ResumeOrigins)
+		case "resume_entries":
+			return readBudget(node, "source.resume_entries", &c.ResumeEntries)
+		default:
+			return invalid("source", "unknown field")
+		}
+	})
+	if err != nil {
+		return FileSource{}, err
+	}
+	return c, nil
+}
+
+// Do not inherit YAML's octal/hexadecimal/sign/separator conventions or implicit
+// conversions. Only canonical, unquoted nonnegative decimal integer scalars pass;
+// Validate then requires a positive budget within the FileSource library bounds.
+func readBudget(n *yaml.Node, field string, out *int) error {
+	value := n.Value
+	if n.Kind != yaml.ScalarNode || n.ShortTag() != "!!int" || value == "" ||
+		n.Style&(yaml.DoubleQuotedStyle|yaml.SingleQuotedStyle|yaml.LiteralStyle|yaml.FoldedStyle) != 0 ||
+		strings.IndexFunc(value, func(r rune) bool { return r < '0' || r > '9' }) >= 0 ||
+		(len(value) > 1 && value[0] == '0') {
+		return invalid(field, "expected a canonical decimal integer")
+	}
+	number, err := strconv.Atoi(value)
+	if err != nil {
+		return invalid(field, "expected a bounded decimal integer")
+	}
+	*out = number
 	return nil
 }
