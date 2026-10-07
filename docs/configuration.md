@@ -109,8 +109,10 @@ Lot130 publié sur `8bba11eb3215ab3386dd511702920c348694c8fd` dans #30 ;
 entière réussie, trois jobs/SHA exact et étape Windows config vérifiés.
 
 Lot131 : [CLI check-config](m4-cli.md#lot131--check-config), codes0/1/2, diagnostics
-sanitisés, tests du binaire sans création DB ; vérifications locales Windows
-passées, publication/CI131 à terminer. Prochain lot132 : revue/clôture #30.
+sanitisés, tests du binaire sans création DB ; publié sur53d4ae0,
+[CI37567003805](https://github.com/Coubiac/QueueAtlas/actions/runs/37567003805)
+entière réussie/trois jobs/SHA exact vérifiés. [Relecture132](reviews/m4-cli-config.md)
+favorable ; publication/CI finale/fusion #30/main encore à terminer.
 Les sources, CIDR/domaines, rétention et paramètres d'authentification demanderont
 des contrats séparés selon les composants raccordés. `serve`,
 doctor/db stats, auth/API/Web restent à développer. AD/OIDC après MVP, MIT conservée.

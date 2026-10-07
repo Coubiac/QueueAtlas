@@ -32,9 +32,11 @@ Lot129 publié surd9a2fb8 dans #30, CI37562294743 entière réussie/trois jobs/S
 vérifiés ; contrat pur de configuration serveur local/SQLite et défauts/validation.
 Lot130 publié sur8bba11e dans #30, CI37564852420 entière réussie/trois jobs/SHA
 vérifiés ; chargeur YAML strict/borné et chemins résolus.
-Lot131 : CLI check-config, trois tests nouveaux/binaire étendu, sept tests CLI/vet
-et go run Windows passés ; publication/CI131 à terminer.
-Deux jalons M4/M5 restent, environ21–39lots après131, M3 zéro lot restant ;
+Lot131 publié sur53d4ae0 dans #30, CI37567003805 entière réussie/trois jobs/SHA
+vérifiés ; CLI check-config et codes0/1/2 sur binaire réel.
+Lot132 : relecture assistée CLI/config128–131 favorable, bilan documentaire ;
+publication/CI finale/ready/fusion #30/main encore à terminer.
+Deux jalons M4/M5 restent, environ20–38lots après132, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -54,6 +56,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot131 publié : `53d4ae07e8454f9dea297a2c731274634d2f17d2`, #30 en brouillon,
+  [CI37567003805](https://github.com/Coubiac/QueueAtlas/actions/runs/37567003805)
+  entière réussie, trois jobs/SHA exact revérifiés REST à la reprise132.
+  Relecture132 favorable ; publication/CI finale/fusion/main encore à terminer.
 - Lot130 publié : `8bba11eb3215ab3386dd511702920c348694c8fd`, #30 en brouillon,
   [CI37564852420](https://github.com/Coubiac/QueueAtlas/actions/runs/37564852420)
   entière réussie, trois jobs/SHA exact, étape Windows config et builds Linux passés.
@@ -3329,10 +3335,12 @@ CI entière réussie ; clôture122 fusionnée #28, CI finale et main vertes.
 Matrice123, contrôle124, benchmarks125 et mesures126 publiés/CI entières réussies.
 M3 clôturé127, fusion/CI finale/main vérifiées. CLI128 publié dans #30 attachée,
 CI37559870551 entière réussie. Contrat129 publié/CI37562294743 entière réussie.
-Chargeur YAML130 publié/CI37564852420 entière réussie. CLI check-config131 validée
-localement : publier le commit et vérifier CI131 sur la tête exacte, réutiliser #30
-(brouillon cohérent). Branche codex/m4-cli depuis main038c6c9. Prochain lot132 :
-revue/clôture CLI/config128–131, CI exacte, prêt/fusion #30 puis contrôle CI main.
+Chargeur YAML130 publié/CI37564852420 entière réussie. CLI check-config131 publiée,
+CI37567003805 entière réussie. Relecture132 favorable : publier le bilan, vérifier
+CI finale sur la tête exacte, revue COMMENT assistée/ready/fusion #30 puis CI main.
+Branche codex/m4-cli depuis main038c6c9. Prochain lot133 après clôture : ouverture
+SQLite en lecture seule pour diagnostics, sans création/migration de base,
+avant raccordement à une commande db stats/doctor.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3820,3 +3828,35 @@ après CI131 : revue/clôture chantier CLI/config128–131, CI tête exacte, pr�
 #30 puis contrôle CI main. M4 reste11–21lots/M5 10–18, total21–39 après131,
 deux jalons restants. Auth/API/Web puis service/paquets/pilote restent à développer.
 MIT conservée, AD/OIDC après MVP ; aucun service ou paquet installable livré.
+
+Validation effective131 enregistrée à la reprise132 :
+`53d4ae07e8454f9dea297a2c731274634d2f17d2` publiée dans #30,
+CI37567003805 entièrement réussie/trois jobs/SHA exact revérifiés REST.
+Les mentions « à terminer » ci-dessus décrivent l'état avant le commit131.
+
+## Lot132 : relecture et clôture du chantier CLI/configuration
+
+Résultat attendu : clôturer #30 (lots128–131) après bilan, CI finale, revue COMMENT
+assistée sur tête exacte, ready/fusion et CI main. Relecture code/contrats/tests
+acquis favorable sur53d4ae0, aucune approbation humaine indépendante revendiquée.
+Bilan dans docs/reviews/m4-cli-config.md ; paramètres locaux/chemins/défauts,
+YAML borné/types/refus/sanitisation, flux/codes CLI et binaire/readonly confrontés
+aux vérifications scellées. Aucun défaut bloquant identifié dans ce périmètre.
+
+Lot documentaire uniquement : code/tests/workflow/dépendances/exemple inchangés.
+CI131 entière/trois jobs/SHA exact revérifiés ; format/diff documentaire132 à
+contrôler avant commit. Pas de rerun local des fondations sans risque nouveau.
+Les limites du chargeur restent explicites : droits/stabilité/délais IO non
+certifiés, aucune DB ni composant démarré. Une configuration syntaxiquement valide
+ne signifie pas port disponible, serveur authentifié ou application installable.
+
+Au moment de cet enregistrement132 : publication/CI finale/revue ready/fusion #30
+et CI main encore à terminer ; dernière tête publiée validée13153d4ae0 /
+CI37567003805, dernier main fusionné127038c6c9/mainCI37557390479. Ne pas annoncer
+la clôture effective sans ces contrôles. Après succès : main actualisé propre,
+branche fusionnée nettoyée, M4 toujours en cours. Prochain lot133 : contrat et
+ouverture SQLite en lecture seule pour db stats/doctor, sans création/migration
+de base ; ne pas réutiliser Open applicatif comme diagnostic readonly. Commencer
+un chantier diagnostics depuis le main fusionné, avant toute commande nouvelle.
+M4 reste10–20lots/M5 10–18, total20–38 après132, estimation incertaine,
+deux jalons restants. MIT conservée, AD/OIDC après MVP.

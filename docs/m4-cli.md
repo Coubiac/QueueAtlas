@@ -96,9 +96,13 @@ entière réussie/trois jobs/SHA exact et étape Windows config vérifiés.
 Lot131 : trois tests CLI nouveaux (flux/codes/readonly, arguments/aide, sortie
 défaillante) et test du binaire étendu à check-config/codes0/1/2, sans création DB.
 Sept tests CLI/vet/format/diff et commande go run sur l'exemple passés sous Windows.
-Publication/CI131 à terminer. Pas de modification au chargeur130 ni aux fondations,
-CI CLI Windows/Linux existante couvre le changement. Prochain lot132 : revue et
-clôture du chantier #30, CI exacte, prêt/fusion puis contrôle CI main.
+Lot131 publié sur53d4ae0 dans #30,
+[CI37567003805](https://github.com/Coubiac/QueueAtlas/actions/runs/37567003805)
+entière réussie/trois jobs/SHA exact et étape Windows CLI vérifiés. Lot132 :
+[relecture du chantier](reviews/m4-cli-config.md) favorable, sans modification de
+code ; publication/CI finale/fusion/main encore à terminer. Prochain lot133 après
+clôture : ouverture SQLite en lecture seule pour les diagnostics db stats/doctor,
+avant raccordement à une commande CLI.
 Doctor/db stats, configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.
