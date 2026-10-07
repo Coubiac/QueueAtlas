@@ -309,3 +309,43 @@ sessions/cookies/CSRF/TLS et routes protégées restent requis selon ADR-006.
 Stockage fiable/privé, ACL Windows, limites de durabilité/EOF/mémoire conservés.
 Prochain148 : sessions en mémoire bornées, émission/expiration/révocation/tests,
 sans login ni transport HTTP. MIT, AD/OIDC/Keycloak après MVP.
+
+Clôture147 effective : #34 fusionnée sur9cd6cec, CI finale37611573008 et
+main37611762238 entières réussies/trois jobs/SHA exact ; branche nettoyée.
+Preuves dans [relecture du compte](reviews/m4-local-account.md), limites login
+conservées. Les [sessions148 en mémoire](local-sessions.md) ajoutent émission/
+expiration absolue et inactive/révocation/capacité bornées ; vérifiées Windows,
+publication/CI à terminer au commit148, aucune route/login/cookie disponible.
+
+Validation148 effective : bd862cd publié dans #35, CI37615586790 entière/trois jobs/
+SHA exact/race auth réussis, revérifiés REST à la reprise149. Le [login149 borné](local-login.md)
+raccorde le compte aux sessions après vérification Argon2id, budget partagé et
+admission concurrente ; vérifié Windows, publication/CI à terminer au commit149.
+Le transport/cookies150, protections transversales/liste adaptée et revue restent
+requis avant exposition. Aucune route Web ou option YAML login livrée149.
+
+## Lot 152 : corpus d'enrôlement embarqué
+
+Le [corpus documenté](password-blocklist.md) ajoute 10 898 empreintes de valeurs
+complètes issues d'une révision figée de SecLists, sous MIT avec notice conservée.
+Filtrage aux bornes 15..256/UTF-8, normalisation de comparaison identique à 146,
+import reproductible avec contrôles de source et d'intégrité. Comparaison locale
+embarquée, sans fichier/réseau à l'enrôlement ; hash du compte toujours Argon2id.
+Les 27 exemples locaux et dérivés du compte/service sont conservés.
+
+Tests synthétiques de corpus/CLI et ancien compte vérifié par Argon2id/login :
+la liste n'est jamais réappliquée à la connexion, les octets restent littéraux.
+Ni corpus exhaustif/actuel ni preuve de force ; choix à revoir avec le budget
+d'essais avant release/pilote. Garde HTTP151 publiée sur eb5d29c, CI37626687859
+entière/trois jobs/SHA exact/race auth verts, revérifiés REST au début de 152.
+Revue/clôture du chantier dans #35 prévue au lot 153 ; aucun listener/API/Web
+livré ici. MIT, AD/OIDC/Keycloak après MVP.
+
+## Relecture du chantier au lot 153
+
+La [revue sessions/login/HTTP/corpus](reviews/m4-local-http.md) est favorable à la
+clôture148–152. Le corpus est retenu pour le compte local MVP avec défauts actuels
+et limites conservées ; la demande147 est traitée, comptes existants inchangés.
+CI15237631390279 entière/trois jobs/SHA exact/race auth verts, revérifiés REST153.
+Au commit153, CI finale/fusion/main encore à terminer ; preuves dans #35 puis
+reprise154. L'application, le montage réseau et le Web restent à développer.

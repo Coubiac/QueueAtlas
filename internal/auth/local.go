@@ -1,5 +1,5 @@
-// Package auth defines the local authentication contracts. The pure settings
-// delivered here do not authenticate users, grant roles or create accounts.
+// Package auth implements local credentials, bounded login, memory sessions and
+// HTTP authentication guards. It creates no listener or application permissions.
 package auth
 
 import "errors"

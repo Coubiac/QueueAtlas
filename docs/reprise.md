@@ -52,9 +52,18 @@ Contrat auth143 publié sure00573c dans #34, CI37598069906 entière/trois jobs/S
 exact réussis. Hash/codec144 publié sur22f1694, CI37601878573 entière/trois jobs/SHA
 exact réussis. Persistance145 publiée sur19415ba, CI37605851032 entière/trois jobs/
 SHA exact réussis. CLI146 publiée sur cfde74d, CI37608644994 entière/trois jobs/SHA
-exact réussis. Revue147 favorable/correction espaces seuls vérifiée Windows ;
-publication/CI finale/fusion/main à terminer au commit. Prochain148 : sessions bornées.
-Deux jalons M4/M5 restent, environ16–32lots après clôture147, M3 zéro lot restant ;
+exact réussis. Clôture147 fusionnée #34 sur9cd6cec, CI finale37611573008 et main
+37611762238 entières réussies, branche nettoyée. Sessions148 publiées surbd862cd
+dans #35, CI37615586790 entière/trois jobs/SHA exact/race auth réussis.
+Login149 publié sur94ef705 dans #35, CI37619138226 entière/trois jobs/SHA exact/
+race auth réussis, REST revérifié150. HTTP150 publié surc50c678 dans #35,
+CI37623116898 entière/trois jobs/SHA exact/race auth réussis, REST revérifié151.
+Garde HTTP151 publiée sur eb5d29c dans #35, CI37626687859 entière/trois jobs/
+SHA exact/race auth réussis, revérifiés REST152. Corpus152 publié sur e4aaa12,
+CI37631390279 entière/trois jobs/SHA exact/race auth réussis, revérifiés REST153.
+Revue153 favorable ; publication/CI finale/fusion/main encore à terminer au commit.
+Prochain154 : contrat borné de recherche HTTP. Deux jalons M4/M5 restent,
+environ14–29lots après clôture153/CI, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3393,11 +3402,23 @@ entière réussie. Clôture142 fusionnée #33 sur19843d6, CI finale37594338289/
 main37594545438 entières réussies, branche sources supprimée. Auth143 publié
 sure00573c dans #34, CI37598069906 entière réussie. Hash144 publié sur22f1694,
 CI37601878573 entière réussie. Persistance145 publiée sur19415ba/CI37605851032
-entière réussie. CLI146 publiée sur cfde74d/CI37608644994 entière réussie. Revue147
-favorable/correction vérifiée Windows : publier dans #34, CI finale/trois jobs/SHA
-exact puis revue COMMENT/ready/fusion/main/nettoyage. Prochain148 : sessions en
-mémoire bornées/émission/expiration/révocation/tests, sans HTTP/login ; liste adaptée
-au futur login à traiter dans les protections HTTP, autres critères auth toujours ouverts.
+entière réussie. CLI146 publiée sur cfde74d/CI37608644994 entière réussie. Clôture147
+fusionnée #34 sur9cd6cec, CI finale37611573008/main37611762238 entières réussies,
+branche nettoyée. Sessions148 publiées surbd862cd dans #35, CI37615586790 entière/
+trois jobs/SHA exact/race auth réussis, revérifiés REST à la reprise149.
+Login149 publié sur94ef705, CI37619138226 entière/trois jobs/SHA exact/race auth
+réussis, REST revérifié150. HTTP150 publié surc50c678, CI37623116898 entière/trois
+jobs/SHA exact/race auth réussis, REST revérifié151. Garde HTTP151 publiée sur
+eb5d29c, CI37626687859 entière/trois jobs/SHA exact/race auth réussis, revérifiés
+REST152. Corpus152 publié sur e4aaa12, CI37631390279 entière/trois jobs/SHA exact/
+race auth réussis, revérifiés REST153. Revue153 favorable : publier le commit de
+clôture sur codex/m4-sessions dans #35, vérifier CI finale entière/trois jobs/SHA
+exact/race auth ; poster revue COMMENT assistée sur SHA final, rendre prête puis
+fusionner avec SHA attendu et vérifier CI main/nettoyer la branche fusionnée.
+Consigner les preuves effectives dans PR puis reprise154. Prochain154 : contrat
+borné de requêtes de recherche HTTP (filtres/période/limite/curseur/erreurs privées),
+préparant GET /api/v1/messages ; pas de serveur/Web/stockage dans ce lot.
+Ne pas commencer154 au lot153. Aucun listener/serve/Web/API de messages livré.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3405,7 +3426,7 @@ Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des s
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques, CLI de diagnostic et configuration restent au jalon d'application.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-local-auth.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-sessions.
 
 ## Suite à découper au fil des reprises
 
@@ -4582,3 +4603,382 @@ Prochain148 : sessions en mémoire bornées, émission/expiration/révocation/te
 sans HTTP/login, nouvelle branche/PR cohérente depuis main147 validé. M4 reste6–14
 lots après clôture147 (deux auth minimum sessions/protections avec liste), M5 10–18,
 total16–32, estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Clôture effective147 consignée à la reprise148 :
+Tête b1c0a6c4dd32cb1033968eaec3c5e33920fa45e6, CI37611573008 entière réussie/
+trois jobs/SHA exact, revue COMMENT assistée5441360828 sur cette tête. #34 prête
+puis fusionnée avec garde SHA sur9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9,
+CI push main37611762238 entière réussie/trois jobs/SHA exact. Main propre/actualisé,
+branche locale et distante supprimées. À la reprise148 : fetch et merge/CI main/
+trois jobs revérifiés REST, main/origin identiques. Attentes147 terminées.
+
+## Lot148 : sessions locales en mémoire bornées
+
+Résultat attendu : émission/expiration/révocation/capacité/tests/doc sans HTTP ;
+branche codex/m4-sessions créée depuis main1479cd6cec, nouvelle PR cohérente.
+SessionOptions explicites : défaut Lifetime8h/IdleTimeout30min/Capacity64, limites
+1min..24h/1min..Lifetime/1..1024, zéros refusés. Constructeur valide sans IO/horloge/
+aléa, copie options ; pointeur partagé sans copie du mutex, zéro/nil inutilisables.
+Session metadata par valeur Identity/CreatedAt/LastSeenAt/ExpiresAt absolu, sans
+token/mot de passe/rôle. Issue exige appelant authentifiant au préalable : syntaxe
+identité seule n'est pas une preuve ; aucun accountlookup/hash dans cette primitive.
+
+Token crypto/rand32octets/base64url43canonique, empreinte SHA256 seule dans map,
+pas de token client importé. Resolve valide taille/codec avant lookup, erreur fixe
+identique/Session zéro pour malformé/inconnu/expiré/révoqué ; activité avance idle
+seulement. Expiration exacte now >= absolu ou LastSeen+idle, retrait/aucune extension
+absolue. Revoke idempotent tout token et RevokeAll, sans besoin d'horloge/aléa ;
+redémarrage/nouveau magasin invalide tout, pas de persistance/réplication/rotation.
+
+Mutex/atmostCapacity, pleine refuse avant entropie sans éviction active ; purge
+expirées sur Issue/Resolve bien formés, scan<=1024 sans goroutine/timer. Pas de
+plafond RSS exact. Collision active trois tirages max, jamais remplacer ; entropie
+partielle/erreur/collisions -> token vide/metadata zéro/ErrSessionUnavailable sûr.
+Horodatage après entropie ; horloge time.Now non nulle/non décroissante depuis
+dernière observation, anomalies refusées avant résolution/création mais révocation
+possible. Comparaison monotone disponible de Go conservée, pas de temps attesté.
+Dernier temps conservé après RevokeAll ; attente du rattrapage si recul. Mutex
+retenu durant aléa, pas de délai. Buffers clear au mieux, copies mémoire non garanties.
+
+Six nouveaux tests148,21auth/vet/format/diff Windows passés : options/zero/tokens
+publics distincts/copie/digest/revoke/restart, idle/absolu exacts/activité/capacité/
+reclamation, tokens hostiles/digest non bearer/rejet privé unique, entropie partielle/
+erreur/collisions trois essais/aucun aléa si invalide ou pleine, horloge nulle/recul
+avant/après entropie/horodatage post-entropie/révocation malgré anomalies,
+32créateurs/capacité8 puis resolves/revocations concurrents. Horloge/lecteur privés
+test-only ; production toujours time.Now/crypto/rand. Aucun sleep dans tests,
+Linux23auth/race via workflow existant à vérifier après publication148 ; aucune
+exécution Linux locale revendiquée. CLI/config/SQLite/FileSource/modules/workflow
+inchangés, pas de rerun local des fondations sans risque nouveau.
+
+Contrat/limites dans docs/local-sessions.md ; docs auth/review147/avancement actualisés.
+Au moment du commit148 : publication/PR/CI à terminer, dernier main1479cd6cec/
+CI37611762238. Publier/créer et attacher nouvelle PR sessions/login, vérifier CI
+entière/trois jobs/SHA exact/race auth, consigner dans PR puis reprise149.
+Prochain149 : login borné, admission/limitation d'essais/comptes inconnus et
+raccordement VerifyPassword/SessionStore sans HTTP. Transport HTTP/cookies,
+contrôles transversaux/liste adaptée et revue/clôture ensuite. Aucun serveur/login/
+cookie/Web livré ; liste initiale compte non déclarée suffisante avant login release.
+
+Estimation révisée148 : M4 8–15, M5 10–18, total18–33 après CI, deux jalons.
+Borne6–14 après147 comprimait login/protections en un lot après sessions ; quatre
+lots auth minimum restent (login/admission, transport/cookies, contrôles transversaux/
+liste, revue), API2–3 et Web/revue2–4 donnent minimum8, marge diagnostic/intégration
+jusqu'à15. Périmètre constant, pas de pourcentage livré. MIT, AD/OIDC après MVP.
+
+Validation148 effective consignée à la reprise149 : bd862cd761edd036cf105f857e9d02efb6629d5a
+publié dans #35 en brouillon, CI37615586790 entière completed/success et trois jobs
+Windows/Linux1.26.x/stable completed/success sur ce SHA exact, auth Windows21/
+Linux23 et race auth réussis. REST revérifié, checkout propre/local/origin/PR
+identiques avant149, base main1479cd6cec. PR35 réutilisée/attachée.
+
+## Lot149 : login local et admission bornée
+
+Résultat : LocalLogin partage un compte immuable, un SessionStore et un budget
+d'essais par processus. Constructeur valide/copie sans IO/horloge/hash/aléa.
+Production time.Now/VerifyPassword ; injection privée seulement pour tests.
+Nom exact/casse sensible + mot de passe littéral requis ; tout nom bien formé
+inconnu aussi passe par le même hash/coûts Argon2id avant refus. Identifiants
+malformés/inconnus/mot de passe incorrect -> ErrInvalidCredentials fixe, aucun
+token/session ; pas de constante temporelle complète revendiquée. Succès seul
+appelle Issue avec l'identité configurée, token neuf et métadonnées par valeur.
+
+DefaultLoginOptions5essais/1min/1simultané ; bornes1..100/1s..1h/1..4, zéros refusés.
+Un budget partagé tous noms/origines, sans map IP/nom. Toute tentative admise
+compte, même malformée/succès/erreur/annulation après admission ; pas de reset sur
+succès. Fenêtre fixe démarrée à première admission, réouvre à frontière exacte,
+pas glissante (budgets rapprochés autour frontière possibles). Saturation budget/
+places -> ErrLoginLimited immédiate sans file/hash/session/nouvel essai réservé.
+Mutex compteurs seulement, jamais pendant hash/Issue ; slot conservé jusqu'à fin.
+Au plus MaxConcurrent dérivations de ce moteur, mémoire nominale au pire4x256MiB,
+pas plafond RSS/collecteur/autres appels/HTTP ni coordination multiprocessus.
+Partager moteur et magasin dès démarrage ; nouvelle instance/redémarrage remet
+budget à zéro. Global compte unique peut être épuisé par tiers : compromis à
+revoir avec exposition HTTP/pilote, pas une sécurité complète de login publié.
+
+Contexte annulé avant admission ne compte pas ; pendant calcul détecté après
+Argon refuse session, slot libéré seulement au retour réel du calcul. Pas de
+goroutine détaché/interruption Argon/délai garanti. Annulation pouvant courir avec
+Issue : aléa synchrone148 non annulable après démarrage, transport futur doit
+traiter échecs d'envoi. Horloge nulle/recul avant/après hash refuse ; haut niveau
+conservé jusqu'au rattrapage. Échec verify/horloge/entropie/magasin plein ->
+ErrLoginUnavailable fixe sans cause privée, aucune session partielle/éviction.
+Nil/zéro/context nil refusés, constructeur err fixe ; mots de passe non modifiés.
+
+Huit nouveaux tests149,29auth/vet/format/diff Windows passés : vraies dérivations
+et session owned/fraîche, options/copies/zero/constructeur sans dérivation,
+budget partagé/succès sans reset/frontière exacte, entrées hostiles sans hash
+mais comptées, deux calculs bloqués/32refus concurrents sans attente, annulations/
+deadline/échecs privés/entropie et slots libérés sans session, calcul annulé garde
+sa place, horloge nulle/recul posthash/capacité sans éviction/récupération.
+Pas de sleep ; Linux31/race via CI à vérifier après publication, pas de Linux local.
+Contrat/limites docs/local-login.md, sessions/auth/avancement mis à jour.
+CLI/config/SQLite/FileSource/modules/workflow inchangés ; pas de contrôles locaux
+optionnels des fondations relancés, aucun transport/routes/cookies/Web livré149.
+
+Au commit149 publication/CI à terminer ; dernier état publié validé148bd862cd/
+CI37615586790, dernier main1479cd6cec/CI37611762238. Publier dans #35 cohérente,
+vérifier CI entière/trois jobs/SHA/race auth et consigner preuve effective dans PR
+puis reprise150. Prochain150 : transport HTTP login/logout/cookies ; contrôles
+CSRF/TLS/routes/liste locale adaptée avec provenance/licence puis revue ensuite.
+Liste initiale non déclarée suffisante pour release login. Aucun YAML login149.
+Estimation après149/CI : M4 7–14 (login/admission réalisé, trois lots auth minimum
+restants puis API2–3/Web/revue2–4), M5 10–18, total17–32/deux jalons. MIT, AD/OIDC/
+Keycloak après MVP. Aucun lot150 commencé ni fusion #35 prévue dans149.
+
+Validation149 effective à la reprise150 : 94ef70585e1bf4cd7f0c0c058caa438a8e1496c6
+publié dans #35 en brouillon, CI37619138226 entière completed/success et trois jobs
+Windows/Linux1.26.x/stable completed/success sur ce SHA exact. Auth Windows29/
+Linux31 et race auth réussis ; REST revérifié, checkout propre/local/origin/PR
+identiques avant150, base main1479cd6cec. PR35 réutilisée/attachée.
+
+## Lot150 : transport HTTP login/logout et cookie
+
+Résultat : HTTPHandler construit avec LocalLogin partagé et origine HTTPS fiable
+canonique<=300octets, sans IO/horloge/hash. DNS ASCII/punycode/IP canonique sans
+zone/port optionnel non443, aucune valeur privée/path/query/fragment dans origine.
+POST exact /api/auth/login et /api/auth/logout, pas de redirect/alias RawPath/query.
+Méthodes invalides405/Allow POST ; TLS direct + Host exact + un seul Origin exact
+requis avant lecture/hash/révocation. Absent/null/étranger/dupliqué/Referer seul
+refusés403 ; forwardedheaders ne prouvent rien, loopback clair/proxyTLS vers HTTP
+refusés. Contrôle d'origine requis en plus de SameSite pour mutations auth.
+
+Login : formulaire URL-encoded, charset absent/UTF-8, body<=4096 y compris chunked,
+exactement username/password uniques, duplicates/encodage/unknown/missing refusés.
+Décodage + espace/%2B plus littéral, password UTF-8/bornes149 ensuite sans trim.
+Refus protocole n'appelle pas moteur/ne compte pas ; identifiants décodés invalides
+comptent via149 sans Argon. Cookieheaders<=4096/au plus un cookie session, ambigu
+refusé avant opération. Aucun Content-Encoding, secret URI/bodyresponse/erreur/log.
+Buffers clear au mieux, strings form copiées non garanties effacées.
+
+Succès200 authenticated LF + token frais seulement Set-Cookie :
+__Host-queueatlas_session, Path=/, sans Domain, Secure/HttpOnly/SameSiteStrict,
+sans lifetime navigateur persistant (deadline serveur148 seule autorité).
+Ancien token du cookie révoqué après succès, refus laisse ancienne session/cookie
+intacts. Logoutbodyvide révoque sans Resolve/horloge/activité,204/aucunbody et
+suppression mêmes attributs/MaxAge=-1 ; absent/malformed/unknown/alreadyrevoked
+idempotents. Autres sessions non supprimées. Pas de bearer query/form/Authorization.
+Annulation détectée après Issue avant réponse -> revoke nouveau503/sans cookie ;
+defer revoke si erreur/shortwrite/panique/annulation détectée pendant réponse.
+Pas de retry si headers déjà envoyés, panique propagée ; Write réussi n'atteste
+pas réception client, rupture non détectée peut garder session jusqu'expiration.
+
+Toutes réponses no-store/Pragma no-cache/nosniff, pas CORS ; erreurs/status fixes
+400/401/403/404/405/413/415/429/431/503 sans cause/nom/token/secret. Protocole/limites
+docs/local-http-auth.md, références OWASP CSRF/MDN cookie. Guards de ces deux routes
+seulement, aucune autorisation/garde générale de données/CSRF global livré150.
+Le futur serveur doit borner headers/deadlines/certificats/exposition ; taille
+ne borne pas temps de lecture, TLS direct seulement. Aucun config/YAML/listener/
+serve/Web/proxytrusted ; CLI/SQLite/FileSource/modules/workflow inchangés.
+
+Sept tests150/36auth Windows, vet/format/diff passés : HTTPS réel avec Argon2id/
+cookiejar connexion/reconnexion/session owned/fraîche/ancien révoqué/logout,
+guards avant lecture/hash/revocation, origines/config/zero, formes ambiguës/hostiles/
+chunked/taille4096 exacte/UTF-8 maximal/littéral,401 identique/429/503 privé,
+ancien gardé si refus, logout duplicates/body/idempotent, rollback erreur/écriture
+partielle/panique/annulation pendant entropie. Aucun sleep, navigateur réel/
+comportement navigateur SameSite/préfixe non testé. Linux38/race via CI à vérifier
+après publication150 ; pas de Linux local. Pas de rerun optionnel des fondations.
+
+Au commit150 publication/CI à terminer ; dernier publié validé14994ef705/
+CI37619138226, main1479cd6cec/CI37611762238. Publier dans #35 cohérente, vérifier
+CI entière/trois jobs/SHA/race auth et consigner preuve effective dans PR/reprise151.
+Prochain151 : garde cookie/session des routes de données et contrôles mutations.
+Corpus local de mots de passe adapté/provenance/licence puis revue/clôture en
+lots distincts ; liste initiale non déclarée suffisante pour release login.
+Estimation après150/CI conservée M4 7–14, M5 10–18, total17–32/deux jalons : le
+détail sépare contrôles de routes et corpus auparavant groupés dans un lot prévu.
+Trois lots auth minimum restent, API2–3/Web/revue2–4 ensuite ; marge/périmètre
+inchangés, pas de décompte automatique par numéro. MIT/AD/OIDC après MVP.
+Aucun lot151 commencé ni fusion #35 prévue dans150.
+
+Validation150 effective à la reprise151 : c50c6786697a62c7a20a932d76226e1e17e70a8f
+publié dans #35 en brouillon, CI37623116898 entière completed/success et trois jobs
+Windows/Linux1.26.x/stable completed/success sur ce SHA exact, auth Windows36/
+Linux38 et race auth réussis. REST revérifié, checkout propre/local/origin/PR
+identiques avant151, base main1479cd6cec. PR35 réutilisée/attachée.
+
+## Lot151 : garde HTTP des routes de données
+
+Résultat : HTTPHandler.Protect(next) enveloppe chaque requête sans exemption de
+chemin, setup nil/zéro/nextnil refusé ErrInvalidHTTPAuth, validation150 sans IO/
+horloge/hash. Monter auth login/logout séparément et routeur données sous garde.
+Aucune vraie route API/Web/listener/commande serve livrée, middleware en bibliothèque.
+next garde responsabilité permissions/routes/body/query/durée, read-only GET/HEAD,
+cache/CORS. Cookies et métadonnées ne créent pas une permission applicative/RBAC.
+
+TLS direct/Host exact partout, Origin exact obligatoire POST/PUT/PATCH/DELETE ;
+GET/HEAD Origin facultatif mais si présent unique/exact. OPTIONS/TRACE/CONNECT/
+extensions405/Allow liste fixe six méthodes. RawPath/nilURL400, query recherche
+permise sans donner d'identité, Content-Encoding415. Sec-Fetch-Site partagé aussi
+login/logout150 : absent accepté avec règles Origin conservées, sinon same-origin
+unique ; none seulement GET/HEAD. Same-site/cross-site/vide/inconnu/dupliqué403,
+metadata ne dispense pas Origin mutation. Pas proxy/Referer fallback/confiance
+sous-domaines/CORS/tokenCSRF séparé. Politique stricte inconnus à revoir au pilote.
+Contrôles avant body/résolution/activité, cookieheaders<=4096/au plus un cookie.
+
+Seul cookie canonique/actif lié au compte local configuré autorise next. Aucun
+bypass Authorization/query/ForwardedUser/ancien contexte. Absence/malformé/inconnu/
+expiration/révocation/autre identité ->401/corps fixe identique sans Set-Cookie.
+SessionStore.resolve filtre privé d'identité sous mutex avant activité ; pas de
+gap check/use et autre identité non rafraîchie. Resolve public inchangé148. Purge
+expirées possible pendant refus, activité validée avance idle seulement, deadlines
+exactes absolue/inactive conservées. Erreur de magasin/horloge/context ->503 fixe.
+
+SessionFromContext retourne copie Session et bool, clé privée typée, sans secret/
+token/hash/rôle, nil/absent=zero,false. Garde re-résout cookie et remplace ancien
+snapshot dans copie de requête ; contexte appelant intact. Code Go de confiance
+peut fabriquer contextes, ce helper n'est pas preuve portable. Aucun log/rawerror.
+Headers communs no-store/Pragma no-cache/nosniff/Vary Cookie,Origin,Sec-Fetch-Site.
+Erreurs400/401/403/405/415/431/503 fixes sans cause/valeur ; pas redirect ni CORS.
+
+Context check avant/après Resolve ; annulation tardive peut avanceractivité sans
+next, course aprèscheck peut appeler next. Snapshot d'auth à entrée : requête déjà
+admise peut finir après révocation/expiration, nouvelles admissions refusées.
+Mutex libéré avant next, pas de goroutine/timer/hash de surveillance créé.
+Bornes réseau/headers/deadlines/certificats/montage restent au futur serveur,
+corps/durée/permissions au handler protégé. Sessions/processus/DoS149 inchangés.
+
+Sept tests151/43auth Windows, vet/format/diff passés : cycle HTTPS réel Argon2id/
+cookiejar/login/données/mutation Origin/logout/refus ensuite ; guards avant body/
+horloge/résolution/activité,401 privé identique/tokens inconnus/expiration/revocation/
+autre identité sans renouvellement/headers/query/contexte sans bypass ; idle/absolu
+exacts/CSRF refusé sans refresh ; setup/contexte/copiemetadata/méthodes/aucune
+exemption ; horloge/cancellation failclosed ;32requêtes concurrentes puis revoke/
+refus et requête déjà admise finit après revoke. Tests150 enrichis FetchMetadata
+partagée, aucun sleep, navigateur réel/SameSite/préfixe non testé. Linux45/race/CI
+entière à vérifier après publication ; pas de Linux local. Contrat/limites dans
+docs/local-http-guard.md, docs HTTP/avancement mis à jour. Config/CLI/SQLite/
+FileSource/modules/workflow inchangés ; pas de rerun optionnel fondations.
+
+Au commit151 publication/CI à terminer ; dernier publié validé150c50c678/
+CI37623116898, main1479cd6cec/CI37611762238. Publier #35 cohérente, vérifier CI
+entière/trois jobs/SHA/race auth et consigner preuve effective dans PR/reprise152.
+Prochain152 : corpus local d'enrôlement adapté/provenance/licence, puis revue/
+clôture153. Liste initiale non déclarée suffisante pour release login. Estimation
+après151/CI M4 6–13 (garde réalisée ; corpus/revue puis API2–3/Web/revue2–4),
+M5 10–18, total16–31/deux jalons, marge/périmètre inchangés. MIT/AD/OIDC après MVP.
+Aucun lot152 commencé ni fusion #35 prévue dans151.
+
+## Lot 152 — corpus d'enrôlement local avec provenance et licence
+
+Résultat attendu : enrichir la liste de refus lors de la création du compte,
+avec source locale figée, licence/provenance/import reproductible, tests utiles
+et guide après rejet. Un seul comportement d'enrôlement ; auth existante séparée.
+
+État initial propre sur codex/m4-sessions. Local/origin/#35 sur
+eb5d29cc86a5275e1312051c9fcf2e8c3e8d99d3 ; #35 ouverte/draft, base main147
+9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9. CI15137626687859 completed/success et
+ses trois jobs Windows/Linux Go1.26.x/stable completed/success sur le SHA exact,
+revérifiés par REST ; race auth1.26 passée. Preuve151 prépublication terminée.
+
+Source publique SecLists/Xato, fichier top1million, révision
+47cd752f4323f703e304104173633ee31462b9b3, sous MIT avec copyright/notice complète
+conservée et THIRD_PARTY_NOTICES.md. Un million de lignes/8557632octets, SHA source
+424a3e03a17df0a2bc2b3ca749d81b04e79d59cb7aeec8876a5a3f308d0caf51.
+10908 valeurs dans les bornes UTF-8/15..256/1024octets, 10898 empreintes uniques
+après lower/TrimSpace identiques à la politique existante ; sortie708370octets,
+SHA a5b8b74b66c0ed54d90098285cb0dbe02217ae41d7c91f0c57cf4a761e14521a.
+Pas de plaintext source commité ni données personnelles de test ; fixtures
+construites synthétiquement. Donnée publique produit, empreintes non secrètes.
+
+go:embed string immuable, SHA256 une fois puis recherche dichotomique dans lignes
+hex64+LF ; format/cardinalité/SHA/tri/unicité entièrement figés par test. Aucun
+fichier/réseau à l'enrôlement, aucune map initialisée ou recherche de sous-chaîne.
+27 exemples et dérivés compte/service conservés, ErrBlockedPassword/code2/fixe
+avant hash/création inchangés. Valeurs acceptées littérales/non mutées ; aucune
+politique de création dans VerifyPassword/LocalLogin. Argon2id compte inchangé.
+
+Outil de maintenance blocklistgen lit seulement une source locale, bornée et
+vérifiée par taille/SHA/lignes avant import, déduplique/trie les digests. Deux
+générations ont produit l'empreinte identique ; source en clair téléchargée dans
+le répertoire temporaire queueatlas-password-corpus-152, pas le dépôt. Test d'un
+import petit/taille exacte mais SHA faux avec données synthétiques, sortie revue
+préservée. Licence complète/notices à inclure dans les futurs paquets M5.
+
+Deux nouveaux tests auth,45auth Windows ;20CLI existants enrichis et un test du
+générateur. Motifs synthétiques chiffres/clavier, casse/espaces, intégrité de toutes
+les entrées/valeurs complètes et absence de mutation/sous-chaînes ; ancien compte
+hashé/VerifyPassword/login Argon2id réellement accepté malgré blocage à création,
+variante normalisée refusée au login. CLI refus sans compte/diagnostic privé,
+code2 réel du binaire compilé. Tests/vet/format/diff Windows réussis ; Linux47/
+race/CI entière restent à vérifier après publication. Pas de rerun optionnel
+fondations local ; workflow couvrira full tests/vet/race/builds habituels.
+
+Guide/provenance/mesures/régénération/maintenance dans docs/password-blocklist.md,
+auth locale/CLI/relecture147/avancement actualisés. Corpus historique fini, pas
+de couverture exhaustive/actuelle/force ni conformité NIST ; choix justifié par
+minimum15 et budget global par défaut5/minute/1simultané, budget renouvelable et
+restart/burst conservés. Réexaminer avant release/pilote ou changement des essais/
+bornes/providers ; revue153 doit évaluer cet ensemble avant clôture de #35.
+
+Au commit152 publication/CI à terminer ; dernier publié validé151eb5d29c /
+CI37626687859, main1479cd6cec/CI37611762238. Publier #35 cohérente, vérifier CI
+entière/trois jobs/SHA/race auth et consigner preuve effective dans PR/reprise153.
+Prochain153 : revue/clôture sessions/login/HTTP/garde/corpus148–152, CI finale puis
+décision de fusion/main/nettoyage. Après152/CI, M4 5–12 (revue puis API2–3/Web/
+revue2–4/marge), M5 10–18, total15–30/deux jalons ; périmètre inchangé. Aucun
+lot153 commencé ni fusion #35 prévue dans152. MIT/AD/OIDC/Keycloak après MVP.
+
+## Lot 153 — revue et clôture du chantier auth148–152
+
+Résultat attendu : relire sessions/login/HTTP/garde/corpus dans #35, corriger les
+écarts concrets, consigner l'évaluation du corpus et les limites ; publier une
+clôture vérifiable puis CI finale/revue/fusion/main/nettoyage si satisfaisants.
+Un seul lot de revue ; aucune API/serveur/Web ou provider externe ajouté.
+
+État initial propre sur codex/m4-sessions, local/origin/#35 sur
+e4aaa12e38892b9ad7f6fe18eb5becb4235704ca, main147
+9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9. #35 ouverte/draft/fusionnable,
+aucune revue ou discussion inline en attente trouvée. Fetch origin/prune fait.
+CI15237631390279 completed/success, ses trois jobs Windows/Linux1.26.x/stable
+completed/success sur le SHA exact et race auth1.26 passée, revérifiés REST153.
+Jobs112826266899/112826267325/112826267485 ; attentes152 terminées.
+
+Relecture assistée par l'agent du chantier, pas un audit indépendant. Code public/
+helpers privés148–152 et tests des frontières/erreurs/bypass/concurrence relus,
+contrats/ADR006/008/provenance/licence/workflow examinés. Avis favorable à la
+clôture de la bibliothèque ; aucun blocage fonctionnel identifié. Deux commentaires
+Go obsolètes du package/HTTPHandler corrigés pour mentionner transport et Protect,
+aucun changement de comportement. Aucun nouveau test miroir ajouté.
+
+Matrice/preuves et décision dans docs/reviews/m4-local-http.md. Token CSPRNG/digest/
+codec/capacité/expiration/révocation, login Argon2id/noms inconnus/budget partagé/
+slots, TLS direct/Host/Origin/metadata/cookies/formulaires bornés, rollback sortie,
+contexte/copiemetadata et refus privés des routes examinés. Validation auth à
+l'entrée ; révocation ne stoppe pas le next déjà admis, nouvelles requêtes refusées.
+Pas de permissions applicatives accordées par metadata, ni confiance proxy.
+
+Corpus152 retenu pour le compte local MVP avec défauts actuels : minimum15,
+10898 digests de valeurs longues/source top1million publique MIT figée, budget5/
+minute/1calcul. Demande147 de corpus/provenance/licence/tests/guide traitée ; aucun
+lot supplémentaire de corpus requis pour clôturer #35 en l'état. Ce choix n'est
+pas preuve statistique, couverture exhaustive/actuelle ou conformité NIST globale.
+Budget renouvelable/burst/restart, liste historique et limites hors ligne restent
+documentés ; réexaminer au pilote ou si essais/bornes/providers/compromission changent.
+Identifiants existants non désactivés par politique d'enrôlement.
+
+Dix tests auth ciblés Windows et un du générateur passés153 : cycles HTTPS auth/
+données/logout, rollback écriture, protocole/bypass/401 privés, concurrence login/
+sessions/garde, intégrité/ancien compte Argon2id/import faux. Vet auth/format/diff
+passés. CI entière152 réutilisée ; pas de rerun local fondations/fuzz/mesures sans
+risque concret, aucune exécution Linux locale revendiquée. CI finale153 couvrira
+full tests/vet/race auth/source-file/smoke/builds amd64/arm64 habituels.
+
+Limites d'assemblage conservées : construire une instance partagée, protéger le
+routeur de données entier, auth montée séparément, GET/HEAD sans mutation ; TLS
+direct même loopback, proxy TLS->HTTP non implémenté. Serveur/certificats/bind/
+headers/deadlines/permissions/rendu échappé/flux navigateur/cache et notices des
+paquets restent aux API/Web/M5. ADR006 précise le chemin réellement livré ; AD/
+OIDC/Keycloak après MVP. M4 reste en cours et #35 n'est pas une release installable.
+
+Au commit153 : publication/CI finale/revue COMMENT assistée/ready/fusion/main/
+nettoyage encore à terminer. Dernier publié validé152e4aaa12/CI37631390279,
+main1479cd6cec/CI37611762238. Vérifier trois jobs/SHA/race puis fusion avec SHA
+attendu, vérifier main et nettoyer seulement branche fusionnée. Consigner preuve
+effective dans #35 puis reprise154. Prochain154 : contrat borné des requêtes de
+recherche HTTP (filtres/période/limite/curseur/erreurs), préparant GET /api/v1/messages.
+Distinguer événements trouvés et messages reconstruits ; adaptateur/raccordement
+dans les lots suivants, aucune relecture de journal depuis Web ni SQL dynamique.
+Après clôture153/CI, M4 4–11 (API2–3/Web/revue2–4/marge), M5 10–18, total14–29,
+deux jalons et périmètre inchangés. Aucun lot154 commencé.

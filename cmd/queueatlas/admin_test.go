@@ -142,6 +142,8 @@ func TestAdminRefusalsLeaveNoAccountAndNoPrivateDiagnostics(t *testing.T) {
 		{dir, &adminInputFailure{}, 1},
 		{dir, strings.NewReader("synthetic-private\nsecond"), 2},
 		{dir, strings.NewReader("passwordpassword"), 2},
+		{dir, strings.NewReader("qwertyuiopasdfghjkl"), 2},
+		{dir, strings.NewReader("  QWERTYUIOPASDFGHJKL  "), 2},
 		{dir, strings.NewReader(strings.Repeat(" ", 15)), 2},
 		{dir, strings.NewReader("synthetic-operator2026!"), 2},
 	} {
@@ -151,6 +153,9 @@ func TestAdminRefusalsLeaveNoAccountAndNoPrivateDiagnostics(t *testing.T) {
 		}
 		if entries, err := os.ReadDir(dir); err != nil || len(entries) != 0 {
 			t.Fatal("refusal created state", err)
+		}
+		if strings.Contains(stderr.String(), "qwerty") || strings.Contains(stderr.String(), "QWERTY") {
+			t.Fatal("enrollment diagnostic exposed synthetic password")
 		}
 	}
 	path := filepath.Join(dir, auth.LocalAccountFilename)
@@ -191,6 +196,7 @@ func assertAdminBinaryEnrollment(t *testing.T, ctx context.Context, binary strin
 		out   string
 	}{
 		{adminArgs(dir, "synthetic-binary"), "passwordpassword\n", 2, ""},
+		{adminArgs(dir, "synthetic-binary"), "  QWERTYUIOPASDFGHJKL  \n", 2, ""},
 		{adminArgs(dir, "synthetic-binary"), strings.Repeat(" ", 15) + "\n", 2, ""},
 		{adminArgs(filepath.Join(dir, "synthetic-private-missing"), "synthetic-binary"), secret, 1, ""},
 		{adminArgs(dir, "synthetic-binary"), secret + "\r\n", 0, "Local administrator created\n"},
@@ -209,7 +215,7 @@ func assertAdminBinaryEnrollment(t *testing.T, ctx context.Context, binary strin
 			}
 			code = exit.ExitCode()
 		}
-		if code != tc.code || stdout.String() != tc.out || (tc.code == 0 && stderr.Len() != 0) || (tc.code != 0 && stderr.Len() == 0) || strings.Contains(stderr.String(), "synthetic") {
+		if code != tc.code || stdout.String() != tc.out || (tc.code == 0 && stderr.Len() != 0) || (tc.code != 0 && stderr.Len() == 0) || strings.Contains(stderr.String(), "synthetic") || strings.Contains(stderr.String(), "QWERTY") {
 			t.Fatal("binary enrollment streams/codes incorrect", code)
 		}
 	}

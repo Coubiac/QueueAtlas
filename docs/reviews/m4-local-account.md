@@ -94,3 +94,28 @@ terminer au commit ; consigner preuves effectives dans PR puis reprise148.
 Prochain148 : sessions en mémoire bornées, émission/expiration/révocation/tests,
 sans transport HTTP ni login. API/Web/diagnostic élargi ensuite. M4 reste6–14lots
 après clôture147, M5 10–18, total16–32, estimation incertaine.
+
+## Clôture effective147, consignée à la reprise148
+
+Tête finale b1c0a6c4dd32cb1033968eaec3c5e33920fa45e6,
+[CI37611573008](https://github.com/Coubiac/QueueAtlas/actions/runs/37611573008)
+entière réussie/trois jobs/SHA exact ; revue COMMENT assistée5441360828 sur cette
+tête, PR prête puis fusionnée sur9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9.
+[CI main37611762238](https://github.com/Coubiac/QueueAtlas/actions/runs/37611762238)
+entière réussie/trois jobs/SHA exact, main propre/actualisé, branche locale et
+distante supprimées. Attentes147 prépublication terminées, limites login ouvertes.
+
+## Traitement du corpus au lot 152 — revue du login encore requise
+
+Le [corpus d'enrôlement](../password-blocklist.md) ajoute 10 898 empreintes de
+valeurs longues du sous-ensemble public SecLists/Xato d'un million de lignes.
+Révision, SHA-256 source/sortie, import reproductible et licence MIT/notice
+conservée sont documentés. Exemples/dérivés locaux maintenus ; aucun lookup externe.
+Tests synthétiques de rejet complet, intégrité, CLI et ancien compte toujours
+accepté au login Argon2id ; guide opérateur fourni après rejet.
+
+Cette livraison traite la demande de corpus/provenance/tests/guide de 147.
+Elle ne clôt pas la revue de l'authentification : le lot 153 doit évaluer ce choix
+historique/limité avec le budget global renouvelable et les autres protections
+148–151 avant de décider la clôture de #35. Aucune suffisance universelle ou
+conformité NIST déclarée. Conditions avant release/pilote conservées.
