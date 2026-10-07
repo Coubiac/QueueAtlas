@@ -52,9 +52,10 @@ Contrat auth143 publié sure00573c dans #34, CI37598069906 entière/trois jobs/S
 exact réussis. Hash/codec144 publié sur22f1694, CI37601878573 entière/trois jobs/SHA
 exact réussis. Persistance145 publiée sur19415ba, CI37605851032 entière/trois jobs/
 SHA exact réussis. CLI146 publiée sur cfde74d, CI37608644994 entière/trois jobs/SHA
-exact réussis. Revue147 favorable/correction espaces seuls vérifiée Windows ;
-publication/CI finale/fusion/main à terminer au commit. Prochain148 : sessions bornées.
-Deux jalons M4/M5 restent, environ16–32lots après clôture147, M3 zéro lot restant ;
+exact réussis. Clôture147 fusionnée #34 sur9cd6cec, CI finale37611573008 et main
+37611762238 entières réussies, branche nettoyée. Sessions148 implémentées/vérifiées
+Windows ; publication/CI à terminer au commit. Prochain149 : login borné sans HTTP.
+Deux jalons M4/M5 restent, environ18–33lots après148/CI, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3393,11 +3394,12 @@ entière réussie. Clôture142 fusionnée #33 sur19843d6, CI finale37594338289/
 main37594545438 entières réussies, branche sources supprimée. Auth143 publié
 sure00573c dans #34, CI37598069906 entière réussie. Hash144 publié sur22f1694,
 CI37601878573 entière réussie. Persistance145 publiée sur19415ba/CI37605851032
-entière réussie. CLI146 publiée sur cfde74d/CI37608644994 entière réussie. Revue147
-favorable/correction vérifiée Windows : publier dans #34, CI finale/trois jobs/SHA
-exact puis revue COMMENT/ready/fusion/main/nettoyage. Prochain148 : sessions en
-mémoire bornées/émission/expiration/révocation/tests, sans HTTP/login ; liste adaptée
-au futur login à traiter dans les protections HTTP, autres critères auth toujours ouverts.
+entière réussie. CLI146 publiée sur cfde74d/CI37608644994 entière réussie. Clôture147
+fusionnée #34 sur9cd6cec, CI finale37611573008/main37611762238 entières réussies,
+branche nettoyée. Sessions148 validées Windows : publier et créer/attacher nouvelle
+PR du chantier sessions/login, vérifier CI entière/trois jobs/SHA exact/race auth.
+Prochain149 : login borné/admission/essais/comptes inconnus/raccordement Verify et
+sessions sans HTTP ; transport/cookies/protections/liste adaptée/revue ensuite.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4582,3 +4584,65 @@ Prochain148 : sessions en mémoire bornées, émission/expiration/révocation/te
 sans HTTP/login, nouvelle branche/PR cohérente depuis main147 validé. M4 reste6–14
 lots après clôture147 (deux auth minimum sessions/protections avec liste), M5 10–18,
 total16–32, estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Clôture effective147 consignée à la reprise148 :
+Tête b1c0a6c4dd32cb1033968eaec3c5e33920fa45e6, CI37611573008 entière réussie/
+trois jobs/SHA exact, revue COMMENT assistée5441360828 sur cette tête. #34 prête
+puis fusionnée avec garde SHA sur9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9,
+CI push main37611762238 entière réussie/trois jobs/SHA exact. Main propre/actualisé,
+branche locale et distante supprimées. À la reprise148 : fetch et merge/CI main/
+trois jobs revérifiés REST, main/origin identiques. Attentes147 terminées.
+
+## Lot148 : sessions locales en mémoire bornées
+
+Résultat attendu : émission/expiration/révocation/capacité/tests/doc sans HTTP ;
+branche codex/m4-sessions créée depuis main1479cd6cec, nouvelle PR cohérente.
+SessionOptions explicites : défaut Lifetime8h/IdleTimeout30min/Capacity64, limites
+1min..24h/1min..Lifetime/1..1024, zéros refusés. Constructeur valide sans IO/horloge/
+aléa, copie options ; pointeur partagé sans copie du mutex, zéro/nil inutilisables.
+Session metadata par valeur Identity/CreatedAt/LastSeenAt/ExpiresAt absolu, sans
+token/mot de passe/rôle. Issue exige appelant authentifiant au préalable : syntaxe
+identité seule n'est pas une preuve ; aucun accountlookup/hash dans cette primitive.
+
+Token crypto/rand32octets/base64url43canonique, empreinte SHA256 seule dans map,
+pas de token client importé. Resolve valide taille/codec avant lookup, erreur fixe
+identique/Session zéro pour malformé/inconnu/expiré/révoqué ; activité avance idle
+seulement. Expiration exacte now >= absolu ou LastSeen+idle, retrait/aucune extension
+absolue. Revoke idempotent tout token et RevokeAll, sans besoin d'horloge/aléa ;
+redémarrage/nouveau magasin invalide tout, pas de persistance/réplication/rotation.
+
+Mutex/atmostCapacity, pleine refuse avant entropie sans éviction active ; purge
+expirées sur Issue/Resolve bien formés, scan<=1024 sans goroutine/timer. Pas de
+plafond RSS exact. Collision active trois tirages max, jamais remplacer ; entropie
+partielle/erreur/collisions -> token vide/metadata zéro/ErrSessionUnavailable sûr.
+Horodatage après entropie ; horloge time.Now non nulle/non décroissante depuis
+dernière observation, anomalies refusées avant résolution/création mais révocation
+possible. Comparaison monotone disponible de Go conservée, pas de temps attesté.
+Dernier temps conservé après RevokeAll ; attente du rattrapage si recul. Mutex
+retenu durant aléa, pas de délai. Buffers clear au mieux, copies mémoire non garanties.
+
+Six nouveaux tests148,21auth/vet/format/diff Windows passés : options/zero/tokens
+publics distincts/copie/digest/revoke/restart, idle/absolu exacts/activité/capacité/
+reclamation, tokens hostiles/digest non bearer/rejet privé unique, entropie partielle/
+erreur/collisions trois essais/aucun aléa si invalide ou pleine, horloge nulle/recul
+avant/après entropie/horodatage post-entropie/révocation malgré anomalies,
+32créateurs/capacité8 puis resolves/revocations concurrents. Horloge/lecteur privés
+test-only ; production toujours time.Now/crypto/rand. Aucun sleep dans tests,
+Linux23auth/race via workflow existant à vérifier après publication148 ; aucune
+exécution Linux locale revendiquée. CLI/config/SQLite/FileSource/modules/workflow
+inchangés, pas de rerun local des fondations sans risque nouveau.
+
+Contrat/limites dans docs/local-sessions.md ; docs auth/review147/avancement actualisés.
+Au moment du commit148 : publication/PR/CI à terminer, dernier main1479cd6cec/
+CI37611762238. Publier/créer et attacher nouvelle PR sessions/login, vérifier CI
+entière/trois jobs/SHA exact/race auth, consigner dans PR puis reprise149.
+Prochain149 : login borné, admission/limitation d'essais/comptes inconnus et
+raccordement VerifyPassword/SessionStore sans HTTP. Transport HTTP/cookies,
+contrôles transversaux/liste adaptée et revue/clôture ensuite. Aucun serveur/login/
+cookie/Web livré ; liste initiale compte non déclarée suffisante avant login release.
+
+Estimation révisée148 : M4 8–15, M5 10–18, total18–33 après CI, deux jalons.
+Borne6–14 après147 comprimait login/protections en un lot après sessions ; quatre
+lots auth minimum restent (login/admission, transport/cookies, contrôles transversaux/
+liste, revue), API2–3 et Web/revue2–4 donnent minimum8, marge diagnostic/intégration
+jusqu'à15. Périmètre constant, pas de pourcentage livré. MIT, AD/OIDC après MVP.

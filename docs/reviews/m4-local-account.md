@@ -94,3 +94,13 @@ terminer au commit ; consigner preuves effectives dans PR puis reprise148.
 Prochain148 : sessions en mémoire bornées, émission/expiration/révocation/tests,
 sans transport HTTP ni login. API/Web/diagnostic élargi ensuite. M4 reste6–14lots
 après clôture147, M5 10–18, total16–32, estimation incertaine.
+
+## Clôture effective147, consignée à la reprise148
+
+Tête finale b1c0a6c4dd32cb1033968eaec3c5e33920fa45e6,
+[CI37611573008](https://github.com/Coubiac/QueueAtlas/actions/runs/37611573008)
+entière réussie/trois jobs/SHA exact ; revue COMMENT assistée5441360828 sur cette
+tête, PR prête puis fusionnée sur9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9.
+[CI main37611762238](https://github.com/Coubiac/QueueAtlas/actions/runs/37611762238)
+entière réussie/trois jobs/SHA exact, main propre/actualisé, branche locale et
+distante supprimées. Attentes147 prépublication terminées, limites login ouvertes.

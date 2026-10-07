@@ -309,3 +309,10 @@ sessions/cookies/CSRF/TLS et routes protégées restent requis selon ADR-006.
 Stockage fiable/privé, ACL Windows, limites de durabilité/EOF/mémoire conservés.
 Prochain148 : sessions en mémoire bornées, émission/expiration/révocation/tests,
 sans login ni transport HTTP. MIT, AD/OIDC/Keycloak après MVP.
+
+Clôture147 effective : #34 fusionnée sur9cd6cec, CI finale37611573008 et
+main37611762238 entières réussies/trois jobs/SHA exact ; branche nettoyée.
+Preuves dans [relecture du compte](reviews/m4-local-account.md), limites login
+conservées. Les [sessions148 en mémoire](local-sessions.md) ajoutent émission/
+expiration absolue et inactive/révocation/capacité bornées ; vérifiées Windows,
+publication/CI à terminer au commit148, aucune route/login/cookie disponible.
