@@ -146,6 +146,11 @@ func TestLinkedBinaryVersionAndProcessExitCodes(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	statsConfig, statsDB := dbStatsFixture(t)
+	beforeStatsDB, err := os.ReadFile(statsDB)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, test := range []struct {
 		args []string
 		code int
@@ -158,6 +163,10 @@ func TestLinkedBinaryVersionAndProcessExitCodes(t *testing.T) {
 		{[]string{"check-config", "--config", invalid}, 2, "", "queueatlas: invalid configuration: yaml: unknown field\n"},
 		{[]string{"check-config", "--config", filepath.Join(dir, "synthetic-private-missing.yaml")}, 1, "", "queueatlas: cannot read configuration\n"},
 		{[]string{"check-config"}, 2, "", checkConfigUsage},
+		{[]string{"db", "stats", "--config", statsConfig}, 0, "JSON", ""},
+		{[]string{"db", "stats", "--config", valid}, 1, "", "queueatlas: cannot open database for diagnostics\n"},
+		{[]string{"db", "stats", "--config", invalid}, 2, "", "queueatlas: invalid configuration: yaml: unknown field\n"},
+		{[]string{"db", "stats"}, 2, "", dbUsage},
 	} {
 		command := exec.CommandContext(ctx, binary, test.args...)
 		var stdout, stderr bytes.Buffer
@@ -171,12 +180,21 @@ func TestLinkedBinaryVersionAndProcessExitCodes(t *testing.T) {
 			}
 			code = exit.ExitCode()
 		}
-		if code != test.code || stdout.String() != test.out || stderr.String() != test.err || strings.Contains(stdout.String()+stderr.String(), "synthetic-private") {
+		outputMatches := stdout.String() == test.out
+		if test.out == "JSON" {
+			assertDBStatsJSON(t, stdout.String())
+			outputMatches = true
+		}
+		if code != test.code || !outputMatches || stderr.String() != test.err || strings.Contains(stdout.String()+stderr.String(), "synthetic-private") {
 			t.Fatalf("process: code=%d stdout=%q stderr=%q", code, stdout.String(), stderr.String())
 		}
 	}
 	entries, err := os.ReadDir(dir)
 	if err != nil || len(entries) != 2 {
 		t.Fatal("compiled check-config created state", entries, err)
+	}
+	afterStatsDB, err := os.ReadFile(statsDB)
+	if err != nil || !bytes.Equal(beforeStatsDB, afterStatsDB) {
+		t.Fatal("compiled stats changed database", err)
 	}
 }

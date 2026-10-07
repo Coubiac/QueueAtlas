@@ -52,3 +52,14 @@ l'ouverture applicative courante comme un diagnostic readonly. Définir et teste
 ce contrat de stockage avant de raccorder une nouvelle commande CLI.
 M4 reste10–20lots/M5 10–18, total20–38 après132, estimation incertaine. Service,
 paquets/pilote restent M5 ; MIT conservée, AD/OIDC après MVP.
+
+## Clôture effective, consignée à la reprise133
+
+Finale132 `16ee19cf7ad3ab0774d4b26fac5d578f2287f6a3`,
+[CI37569190697](https://github.com/Coubiac/QueueAtlas/actions/runs/37569190697)
+entière réussie, SHA exact/trois jobs vérifiés. COMMENT assisté5437464734 puis ready
+et fusion #30 sur `118634fed56640fc4dd3825945d7dd20cfd5c630` ;
+[CI main37569292737](https://github.com/Coubiac/QueueAtlas/actions/runs/37569292737)
+entière réussie, SHA exact/trois jobs vérifiés. Main actualisé propre et branche
+codex/m4-cli supprimée local/GitHub. Les mentions d'attente précédentes sont le
+snapshot avant publication132 ; la clôture effective est acquise, M4 reste ouvert.

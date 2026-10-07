@@ -34,9 +34,14 @@ Lot130 publié sur8bba11e dans #30, CI37564852420 entière réussie/trois jobs/S
 vérifiés ; chargeur YAML strict/borné et chemins résolus.
 Lot131 publié sur53d4ae0 dans #30, CI37567003805 entière réussie/trois jobs/SHA
 vérifiés ; CLI check-config et codes0/1/2 sur binaire réel.
-Lot132 : relecture assistée CLI/config128–131 favorable, bilan documentaire ;
-publication/CI finale/ready/fusion #30/main encore à terminer.
-Deux jalons M4/M5 restent, environ20–38lots après132, M3 zéro lot restant ;
+Lot132 clôturé : #30 fusionnée sur118634f, CI finale37569190697 et main37569292737
+entières réussies ; main actualisé propre et branche CLI supprimée local/GitHub.
+Lot133 publié dans #31 sur41fbf0f, CI37571495723 entière réussie/trois jobs/SHA exact.
+Lot134 publié dans #31 sur8e9008b, CI37572091851 entière réussie/trois jobs/SHA exact.
+Lot135 publié dans #31 surcae194c, CI37574528679 entière réussie/trois jobs/SHA exact.
+Lot136 : relecture assistée diagnostics133–135 favorable ; publication/CI finale/
+ready/fusion/main encore à terminer au moment du commit, voir bilan en fin de fichier.
+Deux jalons M4/M5 restent, environ16–34lots après136, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -56,6 +61,30 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot135 publié : `cae194cee0bc39e422e0b1ac8da0bd6e78cd7401`, #31 en brouillon,
+  [CI37574528679](https://github.com/Coubiac/QueueAtlas/actions/runs/37574528679)
+  entière réussie, trois jobs/SHA exact revérifiés REST à la reprise136 ; tête
+  locale/origin/PR identique, base main132118634f et PR mergeable/clean.
+  Relecture136 favorable, publication/CI finale/fusion/main encore à terminer.
+- Lot134 publié : `8e9008b90d48eaff0f90b53cb4718e978521b223`, #31 en brouillon,
+  [CI37572091851](https://github.com/Coubiac/QueueAtlas/actions/runs/37572091851)
+  entière réussie, trois jobs/SHA exact vérifiés, étape Windows diagnostics passée.
+  Têtes Git locale/origin/PR ouvertes identiques revérifiées à la reprise135.
+  Lot135 validé localement, publication/CI encore à terminer lors du commit.
+- Lot133 publié : `41fbf0f99a4b127e260dea0a5ce900c9d06855c8`,
+  [PR #31](https://github.com/Coubiac/QueueAtlas/pull/31) en brouillon,
+  [CI37571495723](https://github.com/Coubiac/QueueAtlas/actions/runs/37571495723)
+  entière réussie, trois jobs/SHA exact vérifiés ; Linux FIFO/droits et Windows
+  ouverture passés. Tête Git locale/distante et PR ouvertes revérifiées à la
+  reprise134. Lot134 validé localement, publication/CI encore à terminer.
+- Lot132 terminé/fusionné : finale `16ee19cf7ad3ab0774d4b26fac5d578f2287f6a3`,
+  [CI37569190697](https://github.com/Coubiac/QueueAtlas/actions/runs/37569190697)
+  entière réussie, trois jobs/SHA exact vérifiés. Merge
+  `118634fed56640fc4dd3825945d7dd20cfd5c630`,
+  [CI main37569292737](https://github.com/Coubiac/QueueAtlas/actions/runs/37569292737)
+  entière réussie, trois jobs/SHA exact vérifiés. COMMENT assisté5437464734/ready,
+  branche CLI supprimée local/GitHub ; main propre revérifié à la reprise133.
+  Lot133 validé localement, publication/PR/CI encore à terminer lors de ce commit.
 - Lot131 publié : `53d4ae07e8454f9dea297a2c731274634d2f17d2`, #30 en brouillon,
   [CI37567003805](https://github.com/Coubiac/QueueAtlas/actions/runs/37567003805)
   entière réussie, trois jobs/SHA exact revérifiés REST à la reprise132.
@@ -3336,11 +3365,14 @@ Matrice123, contrôle124, benchmarks125 et mesures126 publiés/CI entières réu
 M3 clôturé127, fusion/CI finale/main vérifiées. CLI128 publié dans #30 attachée,
 CI37559870551 entière réussie. Contrat129 publié/CI37562294743 entière réussie.
 Chargeur YAML130 publié/CI37564852420 entière réussie. CLI check-config131 publiée,
-CI37567003805 entière réussie. Relecture132 favorable : publier le bilan, vérifier
-CI finale sur la tête exacte, revue COMMENT assistée/ready/fusion #30 puis CI main.
-Branche codex/m4-cli depuis main038c6c9. Prochain lot133 après clôture : ouverture
-SQLite en lecture seule pour diagnostics, sans création/migration de base,
-avant raccordement à une commande db stats/doctor.
+CI37567003805 entière réussie. Clôture132 fusionnée #30 sur118634f,
+CI finale37569190697/main37569292737 entières réussies. Lot133 publié sur41fbf0f
+dans #31, CI37571495723 entière réussie. Lot134 publié sur8e9008b,
+CI37572091851 entière réussie. Lot135 publié surcae194c, CI37574528679 entière
+réussie. Relecture136 favorable : publier le bilan, vérifier CI finale sur tête
+exacte, COMMENT assisté/ready/fusion #31 puis CI main et nettoyage de branche.
+Prochain lot137 après clôture : doctor --config en lecture seule, rapport limité
+à config/compatibilité SQLite, sans création DB/intégrité/déploiement attestés.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3860,3 +3892,172 @@ de base ; ne pas réutiliser Open applicatif comme diagnostic readonly. Commence
 un chantier diagnostics depuis le main fusionné, avant toute commande nouvelle.
 M4 reste10–20lots/M5 10–18, total20–38 après132, estimation incertaine,
 deux jalons restants. MIT conservée, AD/OIDC après MVP.
+
+Validation effective132 consignée à la reprise133 : finale
+`16ee19cf7ad3ab0774d4b26fac5d578f2287f6a3`, CI37569190697 entière réussie ;
+COMMENT assisté5437464734/ready/fusion #30 sur
+`118634fed56640fc4dd3825945d7dd20cfd5c630`, CI main37569292737 entière réussie.
+Trois jobs/SHA exact vérifiés, main actualisé propre, branche CLI supprimée
+local/GitHub. État Git/PR fermée et merge revérifiés à la reprise133. Les mentions
+« encore à terminer » précédentes décrivent le snapshot avant publication132.
+
+## Lot133 : ouverture SQLite en lecture seule pour diagnostics
+
+Résultat attendu : ouvrir une base existante sans création ni migration pour les
+futurs diagnostics, avant leurs lectures et commandes CLI. Branche
+codex/m4-diagnostics créée depuis main validé118634f, propre et égal à origin/main.
+
+OpenDiagnostics/Diagnostics distinct du Store avec seulement Close public.
+Contrat dans docs/sqlite-diagnostics.md : fichier existant régulier, auxiliaires
+existants réguliers, droits Unix privés ; URI échappée mode=ro/query_only avec
+gardes et busy5s sur chaque connexion, pool limité à une connexion physique.
+Version7 et historique1–7 lus au même snapshot ; refus des versions/historiques
+incompatibles, aucun appel de migration ni affectation journal/checkpoint.
+Erreurs fixes sans chemin/contenu/pilote ; contexte annulé conservé. Contrôle de
+compatibilité indicatif, pas attestation complète du schéma ou de son authenticité.
+
+Cinq tests ciblés Windows passés, vet ciblé/format/diff vérifiés. Absence/annulation
+et auxiliaires répertoires refusés sans création ; rollback inchangé octet pour
+octet/journal DELETE conservé ; anciennes/futures/étrangères/historique incomplet
+refusés sans modification ; WAL committé lu avant checkpoint, non committé invisible,
+commits suivants visibles, connexions de remplacement protégées, écritures refusées
+même après query_onlyOFF ; chemin Unicode/espaces/caractères URI littéral.
+Test Linux FIFO/droits ajouté ; son exécution attend la CI. Étape Windows diagnostic
+ajoutée au workflow, jobs Linux existants couvrent aussi la suite complète.
+
+Limites : parent protégé/disque local requis, métadonnées sans verrou contre
+remplacement et symlinks suivis ; ACL Windows non attestées. SQLite peut créer/utiliser
+WAL/SHM même en mode=ro ; aucun zéro effet auxiliaire promis, récupération nécessitant
+écriture potentiellement refusée. Pas immutable/nolock pendant une ingestion active.
+Pas de lecture statistique ni nouvelle commande CLI dans ce lot.
+
+Au moment du commit133 : tests locaux acquis, publication/PR/CI encore à terminer.
+Publier la branche, créer/attacher une PR brouillon cohérente diagnostics puis
+vérifier CI entière/trois jobs/SHA exact ; consigner son résultat dans la PR et à
+la reprise suivante. Prochain lot134 : lecture bornée des métadonnées du diagnostic,
+sans journaux/adresses/identifiants ; CLI dans un lot distinct. Dernier main validé
+132118634f/CI37569292737. M4 reste9–19lots/M5 10–18, total19–37 après133,
+deux jalons ; estimation incertaine. MIT conservée, AD/OIDC après MVP.
+
+Validation effective133 consignée à la reprise134 :
+`41fbf0f99a4b127e260dea0a5ce900c9d06855c8` publié dans #31 en brouillon,
+CI37571495723 entière réussie/trois jobs/SHA exact vérifiés REST. Étape Windows
+SQLite diagnostics opening et tests Linux FIFO/droits passés, vet/format/smoke/race
+source/file/builds statiques passés. Branche propre, tête locale/origin/PR identiques
+revérifiées à la reprise134. Les attentes133 précédentes sont le snapshot prépublication.
+
+## Lot134 : métadonnées SQLite au même snapshot
+
+Résultat attendu : un résultat fixe sans journal, adresse, identifiant ou chemin :
+version QueueAtlas/SQLite, journal observé, taille/pages/pages libres. Même branche
+codex/m4-diagnostics et PR #31, base main132118634f inchangée.
+
+Diagnostics.Metadata retourne DiagnosticMetadata avec six champs et chaînes bornées.
+Requêtes scalaires fixes ; version/historique133 réutilisés/revérifiés dans la même
+transaction que les pages. Aucun parcours/count des journaux, scan d'intégrité,
+checkpoint, vacuum ou migration. Résultat zéro en erreur ; incompatibilité distincte,
+autre lecture via ErrDiagnosticsRead fixe, contexte annulé/expiré conservé.
+Contrat immédiat dans docs/sqlite-diagnostics.md. Compteur de pages logique avec
+WAL validé, pas taille du seul fichier principal/espace disque/compteur de lignes.
+Bornes sur résultat/nombre de requêtes, pas garantie absolue de durée IO ou de
+coût d'un fichier SQLite hostile ; limites133 sur chemins/auxiliaires conservées.
+
+Quatre tests134 et les cinq tests portables133 passés sous Windows, vet ciblé,
+format/diff vérifiés. Rollback/header/taille/pages libres/privacy/octets inchangés ;
+snapshot conservé pendant croissance WAL et changement atomique de version,
+nouvelle version refusée au prochain appel puis croissance visible après remise
+compatible, main/WAL non modifiés ; historique effacé après ouverture détecté ;
+annulation et délai en attente de connexion, relecture possible, handle fermé et
+résultat zéro/messages fixes. Étape Windows CI élargie aux neuf tests portables ;
+jobs Linux existants exécutent aussi la suite complète. Pas de dépendance nouvelle.
+
+Au moment du commit134 : code/tests/doc validés localement, publication/CI encore
+à terminer. Publier dans #31 puis vérifier workflow entier/trois jobs/SHA exact,
+consigner le résultat dans la PR et à la prochaine reprise. Prochain lot135 :
+CLI db stats --config <chemin> pour les métadonnées limitées, commande/codes/sortie
+et tests réels de l'exécutable ; aucun compteur de lignes ou diagnostic d'intégrité
+implicite. Dernier publié validé13341fbf0f/CI37571495723 ; dernier main validé
+132118634f/CI37569292737. M4 reste8–18lots, M5 10–18, total18–36 après134,
+deux jalons ; estimation incertaine. MIT conservée, AD/OIDC après MVP.
+
+Validation effective134 consignée à la reprise135 :
+`8e9008b90d48eaff0f90b53cb4718e978521b223` publié dans #31 en brouillon,
+CI37572091851 entière réussie, trois jobs/SHA exact vérifiés REST ; étape Windows
+SQLite diagnostics réussie, tests Linux/vet/format/smoke/race source/file/builds
+statiques passés. Checkout propre ; têtes Git locale/origin/PR ouvertes identiques
+revérifiées à la reprise135. Les attentes134 précédentes sont le snapshot prépublication.
+
+## Lot135 : CLI db stats --config
+
+Résultat attendu : raccorder les seules métadonnées134 à une commande CLI, avec
+JSON borné et codes/flux/effets vérifiés sur binaire compilé. Même branche
+codex/m4-diagnostics/#31, base main132118634f inchangée.
+
+Syntaxe stricte db stats --config <chemin>, aides db et db stats (--help/-h) sans IO,
+usage/code2 sans recopie d'arguments sur syntaxe refusée. Chargeur existant puis
+OpenDiagnostics/Metadata, fermeture avant sérialisation/sortie. JSON compact avec
+newline et six noms explicites indépendants du struct de bibliothèque :
+schema_version/sqlite_version/journal_mode/page_size/page_count/free_page_count.
+Succès code0/stderr vide ; config invalide code2/diagnostic sûr existant ; config
+illisible ou DB absente/non régulière/illisible/incompatible/read/close échoué
+code1/messages fixes, stdout vide. Sortie stdout défaillante : message partagé/code1,
+octets partiels possibles si le flux accepte puis échoue.
+
+Contexte SQLite coopératif10secondes après config, busy5s du lecteur ; pas de
+deadline dure pour tout IO/chargement. Aucune création/migration/checkpoint
+applicatif ou démarrage de composant ; auxiliaires SQLite possibles. Ce résultat
+ne compte pas de lignes/messages et ne certifie pas intégrité ou sauvegarde.
+Stockage et chargeur inchangés ; aide globale enrichie. Contrat dans docs/m4-cli.md
+et docs/sqlite-diagnostics.md, README actualisé ; dépendances/workflow inchangés.
+
+Quatre nouveaux tests CLI (JSON/readonly, refus/codes/no création, arguments/aide,
+sortie échouée) et test du binaire étendu à db stats/codes0/1/2. Onze tests CLI/vet/
+format/diff passés sous Windows. Six champs/JSON unique/newline/limite512octets,
+chemin config relatif vers SQLite, base et config inchangées, config invalide ou
+manquante/base absente/vide/corrompue/répertoire refusées sans donnée privée ni
+création/migration. Binaire compilé/linker/codes exacts et base inchangée vérifiés.
+CI Windows CLI existante et jobs Linux couvrent ces cas ; fondations non relancées
+localement puisqu'aucun code de stockage/config modifié.
+
+Au moment du commit135 : code/tests/doc validés localement, publication/CI encore
+à terminer. Publier dans #31 puis vérifier workflow entier/trois jobs/SHA exact,
+consigner résultat dans la PR et à la prochaine reprise. Prochain lot136 : revue/
+clôture du chantier diagnostics133–135 (contrats/effets/tests/CI), bilan, CI finale
+sur tête exacte, revue COMMENT assistée/ready/fusion et CI main ; aucun comportement
+indépendant à ajouter. Dernier publié validé1348e9008b/CI37572091851, dernier main
+132118634f/CI37569292737. M4 reste7–17lots, M5 10–18, total17–35 après135,
+deux jalons ; estimation incertaine. MIT conservée, AD/OIDC après MVP.
+
+Validation effective135 consignée à la reprise136 :
+`cae194cee0bc39e422e0b1ac8da0bd6e78cd7401` publié dans #31 en brouillon,
+CI37574528679 entière réussie/trois jobs/SHA exact revérifiés REST. Étape Windows
+CLI réussie, tests Linux/vet/format/smoke/race source/file/builds statiques passés.
+Tête locale/origin/PR identique, base main132118634f, PR mergeable/clean. Les
+attentes135 précédentes sont le snapshot prépublication.
+
+## Lot136 : relecture et clôture du chantier diagnostics
+
+Résultat attendu : clôturer #31 (133–135) après revue, bilan, CI finale sur tête
+exacte, COMMENT assisté/ready/fusion et CI main. Relecture favorable surcae194c,
+aucun défaut bloquant identifié, aucune approbation humaine indépendante revendiquée.
+Bilan dans docs/reviews/m4-diagnostics.md : lecture seule/no création/migration,
+droits/URI/connexions, compatibilité limitée, métadonnées/snapshot WAL/ressources,
+CLI/JSON/codes/confidentialité et bornes confrontés aux tests/CI acquis.
+
+Lot documentaire seulement, code/tests/workflow/dépendances inchangés ; pas de
+rerun local des fondations sans risque nouveau. CI135 entière/trois jobs/SHA exact
+revérifiés, diff documentaire136 à vérifier avant commit. Les limites restent
+explicites : chemins/ACL Windows/disque local non attestés, auxiliaires SQLite
+possibles, pages logiques pas taille physique/count de messages ; version/historique
+ne sont pas une preuve d'intégrité/authenticité ; contexte coopératif pas deadline
+dure IO. Aucun service/auth/API/Web n'est livré par db stats.
+
+Au moment du commit136 : publication/CI finale/revue ready/fusion #31/CI main
+encore à terminer, dernière tête publiée validée135cae194c/CI37574528679 ; dernier
+main fusionné132118634f/CI37569292737. Ne pas annoncer clôture effective sans
+ces contrôles. Après succès : main actualisé propre, branche diagnostics nettoyée,
+M4 toujours en cours. Prochain lot137 : doctor --config en lecture seule, rapport
+limité à configuration et compatibilité SQLite réellement vérifiées, sans création
+DB ou attestation d'intégrité/déploiement. Réutiliser chargeur/lecteur validés.
+M4 reste6–16lots, M5 10–18, total16–34 après136, deux jalons, estimation incertaine.
+MIT conservée, AD/OIDC/Keycloak après MVP.

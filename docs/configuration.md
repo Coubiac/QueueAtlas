@@ -112,7 +112,11 @@ Lot131 : [CLI check-config](m4-cli.md#lot131--check-config), codes0/1/2, diagnos
 sanitisés, tests du binaire sans création DB ; publié sur53d4ae0,
 [CI37567003805](https://github.com/Coubiac/QueueAtlas/actions/runs/37567003805)
 entière réussie/trois jobs/SHA exact vérifiés. [Relecture132](reviews/m4-cli-config.md)
-favorable ; publication/CI finale/fusion #30/main encore à terminer.
+favorable ; #30 fusionnée sur118634f, CI finale37569190697/main37569292737
+entièrement réussies. [Ouverture SQLite de diagnostic133](sqlite-diagnostics.md)
+et métadonnées134 publiées/CI verte ; [db stats135](m4-cli.md#lot135--db-stats) publié
+surcae194c, CI37574528679 entière réussie. Relecture136 du chantier favorable,
+publication/CI finale/fusion/main encore à terminer au moment du commit.
 Les sources, CIDR/domaines, rétention et paramètres d'authentification demanderont
 des contrats séparés selon les composants raccordés. `serve`,
-doctor/db stats, auth/API/Web restent à développer. AD/OIDC après MVP, MIT conservée.
+doctor, auth/API/Web restent à développer. AD/OIDC après MVP, MIT conservée.
