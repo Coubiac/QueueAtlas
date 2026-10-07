@@ -28,5 +28,6 @@ go run ./cmd/queueatlas version
 
 Affiche `QueueAtlas dev` pour un build ordinaire. Voir [commandes, compilation et
 codes de sortie](docs/m4-cli.md). Le [contrat initial de configuration](docs/configuration.md)
-fixe les défauts et leur validation (lot129). Le chargement YAML et la consultation
-authentifiée restent à développer.
+fixe les défauts et leur validation (lot129), avec un chargeur YAML strict et borné
+(lot130) et un [exemple](examples/queueatlas.yaml). La commande `check-config` et
+la consultation authentifiée restent à développer.

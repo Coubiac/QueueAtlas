@@ -28,9 +28,11 @@ Lot127 clôturé : #29 fusionnée sur038c6c9, CI finale37557272778 et main375573
 entièrement réussies. M3 terminé en bibliothèque, branche du chantier supprimée.
 Lot128 publié dans #30 sur921155a, CI37559870551 entière réussie/trois jobs/SHA
 vérifiés ; point d'entrée CLI version/aide/codes et test réel de l'exécutable.
-Lot129 : contrat pur de configuration serveur local/SQLite, défauts/validation,
-cinq tests/vet locaux réussis ; publication/CI129 à terminer sur codex/m4-cli.
-Deux jalons M4/M5 restent, environ23–41lots après129, M3 zéro lot restant ;
+Lot129 publié surd9a2fb8 dans #30, CI37562294743 entière réussie/trois jobs/SHA
+vérifiés ; contrat pur de configuration serveur local/SQLite et défauts/validation.
+Lot130 : chargeur YAML strict/borné et chemins résolus, sept tests nouveaux/suite
+config/vet/go mod verify Windows réussis ; publication/CI130 à terminer.
+Deux jalons M4/M5 restent, environ22–40lots après130, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -50,6 +52,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot129 publié : `d9a2fb8fe8d50718cbda30b2b0f9ed9b26cc4954`, #30 en brouillon,
+  [CI37562294743](https://github.com/Coubiac/QueueAtlas/actions/runs/37562294743)
+  entière réussie, trois jobs/SHA exact et étape Windows config vérifiés.
+  Lot130 validé localement, publication/CI encore à terminer ; dernier fusionné127.
 - Lot128 publié : `921155a6accf9714ba5420ccb3e0bec658c1a0b9`,
   [PR #30](https://github.com/Coubiac/QueueAtlas/pull/30) en brouillon,
   [CI37559870551](https://github.com/Coubiac/QueueAtlas/actions/runs/37559870551)
@@ -3316,10 +3322,11 @@ automatique. L'intégration pure aux clés révisables121 est publiée dans la m
 CI entière réussie ; clôture122 fusionnée #28, CI finale et main vertes.
 Matrice123, contrôle124, benchmarks125 et mesures126 publiés/CI entières réussies.
 M3 clôturé127, fusion/CI finale/main vérifiées. CLI128 publié dans #30 attachée,
-CI37559870551 entière réussie. Contrat129 validé localement : publier le commit
-et vérifier CI129 sur la tête exacte, réutiliser #30 (brouillon cohérent).
-Branche codex/m4-cli depuis main038c6c9. Prochain lot130 : chargeur YAML strict,
-borné, défauts/champs absents et résolution des chemins ; aucune commande serve.
+CI37559870551 entière réussie. Contrat129 publié/CI37562294743 entière réussie.
+Chargeur YAML130 validé localement : publier le commit et vérifier CI130 sur la
+tête exacte, réutiliser #30 (brouillon cohérent). Branche codex/m4-cli depuis
+main038c6c9. Prochain lot131 : CLI check-config/flux/codes/tests du binaire,
+sans démarrage de serveur, ouverture DB ou ingestion.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3736,3 +3743,41 @@ Dernière tête publiée validée128921155a/CI37559870551, dernier main fusionn�
 borné, champs inconnus/doublons, défauts uniquement pour absents, durées textuelles,
 résolution des chemins. M4 reste13–23lots estimés/M5 10–18, total23–41 après129,
 deux jalons restants ; aucune release installable annoncée.
+
+Validation effective129 enregistrée à la reprise130 :
+`d9a2fb8fe8d50718cbda30b2b0f9ed9b26cc4954` publiée dans #30,
+CI37562294743 entièrement réussie/trois jobs/SHA exact, étape Windows config passée.
+Les mentions « à terminer » ci-dessus décrivent l'état avant le commit129.
+
+## Lot130 : chargement YAML strict et borné
+
+Résultat attendu/acquis localement : `config.Load(path)` et `Decode(reader, baseDir)`
+chargent des paramètres validés, conservent les défauts pour les seuls champs
+absents et résolvent storage.path depuis le répertoire lexical absolu de config.
+64Kio maximum avant parsing (lecture bornée à65 537octets), UTF-8, document unique,
+profondeur4/128nœuds après parsing. Refus champs inconnus/doublons/nulls/types
+implicites/ancres/alias/merge/custom tags. Durées textuelles avec unités/bornes129.
+Validation du chemin avant résolution ; chemins Windows dépendant d'un lecteur
+ou enracinés sans lecteur refusés. Pas d'expansion environnement/~/templates.
+
+Toute erreur renvoie zéro configuration, ErrInvalid (contenu) ou ErrRead (IO),
+sans recopier valeurs/chemins/champs inconnus/erreurs brutes. Load ferme le fichier
+et contrôle son type régulier avant/après ouverture, sans verrou ni attestation de
+permissions/stabilité ; le répertoire suit le chemin lexical, pas le lien cible.
+Borne d'octets distincte d'une échéance IO, droits/disque local DB encore à contrôler
+par le stockage/diagnostic. Aucune DB ouverte/créée ni composant démarré.
+
+Sept tests synthétiques130, suite config (douze tests), vet/format/diff locaux
+Windows passés, go mod verify réussi. Exemple examples/queueatlas.yaml chargé dans
+un test. Dépendance directe go.yaml.in/yaml/v3 v3.0.5/go.sum figée, source/API/licences
+MIT et Apache-2.0 consultées, aucune autre dépendance changée. CI Windows config et
+Linux existantes couvrent le chargeur ; pas de rerun local des fondations.
+Contrat dans docs/configuration.md, CLI/README/avancement actualisés.
+
+Au moment de cet enregistrement130 : commit/publication/CI130 encore à terminer
+sur codex/m4-cli dans #30 réutilisée. Dernière tête publiée validée129d9a2fb8 /
+CI37562294743 ; dernier main fusionné127038c6c9/mainCI37557390479. Prochain lot131
+après CI130 : `check-config --config <chemin>`, flux/codes et tests du binaire.
+M4 reste12–22lots estimés/M5 10–18, total22–40 après130, deux jalons. Serve,
+sources/config composants, auth/API/Web restent M4 ; service/paquets/pilote M5.
+MIT conservée, AD/OIDC après MVP, aucune release installable annoncée.

@@ -55,8 +55,11 @@ sur `921155a6accf9714ba5420ccb3e0bec658c1a0b9` ;
 entière réussie, trois jobs et SHA exact vérifiés. Étape Windows CLI réussie.
 
 Lot129 : [contrat initial de configuration](configuration.md), défauts et validation
-pure du serveur local/chemin SQLite, tests/vet locaux réussis ; publication/CI129
-à terminer dans la même PR. Prochain lot130 : chargement YAML strict et borné.
+pure du serveur local/chemin SQLite, publié surd9a2fb8 dans #30,
+[CI37562294743](https://github.com/Coubiac/QueueAtlas/actions/runs/37562294743)
+entière réussie/trois jobs/SHA exact vérifiés. Lot130 : chargeur YAML strict/borné
+en bibliothèque, suite config/vet Windows passés ; publication/CI130 à terminer.
+Prochain lot131 : `check-config --config <chemin>`, flux/codes et tests du binaire.
 Check-config, doctor/db stats, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

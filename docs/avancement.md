@@ -19,8 +19,9 @@ avec smoke Linux. Campagne126 Windows5x/count3 passée,36échantillons/12cas ana
 Lot126 publié surf4c24d2 avec CI37554852072 entière réussie. Relecture127 favorable à la
 sortie M3 en bibliothèque ; #29 fusionnée sur038c6c9, CI finale37557272778 et
 main37557390479 entières réussies. CLI128 publiée dans #30 sur921155a,
-CI37559870551 entière réussie. Contrat129 config/défauts validé localement ;
-publication/CI129 à terminer sur codex/m4-cli dans cette même PR.
+CI37559870551 entière réussie. Contrat129 config/défauts publié surd9a2fb8,
+CI37562294743 entière réussie. Chargeur YAML130 validé localement ; publication/
+CI130 à terminer sur codex/m4-cli dans cette même PR.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -35,7 +36,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 129 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 130 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -52,9 +53,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI128 publiée/CI entière verte ; contrat config129 validé localement | Publication/CI129, chargement YAML/config des composants, diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 13–23 après129 |
+| M4 — consultation sûre | CLI128 et contrat129 publiés/CI entière verte ; YAML130 validé localement | Publication/CI130, check-config/config des composants, diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 12–22 après130 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après129** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **23–41** |
+| **Total après130** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **22–40** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -348,8 +349,24 @@ sans valeur privée. IP loopback littérale/port valide, délais positifs borné
 syntaxe d'un chemin SQLite fichier ; aucun DNS, ouverture de base, création
 d'état ou démarrage de serveur. [Contrat et limites](configuration.md), cinq tests
 synthétiques/vet/format/diff locaux Windows réussis. Étape Windows config ajoutée,
-suite Linux existante couvre le package. Publication/CI129 à terminer dans #30.
+suite Linux existante couvre le package. Lot129 publié surd9a2fb8 dans #30,
+CI37562294743 entière réussie, trois jobs/SHA exact vérifiés.
 
 Suite130 : YAML strict/borné et résolution des chemins relatifs depuis le fichier
 de config ; sources/auth et CLI restent des lots distincts. M4 reste13–23lots,
 M5 10–18, total23–41 après129, fourchettes incertaines à périmètre MVP constant.
+
+## Bilan130 — chargeur YAML strict et borné
+
+`config.Load/Decode` : lecture UTF-8 de64Kio maximum, un seul document, champs
+inconnus/doublons/types implicites/nulls/ancres/alias refusés. Défauts des champs
+absents, durées textuelles, chemins relatifs résolus depuis le fichier de config.
+Diagnostics sans valeurs privées, zéro configuration en erreur, aucune base
+ouverte/créée. Exemple du dépôt chargé dans les tests ; parseur yaml/v3 v3.0.5 figé,
+MIT QueueAtlas conservée. [API et limites](configuration.md).
+
+Sept tests130 et cinq tests129 (suite config), vet/format/diff Windows passés ;
+go mod verify réussi. CI existante couvre Linux/Windows ; publication/CI130
+à terminer dans #30 réutilisée. Prochain lot131 : CLI check-config et codes/flux,
+sans démarrage de serveur. M4 reste12–22lots/M5 10–18, total22–40 après130,
+deux jalons restants, estimation incertaine ; AD/OIDC après MVP.

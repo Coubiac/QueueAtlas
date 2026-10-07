@@ -1,5 +1,5 @@
-// Package config defines the initial application settings without performing IO.
-// Loading a configuration file and starting components are separate operations.
+// Package config defines and loads bounded application settings. Validation and
+// configuration loading never start components or open the database.
 package config
 
 import (
@@ -32,8 +32,8 @@ type Server struct {
 
 type Storage struct {
 	// A relative path is intended to be resolved against the configuration file's
-	// directory by the future loader, before passing it to SQLite. No resolution
-	// or filesystem validation happens here.
+	// directory by Decode, before passing it to SQLite. No resolution or filesystem
+	// validation happens in Config.Validate.
 	Path string `yaml:"path"`
 }
 
