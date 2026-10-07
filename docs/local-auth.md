@@ -316,3 +316,10 @@ Preuves dans [relecture du compte](reviews/m4-local-account.md), limites login
 conservées. Les [sessions148 en mémoire](local-sessions.md) ajoutent émission/
 expiration absolue et inactive/révocation/capacité bornées ; vérifiées Windows,
 publication/CI à terminer au commit148, aucune route/login/cookie disponible.
+
+Validation148 effective : bd862cd publié dans #35, CI37615586790 entière/trois jobs/
+SHA exact/race auth réussis, revérifiés REST à la reprise149. Le [login149 borné](local-login.md)
+raccorde le compte aux sessions après vérification Argon2id, budget partagé et
+admission concurrente ; vérifié Windows, publication/CI à terminer au commit149.
+Le transport/cookies150, protections transversales/liste adaptée et revue restent
+requis avant exposition. Aucune route Web ou option YAML login livrée149.

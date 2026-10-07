@@ -94,3 +94,9 @@ HTTP/cookies, contrôles transversaux CSRF/TLS/routes/liste de mots de passe ada
 et revue/clôture. Aucun serveur/login/cookie/Web livré par148, aucune entrée YAML
 sessions ou reset compte. Liste d'enrôlement non déclarée suffisante pour release
 login selon [revue147](reviews/m4-local-account.md). MIT, AD/OIDC/Keycloak après MVP.
+
+Validation148 effective : bd862cd publié dans #35, CI37615586790 entière/trois jobs/
+SHA exact/race auth réussis, REST revérifié à la reprise149. Le [moteur de login149](local-login.md)
+partage ce magasin et n'appelle Issue qu'après vérification réussie du compte,
+avec budget d'essais/admission bornés. Le contrat d'Issue reste requis pour tous
+ses appelants. Transport HTTP/cookies150, protections et revue restent à réaliser.

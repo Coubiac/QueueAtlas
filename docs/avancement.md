@@ -40,7 +40,8 @@ Hash/codec144 publié sur22f1694, CI37601878573 entière réussie. Persistance14
 publiée sur19415ba, CI37605851032 entière réussie. CLI admin create146 publiée sur
 cfde74d, CI37608644994 entière réussie. Clôture147 fusionnée #34 sur9cd6cec,
 CI finale37611573008/main37611762238 entières réussies, branche nettoyée.
-Sessions148 en mémoire implémentées/vérifiées Windows ; publication/CI à terminer.
+Sessions148 publiées surbd862cd dans #35, CI37615586790 entière/trois jobs/SHA exact
+et race auth réussis. Login149 borné vérifié Windows ; publication/CI à terminer.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -55,7 +56,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 148 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 149 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -72,9 +73,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142 et compte143–147 fusionnés/CI main verte ; sessions148 vérifiées Windows | Login borné, transport HTTP/cookies, protections/liste adaptée et revue, diagnostic élargi, API bornée, recherche/détail/timeline Web | 8–15 après148/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142 et compte143–147 fusionnés/CI main verte ; sessions148 publiées/CI verte, login149 vérifié Windows | Transport HTTP/cookies, protections/liste adaptée et revue, diagnostic élargi, API bornée, recherche/détail/timeline Web | 7–14 après149/CI |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après148/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **18–33** |
+| **Total après149/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **17–32** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
@@ -104,7 +105,10 @@ Quatre lots auth minimum restent : login/admission/essais, transport HTTP/cookie
 contrôles transversaux/liste d'enrôlement, revue/clôture. API2–3 et Web/revue2–4
 portent le minimum à8, marge d'intégration/diagnostic jusqu'à15. M4 devient8–15,
 sans ajout de fonctionnalité ni pourcentage livré. Les sessions ne sont pas
-encore raccordées au login, leurs options ne sont pas dans le YAML.
+encore raccordées au login à148, leurs options ne sont pas dans le YAML.
+Après149/CI, login/admission/essais et raccordement sessions réalisés : trois lots
+auth minimum restent (transport/cookies, contrôles/liste adaptée, revue/clôture),
+puis API2–3 et Web/revue2–4. M4 devient7–14, marge/périmètre inchangés.
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -703,3 +707,19 @@ Six nouveaux tests/21auth/vet/format/diff Windows passés ; Linux23/race à vér
 en CI. Publication/nouvelle PR à terminer au commit. Pas de login/HTTP/cookie.
 Prochain149 : login borné/admission/essais/comptes inconnus, raccordement hash/
 sessions sans HTTP. M4 8–15 après CI148 (révision expliquée), M5 10–18, total18–33.
+
+Validation148 effective : bd862cd dans #35, CI37615586790 entière/trois jobs/SHA
+exact/race auth réussis, revérifiés REST149 ; PR cohérente réutilisée en brouillon.
+
+## Bilan149 — login et admission bornés
+
+Compte immuable et magasin partagé ; vrai VerifyPassword pour tout nom bien formé,
+y compris inconnu, refus fixe sans session. Budget unique tous noms/origines,
+fenêtre exacte, succès sans reset, plafonds essais/hachages sans file d'attente.
+Annulation ne libère pas une place avant fin du calcul, session seulement après
+authentification ; erreurs privées/horloge/capacité échouent sans token partiel.
+Limites fenêtre fixe/annulation pendant Issue/DoS du budget/processus documentées
+dans [contrat du login](local-login.md). Huit nouveaux tests/29auth/vet/format/diff
+Windows passés ; publication/CI/Linux31/race à terminer au commit149.
+Prochain150 : HTTP login/logout/cookies, puis protections transversales/liste adaptée
+et revue. M4 7–14 après CI149, M5 10–18, total17–32. Pas de serveur/Web livré149.
