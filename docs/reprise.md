@@ -83,9 +83,11 @@ revérifiés163. Déconnexion Web163 publiée sur33596e2 dans #37, CI37675032968
 entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race Linux1.26 réussis,
 revérifiés164. Lot164 en cours : corrections CSP Windows/focus/contrôles de
 présentation, test import→rendu et vérifications navigateur statiques passés.
-Parcours HTTPS navigateur encore bloqué par le certificat de test ; intervention
-humaine requise, PR37 reste brouillon. [Bilan](reviews/m4-web.md).
-Au commit164 : publication/CI des corrections à terminer ; reprise sur164,
+Corrections164 publiées sur ef87ceb, CI37676596678 entière/trois jobs/SHA exact
+réussis. L'utilisateur confirme la page HTTPS visible après traitement du
+certificat ; l'outil navigateur refuse encore l'accès par politique de sécurité.
+Rapport manuel connexion/consultation/déconnexion demandé, PR37 reste brouillon.
+[Bilan](reviews/m4-web.md). Reprise sur164,
 aucun165 commencé. Deux jalons M4/M5 restent, environ13–28lots (M4 3–10),
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
@@ -3457,11 +3459,15 @@ revérifiés162. Lot162 [connexion Web locale](web-login.md) publiée20f64e0,
 CI37671925509 entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et
 HTTPAPI Linux1.26 réussis, revérifiés163. Lot163 [déconnexion Web](web-logout.md)
 publiée33596e2, CI37675032968 entière/trois jobs/SHA exact réussis, revérifiés164.
-Lot164 : publier les corrections validées localement sur codex/m4-web, même #37
-brouillon, vérifier CI entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race
-Linux1.26. Reprendre ensuite164 : [fixture TLS](web-browser-review.md), intervention
-humaine sur le certificat refusé par le navigateur, puis parcours connexion/
-rotation/déconnexion et SameSite réel. La revue du rendu statique est faite,
+Lot164 : corrections publiées ef87ceb, CI37676596678 entière/trois jobs/SHA exact/
+auth et HTTPAPI Windows/race Linux1.26 réussis. L'utilisateur confirme la page
+HTTPS visible après traitement du certificat. L'outil navigateur refuse l'accès
+par politique de sécurité ; aucun contournement ni autre surface tentée.
+Attendre le rapport manuel demandé : connexion, recherche synthetic-postfix /
+Expéditeur exact synthetic@example.test / Oct7–8UTC, détail ABC123 et timeline,
+déconnexion/retour login puis accès protégé refusé. [Fixture](web-browser-review.md).
+Reprendre164 sur ces résultats, qualifier précisément SameSite/rotation.
+La revue du rendu statique est faite,
 pas celle de l'auth navigateur ; [preuves et limites](reviews/m4-web.md).
 Clôturer #37 seulement si critères satisfaits. Aucun165 commencé.
 Montage applicatif et compléments dans les chantiers suivants.
@@ -5713,3 +5719,32 @@ documenter connexion/rotation/session/déconnexion/SameSite et décider de la fu
 Pas de lot165 ni de montage serveur avant cette reprise. M4/M5 restent ouverts,
 estimation13–28lots (M4 3–10, M5 10–18) conservée car revue non clôturée.
 MIT et AD/OIDC/Keycloak après MVP inchangés.
+
+### Reprise164 — certificat traité, accès outil refusé
+
+État publié vérifié avant cette reprise :
+`ef87ceb6b24d5ad20538ecda5bdf23af75965083`, codex/m4-web propre et synchronisée,
+[CI37676596678](https://github.com/Coubiac/QueueAtlas/actions/runs/37676596678)
+entière completed/success sur ce SHA : Go1.26 112981583001,
+Windows112981583298, stable112981583404. Auth/HTTPAPI Windows et race auth/HTTPAPI
+Linux1.26 réussis ; stable race skipped prévu. Preuve post-publication dans #37.
+Ces résultats sont réutilisés ; aucun changement de code ni risque nouveau.
+
+Fixture TLS relancée sur le code publié, session terminal59518, arrêt temporaire
+`C:\Users\benoi\AppData\Local\Temp\TestWebBrowserReview2250385975\003\stop-review`.
+URL temporaire `https://127.0.0.1:50104/login`, expire après30minutes ; vérifier
+le processus avant réutilisation et relancer selon le guide si nécessaire.
+L'utilisateur répond « c'est fait. Page visible » ; contexte ambiant affiche
+cette URL dans le navigateur de Codex. Il s'agit d'une confirmation humaine de
+la page, **pas** d'une preuve de connexion/déconnexion.
+
+La tentative de lecture de cet onglet par Computer Use est refusée par la
+politique de sécurité du navigateur. Aucun autre accès/surface/contournement
+tenté. Rapport manuel demandé avec compte synthétique : connexion, recherche
+de l'expéditeur aux dates explicites, ABC123→détail→trois faits timeline,
+déconnexion→formulaire puis accès /messages refusé, navigateur utilisé et erreurs.
+Question en attente ; ne pas déclarer ce parcours réussi avant la réponse.
+Rotation, attributs des cookies et SameSite ne sont pas prouvés à eux seuls par
+ces quatre étapes ; qualifier les limites et décider des contrôles restants.
+Documentation actualisée dans ce checkpoint, sans nouveau comportement ;
+publication/CI documentaire à terminer au commit. #37 reste brouillon ; aucun165.

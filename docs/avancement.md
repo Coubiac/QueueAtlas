@@ -66,8 +66,10 @@ trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 réu
 revérifiés163. Déconnexion163 publiée33596e2, CI37675032968 entière/trois jobs/SHA
 exact/auth et HTTPAPI Windows/race Linux1.26 réussis, revérifiés164. Lot164 en cours :
 corrections navigateur CSP Windows/focus/texte, test import→rendu et captures.
-Parcours HTTPS navigateur en attente d'intervention sur le certificat de test ;
-revue incomplète, #37 reste brouillon. Publication/CI des corrections à terminer.
+Corrections164 publiées ef87ceb, CI37676596678 entière/trois jobs/SHA exact verts.
+Page HTTPS confirmée visible par l'utilisateur après traitement du certificat ;
+accès outil encore refusé par sécurité, rapport manuel du parcours demandé.
+Revue incomplète, #37 reste brouillon.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -99,7 +101,7 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147, auth148–153 et API154–158 fusionnés/CI main verte ; Web159–163 publiés/CI verte, corrections164 locales, revue HTTPS incomplète | Terminer revue164, montage serveur et filtres/diagnostics | 3–10 |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147, auth148–153 et API154–158 fusionnés/CI main verte ; Web159–164 publiés/CI verte, revue HTTPS incomplète | Terminer revue164, montage serveur et filtres/diagnostics | 3–10 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
 | **Total pendant164** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **13–28** |
 
@@ -1094,3 +1096,8 @@ la même #37 brouillon ; [preuves, limites et reprise](reviews/m4-web.md).
 Reprendre164, aucun165 commencé, pas de fusion à ce stade. Deux jalons restent,
 M4 3–10/M5 10–18/total13–28 conservés ; clôture de revue non acquise.
 Issue7/M4/MVP ouverts, MIT, AD/OIDC/Keycloak après MVP.
+
+Reprise164 : corrections publiées ef87ceb/CI37676596678 entière/trois jobs/SHA
+exact verts. Utilisateur confirme la page HTTPS après certificat ; l'outil refuse
+encore l'accès par sécurité. Rapport manuel du parcours demandé, en attente.
+Cette confirmation ne clôture pas la revue ; même lot164, estimation inchangée.

@@ -1,7 +1,7 @@
 # Revue assistée Web159–164 — PR #37
 
 État au 7 octobre 2026 : **revue incomplète**, PR conservée en brouillon.
-Les corrections du rendu sont validées localement ; le parcours navigateur
+Les corrections du rendu sont publiées ef87ceb, CI37676596678 entière verte ; le parcours navigateur
 HTTPS connexion/déconnexion reste à vérifier avant fusion. Aucun lot165 commencé.
 
 ## Périmètre et méthode
@@ -55,11 +55,30 @@ rendu statique ; le bouton de déconnexion visible n'y exécute pas l'auth réel
 - [Détail desktop complet](assets/web164-detail-desktop.jpg)
 - [Timeline mobile, brut demandé](assets/web164-timeline-mobile.jpg)
 
+## Reprise après intervention sur le certificat
+
+L'utilisateur confirme « c'est fait. Page visible » pour la fixture TLS relancée
+sur le code ef87ceb. Le contexte ambiant indique cette page dans le navigateur
+de Codex. Cette confirmation atteste uniquement l'affichage du formulaire.
+L'outil Computer Use refuse ensuite la lecture de l'onglet par politique de
+sécurité ; aucun contournement ni autre surface n'est tenté.
+
+Un rapport manuel est demandé pour connexion, recherche exacte de l'expéditeur
+synthétique, détail ABC123→timeline trois faits, logout→login et accès protégé
+refusé. Résultats en attente. Rotation, attributs des cookies et SameSite doivent
+être qualifiés séparément ; ces étapes seules ne démontrent pas tous ces points.
+
+[CI164](https://github.com/Coubiac/QueueAtlas/actions/runs/37676596678)
+entière completed/success sur `ef87ceb6b24d5ad20538ecda5bdf23af75965083` :
+Go1.26 112981583001, Windows112981583298, stable112981583404. Auth/HTTPAPI Windows
+et race Linux1.26 réussis ; stable race skipped prévu. Preuves réutilisées de la
+publication des corrections, sans relancer les tests du code inchangé.
+
 ## Décision et reprise
 
-Publier les corrections et vérifier la CI entière sur leur SHA exact, même PR37
-brouillon. Reprendre **le lot164** avec le serveur TLS du guide, après résolution
-humaine du certificat. Documenter les résultats réels ; passer prêt/fusionner
+Corrections publiées/CI validée, même PR37 brouillon. Reprendre **le lot164**
+sur le rapport manuel demandé après le refus d'accès de l'outil. Si la fixture
+a expiré, relancer selon le guide. Documenter les résultats réels ; passer prêt/fusionner
 seulement si les critères sont satisfaits, puis vérifier la CI main.
 Montage serveur applicatif et filtres/diagnostics restent ensuite ; issue7/M4/MVP
 ouverts. MIT et authentification AD/OIDC/Keycloak après MVP inchangés.

@@ -27,6 +27,22 @@ restent401 sans redirection automatique. Utiliser exclusivement ce compte et les
 données synthétiques. Les tests Go HTTPS/cookiejar couvrent déjà les contrôles
 serveur ; consigner séparément ce que le navigateur démontre effectivement.
 
+Si l'outil navigateur refuse toujours l'accès après l'intervention humaine,
+l'agent ne doit pas chercher un autre accès pour contourner ce refus. L'opérateur
+peut effectuer le parcours dans sa page ouverte et transmettre ses observations :
+
+1. Connexion avec le compte synthétique ci-dessus : recherche affichée.
+2. Instance `synthetic-postfix`, champ **Expéditeur exact**, valeur
+   `synthetic@example.test`, dates `2026-10-07T00:00:00Z` à
+   `2026-10-08T00:00:00Z` : candidat ABC123 retrouvé.
+3. Lien détail puis timeline : trois faits observés.
+4. Déconnexion : retour au formulaire ; rouvrir `/messages` refuse l'accès.
+
+Rapporter chaque succès/erreur et le navigateur utilisé. Une confirmation de la
+page login seule ne démontre pas l'authentification. Ces quatre étapes ne prouvent
+pas à elles seules la rotation, les attributs des cookies ou tous les cas SameSite.
+Ne pas transmettre de token/cookie de session dans le rapport.
+
 ## Aperçu de rendu quand la confiance HTTPS est indisponible
 
 ```powershell
