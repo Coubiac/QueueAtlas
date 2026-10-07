@@ -17,7 +17,13 @@ physique. Matrice123 et contrôle124 publiés dans #29, CI37546917054 et37549552
 entières réussies. Benchmarks125 publiés suraa5f3c9, CI37552260931 entière réussie
 avec smoke Linux. Campagne126 Windows5x/count3 passée,36échantillons/12cas analysés ;
 Lot126 publié surf4c24d2 avec CI37554852072 entière réussie. Relecture127 favorable à la
-sortie M3 en bibliothèque ; CI finale/fusion #29 et CI main encore à terminer.
+sortie M3 en bibliothèque ; #29 fusionnée sur038c6c9, CI finale37557272778 et
+main37557390479 entières réussies. CLI128 publiée dans #30 sur921155a,
+CI37559870551 entière réussie. Contrat129 config/défauts publié surd9a2fb8,
+CI37562294743 entière réussie. Chargeur YAML130 publié sur8bba11e,
+CI37564852420 entière réussie. CLI check-config131 publiée sur53d4ae0,
+CI37567003805 entière réussie. Relecture132 du chantier #30 favorable ;
+publication/CI finale/fusion/main encore à terminer.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -25,14 +31,14 @@ Référence de périmètre :
 ## Vue d'ensemble
 
 Six jalons avant le MVP : M0 et M1 terminés, socle M2 fusionné en bibliothèque,
-M3 validé en relecture de sortie127, clôture CI/fusion à terminer ; M4/M5 à réaliser.
-Après cette clôture, deux jalons restent. Cette sortie M2
+M3 terminé en bibliothèque/CI finale et main vertes, M4 commencé128, M5 à réaliser.
+Deux jalons restent. Cette sortie M2
 suit les livrables de la roadmap ; les issues
 #4/#5 restent ouvertes pour leurs critères applicatifs aux jalons suivants.
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 127 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 132 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -48,10 +54,10 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M0 — cadrage | Terminé : nom, MIT, architecture et décisions validés | Réviser les décisions seulement si un risque concret le justifie | 0 |
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
-| M3 — reconstruction | Relecture127 favorable en bibliothèque ; #19–28 fusionnés, chantier123–127 #29 à clôturer | CI finale/fusion/main à terminer dans127 ; origines non prouvées distinctes | 0 après clôture127 |
-| M4 — consultation sûre | À réaliser | CLI de diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité vérifiées | 15–25 |
+| M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
+| M4 — consultation sûre | CLI/config128–131 publiés/CI entière verte ; relecture132 favorable | Clôture #30/CI main, config des composants, diagnostic, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 10–20 après132 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après clôture127** | **Deux jalons à réaliser** | **Application installable répondant aux critères du cadrage** | **25–43** |
+| **Total après132** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **20–38** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -227,7 +233,7 @@ Onze tests synthétiques, suites locales acquises et CI12137541123250 entière
 réussie ; runtime inchangé à la relecture122, aucun défaut bloquant. PR #28
 fusionnée sur7ec6dd737681f4af878b8cdc4c8b71de0deb4308 après CI37543845063 verte ;
 CI push main37543982877 entièrement réussie. Le tableau historique ci-dessous
-décrit l'estimation après122 ; la table de tête utilise le bilan127 conditionnel.
+décrit l'estimation après122 ; la table de tête utilise le bilan128.
 
 Ce chantier ne livre pas la continuité physique automatique. Le cadrage demande
 des états prudents et l'absence de faux parcours/succès sur logs incomplets ; les
@@ -318,3 +324,78 @@ Prochain petit lot128 : CLI `queueatlas version`, puis configuration par petits
 lots distincts. Pas de service/Web/auth/paquet annoncé livré par la clôture M3.
 Les logs incomplets gardent leurs réserves, la continuité physique non prouvée
 reste distincte, et le pilote représentatif demeure M5. AD/OIDC après MVP, MIT.
+
+Clôture127 effectivement validée : finale d26e0bd/37557272778 et merge038c6c9 /
+CI main37557390479 entières réussies ; main actualisé, branche du chantier supprimée.
+
+## Bilan128 — début M4, CLI version
+
+Point d'entrée `cmd/queueatlas`, commande version et aide, codes0/1/2 et flux
+stdout/stderr définis. Build ordinaire `QueueAtlas dev`, étiquette injectable au
+linker ; binaire compilé et exécuté dans les tests synthétiques. Quatre tests,
+vet/format/diff ciblés et go run locaux Windows réussis ; étape Windows CLI ajoutée,
+CI Linux/tests/builds statiques existants couvrent aussi le point d'entrée.
+[Contrat CLI](m4-cli.md). Lot128 publié dans #30, tête921155a,
+CI37559870551 entièrement réussie/trois jobs/SHA exact vérifiés.
+Aucun service/auth/Web/paquet livré.
+
+Suite129 : contrat de configuration et valeurs par défaut, puis chargement YAML
+durci par lot distinct. M4 reste14–24lots estimés, M5 10–18, total24–42 après128.
+Ces fourchettes couvrent développement, tests et revues ; incertitude élevée,
+aucune échéance garantie. M3 terminé en bibliothèque, deux jalons restants.
+
+## Bilan129 — contrat de configuration initial
+
+`internal/config` : défauts indépendants, validation pure et diagnostics par champ
+sans valeur privée. IP loopback littérale/port valide, délais positifs bornés,
+syntaxe d'un chemin SQLite fichier ; aucun DNS, ouverture de base, création
+d'état ou démarrage de serveur. [Contrat et limites](configuration.md), cinq tests
+synthétiques/vet/format/diff locaux Windows réussis. Étape Windows config ajoutée,
+suite Linux existante couvre le package. Lot129 publié surd9a2fb8 dans #30,
+CI37562294743 entière réussie, trois jobs/SHA exact vérifiés.
+
+Suite130 : YAML strict/borné et résolution des chemins relatifs depuis le fichier
+de config ; sources/auth et CLI restent des lots distincts. M4 reste13–23lots,
+M5 10–18, total23–41 après129, fourchettes incertaines à périmètre MVP constant.
+
+## Bilan130 — chargeur YAML strict et borné
+
+`config.Load/Decode` : lecture UTF-8 de64Kio maximum, un seul document, champs
+inconnus/doublons/types implicites/nulls/ancres/alias refusés. Défauts des champs
+absents, durées textuelles, chemins relatifs résolus depuis le fichier de config.
+Diagnostics sans valeurs privées, zéro configuration en erreur, aucune base
+ouverte/créée. Exemple du dépôt chargé dans les tests ; parseur yaml/v3 v3.0.5 figé,
+MIT QueueAtlas conservée. [API et limites](configuration.md).
+
+Sept tests130 et cinq tests129 (suite config), vet/format/diff Windows passés ;
+go mod verify réussi. Lot130 publié sur8bba11e dans #30, CI37564852420 entière
+réussie/trois jobs/SHA exact, étape Windows config vérifiés. Prochain lot131 : CLI check-config et codes/flux,
+sans démarrage de serveur. M4 reste12–22lots/M5 10–18, total22–40 après130,
+deux jalons restants, estimation incertaine ; AD/OIDC après MVP.
+
+## Bilan131 — CLI check-config
+
+`queueatlas check-config --config <chemin>` appelle le chargeur130 : code0/message
+fixe stdout en succès, code2 pour arguments/contenu refusés, code1 pour lecture
+ou sortie stdout impossible. Diagnostics sans chemins/valeurs privés, aide globale
+et de commande, aucune DB créée/ouverte ni composant démarré. [Contrat CLI](m4-cli.md).
+Trois tests nouveaux et binaire étendu aux codes0/1/2 ; sept tests CLI/vet/format/diff
+et go run sur l'exemple passés sous Windows. Chargeur et fondations inchangés,
+CI CLI Linux/Windows existante. Lot131 publié sur53d4ae0 dans #30,
+CI37567003805 entière réussie, trois jobs/SHA exact revérifiés à la reprise132.
+
+Prochain lot132 : revue/clôture du chantier CLI/config128–131, contrôle CI de tête,
+prêt/fusion #30 puis CI main ; pas d'ajout de fonction indépendante dans cette revue.
+M4 reste11–21lots/M5 10–18, total21–39 après131, estimation incertaine.
+
+## Bilan132 — revue et clôture CLI/configuration
+
+[Relecture assistée](reviews/m4-cli-config.md) favorable sur53d4ae0 ; aucune
+approbation humaine indépendante revendiquée. Code/contrats/tests acquis et CI131
+confrontés, aucun blocage identifié. Lot documentaire sans modification de code,
+tests, workflow ou dépendances ; pas de rerun local des fondations. Publication/
+CI finale/ready/fusion #30 et CI main encore à terminer au moment de l'enregistrement.
+
+Après clôture effective : M4 toujours en cours, M5 à réaliser, total20–38lots
+estimés (M4 10–20/M5 10–18). Prochain lot133 : ouverture SQLite en lecture seule
+pour diagnostics, sans création/migration de base, avant une commande db stats/doctor.

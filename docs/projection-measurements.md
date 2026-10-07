@@ -99,7 +99,8 @@ Les sorties smoke125 sont une seule observation par cas. Elles ne sont pas une
 mesure répétée ni un résultat pilote. Les profils bornés ne donnent pas de coût
 constant, débit d'ingestion, capacité maximale, SLA ou comportement au-delà4096.
 La transposition Windows→Linux et la charge représentative restent à vérifier M5.
-La relecture127 est favorable ; CI finale/fusion/main conditionnent la clôture M3.
+M3 est clôturé en bibliothèque : [bilan127 vérifié](reviews/m3-exit.md),
+fusion #29 et CI finale/main réussies. Les limites des mesures restent applicables.
 
 ## Campagne126 et résultats
 
@@ -173,6 +174,6 @@ Le lot125 est publié dans #29 suraa5f3c9 ;
 [CI37552260931](https://github.com/Coubiac/QueueAtlas/actions/runs/37552260931)
 entièrement réussie, étape smoke Linux Go1.26 passée. Lot126 publié surf4c24d2,
 [CI37554852072](https://github.com/Coubiac/QueueAtlas/actions/runs/37554852072)
-entièrement réussie. [Relecture127](reviews/m3-exit.md) favorable, CI finale/fusion/main
-à terminer. Les mesures ne ferment pas M3 à elles seules ; le pilote Linux
+entièrement réussie. [Relecture et clôture127](reviews/m3-exit.md) vérifiées,
+fusion #29 et CI finale/main réussies. Le pilote Linux
 représentatif demeure M5.

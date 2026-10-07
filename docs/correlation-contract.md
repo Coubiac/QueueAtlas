@@ -401,7 +401,7 @@ Le contrôle124 publié/CI verte valide le conflit de résultats à date égale 
 persistance et reopen, avec insertion inverse et réserves conservées.
 Les [mesures locales125–126](projection-measurements.md) couvrent un profil
 synthétique borné de reconstruction/installation/lecture. La [relecture127](reviews/m3-exit.md)
-valide la sortie M3 en bibliothèque, sous réserve de CI finale/fusion/main ;
+valide la sortie M3 en bibliothèque ; #29 fusionnée, CI finale/main réussies ;
 aucune capacité ou couverture complète certifiée.
 Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;

@@ -21,6 +21,10 @@ jobs:
           cache: true
       - name: Windows path snapshots
         run: go test ./internal/source/file -run '^Test(OpenLog|ValidateOpen|ObservePath|SourcePathFollow|OpenPathSnapshot|SelectRotation|RotationEntry)' -count=1
+      - name: Windows CLI entry point
+        run: go test ./cmd/queueatlas -count=1
+      - name: Windows configuration contract
+        run: go test ./internal/config -count=1
   test:
     runs-on: ubuntu-latest
     strategy:

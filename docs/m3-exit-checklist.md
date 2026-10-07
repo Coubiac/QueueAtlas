@@ -1,8 +1,9 @@
 # Sortie M3 — matrice de vérification
 
-État au lot127, 7 octobre 2026. [Relecture de sortie](reviews/m3-exit.md) favorable
-dans le périmètre bibliothèque M3 ; clôture effective conditionnée à CI finale,
-fusion #29 et CI main. Contrôle124, benchmarks125 et mesures126 publiés/CI vertes.
+M3 clôturé en bibliothèque au lot127, 7 octobre 2026.
+[Relecture de sortie et clôture vérifiée](reviews/m3-exit.md), #29 fusionnée
+sur038c6c9 ; CI finale37557272778 et main37557390479 entièrement réussies.
+Contrôle124, benchmarks125 et mesures126 acquis, réserves et limites conservées.
 
 Référence : [roadmap](phase-0-proposal.md#11-roadmap-et-critères-mvp) et
 [ADR-005](adr/ADR-005-postfix-correlation.md). La sortie M3 concerne les API de
@@ -88,7 +89,7 @@ entièrement réussie, trois jobs/SHA exact vérifiés REST.
 
 Relecture127 de la matrice, des résultats, des limites et du diff #29 favorable ;
 aucun défaut bloquant identifié. Les contrôles scellés sont réutilisés sans
-remesure ou suite locale supplémentaire. CI finale/fusion/main restent à vérifier.
+remesure ou suite locale supplémentaire. CI finale/fusion/main vérifiées ; M3 clôturé.
 Les logs incomplets demeurent
 un cas avec réserves. Une future fusion prouvée exige producteur fiable,
 revalidation et règles propres ; elle n'est pas implicitement livrée par ce bilan.
