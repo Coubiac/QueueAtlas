@@ -32,5 +32,5 @@ codes de sortie](docs/m4-cli.md). Le [contrat initial de configuration](docs/con
 fixe les défauts et leur validation (lot129), avec un chargeur YAML strict et borné
 (lot130) et un [exemple](examples/queueatlas.yaml). `check-config` valide ce fichier
 et affiche `Configuration valid` sans ouvrir de base (lot131). La consultation
-authentifiée reste à développer. Le lot133 prépare l'[ouverture SQLite des diagnostics](docs/sqlite-diagnostics.md)
-en lecture seule ; aucune commande `db stats`/`doctor` n'est encore disponible.
+authentifiée reste à développer. Les lots133–134 préparent les [diagnostics SQLite](docs/sqlite-diagnostics.md)
+en lecture seule et leurs métadonnées ; aucune commande `db stats`/`doctor` n'est encore disponible.

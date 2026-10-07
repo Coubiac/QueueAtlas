@@ -1,4 +1,4 @@
-# Ouverture SQLite pour les diagnostics — lot133
+# SQLite pour les diagnostics — lots133–134
 
 Résultat attendu : ouvrir une base QueueAtlas existante en lecture seule, sans
 création ni migration, avant d'implémenter les statistiques et leur commande CLI.
@@ -6,9 +6,9 @@ création ni migration, avant d'implémenter les statistiques et leur commande C
 ## Contrat de bibliothèque
 
 `sqlite.OpenDiagnostics(ctx, path)` renvoie un `*Diagnostics` distinct du `Store`
-applicatif. Le handle expose seulement `Close` à ce stade ; aucune méthode SQL
-libre, ingestion, purge ou migration. Les futures lectures seront ajoutées dans
-les lots suivants. `Open` reste l'ouverture applicative avec création/migrations.
+applicatif. Le handle expose `Close` et, depuis134, `Metadata` ; aucune méthode SQL
+libre, ingestion, purge ou migration. `Open` reste l'ouverture applicative avec
+création/migrations.
 
 Le chemin doit désigner un fichier régulier existant ; une entrée vide, absente
 ou non régulière est refusée. Les fichiers auxiliaires existants `-wal`, `-shm`
@@ -33,7 +33,7 @@ présentes. Une version antérieure, future, zéro ou un historique incomplet so
 refusés. Ce contrôle ne certifie ni authenticité, structure complète, intégrité
 des lignes, fraîcheur des projections ou aptitude au déploiement. Un fichier
 étranger falsifiant ces indicateurs n'est pas identifié par cette seule ouverture.
-Les diagnostics détaillés et les statistiques restent à développer.
+Les diagnostics détaillés et les compteurs de données restent à développer.
 
 `ErrDiagnosticsOpen` et `ErrDiagnosticsSchema` ont des messages fixes sans chemin,
 valeur stockée ou message du pilote ; annulation/expiration du contexte restent
@@ -74,3 +74,57 @@ ouvertures ; les jobs Linux existants exécutent la suite complète.
 Au moment du commit133 : publication/PR/CI encore à terminer. Prochain lot134 :
 lecture bornée des métadonnées utiles au diagnostic, avec résultat sans journaux,
 adresses ni identifiants. Raccordement CLI dans un lot séparé.
+
+Validation publiée133 : `41fbf0f99a4b127e260dea0a5ce900c9d06855c8` dans
+[PR #31](https://github.com/Coubiac/QueueAtlas/pull/31),
+[CI37571495723](https://github.com/Coubiac/QueueAtlas/actions/runs/37571495723)
+entière réussie, trois jobs/SHA exact vérifiés ; tests Linux FIFO/droits et étape
+Windows d'ouverture passés. La mention d'attente précédente est le snapshot133.
+
+## Lot134 : métadonnées au même snapshot
+
+`Diagnostics.Metadata(ctx)` renvoie un seul `DiagnosticMetadata`, sans chemin,
+nom de table, identifiant, adresse ou journal. Champs fixes :
+
+| Champ | Sens |
+| --- | --- |
+| SchemaVersion | Version QueueAtlas courante, revérifiée avec l'historique |
+| SQLiteVersion | Version du moteur SQLite exécuté, chaîne bornée à64octets |
+| JournalMode | Mode de journal observé par la connexion, valeur SQLite connue |
+| PageSize | Taille d'une page en octets, puissance de deux512–65536 |
+| PageCount | Nombre de pages de l'image logique visible au snapshot |
+| FreePageCount | Pages de la freelist SQLite, entre0 et PageCount |
+
+Version/historique et métadonnées sont lus dans une seule transaction readonly.
+La compatibilité est revérifiée à chaque appel : l'ouverture ne certifie pas la
+version pour toutes les lectures suivantes. Les pages validées dans le WAL font
+partie de l'image logique. Le produit PageCount × PageSize n'est donc pas une
+mesure du seul fichier principal, de l'espace libre du disque ou des fichiers
+auxiliaires. FreePageCount ne compte ni journaux purgés ni lignes supprimées.
+Le mode observé n'atteste pas tous les réglages d'une autre connexion d'écriture.
+
+Requêtes fixes, une ligne scalaire chacune, sans parcours/count des tables de
+journaux, liste d'objets, lecture de chemin SQLite, scan d'intégrité, checkpoint,
+vacuum ou migration. L'historique reste une lecture des sept entrées attendues.
+Le résultat est borné, sans garantie de temps absolu d'IO ou de coût d'un fichier
+SQLite hostile. Les [PRAGMA SQLite](https://www.sqlite.org/pragma.html) définissent
+les pages et freelist ; [sqlite_version](https://www.sqlite.org/lang_corefunc.html#sqlite_version)
+décrit la version du moteur, distincte du schéma applicatif.
+
+Toute erreur renvoie le résultat zéro, aucune donnée partielle. Une incompatibilité
+donne ErrDiagnosticsSchema ; une autre erreur de lecture donne ErrDiagnosticsRead
+avec message fixe sans pilote/contenu. Annulation et expiration du contexte restent
+identifiables. Une lecture échouée libère sa transaction/connexion ; les lectures
+suivantes peuvent réussir si la cause a disparu. Ce diagnostic n'atteste pas
+intégrité, fraîcheur des projections, permission de sauvegarder ni état de service.
+
+Quatre tests134 passés sous Windows : image rollback comparée à son fichier/header,
+pages libres et absence de contenu sensible/mutation ; ancien snapshot conservé
+pendant croissance WAL/changement atomique de version, refus de la nouvelle version
+puis lecture de croissance après rétablissement, sans checkpoint/mutation ; historique
+supprimé après ouverture détecté ; annulation/délai en attente de connexion puis
+relecture et handle fermé, résultat zéro/messages fixes. Les neuf tests portables
+133–134 et vet/format/diff passent ; l'étape Windows CI couvre aussi Metadata.
+Au moment du commit134 : publication/CI encore à terminer dans la même PR #31.
+Prochain lot135 : CLI `db stats --config <chemin>` pour ce résultat limité ; aucun
+compteur de lignes ou diagnostic d'intégrité implicite.

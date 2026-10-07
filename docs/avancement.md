@@ -24,8 +24,9 @@ CI37562294743 entière réussie. Chargeur YAML130 publié sur8bba11e,
 CI37564852420 entière réussie. CLI check-config131 publiée sur53d4ae0,
 CI37567003805 entière réussie. Clôture132 fusionnée #30 sur118634f,
 CI finale37569190697/main37569292737 entières réussies, branche CLI supprimée.
-Ouverture readonly de diagnostic133 validée localement ; publication/PR/CI encore
-à terminer au moment du commit.
+Ouverture readonly de diagnostic133 publiée dans #31 sur41fbf0f, CI37571495723
+entière réussie. Métadonnées134 au même snapshot validées localement ; publication/
+CI encore à terminer au moment du commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -40,7 +41,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 133 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 134 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -57,9 +58,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132 fusionnés/CI main verte ; ouverture diagnostic133 validée localement | Publication/CI133, lectures/CLI de diagnostic, config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 9–19 après133 |
+| M4 — consultation sûre | CLI/config128–132 fusionnés/CI main verte ; ouverture diagnostic133 publiée/CI verte, métadonnées134 validées localement | Publication/CI134, CLI de diagnostic, config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 8–18 après134 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après133** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **19–37** |
+| **Total après134** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **18–36** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -420,3 +421,21 @@ Linux ajouté, exécution attendue en CI ; étape Windows dédiée ajoutée. Pub
 PR/CI133 encore à terminer au moment du commit. Prochain lot134 : métadonnées de
 diagnostic bornées sans contenu sensible ; commande CLI dans un lot séparé.
 M4 reste9–19lots/M5 10–18, total19–37 après133, estimation incertaine.
+
+Validation133 effective : 41fbf0f dans #31 en brouillon,
+[CI37571495723](https://github.com/Coubiac/QueueAtlas/actions/runs/37571495723)
+entière réussie, trois jobs/SHA exact vérifiés ; Linux FIFO/droits et Windows
+ouverture passés. Les attentes précédentes sont le snapshot prépublication133.
+
+## Bilan134 — métadonnées SQLite de diagnostic
+
+Six champs fixes sans contenu sensible, lus au même snapshot après revalidation
+de version/historique : versions, journal, taille/pages/pages libres. Résultat zéro
+et erreurs fixes en échec/annulation. Aucune lecture/count de journaux ni checkpoint
+ou contrôle d'intégrité ; image logique incluant WAL, pas occupation physique du disque.
+Quatre tests134 plus cinq tests portables133 et vet/format/diff passés sous Windows.
+Snapshot avec écrivain indépendant/changement de version, rollback/freelist/privacy,
+historique modifié et annulation/relecture vérifiés. Étape Windows CI élargie.
+Publication/CI134 encore à terminer au moment du commit dans la même PR #31.
+Prochain lot135 : db stats --config pour ce résultat limité, avec codes et tests du
+binaire. M4 reste8–18lots/M5 10–18, total18–36 après134, estimation incertaine.

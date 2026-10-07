@@ -102,9 +102,10 @@ entière réussie/trois jobs/SHA exact et étape Windows CLI vérifiés. Lot132 
 [relecture du chantier](reviews/m4-cli-config.md) favorable, sans modification de
 code ; #30 fusionnée sur118634f, CI finale37569190697/main37569292737 entièrement
 réussies, branche CLI supprimée. Lot133 : [ouverture SQLite de diagnostic](sqlite-diagnostics.md)
-en lecture seule validée localement, sans création/migration de base ; sa
-publication/PR/CI restent à vérifier au moment du commit. Lectures bornées134 puis
-raccordement CLI dans un lot distinct.
+en lecture seule publiée sur41fbf0f dans #31, CI37571495723 entière réussie.
+Lectures bornées des métadonnées134 validées localement ; publication/CI encore à
+terminer au moment du commit. Prochain lot135 : db stats --config pour ces seules
+métadonnées, sans compteur de lignes ni diagnostic d'intégrité implicite.
 Doctor/db stats, configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

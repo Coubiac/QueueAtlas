@@ -103,6 +103,13 @@ func (d *Diagnostics) validateSchema(ctx context.Context) error {
 		return err
 	}
 	defer tx.Rollback()
+	if err := validateDiagnosticSchema(ctx, tx); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
+func validateDiagnosticSchema(ctx context.Context, tx *sql.Tx) error {
 	var version int
 	if err := tx.QueryRowContext(ctx, `PRAGMA user_version`).Scan(&version); err != nil {
 		return err
@@ -129,5 +136,5 @@ func (d *Diagnostics) validateSchema(ctx context.Context) error {
 			return err
 		}
 	}
-	return tx.Commit()
+	return nil
 }
