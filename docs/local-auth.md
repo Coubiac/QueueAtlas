@@ -285,3 +285,27 @@ Prochain lot147 : revue/clôture du compte local143–146 dans #34, contrôles c
 évaluation des limites de la liste pour le futur login, corrections utiles/doc puis
 CI finale/fusion/main. Sessions/protections HTTP dans un chantier suivant. MIT,
 AD/OIDC/Keycloak après MVP.
+
+## Clôture du compte local — lot147
+
+CLI146 publiée sur cfde74d52dfa8fd8a58864e3434e70e67d796c3c,
+[CI37608644994](https://github.com/Coubiac/QueueAtlas/actions/runs/37608644994)
+entière réussie/trois jobs/SHA exact :20CLI/binaire, auth Windows15/Linux17,
+race auth et builds statiques verts. Les attentes146 prépublication sont terminées.
+
+[Relecture147](reviews/m4-local-account.md) favorable à la clôture143–146 après
+correction ciblée : un secret constitué uniquement d'espaces ASCII/Unicode est
+maintenant refusé par ValidateNewPassword avec ErrBlockedPassword. Secret complet
+de comparaison vide bloqué avant hash/stockage ; passphrases avec espaces restent
+littérales, ValidatePassword/VerifyPassword inchangés pour les comptes existants.
+Tests auth/CLI/binaire enrichis, trois tests ciblés Windows et vet/format/diff passés.
+CI finale/revue COMMENT/fusion/main à terminer au commit147.
+
+La liste initiale finie n'est **pas validée comme suffisante pour la release de
+login**. Dans le chantier de protections HTTP, évaluer/enrichir un corpus local
+documenté/provenance/licence avec valeurs représentatives et essais admis ; aucun
+secret envoyé à un service externe. Admission globale, essais/comptes inconnus,
+sessions/cookies/CSRF/TLS et routes protégées restent requis selon ADR-006.
+Stockage fiable/privé, ACL Windows, limites de durabilité/EOF/mémoire conservés.
+Prochain148 : sessions en mémoire bornées, émission/expiration/révocation/tests,
+sans login ni transport HTTP. MIT, AD/OIDC/Keycloak après MVP.

@@ -300,3 +300,10 @@ le compte publié. Il n'existe aucune commande de reset/remplacement dans ce lot
 Lecture bornée1027octets, mais pas de délai pour un pipe local bloqué. Mémoire shell/
 copies/effacement physique non garantis ; buffer CLI effacé au mieux. Cette commande
 initialise le compte ; aucun serveur, login, cookie ou accès Web encore disponible.
+
+Correction147 après relecture : les secrets constitués uniquement d'espaces
+ASCII/Unicode sont refusés par la politique de création (code2), sans hash/fichier.
+Les espaces d'une passphrase acceptée sont conservés ; les comptes existants ne
+changent pas. Tests ciblés CLI/binaire/auth/vet Windows passés, CI finale/fusion du
+chantier à terminer au commit147. [Relecture](reviews/m4-local-account.md) et
+conditions requises avant login détaillées ; prochaine étape148 sessions bornées.

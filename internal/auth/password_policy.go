@@ -19,6 +19,9 @@ func ValidateNewPassword(password []byte, identity LocalIdentity) error {
 		return err
 	}
 	candidate := strings.ToLower(strings.TrimSpace(string(password)))
+	if candidate == "" {
+		return ErrBlockedPassword
+	}
 	for _, blocked := range []string{
 		"123456789012345", "1234567890123456", "12345678901234567890",
 		"123456789123456789", "0123456789012345", "111111111111111",

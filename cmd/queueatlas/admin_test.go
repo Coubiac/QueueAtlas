@@ -142,6 +142,7 @@ func TestAdminRefusalsLeaveNoAccountAndNoPrivateDiagnostics(t *testing.T) {
 		{dir, &adminInputFailure{}, 1},
 		{dir, strings.NewReader("synthetic-private\nsecond"), 2},
 		{dir, strings.NewReader("passwordpassword"), 2},
+		{dir, strings.NewReader(strings.Repeat(" ", 15)), 2},
 		{dir, strings.NewReader("synthetic-operator2026!"), 2},
 	} {
 		var stdout, stderr bytes.Buffer
@@ -190,6 +191,7 @@ func assertAdminBinaryEnrollment(t *testing.T, ctx context.Context, binary strin
 		out   string
 	}{
 		{adminArgs(dir, "synthetic-binary"), "passwordpassword\n", 2, ""},
+		{adminArgs(dir, "synthetic-binary"), strings.Repeat(" ", 15) + "\n", 2, ""},
 		{adminArgs(filepath.Join(dir, "synthetic-private-missing"), "synthetic-binary"), secret, 1, ""},
 		{adminArgs(dir, "synthetic-binary"), secret + "\r\n", 0, "Local administrator created\n"},
 		{adminArgs(dir, "synthetic-other"), "synthetic-private", 1, ""},
