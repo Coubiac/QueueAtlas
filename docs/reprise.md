@@ -17,10 +17,16 @@ Recherche111–115 fusionnée dans #25, CI finale/main vertes ; rétention116–
 fusionnée dans #27, CI finale et main entièrement réussies. Lot120 : contrôle
 pur d'attestations de continuité publié dans #28, CI entière réussie sur le code.
 Lot121 : clés liées au contexte d'attestation publiées dans #28,
-CI37540913337 entièrement réussie sur le code ; clôture du chantier prévue122.
-Lot122 : relecture/bilan favorables, runtime inchangé ; publication/CI/fusion/main
-à vérifier dans le bilan de #28. Si ces étapes sont vertes, passer au lot123.
-Trois jalons restent : M3–M5, environ28–50 lots après clôture122, dont3–7 pour M3 ;
+CI37540913337 entièrement réussie sur le code ; chantier120–122 fusionné #28,
+CI finale37543845063 et main37543982877 entièrement réussies.
+Lot123 publié dans #29 sur d9fde2f, CI37546917054 entièrement réussie.
+Lot124 publié dans #29 sur2f573a2, CI37549552434 entière réussie ; conflit à date
+égale conservé après stockage/reconstruction/reopen et insertion inverse.
+Lot125 publié suraa5f3c9, CI37552260931 entière réussie, smoke Linux Go1.26 passé.
+Lot126 publié surf4c24d2, CI37554852072 entière réussie ;36échantillons/12cas conservés.
+Lot127 : relecture de sortie M3 favorable en bibliothèque, sans défaut bloquant ;
+CI finale/fusion #29 et CI main à terminer avant clôture effective.
+Après clôture127, deux jalons M4/M5 restent, environ25–43lots, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -40,6 +46,23 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot126 publié : `f4c24d22e64baa8d09a2ec0583ae46294882dfac`, #29,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37554852072),
+  trois jobs/SHA exact vérifiés REST à la reprise127. Relecture127 favorable,
+  publication/CI finale/fusion/main encore à terminer lors de cet enregistrement.
+- Lot125 publié : `aa5f3c9f727253ad3e2811050f6207e58adda2fe`, #29,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37552260931),
+  trois jobs/SHA exact et smoke Linux Go1.26 vérifiés REST. Lot126 passé/analyse
+  locale consignée ; publication/CI à terminer lors de cet enregistrement.
+- Lot124 publié : `2f573a2184c96d9cedfdc249dcda98633c6db327`, #29,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37549552434),
+  trois jobs et SHA exact vérifiés REST. Lot125 validé localement, publication/CI
+  à terminer lors de cet enregistrement ; dernier main validé122.
+- Lot123 publié : `d9fde2f9b190a9fca17a2699e5d2954f797d0fb3`,
+  [PR #29](https://github.com/Coubiac/QueueAtlas/pull/29) en brouillon,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37546917054).
+  Trois jobs et SHA exact vérifiés REST. Lot124 validé localement, publication/CI
+  encore à terminer lors de cet enregistrement ; dernier main validé122.
 - Lot 110 fusionné : [PR #24](https://github.com/Coubiac/QueueAtlas/pull/24),
   tête `f813a7d6c749a95cf0895a0a3bbfc3bbd2bf4aa6`,
   [CI finale entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37368191438).
@@ -3274,8 +3297,13 @@ Lot119 clôturé : PR #27 fusionnée, CI finale et main vertes (SHA/run ci-desso
 Lot120 publié sur codex/m3-continuity dans #28, CI37537740519 entière réussie.
 Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
 automatique. L'intégration pure aux clés révisables121 est publiée dans la même PR,
-CI entière réussie ; bilan/relecture122 favorables, publication et CI de clôture,
-fusion/main à vérifier dans #28 avant de passer au lot123.
+CI entière réussie ; clôture122 fusionnée #28, CI finale et main vertes.
+Matrice123, contrôle124, benchmarks125 et mesures126 publiés/CI entières réussies.
+Relecture127 favorable : publier/vérifier CI finale127, COMMENT assisté sur tête
+exacte, ready/fusion #29 puis CI main. Après clôture vérifiée, lot128 M4 : CLI
+`queueatlas version`. Branche actuelle codex/m3-validation, main à actualiser après
+fusion ; ne pas refaire le chantier M3 sur la seule lecture des états historiques.
+Branche codex/m3-validation. M3 reste ouvert jusqu'aux mesures et à la clôture.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3283,7 +3311,7 @@ Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des s
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques et CLI restent au jalon d'application ; ne pas les présenter livrés.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour une éventuelle revue du nouveau chantier ; principal sur codex/m3-continuity.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m3-validation.
 
 ## Suite à découper au fil des reprises
 
@@ -3450,8 +3478,12 @@ pas approbation humaine indépendante. Synthèse docs/reviews/continuity.md.
 Runtime120–121 inchangé, onze tests et suites locales précédentes réutilisés ;
 CI finale121 37541123250 entièrement réussie, SHA exact114357d et trois jobs
 revérifiés. Lot122 documentaire : git diff --check ; pas de nouveau test local
-ni mesure des fondations. Publication et CI122/fusion/main seront consignées
-dans le bilan de la PR #28 ; au moment de ce point, ces opérations restent à faire.
+ni mesure des fondations. Publié016268366bfe309d684cad1387807181ef095384,
+CI37543845063 entièrement réussie ; revue assistée COMMENT5435449710/ready et
+fusion #28 sur7ec6dd737681f4af878b8cdc4c8b71de0deb4308. CI push main37543982877
+entièrement réussie sur le merge exact. Fast-forward propre du checkout principal,
+branche distante supprimée automatiquement et branche locale supprimée après fusion.
+État fusion/main vert revérifié à la reprise123, aucun rerun de122.
 
 Clôture limitée au contrat et aux clés sous attestations. Aucune production
 automatique fiable, consommation dans BuildProjection/SQLite ou fusion d'origines
@@ -3464,7 +3496,159 @@ revue/clôture1–2), M4 15–25, M5 10–18, soit28–50 MVP ; trois jalons res
 fourchettes incertaines. La clôture122 est une revue et fusion, pas une nouvelle
 fonctionnalité. Raccordement d'un producteur fiable non inclus implicitement.
 
-Prochaine action : vérifier bilan #28 fusionné/CI main verte et Git propre ;
-si ces conditions sont déjà acquises, ne pas refaire122. Lot123 : matrice de
-sortie M3, relier critères aux preuves déjà acquises et choisir le premier risque
-d'intégration non couvert. Aucun test du corpus à répéter sans risque nouveau.
+L'action123 est décrite ci-dessous ; clôture122 validée.
+
+## Lot123 : matrice de sortie M3 et premier contrôle manquant
+
+Résultat attendu : relier critères aux vérifications acquises et choisir un risque
+précis d'intégration, sans annoncer une nouvelle fonction. Matrice rédigée dans
+docs/m3-exit-checklist.md : QueueInstances/recyclage, tentatives, NOQUEUE, liens,
+états prudents, composition/stockage, recherche, rétention et non-fusion.
+Lectures ciblées des tests/revues/cadrage, contrôle des noms/liens et diff.
+Runtime/tests inchangés ; aucune suite locale relancée ni mesure de charge.
+
+Premier manque identifié : égalité de date de deux tentatives contradictoires
+testée en projection pure, pas de test SQLite dédié après installation/reopen.
+Ce n'est pas un défaut observé. Lot124 : variante synthétique07, date native sent
+alignée sur deferred avant parsing/Commit ; deux ordres d'insertion dans deux
+bases, installation/lecture puis reopen. Résultat unknown, OrderUncertain, deux
+Latest/tentatives, réserves et aucun compte de succès doivent être conservés.
+Ne pas modifier les faits déjà commités ni les fixtures historiques communes.
+
+Benchmarks existants : recherche/migration seulement. Reconstruction pure,
+installation et lecture du manifest restent à mesurer, dans leurs bornes actuelles.
+Après123 : contrôle124 un lot, mesures1–3, revue/clôture1–2, soit3–6 M3 ;
+M4 15–25, M5 10–18 donnent28–49 MVP, estimation incertaine et aucun SLA.
+Pas de preuve physique automatique ni de nouveau consommateur d'attestations.
+
+Publication123 validée : d9fde2f9b190a9fca17a2699e5d2954f797d0fb3 dans #29,
+CI37546917054 entièrement réussie, SHA exact et trois jobs vérifiés REST.
+Dernier main validé122 7ec6dd7/37543982877 ; PR29 encore en brouillon.
+
+## Lot124 : conflit à date égale après persistance et réouverture
+
+Résultat attendu et acquis localement : deux rapports natifs deferred/sent de
+date maximale égale restent deux tentatives/Latest, résultat unknown et
+OrderUncertain, compte Unknown=1 et aucun succès. Réserves coverage_unproven,
+non_explicit_time, latest_order_uncertain et unknown_result conservées, malgré
+réception/retrait observés. DSN/réponses/relais SMTP et références préservés.
+
+Test `TestProjectionPersistedEqualDateConflictSurvivesInsertionOrderAndReopen`
+dans internal/storage/sqlite/projection_integration_test.go : variante07 modifiée
+avant parsing/Commit, fixture commune inchangée. Deux bases, ordres d'insertion
+inversés réellement vérifiés par les IDs SQL. Commit → CorrelationFacts →
+InstallProjection → CurrentProjection → Close/Open → CurrentProjection ;
+projections complètes et révisions identiques. Voie ordinaire sans attestations.
+Helper partagé de tests extrait pour accepter les octets natifs ; aucun runtime
+modifié et aucun défaut runtime reproduit.
+
+Vérifications Windows : test ciblé/deux sous-cas, `go test ./internal/storage/sqlite
+-count=1`, `go vet ./internal/storage/sqlite`, gofmt et diff réussis. Suite SQLite
+justifiée par le helper partagé ; fondations hors SQLite non relancées localement.
+Matrice et avancement actualisés. Aucune mesure de performance faite dans124.
+
+Au moment de cet enregistrement124, commit/publication/CI restent à terminer sur
+codex/m3-validation dans #29. Dernier publié validé123 d9fde2f/37546917054 ;
+dernier fusionné122 7ec6dd7/37543982877. Ne pas confondre état local et CI acquise.
+Après124 : mesures1–3 et revue/clôture1–2, soit2–5 M3 ; M4 15–25/M5 10–18,
+total27–48 MVP, estimation incertaine. Prochaine action : publier/vérifierCI124,
+puis lot125 protocole/benchmarks bornés, préparation hors chronométrage. Mesures
+Windows synthétiques distinctes du pilote Linux M5, aucun SLA. Réutiliser #29.
+Publication124 validée : 2f573a2184c96d9cedfdc249dcda98633c6db327,
+CI37549552434 entière réussie, trois jobs et SHA exact vérifiés REST à la reprise125.
+
+## Lot125 : protocole et benchmarks bornés des projections
+
+Résultat attendu et acquis localement : trois benchmarks test-only pour
+BuildProjection/InstallProjection/CurrentProjection, mêmes entrées natives
+synthétiques ; quatre profils16/1024/4096faits et1à64QueueIDs. Réception qmgr,
+deferred, sent puis removed par génération ; IDs recyclés après retrait. Les deux
+profils4096 ont1024générations, distinctes des1ou64parts du scope. Bornes4096/64
+respectées ; parsing/raw et date configurée2026/UTC cohérents.
+
+Fichier internal/storage/sqlite/projection_benchmark_test.go. Préparation,
+parsing/Open/Commit/installation initiale et warmup hors chronométrage. Build sans
+base ; Install remplace un manifest existant et inclut sa revalidation/commit ;
+Current reconstruit dans un snapshot vérifié, pas un cache sérialisé. Série/cache
+chaud, fichier SQLite temporaire WAL/synchronous FULL/une connexion. Invariants
+de génération/tentatives/réserves vérifiés, SQL/warmup comparés entièrement à la
+projection pure avant timer ; garde erreur/révision/taille dans la boucle mesurée.
+
+Vérifications locales Windows Go1.26.2 : smoke `-benchtime=1x -count=1 -benchmem`
+réussi sur12cas, go vet SQLite, gofmt et diff réussis. Aucun code de production ou
+helper de test fonctionnel modifié ; autres suites scellées non relancées localement.
+Sortie courte conservée dans docs/benchmarks/projection-smoke-windows-2026-10-07.txt,
+protocole dans docs/projection-measurements.md. Une opération par cas ne donne
+aucune médiane/SLA. CI : nouvelle étape smoke Go1.26/Linux sans seuil de temps,
+pour exécuter réellement les benchmarks ; publication/CI à vérifier.
+
+Au moment de cet enregistrement125, commit/publication/CI restent à terminer dans
+#29 sur codex/m3-validation. Dernier publié validé124 2f573a2/37549552434 ;
+dernier fusionné122 7ec6dd7/37543982877. Prochaine action : publier/vérifierCI125,
+puis126 campagne5x/count3 et analyse, sorties brutes/environnement/SHA conservés,
+aucun changement runtime sauf défaut précis révélé. Reste M3 : mesures/analyse1–2
+et revue/clôture1–2, soit2–4 ; total27–47MVP avec M4/M5. M3 toujours ouvert,
+pilote représentatif Linux M5, AD/OIDC après MVP. Réutiliser la PR #29.
+Publication125 validée : aa5f3c9f727253ad3e2811050f6207e58adda2fe,
+CI37552260931 entière réussie, trois jobs/SHA exact et smoke Linux Go1.26 vérifiés.
+
+## Lot126 : mesures répétées et analyse des projections
+
+Résultat attendu et acquis localement : campagne5x/count3 selon protocole125,
+sortie brute intégrale/environnement/SHA conservés,12groupes de3échantillons
+contrôlés et médianes/plages/allocations publiées dans docs/projection-measurements.md.
+Exécution Windows/amd64 Go1.26.2 i7-13650HX, modernc/sqlite1.60.1 ; début/finUTC,
+HEAD aa5f3c9f727253ad3e2811050f6207e58adda2fe et blob benchmark90385a32e324e650b262c556d0a95c2bdf630b91
+dans docs/benchmarks/projection-windows-2026-10-07.txt. GOMAXPROCS effectif20,
+boucles sérielles, TempDir C:NTFS ; charge et matériel disque non contrôlés.
+
+36échantillons/12cas passés,5opérations chacun, code de sortie0. À4096faits :
+Build≈26ms, Install≈134–137ms, Current≈74–76ms, selon1ou64parts du scope ;
+allocations cumulées jusqu'à≈112Mo/op pour Install. Build1024 bruité (7,268–13,597ms),
+pas de classement causal ni nouveau seuil. Pas de pic mémoire, coût IO isolé,
+liens/NOQUEUE/origines multiples/concurrence/Linux pilote mesurés. Aucun SLA,
+aucune extrapolation au-delà4096 ; observations descriptives, aucune optimisation.
+
+Vérifications : campagne entière passée, parser des36lignes avec N=5/procs20,
+12groupes ayant3échantillons chacun, calcul des minimums/médianes/maximums temps,
+B/op et allocs/op ; données présentes et non filtrées, diff vérifié. Aucun code,
+benchmark, dépendance ou configuration CI modifié. Fondations scellées réutilisées,
+aucun test/vet local relancé inutilement ; nouvelle CI déclenchée après publication.
+
+Au moment de cet enregistrement126, commit/publication/CI restent à terminer dans
+#29 sur codex/m3-validation. Dernier publié validé125 aa5f3c9/37552260931 ;
+dernier main validé122 7ec6dd7/37543982877. Prochaine action : publier/vérifierCI126,
+puis127 relecture de sortie M3/PR29, limites et critères, décision de clôture après
+CI finale et contrôle du merge/main. Réutiliser les tests acquis, élargir seulement
+pour un risque précis. Reste M3 revue/clôture1–2lots, total26–45MVP avec M4/M5,
+estimations incertaines ; M3 encore ouvert, pilote Linux M5 et AD/OIDC après MVP.
+Publication126 validée : f4c24d22e64baa8d09a2ec0583ae46294882dfac,
+CI37554852072 entière réussie, trois jobs et SHA exact vérifiés REST à la reprise127.
+
+## Lot127 : relecture et clôture de M3
+
+Résultat attendu : valider la sortie M3 en bibliothèque par relecture de
+critères/diff/résultats/limites, puis publication/CI finale/fusion et CI main.
+Relecture locale assistée favorable, aucun défaut bloquant identifié ;
+docs/reviews/m3-exit.md consigne le périmètre et les contrôles. Cette relecture
+n'est pas une approbation humaine indépendante. Aucun code/test/benchmark/CI ou
+dépendance modifié dans127 ; validations acquises réutilisées sans remesure ou
+rerun local des fondations.
+
+Relus : matrice/roadmap/ADR005/contrats, diff #29 depuis main7ec6dd7 ; test natif124
+et helper partagé, harness125/timers/bornes/profils, workflow smoke et résultats126.
+CI37554852072 entièrement réussie surf4c24d2, trois jobs/SHA exact vérifiés REST.
+Origines non prouvées distinctes, aucun succès/couverture global, réserves conservées ;
+compte local/API/Web et politiques applicatives restent M4, pilote/paquets/sauvegardeM5.
+
+Au moment de cet enregistrement127, relecture favorable et docs préparés ;
+diff documentaire à vérifier, commit/publication/CI finale, COMMENT assisté,
+ready/fusion #29 et CI main encore à terminer. Ne pas qualifier ces opérations
+de réussies avant le contrôle distant. Dernier publié validé126 f4c24d2/37554852072,
+dernier main122 7ec6dd7/37543982877. La PR conserve ses lots123–127 cohérents.
+
+Après clôture effective : M3 terminé en bibliothèque,25–43lots estimés pour M4/M5
+(15–25 et10–18), deux jalons. Prochaine action128 : CLI `queueatlas version`, avec
+résultat/version vérifiables ; découper la configuration dans le lot suivant.
+Premier acte de reprise : contrôler merge/CI main #29 et actualiser cet état,
+puis branche codex/ M4 depuis main validé. MIT conservée, AD/OIDC après MVP.

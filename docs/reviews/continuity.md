@@ -43,8 +43,11 @@ de faits/frontières ne borne pas séparément les bytes de métadonnées.
 
 Le runtime n'est pas changé au lot122. Les tests locaux déjà scellés ne sont pas
 relancés ; contrôle du diff documentaire puis CI requise pour la nouvelle tête.
-Fusion et CI push main à vérifier après publication122 ; leur résultat exact
-est consigné dans le bilan de la [PR #28](https://github.com/Coubiac/QueueAtlas/pull/28).
+Clôture122 publiée016268366bfe309d684cad1387807181ef095384,
+CI37543845063 entière réussie ; [PR #28](https://github.com/Coubiac/QueueAtlas/pull/28)
+fusionnée sur7ec6dd737681f4af878b8cdc4c8b71de0deb4308.
+CI push main37543982877 entière réussie sur le merge exact. Branche distante
+supprimée automatiquement et branche locale supprimée après fast-forward propre.
 
 ## Limite de la clôture et suite M3
 
@@ -58,8 +61,9 @@ fausses associations/succès. La voie actuelle reste donc conservatrice. Une
 intégration future de preuves de collecte fiables nécessitera producteur,
 revalidation et règles de fusion propres, à estimer avant développement.
 
-Lot123 : matrice de sortie M3 — relier chaque critère de reconstruction aux
-vérifications acquises, puis identifier le premier risque d'intégration non
-couvert. Ne pas répéter les mêmes contrôles du corpus sans risque nouveau.
-M3 demeure ouvert pour ce bilan, les vérifications/mesures d'ensemble et sa revue
+La [matrice de sortie M3](../m3-exit-checklist.md) relie les critères aux vérifications.
+Le contrôle124 du conflit à date égale après persistance et reopen est acquis
+localement dans la voie ordinaire, sans consumer d'attestations. Ne pas répéter
+les mêmes contrôles du corpus sans risque nouveau.
+M3 demeure ouvert pour les mesures d'ensemble et sa revue
 finale. Les estimations sont révisées dans docs/avancement.md.
