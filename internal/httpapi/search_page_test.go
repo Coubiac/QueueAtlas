@@ -54,7 +54,7 @@ func TestConsultationSearchPageDefaultsProtocolAndAPICompatibility(t *testing.T)
 		}
 		if method == "GET" {
 			body := w.Body.String()
-			for _, required := range []string{`<html lang="fr">`, `method="get" action="/messages"`, `for="instance"`, `for="field"`, `for="value"`, `2026-10-06T00:00:00Z`, `2026-10-07T00:00:00Z`, `value="50"`, `href="#main"`} {
+			for _, required := range []string{`<html lang="fr">`, `method="get" action="/messages"`, `for="instance"`, `for="field"`, `for="value"`, `2026-10-06T00:00:00Z`, `2026-10-07T00:00:00Z`, `value="50"`, `href="#main"`, `<main id="main" tabindex="-1">`} {
 				if !strings.Contains(body, required) {
 					t.Fatal("form default/label missing", required)
 				}
@@ -63,7 +63,9 @@ func TestConsultationSearchPageDefaultsProtocolAndAPICompatibility(t *testing.T)
 			if len(style) != 2 {
 				t.Fatal("embedded stylesheet missing")
 			}
-			digest := sha256.Sum256([]byte(style[1]))
+			// Hash the style text as an HTML parser sees it, including Windows CRLF.
+			parsedStyle := strings.ReplaceAll(strings.ReplaceAll(style[1], "\r\n", "\n"), "\r", "\n")
+			digest := sha256.Sum256([]byte(parsedStyle))
 			if !strings.Contains(w.Header().Get("Content-Security-Policy"), "'sha256-"+base64.StdEncoding.EncodeToString(digest[:])+"'") || strings.Contains(body, "<script") {
 				t.Fatal("style CSP does not authorize actual stylesheet or page added scripts")
 			}

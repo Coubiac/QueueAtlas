@@ -54,6 +54,8 @@ parcours clavier, l'affichage adaptatif ou SameSite dans un navigateur. Le
 logout API204 est testé ; depuis163, [déconnexion Web](web-logout.md) depuis les
 trois vues avec retour fixe au formulaire. Les vues protégées continuent
 de refuser401 une session absente/révoquée, sans redirection automatique.
-Prochain164 : revue Web159–163 avec navigateur réel. Montage serveur et
+Lot164 : CSS/CSP normalisées en LF et main focusable pour le lien d'évitement.
+[Revue164](reviews/m4-web.md) : parcours HTTPS navigateur en attente du certificat
+de test, sans exception TLS ni modification du magasin de confiance. Montage et
 filtres/diagnostics restent à réaliser.
 Même PR #37 brouillon, issue #7/M4 ouvertes ; MIT, AD/OIDC/Keycloak après MVP.

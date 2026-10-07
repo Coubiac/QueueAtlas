@@ -9,7 +9,7 @@
 <body>
   <a class="skip" href="#main">Aller au contenu</a>
   <header class="top"><a class="brand" href="/login">QueueAtlas</a><span>Suivi Postfix</span></header>
-  <main id="main">
+  <main id="main" tabindex="-1">
     <div class="heading"><p class="eyebrow">Compte local</p><h1>Connexion</h1><p>Connectez-vous pour consulter les journaux Postfix.</p></div>
     {{if .Error}}<section class="panel error" aria-labelledby="error-title"><h2 id="error-title">{{.ErrorTitle}}</h2><p role="alert">{{.Error}}</p></section>{{end}}
     <section class="panel" aria-labelledby="login-title">

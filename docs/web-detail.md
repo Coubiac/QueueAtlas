@@ -58,6 +58,9 @@ des caractères de présentation restent pour la revue Web ; aucun navigateur r�
 ni Linux local revendiqué. Depuis161, lien vers la [timeline Web](web-timeline.md)
 paginée avec tentatives/permission brute explicite/rendu texte. Même PR #37.
 [Connexion Web locale](web-login.md) livrée162, [déconnexion Web](web-logout.md)163.
-Prochain164 : revue Web159–163 avec navigateur réel. Montage serveur,
+Lot164 : valeurs natives/provenances affichées avec la notation visible de la
+timeline, main focusable pour l'évitement et CSS/CSP corrigée sous Windows.
+[Revue partielle](reviews/m4-web.md) : import synthétique→SQLite→rendu/DOM
+vérifié ; parcours HTTPS authentifié encore à valider. Montage serveur,
 filtres/diagnostics et revue restent ; l'issue #7/M4 ne sont pas clos. MIT,
 AD/OIDC/Keycloak après MVP.

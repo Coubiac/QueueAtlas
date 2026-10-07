@@ -79,10 +79,14 @@ revérifiés161. Timeline Web161 publiée sur94095f8 dans #37,
 CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
 revérifiés162. Connexion Web162 publiée20f64e0 dans #37, CI37671925509 entière/
 trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 réussis,
-revérifiés163. Déconnexion Web163 réalisée localement ; tests auth/35HTTPAPI/vet/
-format/diff passent, publication/CI à terminer au commit. Prochain164 : revue
-Web159–163 avec navigateur réel. Deux jalons M4/M5 restent, environ13–28lots
-après163/CI (M4 3–10),
+revérifiés163. Déconnexion Web163 publiée sur33596e2 dans #37, CI37675032968
+entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés164. Lot164 en cours : corrections CSP Windows/focus/contrôles de
+présentation, test import→rendu et vérifications navigateur statiques passés.
+Parcours HTTPS navigateur encore bloqué par le certificat de test ; intervention
+humaine requise, PR37 reste brouillon. [Bilan](reviews/m4-web.md).
+Au commit164 : publication/CI des corrections à terminer ; reprise sur164,
+aucun165 commencé. Deux jalons M4/M5 restent, environ13–28lots (M4 3–10),
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3452,12 +3456,15 @@ CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réus
 revérifiés162. Lot162 [connexion Web locale](web-login.md) publiée20f64e0,
 CI37671925509 entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et
 HTTPAPI Linux1.26 réussis, revérifiés163. Lot163 [déconnexion Web](web-logout.md)
-réalisée. Au commit : publier sur codex/m4-web, même #37 brouillon, vérifier
-workflow entier/trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI
-Linux1.26 ; consigner preuve dans PR puis reprise164. Prochain164 : revue Web
-159–163, validation navigateur réel XSS de la source au rendu/CSP/clavier/rendu
-adaptatif, corrections nécessaires puis clôture de #37 si critères satisfaits.
-Aucun164 commencé. Montage applicatif et compléments dans les chantiers suivants.
+publiée33596e2, CI37675032968 entière/trois jobs/SHA exact réussis, revérifiés164.
+Lot164 : publier les corrections validées localement sur codex/m4-web, même #37
+brouillon, vérifier CI entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race
+Linux1.26. Reprendre ensuite164 : [fixture TLS](web-browser-review.md), intervention
+humaine sur le certificat refusé par le navigateur, puis parcours connexion/
+rotation/déconnexion et SameSite réel. La revue du rendu statique est faite,
+pas celle de l'auth navigateur ; [preuves et limites](reviews/m4-web.md).
+Clôturer #37 seulement si critères satisfaits. Aucun165 commencé.
+Montage applicatif et compléments dans les chantiers suivants.
 Ne pas présenter un événement comme identité globale ni reconstruire depuis une
 seule page. Bibliothèque API relue ; listener/serve/autres vues Web/filtres complémentaires
 et raccordements restent à réaliser. MIT, AD/OIDC/Keycloak après MVP.
@@ -5651,3 +5658,58 @@ clôture #37 si critères satisfaits. Montage serveur/compléments ensuite.
 Déconnexion réalisée retire un comportement : M4 3–10 après163/CI, M5 10–18,
 total13–28/deux jalons, estimation incertaine. #7/M4/MVP ouverts, MIT et
 AD/OIDC/Keycloak après MVP. Aucun164 commencé.
+
+## Lot164 — revue navigateur partielle et corrections du rendu
+
+Résultat attendu : relire Web159–163 avec un navigateur, corriger les défauts
+constatés et clôturer #37 seulement si tous les critères sont satisfaits.
+**Revue incomplète : auth navigateur HTTPS encore à valider.** Aucun165 commencé.
+
+Départ sur codex/m4-web propre, locale/origin/#37 sur
+`33596e2f3a569fc47b30bf69fea0f22c2f942d02`, base main1588c3aa85, PR37 brouillon.
+[CI16337675032968](https://github.com/Coubiac/QueueAtlas/actions/runs/37675032968)
+entière completed/success sur ce SHA exact : Go1.26 112976207709,
+stable112976208275, Windows112976208332. Auth/HTTPAPI Windows et race auth/HTTPAPI
+Linux1.26 réussis, stable race skipped prévu. Workflow/jobs/étapes/tête/base
+revérifiés REST164. #7 ouverte, aucune fusion.
+
+Le navigateur refuse le certificat de httptest TLS avec
+ERR_CERT_AUTHORITY_INVALID. La compétence Computer Use exige une intervention
+humaine pour franchir l'avertissement ; demande transmise à l'utilisateur.
+Aucune exception TLS, aucun changement de confiance ni garde affaiblie.
+Suite indépendante : serveur loopback HTTP de **snapshots synthétiques seulement**,
+générés par les vrais handlers protégés après ImportFile/Postfix/SQLite.
+Pas de session/login/POST dans ce serveur ; les formulaires GET sélectionnent
+des pages prédéfinies et ne démontrent pas de nouvelles requêtes SQL.
+
+Trois défauts de présentation corrigés : normalisation LF de CSS/hash CSP pour
+le parseur HTML Windows ; main tabindex=-1 sur les quatre pages ; notation visible
+des contrôles/provenances des valeurs natives recherche/détail. Champs de saisie,
+identifiants canoniques, octets DTO/SQLite et politique CSP conservés.
+DOM réel détail/timeline/raw : aucune image/script/iframe/object/embed, aucun lien
+javascript, contrôle U+202E affiché littéralement. Clavier : skiplink donne focus
+MAIN sur recherche ; lien détail→timeline par Entrée ; Tab vers checkbox/Espace/
+Entrée produit raw=1 et trois pre. Captures desktop/mobile375×812 enregistrées,
+timeline sans débordement extérieur (document/corps360px hors scrollbar).
+[Revue détaillée](reviews/m4-web.md), [fixture et arrêt](web-browser-review.md).
+
+Une nouvelle régression automatique import→recherche exacte→détail/timeline brute.
+Deux fixtures manuelles opt-in, skipped en CI normale. Windows Go1.26 :
+`go test ./internal/auth ./internal/httpapi -count=1` réussi (auth1.501s,
+HTTPAPI2.554s), vet des deux packages réussi, format/diff vérifiés avant commit.
+Tests Go HTTPS/cookiejar des lots162/163 passent ; aucun parcours login/logout
+HTTPS navigateur/SameSite ni Linux local revendiqué.
+Les deux serveurs temporaires ont été arrêtés proprement par leur fichier stop ;
+les fixtures terminent PASS (arrêt normal, pas preuve d'auth navigateur).
+Les anciennes URL locales ne sont plus disponibles ; relancer selon le guide.
+
+Au commit164 : publier les corrections dans la même #37 brouillon et vérifier CI
+entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race Linux1.26 ; consigner
+la preuve post-publication dans la PR. Dernier publié validé avant ce commit :
+16333596e2/CI37675032968, main1588c3aa85/CI37653544179.
+Reprise concrète : terminer164 après intervention humaine sur le certificat de
+la fixture TLS relancée (URL/port temporaires affichés à chaque lancement), puis
+documenter connexion/rotation/session/déconnexion/SameSite et décider de la fusion.
+Pas de lot165 ni de montage serveur avant cette reprise. M4/M5 restent ouverts,
+estimation13–28lots (M4 3–10, M5 10–18) conservée car revue non clôturée.
+MIT et AD/OIDC/Keycloak après MVP inchangés.

@@ -69,6 +69,10 @@ Depuis160, un candidat attribué possède un lien canonique local vers le
 Depuis161, le détail mène à la [timeline Web](web-timeline.md) avec brut sous
 permission explicite. Depuis162, [formulaire de connexion local](web-login.md)
 et redirection fixe vers la recherche, même PR #37. Depuis163, bouton de
-[déconnexion Web](web-logout.md) ; prochain164 : revue Web159–163 avec navigateur réel.
-Montage serveur et revue navigateur restent distincts.
+[déconnexion Web](web-logout.md). Au lot164, CSS/CSP normalisées en LF pour le
+parseur HTML Windows et main reçoit `tabindex="-1"` pour le lien d'évitement.
+Valeurs natives/provenances affichées en notation visible ; champs de recherche
+conservés littéralement. [Revue navigateur partielle](reviews/m4-web.md) : rendu
+statique synthétique contrôlé, parcours HTTPS authentifié encore à vérifier.
+Montage serveur et fin de revue restent à réaliser.
 L'issue #7 reste ouverte ; MIT conservée, AD/OIDC/Keycloak après MVP.

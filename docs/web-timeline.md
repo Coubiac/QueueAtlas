@@ -46,8 +46,9 @@ tabulation/ANSI/C1 et direction Unicode rendus en notation visible `\r`, `\n`,
 `\t`, `\xNN`, `\uNNNN` ; antislash littéral doublé pour éviter de confondre une
 séquence native avec un contrôle. Les octets DTO/SQLite restent inchangés ; le
 texte de présentation n'est pas une exportation brute à l'identique.
-Cette notation s'applique aux champs/provenance de la timeline ; les autres vues
-restent à relire pour les caractères de présentation lors de la revue Web.
+Cette notation s'applique aux champs/provenance de la timeline ; depuis164,
+elle s'applique aussi aux valeurs natives/provenances affichées dans recherche
+et détail, sans changer les valeurs de recherche ni les octets SQLite.
 Même plafond HTML encodé1MiB, distinct de la RAM totale ; calculs coopératifs.
 
 ## Vérifications et suite
@@ -65,6 +66,8 @@ de raw64KiB×4 refusée ; limit1 conserve une ligne complète, sans troncature.
 Aucun navigateur réel/Linux local revendiqué. Revue XSS de la source au rendu,
 CSP, clavier, caractères de présentation et affichage adaptatif reste à faire.
 [Connexion Web locale](web-login.md) livrée162, même PR #37 ; bouton de
-[déconnexion Web](web-logout.md)163, revue Web159–163 avec navigateur réel164,
-montage et compléments ensuite.
+[déconnexion Web](web-logout.md)163. [Revue164 partielle](reviews/m4-web.md) :
+DOM/texte hostile brut, contrôle clavier raw et format mobile vérifiés sur les
+snapshots synthétiques, CSS Windows et focus corrigés. Auth navigateur HTTPS
+encore à vérifier ; montage et compléments ensuite.
 Issue #7/M4 restent ouverts. MIT, AD/OIDC/Keycloak après MVP.

@@ -9,17 +9,17 @@
 <body>
   <a class="skip" href="#main">Aller au contenu</a>
   <header class="top"><a class="brand" href="/messages">QueueAtlas</a><span>Suivi Postfix</span>{{template "session_actions.html"}}</header>
-  <main id="main">
+  <main id="main" tabindex="-1">
     <nav aria-label="Navigation"><a href="/messages">Rechercher un événement</a></nav>
     <div class="heading"><p class="eyebrow">Candidat de file</p><h1>Détail du candidat</h1><p>Une génération observée dans une instance Postfix.</p></div>
     {{if .Error}}<section class="panel error" aria-labelledby="error-title"><h2 id="error-title">Consultation interrompue</h2><p>{{.Error}}</p><a href="/messages">Relancer la recherche</a></section>{{end}}
     {{with .Detail}}
     <p class="notice">Couverture des journaux non prouvée. Ce candidat n’est pas une identité globale de message. Un rapport de transport ne prouve pas la livraison finale.</p>
     <section class="panel" aria-labelledby="candidate-title">
-      <h2 id="candidate-title">File <code>{{.Candidate.QueueID}}</code></h2>
+      <h2 id="candidate-title">File <code>{{visible .Candidate.QueueID}}</code></h2>
       <p><a class="timeline-link" href="{{timelineURL .Candidate.ID}}">Consulter la timeline et les tentatives</a></p>
       <dl>
-        <dt>Instance</dt><dd><code>{{.Candidate.Instance}}</code></dd>
+        <dt>Instance</dt><dd><code>{{visible .Candidate.Instance}}</code></dd>
         <dt>Génération candidate</dt><dd>{{.Candidate.Generation}}</dd>
         <dt>Réception native</dt><dd>{{if .ReceiptObserved}}Observée{{else}}Non observée{{end}}</dd>
         <dt>Première référence de la génération</dt><dd>{{template "candidate-ref" .First}}</dd>
@@ -41,7 +41,7 @@
         <caption>Résultats par adresse pour cette génération uniquement</caption>
         <thead><tr><th scope="col">Adresse native</th><th scope="col">Résultat observé</th><th scope="col">Tentatives</th><th scope="col">Dernières références</th></tr></thead>
         <tbody>{{range .Recipients}}<tr>
-          <td>{{if eq .Address.Encoding "base64"}}<small>Octets non UTF-8 — base64</small><code>{{.Address.Value}}</code>{{else}}{{if .Address.Value}}<code>{{.Address.Value}}</code>{{else}}Adresse vide observée{{end}}{{end}}{{if .AddressUnspecified}}<small>Adresse non spécifiée</small>{{end}}</td>
+          <td>{{if eq .Address.Encoding "base64"}}<small>Octets non UTF-8 — base64</small><code>{{.Address.Value}}</code>{{else}}{{if .Address.Value}}<code>{{visible .Address.Value}}</code>{{else}}Adresse vide observée{{end}}{{end}}{{if .AddressUnspecified}}<small>Adresse non spécifiée</small>{{end}}</td>
           <td>{{label .ObservedStatus}}{{if .OrderUncertain}}<small>Dernières tentatives simultanées</small>{{end}}</td>
           <td>{{.AttemptCount}}</td>
           <td><ul>{{range .Latest}}<li>{{template "candidate-ref" .}}</li>{{end}}</ul></td>
@@ -54,4 +54,4 @@
   <footer>QueueAtlas · Journaux observés, reconstruction prudente</footer>
 </body>
 </html>
-{{define "candidate-ref"}}<code>{{.SourceID}}</code><small>Origine : <code>{{.OriginID}}</code></small><small>Octets {{.Start}}–{{.End}}</small>{{end}}
+{{define "candidate-ref"}}<code>{{visible .SourceID}}</code><small>Origine : <code>{{visible .OriginID}}</code></small><small>Octets {{.Start}}–{{.End}}</small>{{end}}

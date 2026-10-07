@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Coubiac/QueueAtlas/internal/auth"
@@ -42,8 +43,11 @@ func embeddedSearchStyle() (string, string) {
 	if err != nil {
 		panic("missing embedded search stylesheet")
 	}
-	digest := sha256.Sum256(css)
-	return string(css), "default-src 'none'; style-src 'sha256-" + base64.StdEncoding.EncodeToString(digest[:]) + "'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
+	// HTML parsers normalize CRLF/lone CR to LF before CSP hashes style text.
+	// Windows checkout line endings must not make the browser reject our CSS.
+	style := strings.ReplaceAll(strings.ReplaceAll(string(css), "\r\n", "\n"), "\r", "\n")
+	digest := sha256.Sum256([]byte(style))
+	return style, "default-src 'none'; style-src 'sha256-" + base64.StdEncoding.EncodeToString(digest[:]) + "'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
 }
 
 // NewConsultationHandler returns one protected router for the API and HTML

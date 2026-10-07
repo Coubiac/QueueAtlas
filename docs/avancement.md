@@ -63,8 +63,11 @@ jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés161. Timelin
 publiée94095f8, CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race
 Linux1.26 réussis, revérifiés162. Connexion162 publiée20f64e0, CI37671925509 entière/
 trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 réussis,
-revérifiés163. Déconnexion163 réalisée localement, tests auth/35HTTPAPI/vet/format/
-diff Windows réussis ; publication/CI à terminer au commit.
+revérifiés163. Déconnexion163 publiée33596e2, CI37675032968 entière/trois jobs/SHA
+exact/auth et HTTPAPI Windows/race Linux1.26 réussis, revérifiés164. Lot164 en cours :
+corrections navigateur CSP Windows/focus/texte, test import→rendu et captures.
+Parcours HTTPS navigateur en attente d'intervention sur le certificat de test ;
+revue incomplète, #37 reste brouillon. Publication/CI des corrections à terminer.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -79,7 +82,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 163 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 164 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -96,9 +99,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147, auth148–153 et API154–158 fusionnés/CI main verte ; Web159–162 publiés/CI verte, déconnexion163 locale/publication à terminer | Revue navigateur, montage serveur et filtres/diagnostics | 3–10 après163/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147, auth148–153 et API154–158 fusionnés/CI main verte ; Web159–163 publiés/CI verte, corrections164 locales, revue HTTPS incomplète | Terminer revue164, montage serveur et filtres/diagnostics | 3–10 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après163/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **13–28** |
+| **Total pendant164** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **13–28** |
 
 Révision160 : la borne2–9 après159 ne comptait pas explicitement connexion Web,
 montage serveur et compléments de consultation. Elle était trop optimiste.
@@ -1072,3 +1075,22 @@ puis clôture #37 si critères satisfaits. Montage et compléments dans les chan
 suivants. Déconnexion réalisée retire un comportement : M4 3–10, M5 10–18,
 total13–28 après163/CI, deux jalons. #7/M4/MVP restent ouverts. MIT,
 AD/OIDC/Keycloak après MVP ; aucun164 commencé.
+
+## Bilan164 — corrections du rendu, revue HTTPS incomplète
+
+Lot163 publié33596e2/#37, CI37675032968 entière/trois jobs/SHA exact/auth et
+HTTPAPI Windows/race Linux1.26 verts, revérifiés164. Main reste1588c3aa85.
+Le navigateur a révélé trois défauts corrigés : hash CSP/CSS Windows CRLF,
+focus du lien d'évitement et contrôles de direction visibles dans le détail.
+ImportFile synthétique→Postfix→SQLite→handlers protégés→HTML : DOM hostile texte,
+clavier raw et captures desktop/mobile contrôlés sur snapshots statiques.
+Une régression automatisée ajoutée ; fixtures manuelles opt-in, hors CI normale.
+Tests auth/HTTPAPI Windows Go1.26, vet/format/diff passent.
+
+**La revue164 reste incomplète** : certificat HTTPS de test refusé, intervention
+humaine requise par Computer Use. Aucun login/logout ou SameSite navigateur
+revendiqué par les snapshots HTTP. Corrections à publier et CI à contrôler dans
+la même #37 brouillon ; [preuves, limites et reprise](reviews/m4-web.md).
+Reprendre164, aucun165 commencé, pas de fusion à ce stade. Deux jalons restent,
+M4 3–10/M5 10–18/total13–28 conservés ; clôture de revue non acquise.
+Issue7/M4/MVP ouverts, MIT, AD/OIDC/Keycloak après MVP.

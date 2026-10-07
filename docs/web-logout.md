@@ -54,6 +54,8 @@ retour au formulaire, retry idempotent et replay du token révoqué401 sur toute
 les vues et l'API de recherche.
 
 Aucun navigateur réel/Linux local revendiqué ; clavier, affichage adaptatif,
-SameSite et XSS/CSP de la source au rendu restent à valider au lot164 de revue
-Web159–163. Même PR #37 brouillon ; montage serveur et compléments ensuite.
+SameSite et XSS/CSP de la source au rendu restaient à valider après163.
+[Revue164 partielle](reviews/m4-web.md) : rendu/DOM/clavier de snapshots synthétiques
+contrôlés ; soumission réelle de logout et SameSite dans le navigateur HTTPS
+encore à vérifier. Même PR #37 brouillon ; montage serveur et compléments ensuite.
 Issue #7/M4 restent ouvertes. MIT, AD/OIDC/Keycloak après MVP.

@@ -9,7 +9,7 @@
 <body>
   <a class="skip" href="#main">Aller au contenu</a>
   <header class="top"><a class="brand" href="/messages">QueueAtlas</a><span>Suivi Postfix</span>{{template "session_actions.html"}}</header>
-  <main id="main">
+  <main id="main" tabindex="-1">
     <div class="heading"><p class="eyebrow">Consultation des journaux</p><h1>Rechercher un événement</h1>
     <p>Retrouvez les faits observés et les candidats de file associés.</p></div>
     {{if .Error}}
@@ -44,13 +44,13 @@
         <td><time datetime="{{date .At}}">{{date .At}}</time><small>{{label .TimeQuality}}</small></td>
         <td>{{label .Kind}}{{if .NoQueue}}<small class="badge">NOQUEUE</small>{{end}}{{if .PrequeueDisposition}}<small>{{label .PrequeueDisposition}}</small>{{end}}</td>
         {{if .Candidate}}
-        <td><a class="candidate" href="{{candidateURL .Candidate.ID}}"><code>{{.Candidate.QueueID}}</code> — détail</a><small>{{.Candidate.Instance}}</small><small>Génération {{.Candidate.Generation}}</small></td>
+        <td><a class="candidate" href="{{candidateURL .Candidate.ID}}"><code>{{visible .Candidate.QueueID}}</code> — détail</a><small>{{visible .Candidate.Instance}}</small><small>Génération {{.Candidate.Generation}}</small></td>
         <td><ul class="counts"><li>Inconnus : {{.Candidate.Counts.Unknown}}</li><li>sent (transport) : {{.Candidate.Counts.Sent}}</li><li>delivered (remise reconnue) : {{.Candidate.Counts.Delivered}}</li><li>Différés : {{.Candidate.Counts.Deferred}}</li><li>Échecs : {{.Candidate.Counts.Bounced}}</li></ul>{{if .Candidate.ExpirationReports}}<small>Expirations rapportées : {{.Candidate.ExpirationReports}}</small>{{end}}</td>
         <td><ul>{{range .Candidate.Reserves}}<li>{{label .}}</li>{{end}}</ul></td>
         {{else}}
         <td>Candidat non attribué</td><td>Inconnus</td><td>{{if .UnresolvedReason}}{{label .UnresolvedReason}}{{else}}Pas de génération de file attribuée{{end}}</td>
         {{end}}
-        <td><code>{{.Ref.SourceID}}</code><small>Origine : <code>{{.Ref.OriginID}}</code></small><small>Octets {{.Ref.Start}}–{{.Ref.End}}</small></td>
+        <td><code>{{visible .Ref.SourceID}}</code><small>Origine : <code>{{visible .Ref.OriginID}}</code></small><small>Octets {{.Ref.Start}}–{{.Ref.End}}</small></td>
       </tr>{{end}}</tbody></table></div>
       {{else}}<div class="panel empty"><h3>Aucun événement correspondant</h3><p>Aucun fait correspondant dans cette période et cette base. Cela ne prouve pas l’absence dans les journaux.</p></div>{{end}}
       {{if .NextURL}}<nav class="pagination" aria-label="Pagination"><a class="next" href="{{.NextURL}}">Page suivante →</a></nav>{{end}}
