@@ -57,6 +57,9 @@ jobs:
       - name: File source race test
         if: matrix.go == '1.26.x'
         run: go test -race ./internal/source/file
+      - name: Local authentication race test
+        if: matrix.go == '1.26.x'
+        run: go test -race ./internal/auth
       - name: Static Linux amd64
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./...
       - name: Static Linux arm64

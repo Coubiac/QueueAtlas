@@ -49,9 +49,10 @@ CI37588258338 entière/trois jobs/SHA exact réussis. Conversion141 publiée sur
 CI37591355873 entière/trois jobs/SHA exact réussis. Clôture142 fusionnée #33 sur19843d6,
 CI finale37594338289/main37594545438 entières réussies, branche sources supprimée.
 Contrat auth143 publié sure00573c dans #34, CI37598069906 entière/trois jobs/SHA
-exact réussis. Hash/vérification/codec144 implémentés/vérifiés localement ; publication/
-CI à terminer au commit. Prochain lot145 : persistance atomique/bornée du compte local.
-Deux jalons M4/M5 restent, environ19–35lots après144, M3 zéro lot restant ;
+exact réussis. Hash/codec144 publié sur22f1694, CI37601878573 entière/trois jobs/SHA
+exact réussis. Persistance145 implémentée/vérifiée Windows ; publication/CI dont
+contrôles Linux à terminer au commit. Prochain lot146 : CLI admin create.
+Deux jalons M4/M5 restent, environ18–34lots après145, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3388,10 +3389,11 @@ dans #33, CI37585141938 entière réussie. YAML source140 publié sur455148a,
 CI37588258338 entière réussie. Conversion141 publiée sur223849c, CI37591355873
 entière réussie. Clôture142 fusionnée #33 sur19843d6, CI finale37594338289/
 main37594545438 entières réussies, branche sources supprimée. Auth143 publié
-sure00573c dans #34, CI37598069906 entière réussie. Hash/codec144 validé localement :
-publier dans la même PR puis vérifier CI entière/trois jobs/SHA exact.
-Prochain lot145 : persistance atomique/lecture bornée identité+hash validés, sans
-écrasement, tests/doc ; CLI146 puis revue, sessions/protections HTTP séparées.
+sure00573c dans #34, CI37598069906 entière réussie. Hash144 publié sur22f1694,
+CI37601878573 entière réussie. Persistance145 validée Windows : publier dans #34
+puis vérifier CI entière/trois jobs/SHA exact et tests/gardes Linux/race auth.
+Prochain lot146 : CLI admin create, secret stdin borné/contrôle mots de passe,
+hash/création existants, codes/diagnostics/binaire/doc ; revue puis sessions/HTTP séparés.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4417,3 +4419,51 @@ validation sans dérivation, refus sans écrasement, tests/doc ; CLI146 puis rev
 sessions/protections HTTP dans un chantier distinct. M4 reste9–17lots (hash/codec
 terminé, cinq lots auth minimum restent), M5 10–18, total19–35, estimation incertaine.
 MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Validation effective144 consignée à la reprise145 :
+`22f1694a19c806b84e692ecc4ab2fdd319d6ddfd` publié dans #34 en brouillon,
+CI37601878573 entière réussie/trois jobs/SHA exact. Nouvelle étape Windows auth
+réussie ; Linux tests/vet/format/smoke/race source-file/builds statiques passés.
+À la reprise145 : fetch effectué, checkout propre/têtes locale/origin/PR identiques,
+main14219843d6 inchangé, PR ouverte/brouillon/mergeable/clean et workflow réussi
+revérifiés REST. Les attentes144 précédentes sont le snapshot prépublication, terminé.
+
+## Lot145 : persistance atomique et lecture bornée du compte local
+
+Résultat attendu : LocalAccount identité/hash validés sans dérivation, record JSON
+strict/borné, création complète sans remplacement, tests/doc ; même branche/#34.
+Choix MVP : fichier local-admin.json distinct de SQLite, version1/username/password_hash
+uniquement. Répertoire existant fiable/privé requis, aucune création/chmod des parents.
+os.Root borne opérations sous répertoire ouvert ; temporaire exclusif0600 aléatoire,
+write/Sync/Close puis Link atomique sans écrasement, retrait temporaire et Sync
+répertoire Linux. Liens durs non supportés = erreur sans fallback dangereux.
+Destination existante de tout type conservée, concurrence au plus un gagnant.
+
+Lecture Lstat/Stat/identité/type/droits,4Kio max/4097octets lus, JSON UTF-8/un objet,
+champs exacts/types/version/duplicates/contrats143–144 validés sans hash ; taille/mtime
+revérifiés après lecture, fermeture avant retour. Toute erreur compte zéro et
+diagnostic fixe sans chemin/contenu/identifiant/hash/erreur brute OS. ErrAccountPublished
+signale compte déjà créé si nettoyage/Sync tardif échoue, sans supprimer le final.
+Linux nofollow/nonblock et droits sans groupe/autres ; Windows ACL non attestées,
+pas de Sync de répertoire portable. Pas de garantie de coupure physique/test crash,
+Root initial suit symlinks parent, propriétaire/espace de noms doivent rester fiables.
+Temporaire orphelin possible après crash/échec nettoyage, ignoré et non purgé
+automatiquement ; pas de reset/remplacement/migration ou authentification via lecture.
+
+Cinq tests communs nouveaux145/quatorze auth et vet/format/diff Windows passés :
+roundtrip/format/ownership, refus sans effets/confidentialité, huit créateurs/un gagnant
+et lectures complètes, JSON strict/bornes/read errors, corruptions/surtailles intactes.
+Deux tests Linux supplémentaires écrits/droits partagés/links/FIFO et gardes directes,
+à exécuter en CI ; seize tests Linux au total, auth race ajouté au job Go1.26.x.
+Branches Sync/nettoyage tardif relues sans injection ; aucun résultat Linux local
+revendiqué. CLI/config/SQLite/hash/modules inchangés ; fondations non relancées
+sans risque nouveau. Contrats/limites détaillés dans docs/local-auth.md.
+
+Au moment du commit145 : publication/CI à terminer, dernier publié validé144
+22f1694/CI37601878573, dernier main14219843d6/CI37594545438. Publier dans #34,
+vérifier workflow entier/trois jobs/SHA exact dont tests Linux/race auth, consigner
+dans PR puis reprise146. Prochain lot146 : CLI admin create, dir existant/username
+explicites, secret stdin borné et contrôle mots de passe courants/dérivés, hash/création
+existants, codes/diagnostics/binaire/doc. Puis revue du compte, sessions/HTTP séparés.
+M4 reste8–16lots (persistance terminée après CI Linux, quatre lots auth minimum
+restent), M5 10–18, total18–34, estimation incertaine. MIT, AD/OIDC après MVP.

@@ -124,10 +124,93 @@ CI Windows étendue à auth ; Linux existant teste/vet/build l'ensemble, dépend
 crypto seule ajoutée sans modification des versions existantes. CLI/SQLite/config/
 FileSource inchangés ; publication/CI144 à vérifier après commit dans #34 réutilisée.
 
-## Suite après144
+## Suite après144 (snapshot)
 
 Lot145 : persistance atomique et lecture bornée du compte local, identité+hash
 validés sans vérification de mot de passe lors du chargement, refus sans écrasement,
 tests/doc. Aucun stockage créé par144 ; CLI d'initialisation146 puis revue de ce
 chantier. Sessions/protections HTTP dans un chantier distinct. Aucun compte
 utilisable, serveur, route ou cookie livré ; MIT, AD/OIDC après MVP.
+
+Publication144 effective : 22f1694 dans #34,
+[CI37601878573](https://github.com/Coubiac/QueueAtlas/actions/runs/37601878573)
+entière réussie/trois jobs/SHA exact ; nouvelle étape Windows auth réussie,
+Linux tests/vet/format/smoke/race source-file et builds statiques réussis.
+
+## Lot145 : persistance du compte local
+
+`LocalAccount{Identity, PasswordHash}` valide les contrats143/144 sans dérivation,
+mot de passe clair, session ou rôle. Le fichier **local-admin.json** contient
+exactement version1 (nombre JSON), username et password_hash (textes). Ce compte
+est stocké séparément de SQLite : aucune migration ou dépendance de la base de
+journaux pour initialiser l'identité administrative. C'est un choix de persistance
+MVP, pas un magasin de comptes externes ou une gestion multi-utilisateurs.
+
+`CreateLocalAccount(directory, account)` exige un répertoire existant, privé et
+fiable : aucun parent créé/chmodé. Identité/hash validés avant IO ; toute destination
+existante, même invalide/répertoire/lien, est conservée et renvoie ErrAccountExists.
+Dans un [os.Root](https://pkg.go.dev/os#Root) ouvert, un temporaire à nom aléatoire
+est créé exclusivement en0600, écrit complètement, Sync puis fermé. Publication par
+lien dur vers le nom final, sans remplacement, puis retrait du temporaire et Sync
+du répertoire sur Linux. Pas de fallback par copie ou rename qui écraserait un compte.
+Filesystem sans liens durs : erreur sûre, aucun compte partiellement publié.
+Créateurs concurrents : au plus un gagnant ; lecteurs voient absence ou record complet.
+
+`LoadLocalAccount(directory)` refuse fichier non régulier/symlink, document dépassant
+4Kio et droits partagés POSIX. Contrôle Lstat puis Stat/identité du fichier ouvert,
+lecture de4097octets maximum, validation JSON/contrats et fermeture avant retour.
+Taille/mtime contrôlés après lecture ; ce contrôle n'est pas un verrou contre une
+modification en place par un propriétaire hostile. JSON UTF-8/un seul objet exact,
+champs inconnus/dupliqués/casse différente, version inconnue/flottante/textuelle,
+null/types imbriqués/champs absents/hash invalide et documents supplémentaires refusés.
+Espaces JSON finaux permis dans la borne. Toute erreur renvoie LocalAccount zéro.
+
+Erreurs fixes sans chemin/identifiant/hash/contenu/erreur brute OS :
+
+| Erreur | Sens pour l'appelant |
+| --- | --- |
+| ErrAccountNotFound | Répertoire valide, aucun compte publié |
+| ErrAccountExists | Destination occupée, aucune tentative de remplacement |
+| ErrInvalidAccount | Document ou contrats invalides |
+| ErrAccountIO | Répertoire/droits/type/lecture/écriture/publication indisponibles |
+| ErrAccountPublished | Compte déjà publié ; nettoyage ou Sync du répertoire échoué, inspecter avant de réessayer |
+
+Une création dont l'identité/hash est invalide conserve les erreurs143/144 et ne
+fait aucune IO. Pas de suppression du compte final pour réparer une erreur tardive.
+Nettoyage temporaire avant publication au mieux ; un arrêt brutal peut laisser un
+temporaire complet privé, ignoré par le lecteur. Pas de purge automatique des
+temporaires ni reset/rotation/migration du compte dans cette API.
+
+Linux : répertoire ouvert et fichier sans droits groupe/autres ; fichier créé en0600 sous umask,
+répertoire déjà privé (normalement0700). Ouverture finale O_NOFOLLOW|O_NONBLOCK,
+pour refuser un symlink et éviter un blocage sur FIFO remplacée. Sync fichier puis
+répertoire demandé ; garantie dépend du filesystem/matériel, pas de campagne
+coupure électrique effectuée. Windows : liens durs testés sur le filesystem local,
+Sync fichier demandé ; pas de Sync répertoire ni validation/modification ACL.
+Les ACL restrictives relèvent du déploiement. Autres plateformes suivent le chemin
+portable, sans garantie Linux de durabilité ou garde nofollow atomique.
+
+Chemin du répertoire choisi par l'opérateur, pas via Web ; root initial suit les
+symlinks du répertoire. Espace de noms/parents/propriétaire doivent rester fiables.
+Root borne les opérations sous son répertoire ouvert, sans interdire montages ou
+fichiers spéciaux par lui-même ; les contrôles de cette API portent sur le record.
+Un hash syntaxiquement valide n'est pas une preuve de sa provenance ou de force.
+Aucune authentification/autorisation accordée par la lecture seule.
+
+Cinq nouveaux tests communs145, quatorze auth/vet/format/diff Windows passés :
+roundtrip/ownership/format, refus sans création/écrasement/confidentialité, huit
+créateurs concurrents/un gagnant/lectures complètes, JSON strict/bornes/read errors,
+fichiers corrompus/surdimensionnés inchangés. Deux tests Linux supplémentaires à
+exécuter en CI : droits privés/partagés, symlinks valides/pendants et FIFO, sans
+remplacement ; seize tests Linux au total. Race auth ajouté au job Linux Go1.26.x.
+Erreurs de Sync/nettoyage tardif relues, pas injectées ; aucune résistance à une
+coupure physique revendiquée. Aucun changement CLI/config/SQLite/hash/modules.
+Publication/CI145 à vérifier après commit dans #34 réutilisée.
+
+## Suite après145
+
+Lot146 : CLI admin create, répertoire explicite existant/username/secret via stdin
+borné, contrôle des mots de passe courants/dérivés, hash144 puis création145, codes
+et diagnostics sans secret/chemin, tests du binaire/doc. Aucune commande admin,
+route login ou session encore disponible. Revue/clôture du compte local ensuite ;
+sessions/protections HTTP dans un chantier distinct. MIT, AD/OIDC après MVP.
