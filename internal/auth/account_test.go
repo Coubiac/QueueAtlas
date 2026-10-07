@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"testing"
@@ -20,8 +21,21 @@ func syntheticAccountJSON() string {
 	return `{"version":1,"username":"synthetic-admin","password_hash":"` + syntheticPasswordHash + `"}`
 }
 
-func TestLocalAccountCreateLoadAndNoReplacement(t *testing.T) {
+// testing.TempDir uses 0777 subject to umask for its numbered subdirectory.
+// Account fixtures must explicitly supply the private directory required by IO.
+func privateAccountTestDir(t *testing.T) string {
+	t.Helper()
 	dir := t.TempDir()
+	if runtime.GOOS != "windows" {
+		if err := os.Chmod(dir, 0700); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return dir
+}
+
+func TestLocalAccountCreateLoadAndNoReplacement(t *testing.T) {
+	dir := privateAccountTestDir(t)
 	a := syntheticAccount()
 	if err := CreateLocalAccount(dir, a); err != nil {
 		t.Fatal(err)
@@ -52,7 +66,7 @@ func TestLocalAccountCreateLoadAndNoReplacement(t *testing.T) {
 }
 
 func TestLocalAccountFailuresHaveNoStateOrPrivateDiagnostics(t *testing.T) {
-	dir := t.TempDir()
+	dir := privateAccountTestDir(t)
 	for _, a := range []LocalAccount{{}, {Identity: LocalIdentity{Username: "synthetic-private/invalid"}, PasswordHash: syntheticPasswordHash}, {Identity: syntheticAccount().Identity, PasswordHash: "synthetic-private-hash"}} {
 		err := CreateLocalAccount(dir, a)
 		if err == nil || strings.Contains(err.Error(), "synthetic-private") {
@@ -91,7 +105,7 @@ func TestLocalAccountFailuresHaveNoStateOrPrivateDiagnostics(t *testing.T) {
 }
 
 func TestLocalAccountConcurrentPublicationHasOneWinner(t *testing.T) {
-	dir := t.TempDir()
+	dir := privateAccountTestDir(t)
 	start := make(chan struct{})
 	type result struct {
 		account LocalAccount
@@ -193,7 +207,7 @@ func (r *accountCountingReader) Read(p []byte) (int, error) {
 }
 
 func TestLocalAccountLoadRejectsMalformedOrOversizedFiles(t *testing.T) {
-	dir := t.TempDir()
+	dir := privateAccountTestDir(t)
 	path := filepath.Join(dir, LocalAccountFilename)
 	for _, data := range []string{"synthetic-private-content", syntheticAccountJSON() + "{}", strings.Repeat(" ", MaxAccountBytes+1)} {
 		if err := os.WriteFile(path, []byte(data), 0600); err != nil {

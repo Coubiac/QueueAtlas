@@ -4467,3 +4467,11 @@ explicites, secret stdin borné et contrôle mots de passe courants/dérivés, h
 existants, codes/diagnostics/binaire/doc. Puis revue du compte, sessions/HTTP séparés.
 M4 reste8–16lots (persistance terminée après CI Linux, quatre lots auth minimum
 restent), M5 10–18, total18–34, estimation incertaine. MIT, AD/OIDC après MVP.
+
+Correction dans le même lot145 : première tête cc12df7 publiée, CI37605619494
+échouée dans tests auth Linux avant race/builds. Logs lus : les fixtures utilisaient
+testing.TempDir, dont le sous-répertoire numéroté est créé en0777 sous umask et
+restait0755 en CI, donc refus attendu par openAccountRoot. Fixtures explicitement
+chmodées0700 sur POSIX via helper de test ; production et contrat inchangés.
+Tests auth/vet/format/diff Windows repassés après correction ; nouveau commit/push
+et CI entière à vérifier. Lot145 non validé Linux tant que cette CI n'est pas verte.

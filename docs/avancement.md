@@ -636,3 +636,7 @@ concurrence huit créateurs/un gagnant ; deux tests Linux droits/links/FIFO écr
 Aucune CLI/login/session ; durabilité physique et ACL Windows non attestées.
 Prochain lot146 : CLI admin create/tests du binaire/doc et contrôle des mots de passe.
 M4 8–16 après CI Linux, M5 10–18, total18–34, estimation incertaine.
+
+CI initiale14537605619494 échouée : fixtures Linux TempDir0755 refusées par le
+contrat privé. Fixtures corrigées0700, tests/vet Windows repassés ; production
+inchangée, validation Linux/race encore attendue sur la tête corrective.

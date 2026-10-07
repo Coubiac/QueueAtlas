@@ -10,7 +10,7 @@ import (
 )
 
 func TestLocalAccountLinuxPrivateModesAndUnsafePermissions(t *testing.T) {
-	dir := t.TempDir()
+	dir := privateAccountTestDir(t)
 	if err := CreateLocalAccount(dir, syntheticAccount()); err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func TestLocalAccountLinuxPrivateModesAndUnsafePermissions(t *testing.T) {
 func TestLocalAccountLinuxRejectsLinksAndFIFOWithoutReplacement(t *testing.T) {
 	for _, kind := range []string{"symlink", "dangling", "fifo"} {
 		t.Run(kind, func(t *testing.T) {
-			dir := t.TempDir()
+			dir := privateAccountTestDir(t)
 			path := filepath.Join(dir, LocalAccountFilename)
 			if kind == "fifo" {
 				if err := syscall.Mkfifo(path, 0600); err != nil {

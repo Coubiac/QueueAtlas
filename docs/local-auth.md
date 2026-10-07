@@ -207,6 +207,11 @@ Erreurs de Sync/nettoyage tardif relues, pas injectées ; aucune résistance à 
 coupure physique revendiquée. Aucun changement CLI/config/SQLite/hash/modules.
 Publication/CI145 à vérifier après commit dans #34 réutilisée.
 
+Première CI14537605619494 échouée sur cc12df7 : fixtures testing.TempDir avec
+droits0755 sous Linux, refus correct du stockage privé. Correction des fixtures
+par chmod0700 POSIX explicite, aucun changement de production ; tests/vet Windows
+repassés, CI corrective Linux/race à vérifier avant validation du lot.
+
 ## Suite après145
 
 Lot146 : CLI admin create, répertoire explicite existant/username/secret via stdin
