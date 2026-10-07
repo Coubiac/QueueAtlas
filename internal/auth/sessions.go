@@ -132,6 +132,13 @@ func (s *SessionStore) Issue(identity LocalIdentity) (string, Session, error) {
 // revoked tokens share one fixed error and return zero metadata. Activity extends
 // only the idle deadline; absolute expiry wins even at the exact boundary.
 func (s *SessionStore) Resolve(token string) (Session, error) {
+	return s.resolve(token, nil)
+}
+
+// An identity filter lets HTTP reject a foreign session before refreshing its
+// activity. Public Resolve retains its original unfiltered contract. Both paths
+// validate, expire, compare and update under the same lock; no check/use gap.
+func (s *SessionStore) resolve(token string, identity *LocalIdentity) (Session, error) {
 	if s == nil {
 		return Session{}, ErrSessionUnavailable
 	}
@@ -150,7 +157,7 @@ func (s *SessionStore) Resolve(token string) (Session, error) {
 	}
 	s.prune(now)
 	session, exists := s.sessions[key]
-	if !exists {
+	if !exists || identity != nil && session.Identity != *identity {
 		return Session{}, ErrInvalidSession
 	}
 	session.LastSeenAt = now

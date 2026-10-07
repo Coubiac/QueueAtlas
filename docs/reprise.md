@@ -56,9 +56,11 @@ exact réussis. Clôture147 fusionnée #34 sur9cd6cec, CI finale37611573008 et m
 37611762238 entières réussies, branche nettoyée. Sessions148 publiées surbd862cd
 dans #35, CI37615586790 entière/trois jobs/SHA exact/race auth réussis.
 Login149 publié sur94ef705 dans #35, CI37619138226 entière/trois jobs/SHA exact/
-race auth réussis, REST revérifié150. Transport HTTP150 vérifié Windows ;
-publication/CI à terminer au commit. Prochain151 : garde des routes de données.
-Deux jalons M4/M5 restent, environ17–32lots après150/CI, M3 zéro lot restant ;
+race auth réussis, REST revérifié150. HTTP150 publié surc50c678 dans #35,
+CI37623116898 entière/trois jobs/SHA exact/race auth réussis, REST revérifié151.
+Garde HTTP151 vérifiée Windows ; publication/CI à terminer au commit.
+Prochain152 : corpus local d'enrôlement. Deux jalons M4/M5 restent,
+environ16–31lots après151/CI, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3402,11 +3404,12 @@ fusionnée #34 sur9cd6cec, CI finale37611573008/main37611762238 entières réuss
 branche nettoyée. Sessions148 publiées surbd862cd dans #35, CI37615586790 entière/
 trois jobs/SHA exact/race auth réussis, revérifiés REST à la reprise149.
 Login149 publié sur94ef705, CI37619138226 entière/trois jobs/SHA exact/race auth
-réussis, REST revérifié150. HTTP150 validé Windows : publier sur codex/m4-sessions
-dans #35 réutilisée, vérifier CI entière/trois jobs/SHA exact/race auth ; preuve
-effective dans PR puis reprise151. Prochain151 : garde des routes de données,
-puis corpus local d'enrôlement et revue/clôture en lots distincts. Ne pas commencer
-151 ni fusionner #35 au lot150. Aucun listener/commande serve/page Web livré.
+réussis, REST revérifié150. HTTP150 publié surc50c678, CI37623116898 entière/trois
+jobs/SHA exact/race auth réussis, REST revérifié151. Garde HTTP151 validée Windows :
+publier sur codex/m4-sessions dans #35 réutilisée, vérifier CI entière/trois jobs/
+SHA exact/race auth ; preuve effective dans PR puis reprise152. Prochain152 :
+corpus local d'enrôlement adapté/provenance/licence ; revue/clôture153 ensuite.
+Ne pas commencer152 ni fusionner #35 au lot151. Aucun listener/serve/Web/API livré.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4779,3 +4782,71 @@ détail sépare contrôles de routes et corpus auparavant groupés dans un lot p
 Trois lots auth minimum restent, API2–3/Web/revue2–4 ensuite ; marge/périmètre
 inchangés, pas de décompte automatique par numéro. MIT/AD/OIDC après MVP.
 Aucun lot151 commencé ni fusion #35 prévue dans150.
+
+Validation150 effective à la reprise151 : c50c6786697a62c7a20a932d76226e1e17e70a8f
+publié dans #35 en brouillon, CI37623116898 entière completed/success et trois jobs
+Windows/Linux1.26.x/stable completed/success sur ce SHA exact, auth Windows36/
+Linux38 et race auth réussis. REST revérifié, checkout propre/local/origin/PR
+identiques avant151, base main1479cd6cec. PR35 réutilisée/attachée.
+
+## Lot151 : garde HTTP des routes de données
+
+Résultat : HTTPHandler.Protect(next) enveloppe chaque requête sans exemption de
+chemin, setup nil/zéro/nextnil refusé ErrInvalidHTTPAuth, validation150 sans IO/
+horloge/hash. Monter auth login/logout séparément et routeur données sous garde.
+Aucune vraie route API/Web/listener/commande serve livrée, middleware en bibliothèque.
+next garde responsabilité permissions/routes/body/query/durée, read-only GET/HEAD,
+cache/CORS. Cookies et métadonnées ne créent pas une permission applicative/RBAC.
+
+TLS direct/Host exact partout, Origin exact obligatoire POST/PUT/PATCH/DELETE ;
+GET/HEAD Origin facultatif mais si présent unique/exact. OPTIONS/TRACE/CONNECT/
+extensions405/Allow liste fixe six méthodes. RawPath/nilURL400, query recherche
+permise sans donner d'identité, Content-Encoding415. Sec-Fetch-Site partagé aussi
+login/logout150 : absent accepté avec règles Origin conservées, sinon same-origin
+unique ; none seulement GET/HEAD. Same-site/cross-site/vide/inconnu/dupliqué403,
+metadata ne dispense pas Origin mutation. Pas proxy/Referer fallback/confiance
+sous-domaines/CORS/tokenCSRF séparé. Politique stricte inconnus à revoir au pilote.
+Contrôles avant body/résolution/activité, cookieheaders<=4096/au plus un cookie.
+
+Seul cookie canonique/actif lié au compte local configuré autorise next. Aucun
+bypass Authorization/query/ForwardedUser/ancien contexte. Absence/malformé/inconnu/
+expiration/révocation/autre identité ->401/corps fixe identique sans Set-Cookie.
+SessionStore.resolve filtre privé d'identité sous mutex avant activité ; pas de
+gap check/use et autre identité non rafraîchie. Resolve public inchangé148. Purge
+expirées possible pendant refus, activité validée avance idle seulement, deadlines
+exactes absolue/inactive conservées. Erreur de magasin/horloge/context ->503 fixe.
+
+SessionFromContext retourne copie Session et bool, clé privée typée, sans secret/
+token/hash/rôle, nil/absent=zero,false. Garde re-résout cookie et remplace ancien
+snapshot dans copie de requête ; contexte appelant intact. Code Go de confiance
+peut fabriquer contextes, ce helper n'est pas preuve portable. Aucun log/rawerror.
+Headers communs no-store/Pragma no-cache/nosniff/Vary Cookie,Origin,Sec-Fetch-Site.
+Erreurs400/401/403/405/415/431/503 fixes sans cause/valeur ; pas redirect ni CORS.
+
+Context check avant/après Resolve ; annulation tardive peut avanceractivité sans
+next, course aprèscheck peut appeler next. Snapshot d'auth à entrée : requête déjà
+admise peut finir après révocation/expiration, nouvelles admissions refusées.
+Mutex libéré avant next, pas de goroutine/timer/hash de surveillance créé.
+Bornes réseau/headers/deadlines/certificats/montage restent au futur serveur,
+corps/durée/permissions au handler protégé. Sessions/processus/DoS149 inchangés.
+
+Sept tests151/43auth Windows, vet/format/diff passés : cycle HTTPS réel Argon2id/
+cookiejar/login/données/mutation Origin/logout/refus ensuite ; guards avant body/
+horloge/résolution/activité,401 privé identique/tokens inconnus/expiration/revocation/
+autre identité sans renouvellement/headers/query/contexte sans bypass ; idle/absolu
+exacts/CSRF refusé sans refresh ; setup/contexte/copiemetadata/méthodes/aucune
+exemption ; horloge/cancellation failclosed ;32requêtes concurrentes puis revoke/
+refus et requête déjà admise finit après revoke. Tests150 enrichis FetchMetadata
+partagée, aucun sleep, navigateur réel/SameSite/préfixe non testé. Linux45/race/CI
+entière à vérifier après publication ; pas de Linux local. Contrat/limites dans
+docs/local-http-guard.md, docs HTTP/avancement mis à jour. Config/CLI/SQLite/
+FileSource/modules/workflow inchangés ; pas de rerun optionnel fondations.
+
+Au commit151 publication/CI à terminer ; dernier publié validé150c50c678/
+CI37623116898, main1479cd6cec/CI37611762238. Publier #35 cohérente, vérifier CI
+entière/trois jobs/SHA/race auth et consigner preuve effective dans PR/reprise152.
+Prochain152 : corpus local d'enrôlement adapté/provenance/licence, puis revue/
+clôture153. Liste initiale non déclarée suffisante pour release login. Estimation
+après151/CI M4 6–13 (garde réalisée ; corpus/revue puis API2–3/Web/revue2–4),
+M5 10–18, total16–31/deux jalons, marge/périmètre inchangés. MIT/AD/OIDC après MVP.
+Aucun lot152 commencé ni fusion #35 prévue dans151.

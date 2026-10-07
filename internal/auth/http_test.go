@@ -190,6 +190,13 @@ func TestHTTPAuthGuardsBeforeBodyHashOrRevocation(t *testing.T) {
 		{"foreign origin", 403, func(r *http.Request) { r.Header.Set("Origin", "https://queueatlas.example.attacker.example") }},
 		{"duplicate origin", 403, func(r *http.Request) { r.Header.Add("Origin", testAuthOrigin) }},
 		{"referer only", 403, func(r *http.Request) { r.Header.Del("Origin"); r.Header.Set("Referer", testAuthOrigin+"/") }},
+		{"same site", 403, func(r *http.Request) { r.Header.Set("Sec-Fetch-Site", "same-site") }},
+		{"cross site", 403, func(r *http.Request) { r.Header.Set("Sec-Fetch-Site", "cross-site") }},
+		{"navigation mutation", 403, func(r *http.Request) { r.Header.Set("Sec-Fetch-Site", "none") }},
+		{"duplicate fetch site", 403, func(r *http.Request) {
+			r.Header.Add("Sec-Fetch-Site", "same-origin")
+			r.Header.Add("Sec-Fetch-Site", "same-origin")
+		}},
 		{"query", 400, func(r *http.Request) { r.URL.RawQuery = "password=private" }},
 		{"empty query", 400, func(r *http.Request) { r.URL.ForceQuery = true }},
 		{"encoding", 415, func(r *http.Request) { r.Header.Set("Content-Encoding", "gzip") }},

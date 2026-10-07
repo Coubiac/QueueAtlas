@@ -46,9 +46,7 @@ func NewHTTPHandler(login *LocalLogin, origin string) (*HTTPHandler, error) {
 }
 
 func (h *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Cache-Control", "no-store")
-	w.Header().Set("Pragma", "no-cache")
-	w.Header().Set("X-Content-Type-Options", "nosniff")
+	authResponseHeaders(w)
 	if h == nil || h.login == nil || h.origin == "" {
 		authHTTPError(w, http.StatusServiceUnavailable)
 		return
@@ -62,10 +60,7 @@ func (h *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		authHTTPError(w, http.StatusMethodNotAllowed)
 		return
 	}
-	// Fail closed on absent/null/duplicate origins and direct cleartext, even on
-	// loopback. SameSite alone is not login CSRF protection. No Referer fallback.
-	origins := r.Header.Values("Origin")
-	if r.TLS == nil || r.Host != h.host || len(origins) != 1 || origins[0] != h.origin {
+	if !h.requestAllowed(r, true) {
 		authHTTPError(w, http.StatusForbidden)
 		return
 	}
@@ -77,23 +72,10 @@ func (h *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		authHTTPError(w, http.StatusUnsupportedMediaType)
 		return
 	}
-	// Bound parsing work independently of the listener's eventual header limit.
-	cookieBytes := 0
-	for _, field := range r.Header.Values("Cookie") {
-		cookieBytes += len(field)
-		if cookieBytes > MaxAuthCookieBytes {
-			authHTTPError(w, http.StatusRequestHeaderFieldsTooLarge)
-			return
-		}
-	}
-	cookies := r.CookiesNamed(SessionCookieName)
-	if len(cookies) > 1 {
-		authHTTPError(w, http.StatusBadRequest)
+	oldToken, status := authCookieToken(r)
+	if status != 0 {
+		authHTTPError(w, status)
 		return
-	}
-	oldToken := ""
-	if len(cookies) == 1 {
-		oldToken = cookies[0].Value
 	}
 	if r.URL.Path == LogoutPath {
 		h.logout(w, r, oldToken)

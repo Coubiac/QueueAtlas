@@ -102,3 +102,12 @@ Prochain151 : garde des routes de données avec session/cookie et contrôles de
 mutations ; corpus local d'enrôlement adapté/provenance/licence dans un lot distinct,
 puis revue/clôture avant exposition. CLI/SQLite/FileSource/modules/workflow
 inchangés ; MIT et AD/OIDC/Keycloak après MVP.
+
+Validation150 effective : c50c678 dans #35, CI37623116898 entière/trois jobs/SHA
+exact/race auth réussis, REST revérifié151. La [garde151](local-http-guard.md)
+enveloppe les futurs handlers de données ; helpers de TLS/Host/Origin/cookies/
+headers partagés. Login/logout exigent désormais aussi Sec-Fetch-Site same-origin
+unique quand présent (absent accepté avec Origin obligatoire) ; same-site/cross-site/
+none/inconnu/dupliqué refusés. Vary Cookie,Origin,Sec-Fetch-Site ajouté. Garde151
+vérifiée Windows, publication/CI à terminer au commit151 ; aucun listener ou
+montage applicatif réel livré. Prochain152 corpus d'enrôlement, puis revue153.
