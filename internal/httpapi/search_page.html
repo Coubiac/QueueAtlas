@@ -44,7 +44,7 @@
         <td><time datetime="{{date .At}}">{{date .At}}</time><small>{{label .TimeQuality}}</small></td>
         <td>{{label .Kind}}{{if .NoQueue}}<small class="badge">NOQUEUE</small>{{end}}{{if .PrequeueDisposition}}<small>{{label .PrequeueDisposition}}</small>{{end}}</td>
         {{if .Candidate}}
-        <td><code>{{.Candidate.QueueID}}</code><small>{{.Candidate.Instance}}</small><small>Génération {{.Candidate.Generation}}</small></td>
+        <td><a class="candidate" href="{{candidateURL .Candidate.ID}}"><code>{{.Candidate.QueueID}}</code> — détail</a><small>{{.Candidate.Instance}}</small><small>Génération {{.Candidate.Generation}}</small></td>
         <td><ul class="counts"><li>Inconnus : {{.Candidate.Counts.Unknown}}</li><li>sent (transport) : {{.Candidate.Counts.Sent}}</li><li>delivered (remise reconnue) : {{.Candidate.Counts.Delivered}}</li><li>Différés : {{.Candidate.Counts.Deferred}}</li><li>Échecs : {{.Candidate.Counts.Bounced}}</li></ul>{{if .Candidate.ExpirationReports}}<small>Expirations rapportées : {{.Candidate.ExpirationReports}}</small>{{end}}</td>
         <td><ul>{{range .Candidate.Reserves}}<li>{{label .}}</li>{{end}}</ul></td>
         {{else}}

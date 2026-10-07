@@ -71,10 +71,12 @@ jobs/SHA exact réussis, race HTTPAPI Linux1.26 et journal HTTPAPI Windows véri
 état revérifié REST157. Lot157 publié sur277d981, CI37650350084 entière/trois jobs/
 SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Clôture158
 fusionnée #36 sur8c3aa85, CI finale37653248114 et main37653544179 entières réussies,
-branche API nettoyée ; preuves revérifiées159. Page Web159 réalisée localement sur
-codex/m4-web,25tests HTTPAPI Windows/vet/format/diff passent ; publication et CI
-encore à terminer au commit. Prochain160 : détail Web protégé du candidat.
-Deux jalons M4/M5 restent, environ12–27lots après159/CI,
+branche API nettoyée ; preuves revérifiées159. Recherche Web159 publiée dans #37
+sur b907914, CI37657564872 entière/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26 réussis, revérifiés160. Détail Web160 réalisé localement,28tests HTTPAPI
+Windows/vet/format/diff passent ; publication/CI à terminer au commit.
+Prochain161 : timeline Web paginée. Deux jalons M4/M5 restent, environ15–30lots
+après160/CI ; estimation M4 corrigée5–12 selon les comportements explicitement restants,
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3436,11 +3438,12 @@ Lot157 publié sur277d981, CI37650350084 entière/trois jobs/SHA exact/HTTPAPI W
 race Linux1.26 réussis, revérifiés REST158. Clôture158 effective : #36 fusionnée
 sur8c3aa85, CI finale37653248114/main37653544179 entières réussies, revue COMMENT
 5445385773 sur tête e8bde71, branche nettoyée ; preuves revérifiées159.
-Lot159 page Web de recherche réalisée localement, voir [contrat](web-search.md).
-Au commit159 : publier codex/m4-web dans une nouvelle PR Web brouillon ; vérifier
-workflow entier/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 et consigner
-preuve dans la PR. Prochain160 : détail Web protégé du candidat, même PR.
-Timeline Web et revue navigateur ensuite ; aucun160 commencé dans cette reprise.
+Lot159 recherche Web publiée #37/b907914, CI37657564872 entière/trois jobs/SHA exact/
+HTTPAPI Windows/race Linux1.26 réussis, revérifiés160. Branche propre/synchronisée.
+Lot160 détail Web réalisé, voir [contrat](web-detail.md). Au commit : publier sur
+codex/m4-web, même #37 brouillon ; vérifier workflow entier/trois jobs/SHA exact/
+HTTPAPI Windows/race Linux1.26 et consigner preuve dans PR puis reprise161.
+Prochain161 : timeline Web paginée ; aucun161 commencé dans cette reprise.
 Ne pas présenter un événement comme identité globale ni reconstruire depuis une
 seule page. Bibliothèque API relue ; listener/serve/autres vues Web/filtres complémentaires
 et raccordements restent à réaliser. MIT, AD/OIDC/Keycloak après MVP.
@@ -5431,3 +5434,64 @@ deux lots restent (vues restantes/revue), leur découpage précis et raccordemen
 restent dans la marge. M4 2–9 après159/CI, M5 10–18, total12–27/deux jalons,
 fourchette conservée sans réduction automatique à chaque numéro. Aucun160 commencé.
 MIT, AD/OIDC/Keycloak après MVP. Aucun serveur installable ou M4 terminé annoncé.
+
+## Lot160 — détail Web protégé du candidat
+
+Résultat attendu : lien depuis les candidats attribués de recherche vers leur
+génération complète, destinataires/références/réserves en texte échappé ; refus
+explicite d'une révision périmée. Timeline dans le lot suivant, même PR #37.
+
+### Départ et preuve effective159
+
+codex/m4-web propre, locale/origin/#37 identiques à
+`b907914269faea03cdd794d317062f636691d3e1`, base main8c3aa85, #37 ouverte/brouillon.
+[CI37657564872](https://github.com/Coubiac/QueueAtlas/actions/runs/37657564872)
+entière completed/success, trois jobs : Go1.26 112916458112, stable112916458348,
+Windows112916458577. HTTPAPI Windows/race HTTPAPI Linux1.26 réussis ; stable race
+normalement skipped. SHA/étapes/workflow/tête/base revérifiés REST160 après fetch/
+prune. Main validé1588c3aa85/CI37653544179, aucune nouvelle fusion. Issue #7
+actualisée159 avec réalisé/restant, toujours ouverte ; pas de clôture applicative.
+
+### Comportement réalisé
+
+GET/HEAD `/messages/{id}` via `NewConsultationHandler`. Liens de recherche depuis
+ID canonique et préfixe local, pas d'URL SMTP. Même decode/detail API, toutes
+origines/cycles/dates participent au budget/révision puis génération sélectionnée.
+Query même vide refusée400, protocole avant base, ID canonique borné, segment
+supplémentaire404. API seule inchangée, aucune autre lecture de recherche ou horloge.
+
+Réception/ancre/retrait/réserves, comptes/expirations/tentatives non interprétées ;
+adresses exactes/vide/base64 explicite, résultat observé et nombre de tentatives,
+toutes références simultanées, offsets int64 exacts. Unknown/conflits/transport
+restent prudents. Aucun raw/message/DSN/relay/réponse/maps/credential dans cette vue.
+Même template/CSS/CSP/cache/anti-framing, HTML cap1MiB avant200, erreurs fixes sans
+ID réfléchi. Import tardif409 sans nouvelle génération ; absence404 sans conclure
+absence de logs, budget entier422, admission429, contexte/volume/SQL503 sans données
+partielles. Garde/protocole antérieurs gardent leurs refus texte/JSON.
+[Contrat](web-detail.md), contrat recherche/API actualisés.
+
+### Vérifications et suite
+
+Trois nouveaux tests,28HTTPAPI total : Windows Go1.26 `-count=1` passe (2.276s),
+vet HTTPAPI/gofmt/diff passent. SQLite réel recherche→lien canonique→détail, faits
+hors période, générations séparées/absente, budget entier/import tardif409 ;
+protocole avant base et constructeur API inchangé. Client HTTPS réel données
+hostiles/vide/base64/casse/offset>2^53/conflits simultanés/HEAD/révocation. Champs
+binaires via seam privé, pas une preuve d'import SQLite de non UTF-8. Admission
+API/recherche/détail Web partagée, annulation tardive et expansion des références
+HTML>1MiB refusées sans préfixe partiel ; erreurs privées et HEAD404/slot libéré.
+Pas de navigateur réel/Linux local revendiqué ; clavier/rendu adaptatif/XSS de la
+source au rendu et caractères de présentation restent pour la revue Web.
+
+Au commit160 : publication/CI à terminer sur codex/m4-web dans la même #37
+brouillon. Vérifier workflow entier/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26, consigner preuve dans PR puis reprise161. Dernier publié validé159
+b907914/CI37657564872, main1588c3aa85/CI37653544179.
+
+Prochain161 : timeline Web paginée, tentatives et rendu texte sous permission
+brute explicite. Connexion, montage serveur, compléments et revue ensuite.
+L'ancienne borne2–9 comptait seulement les vues/revue au minimum ; connexion,
+montage et compléments étaient implicites. Au moins cinq comportements distincts
+restent, M4 corrigé5–12 après160/CI ; M5 10–18, total15–30/deux jalons. Périmètre
+MVP inchangé, fourchette de planification incertaine. #7/M4/MVP non clos, aucun161
+commencé. MIT, AD/OIDC/Keycloak après MVP. Un seul petit lot dans cette reprise.

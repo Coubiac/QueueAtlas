@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Détail du candidat — QueueAtlas</title>
+  <style>{{styles}}</style>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <header class="top"><a class="brand" href="/messages">QueueAtlas</a><span>Suivi Postfix</span></header>
+  <main id="main">
+    <nav aria-label="Navigation"><a href="/messages">Rechercher un événement</a></nav>
+    <div class="heading"><p class="eyebrow">Candidat de file</p><h1>Détail du candidat</h1><p>Une génération observée dans une instance Postfix.</p></div>
+    {{if .Error}}<section class="panel error" aria-labelledby="error-title"><h2 id="error-title">Consultation interrompue</h2><p>{{.Error}}</p><a href="/messages">Relancer la recherche</a></section>{{end}}
+    {{with .Detail}}
+    <p class="notice">Couverture des journaux non prouvée. Ce candidat n’est pas une identité globale de message. Un rapport de transport ne prouve pas la livraison finale.</p>
+    <section class="panel" aria-labelledby="candidate-title">
+      <h2 id="candidate-title">File <code>{{.Candidate.QueueID}}</code></h2>
+      <dl>
+        <dt>Instance</dt><dd><code>{{.Candidate.Instance}}</code></dd>
+        <dt>Génération candidate</dt><dd>{{.Candidate.Generation}}</dd>
+        <dt>Réception native</dt><dd>{{if .ReceiptObserved}}Observée{{else}}Non observée{{end}}</dd>
+        <dt>Première référence de la génération</dt><dd>{{template "candidate-ref" .First}}</dd>
+        <dt>Retrait de file</dt><dd>{{if .Removed}}{{template "candidate-ref" .Removed}}{{else}}Non observé{{end}}</dd>
+        <dt>Temps sous hypothèse</dt><dd>{{if .HasNonExplicitTime}}Présent{{else}}Non signalé{{end}}</dd>
+        <dt>Continuité entre origines</dt><dd>{{if .CrossStreamUncertain}}Incertaine{{else}}Non signalée ; couverture non prouvée{{end}}</dd>
+        <dt>Tentatives non interprétées</dt><dd>{{.UnprojectedDeliveryCount}}</dd>
+        <dt>Expirations rapportées</dt><dd>{{.Candidate.ExpirationReports}}</dd>
+      </dl>
+      <h3>Comptes observés</h3>
+      <ul class="counts"><li>Inconnus : {{.Candidate.Counts.Unknown}}</li><li>sent (transport) : {{.Candidate.Counts.Sent}}</li><li>delivered (remise reconnue) : {{.Candidate.Counts.Delivered}}</li><li>Différés : {{.Candidate.Counts.Deferred}}</li><li>Échecs : {{.Candidate.Counts.Bounced}}</li></ul>
+    </section>
+    <section class="results" aria-labelledby="reserve-title"><h2 id="reserve-title">Réserves de reconstruction</h2><div class="panel"><ul>{{range .Candidate.Reserves}}<li>{{label .}}</li>{{end}}</ul></div></section>
+    <section class="results" aria-labelledby="recipients-title">
+      <h2 id="recipients-title">Destinataires observés</h2>
+      <p class="help">Adresses exactes, sans normalisation. Les dernières tentatives simultanées restent incertaines ; leurs références sont toutes conservées.</p>
+      {{if .Recipients}}
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Destinataires, tableau défilant"><table>
+        <caption>Résultats par adresse pour cette génération uniquement</caption>
+        <thead><tr><th scope="col">Adresse native</th><th scope="col">Résultat observé</th><th scope="col">Tentatives</th><th scope="col">Dernières références</th></tr></thead>
+        <tbody>{{range .Recipients}}<tr>
+          <td>{{if eq .Address.Encoding "base64"}}<small>Octets non UTF-8 — base64</small><code>{{.Address.Value}}</code>{{else}}{{if .Address.Value}}<code>{{.Address.Value}}</code>{{else}}Adresse vide observée{{end}}{{end}}{{if .AddressUnspecified}}<small>Adresse non spécifiée</small>{{end}}</td>
+          <td>{{label .ObservedStatus}}{{if .OrderUncertain}}<small>Dernières tentatives simultanées</small>{{end}}</td>
+          <td>{{.AttemptCount}}</td>
+          <td><ul>{{range .Latest}}<li>{{template "candidate-ref" .}}</li>{{end}}</ul></td>
+        </tr>{{end}}</tbody>
+      </table></div>
+      {{else}}<div class="panel empty"><p>Aucun destinataire observé pour cette génération. Cela ne prouve pas l’absence dans les journaux.</p></div>{{end}}
+    </section>
+    {{end}}
+  </main>
+  <footer>QueueAtlas · Journaux observés, reconstruction prudente</footer>
+</body>
+</html>
+{{define "candidate-ref"}}<code>{{.SourceID}}</code><small>Origine : <code>{{.OriginID}}</code></small><small>Octets {{.Start}}–{{.End}}</small>{{end}}

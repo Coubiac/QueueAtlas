@@ -64,6 +64,8 @@ Le parcours clavier, le rendu adaptatif et XSS/CSP de la source jusqu'au rendu
 dans un navigateur réel restent à vérifier lors de la revue Web. Le test HTTPS
 Go ne remplace pas cette validation. Aucun test navigateur revendiqué au lot159.
 
-Prochain160 : vue de détail protégée du candidat, dans la même PR Web. Timeline,
-affichage brut sous permission, connexion Web et montage serveur sont distincts.
+Depuis160, un candidat attribué possède un lien canonique local vers le
+[détail Web protégé](web-detail.md). NOQUEUE/streams non attribués restent sans lien.
+Prochain161 : timeline Web, dans la même PR #37. Affichage brut sous permission,
+connexion Web et montage serveur sont distincts.
 L'issue #7 reste ouverte ; MIT conservée, AD/OIDC/Keycloak après MVP.

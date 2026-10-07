@@ -92,10 +92,18 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	detailID := ""
 	timeline := false
 	page := h.web && r.URL.Path == SearchPagePath
-	if page {
+	candidatePage := h.web && strings.HasPrefix(r.URL.Path, CandidatePagePrefix)
+	if page || candidatePage {
 		searchPageHeaders(w)
 	}
-	if !page && r.URL.Path != SearchPath {
+	if candidatePage {
+		detailID = strings.TrimPrefix(r.URL.Path, CandidatePagePrefix)
+		if detailID == "" || strings.Contains(detailID, "/") {
+			candidatePageError(w, r, http.StatusNotFound)
+			return
+		}
+	}
+	if !page && !candidatePage && r.URL.Path != SearchPath {
 		if !strings.HasPrefix(r.URL.Path, SearchPath+"/") {
 			searchHTTPError(w, r, http.StatusNotFound, "not_found")
 			return
@@ -123,6 +131,10 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	if page {
 		h.serveSearchPage(w, r)
+		return
+	}
+	if candidatePage {
+		h.serveCandidatePage(w, r, detailID)
 		return
 	}
 	var query sqlite.SearchQuery

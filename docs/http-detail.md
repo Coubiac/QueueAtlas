@@ -6,6 +6,9 @@ Le handler de [recherche](http-search.md) dessert aussi
 encodage JSON plafonné à1MiB et erreurs privées. Aucun listener, SQL write,
 installation de projection ou interface Web n'est créé dans ce lot.
 
+Depuis160, `NewConsultationHandler` propose aussi le [détail Web](web-detail.md)
+à partir de la même lecture/révision et des mêmes budgets ; API seule inchangée.
+
 ## Identité révisable
 
 Les candidats de recherche contiennent désormais `id`, encodé par

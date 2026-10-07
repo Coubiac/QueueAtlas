@@ -20,7 +20,7 @@ import (
 
 const SearchPagePath = "/messages"
 
-//go:embed search_page.html search_page.css
+//go:embed search_page.html search_page.css candidate_page.html
 var searchPageAssets embed.FS
 
 var (
@@ -30,7 +30,9 @@ var (
 		"styles": func() template.CSS { return template.CSS(searchPageCSS) },
 		"label":  searchPageLabel,
 		"date":   func(t time.Time) string { return t.UTC().Format(time.RFC3339Nano) },
-	}).ParseFS(searchPageAssets, "search_page.html"))
+		// Candidate IDs come from the canonical encoder, not native log URLs.
+		"candidateURL": func(id string) string { return CandidatePagePrefix + id },
+	}).ParseFS(searchPageAssets, "search_page.html", "candidate_page.html"))
 )
 
 func embeddedSearchStyle() (string, string) {
@@ -43,7 +45,7 @@ func embeddedSearchStyle() (string, string) {
 }
 
 // NewConsultationHandler returns one protected router for the API and HTML
-// search page, sharing its store, admission and deadlines. Mount auth separately.
+// search/detail pages, sharing its store, admission and deadlines. Mount auth separately.
 // No listener or login page is created. NewSearchHandler remains API-only.
 func NewConsultationHandler(guard *auth.HTTPHandler, store *sqlite.Store, options SearchOptions) (http.Handler, error) {
 	if store == nil {
@@ -134,11 +136,15 @@ func (h *searchHandler) serveSearchPage(w http.ResponseWriter, r *http.Request) 
 }
 
 func writeSearchPage(w http.ResponseWriter, r *http.Request, ctx context.Context, status int, data searchPageData) error {
+	return writeHTMLPage(w, r, ctx, status, "search_page.html", data)
+}
+
+func writeHTMLPage(w http.ResponseWriter, r *http.Request, ctx context.Context, status int, name string, data any) error {
 	if err := ctx.Err(); err != nil {
 		return err
 	}
 	var buffer responseBuffer
-	if err := searchPageTemplate.Execute(&buffer, data); err != nil {
+	if err := searchPageTemplate.ExecuteTemplate(&buffer, name, data); err != nil {
 		return err
 	}
 	if err := ctx.Err(); err != nil {
@@ -176,6 +182,7 @@ func searchPageLabel(value any) string {
 		"address_unspecified": "Adresse non spécifiée", "latest_order_uncertain": "Dernières tentatives simultanées", "unknown_result": "Résultat inconnu", "unprojected_deliveries": "Tentatives non interprétées",
 		"undated": "Origine sans date exploitable", "boundary_unproven": "Limite de génération non prouvée", "conflicting_message_ids": "Message-ID contradictoires",
 		"warning": "Avertissement, pas un rejet", "rejected": "Rejet observé",
+		"sent": "sent (transport)", "delivered": "delivered (remise reconnue)", "deferred": "Différé", "bounced": "Échec rapporté",
 	}
 	var key string
 	switch v := value.(type) {
@@ -188,6 +195,8 @@ func searchPageLabel(value any) string {
 	case model.Kind:
 		key = string(v)
 	case model.TimeQuality:
+		key = string(v)
+	case correlation.DeliveryStatus:
 		key = string(v)
 	default:
 		return "Inconnu"
