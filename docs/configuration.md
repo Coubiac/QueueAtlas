@@ -122,3 +122,61 @@ readonly pour vérifier seulement la configuration et la compatibilité existant
 Les sources, CIDR/domaines, rétention et paramètres d'authentification demanderont
 des contrats séparés selon les composants raccordés. `serve`,
 auth/API/Web restent à développer. AD/OIDC après MVP, MIT conservée.
+
+## Lot139 : contrat pur d'une source fichier
+
+`config.FileSource` décrit une entrée fichier en Go. `FileSourceDefaults()` fournit
+les paramètres facultatifs ; ID, Name et Path restent obligatoires. `Validate()`
+refuse le premier champ invalide via `ErrInvalid` et une règle fixe, sans recopier
+les valeurs. La valeur est copiée, sans slice/map/pointeur partagé.
+
+Ce contrat est indépendant de `Config` : **le chargeur YAML n'accepte pas encore
+de section source**. Le lot140 ajoutera son chargement strict/borné ; résolution
+des chemins et raccordement FileSource seront vérifiés aux étapes correspondantes.
+Les commandes actuelles conservent leur comportement. Aucun composant n'est lancé
+par ce lot.
+
+| Champ Go | Défaut | Contrat |
+| --- | --- | --- |
+| ID | Aucun, requis | 1–128octets ASCII ; premier caractère alphanumérique, puis alphanumérique, `.`, `_` ou `-` |
+| Name | Aucun, requis | 1–128octets UTF-8, sans espaces périphériques ni caractères de contrôle |
+| TrustedHost | Vide | Facultatif ; identifiant d'instance ASCII, syntaxe de ID, au plus255octets |
+| Path | Aucun, requis | Chemin littéral de fichier selon l'OS, 1–4096octets UTF-8 |
+| StartAt | beginning | beginning ou end seulement |
+| PollInterval | 1s | 10ms–1m inclus |
+| RotationGrace | 30s | 10ms–24h inclus |
+| ResumeOrigins | 1000 | 1–1000 inclus, budget des états parcourus |
+| ResumeEntries | 2000 | 1–2000 inclus, budget partagé des entrées de répertoires |
+
+Les délais/budgets et modes réutilisent les constantes de la bibliothèque FileSource.
+Contrairement aux zéros qui sélectionnent des défauts dans son constructeur,
+le contrat applicatif exige que les champs présents soient valides : durées/budgets
+zéro et StartAt vide sont refusés. Le futur chargeur remplacera seulement les champs
+présents après application des défauts. Les politiques de rejeu d'un checkpoint zéro
+restent strictes ; aucune option applicative de relaxation n'est ajoutée.
+
+ID et TrustedHost sont des clés opaques sensibles à la casse, sans normalisation
+ou résolution DNS ; TrustedHost ne certifie pas un hôte lu dans les logs. Le stockage
+existant utilise TrustedHost comme instance si renseigné, sinon l'ID de source.
+L'opérateur devra garder ces clés stables et attribuer correctement les instances ;
+le contrat d'une seule valeur ne contrôle pas les doublons entre sources.
+
+Path accepte absolu ou relatif, `..`, espaces internes et texte littéral `${...}`,
+`~` ou templates, sans expansion/résolution. Refus : vide, espaces périphériques,
+contrôles, UTF-8 invalide, dépassement4096octets, absence de nom de fichier,
+séparateur final, URI, `:memory:`, UNC et caractères joker `*`/`?`. Sous Windows,
+chemin relatif à un lecteur (`C:fichier.log`) ou enraciné sans lecteur (`\fichier.log`)
+refusé. La borne syntaxique ne garantit pas les limites physiques de l'OS.
+Aucun fichier/parent n'est ouvert, créé ou vérifié ; répertoire, lien, montage réseau,
+droits, lisibilité et format des lignes ne sont pas attestés.
+
+beginning conserve le départ normal. end sera transmis au FileSource existant :
+bootstrap sans historique uniquement, frontière LF complète, reprises/rotations
+inchangées selon [ADR-010](adr/ADR-010-initial-file-end.md). La validation du mot
+end ne démontre pas ces conditions physiques ou durables.
+
+Quatre nouveaux tests139 : défauts indépendants/obligatoires, identité/nom/instance
+et confidentialité, chemins sans IO/mutation/expansion et ambiguïtés Windows,
+bornes inclusives/débordements/zéros/modes. Seize tests config, vet/format/diff
+locaux Windows passés ; CI de publication à vérifier après commit. Aucun changement
+du chargeur, de la CLI, du stockage ou de l'ingestion ; pas de dépendance nouvelle.

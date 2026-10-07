@@ -41,10 +41,12 @@ Lot134 publié dans #31 sur8e9008b, CI37572091851 entière réussie/trois jobs/S
 Lot135 publié dans #31 surcae194c, CI37574528679 entière réussie/trois jobs/SHA exact.
 Lot136 clôturé : #31 fusionnée sur918ef0c, CI finale37576814504/main37576942301
 entières réussies, branche diagnostics supprimée. Lot137 doctor publié dans #32
-sur d1feeb9, CI37579618027 entière/trois jobs/SHA exact réussis. Relecture138
-favorable ; publication/CI finale/fusion/main à terminer au moment du commit,
-voir bilan en fin de fichier. Prochain lot139 après clôture : contrat source fichier.
-Deux jalons M4/M5 restent, environ14–32lots après138, M3 zéro lot restant ;
+sur d1feeb9, CI37579618027 entière/trois jobs/SHA exact réussis. Clôture138 fusionnée
+#32 sur0d2cad4, CI finale37581947764/main37582076645 entières réussies, branche
+doctor supprimée. Contrat source fichier139 implémenté/vérifié localement sur
+codex/m4-source-config ; publication/CI à terminer au moment du commit.
+Prochain lot140 : chargement YAML strict/borné du contrat139.
+Deux jalons M4/M5 restent, environ20–36lots après139, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3375,10 +3377,12 @@ CI37572091851 entière réussie. Lot135 publié surcae194c, CI37574528679 entiè
 réussie. Clôture136 terminée : #31 fusionnée sur918ef0c, CI finale37576814504 et
 main37576942301 entières réussies, branche diagnostics supprimée.
 Doctor137 publié sur d1feeb9 dans #32, CI37579618027 entière/trois jobs/SHA exact.
-Relecture138 favorable : publier le bilan, vérifier CI finale sur tête exacte,
-COMMENT assisté/ready/fusion #32 et CI main, actualiser main/nettoyer la branche.
-Prochain lot139 après succès : contrat pur de configuration d'une source fichier,
-tests/doc ; chargement YAML et raccordement dans des lots suivants.
+Clôture138 terminée : #32 fusionnée sur0d2cad4, CI finale37581947764/main37582076645
+entières réussies, branche doctor supprimée. Contrat pur source fichier139 validé
+localement : publier/créer et attacher la PR de configuration, vérifier CI entière
+et trois jobs sur SHA exact. Prochain lot140 : chargement YAML strict/borné du
+contrat139, defaults des champs absents et chemins depuis répertoire config,
+tests/doc ; aucun démarrage de source, raccordement FileSource au lot suivant.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3386,7 +3390,7 @@ Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des s
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques, CLI de diagnostic et configuration restent au jalon d'application.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-doctor.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-source-config.
 
 ## Suite à découper au fil des reprises
 
@@ -4144,3 +4148,51 @@ Prochain lot139 : contrat pur de configuration d'une source fichier (identité,
 chemin/politique de départ, bornes existantes), tests/doc ; YAML/raccordement dans
 des lots suivants. M4 reste4–14lots, M5 10–18, total14–32 après138, deux jalons,
 estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Validation effective138 consignée à la reprise139 :
+`84be3c646e3b369835bd2026b2755e10e8875c7b` publié dans #32,
+CI37581947764 entière réussie/trois jobs/SHA exact. Revue COMMENT assistée5438508226
+sur cette tête ; PR prête puis fusionnée sur
+`0d2cad4a4d4d7484653f93c2c683c412825d6bae`. CI main37582076645 entière réussie,
+trois jobs/SHA exact vérifiés. Main actualisé propre, branche doctor supprimée
+local/GitHub ; seul main distant à la reprise. Les attentes138 précédentes sont
+le snapshot prépublication, terminé ; fusion/SHA revérifiés REST à la reprise139.
+
+## Lot139 : contrat pur de configuration d'une source fichier
+
+Résultat attendu : valeur Go indépendante avec défauts et validation sans IO,
+identité/chemin/politique initiale et bornes FileSource, tests et doc immédiate.
+Nouvelle branche codex/m4-source-config depuis main1380d2cad4 ; #32 fusionnée.
+
+FileSourceDefaults/Validate : ID/Name/Path requis, TrustedHost facultatif, start
+beginning/end, poll1s/grace30s et budgets1000/2000 par défaut, bornes de bibliothèque
+réutilisées. Valeurs présentes zéro/mode vide refusées, pas de normalisation/mutation.
+ID ASCII128octets/instance255, nom UTF-8128 sans espaces périphériques/contrôles,
+chemin UTF-8 littéral4096octets local selon OS ; URI/UNC/jokers/absence de nom et
+chemins Windows ambigus refusés. Aucune expansion/résolution/DNS/ouverture/écriture.
+Erreurs ErrInvalid/champ-règle fixe sans valeur. Contrat dans docs/configuration.md.
+
+Config/chargeur YAML/CLI/stockage/ingestion inchangés ; pas encore de section source
+acceptée, pas de constructeur/raccordement ou Run. TrustedHost ne prouve pas un
+hôte de log ; clés stables/uniques à définir par l'opérateur, pas de contrôle entre
+plusieurs sources dans ce contrat d'une valeur. End ne certifie pas les conditions
+physiques/durables de bootstrap ; politiques de reprise strictes conservées.
+
+Quatre nouveaux tests et seize tests config/vet/format/diff Windows passés : défauts
+indépendants/requis, textes/tailles/confidentialité, chemins absents/no IO/no mutation,
+syntaxe Windows, bornes inclusives/débordements/zéros/modes. Jobs config Windows et
+Linux existants couvrent ces tests ; aucun nouveau module/workflow. Fondations
+CLI/SQLite/FileSource non relancées localement sans modification/risque nouveau.
+
+Au moment du commit139 : publication/PR/CI à terminer ; dernier main validé
+1380d2cad4/CI37582076645. Publier/créer et attacher la PR de chantier, vérifier
+workflow entier/trois jobs/SHA exact, consigner preuve dans PR et à la reprise140.
+Prochain lot140 : chargement YAML strict/borné du contrat139, défauts si champs
+absents et résolution relative depuis config, tests/doc ; aucun démarrage de source.
+Réutiliser cette PR pour raccordement pur puis revue/clôture, avant auth/API/Web.
+
+Estimation révisée après139 : M4 10–18lots, M5 10–18, total20–36, deux jalons.
+L'ancienne borne4–14 après138 était trop optimiste : le découpage restant distingue
+YAML/raccordement/clôture3lots, compte/sessions/protections3–5, API2–3, Web/revue2–4,
+avec marge d'intégration jusqu'à18 pour M4. Ce sont des estimations et non un backlog
+fermé ; aucun pourcentage de MVP. MIT conservée, AD/OIDC/Keycloak après MVP.

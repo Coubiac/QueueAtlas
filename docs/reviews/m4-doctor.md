@@ -59,3 +59,14 @@ Prochain lot139 : contrat pur de configuration d'une source fichier (identité,
 chemin et politique de départ, avec bornes existantes), tests et documentation ;
 chargement YAML et raccordement des composants dans des lots suivants.
 M4 reste4–14lots, M5 10–18, total14–32 après138, estimation incertaine.
+
+## Clôture effective138, consignée à la reprise139
+
+Bilan publié sur `84be3c646e3b369835bd2026b2755e10e8875c7b` ;
+[CI finale37581947764](https://github.com/Coubiac/QueueAtlas/actions/runs/37581947764)
+entière réussie/trois jobs/SHA exact. Revue COMMENT assistée5438508226 sur cette tête,
+PR #32 prête puis fusionnée sur `0d2cad4a4d4d7484653f93c2c683c412825d6bae`.
+[CI main37582076645](https://github.com/Coubiac/QueueAtlas/actions/runs/37582076645)
+entière réussie/trois jobs/SHA exact. Main actualisé propre et branche doctor supprimée
+local/GitHub. Les attentes ci-dessus sont le snapshot prépublication138, terminé.
+Le contrat source139 commence sur une branche séparée ; M4 reste en cours.
