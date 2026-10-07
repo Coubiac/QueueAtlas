@@ -46,10 +46,15 @@ sur d1feeb9, CI37579618027 entière/trois jobs/SHA exact réussis. Clôture138 f
 doctor supprimée. Contrat source fichier139 publié surcfd2b39 dans #33,
 CI37585141938 entière/trois jobs/SHA exact réussis. YAML source140 publié sur455148a,
 CI37588258338 entière/trois jobs/SHA exact réussis. Conversion141 publiée sur223849c,
-CI37591355873 entière/trois jobs/SHA exact réussis. Relecture142 favorable ;
-publication/CI finale/fusion/main de #33 à terminer au moment du commit.
-Prochain lot143 : contrat pur du compte administrateur local et paramètres de hachage.
-Deux jalons M4/M5 restent, environ17–33lots après142, M3 zéro lot restant ;
+CI37591355873 entière/trois jobs/SHA exact réussis. Clôture142 fusionnée #33 sur19843d6,
+CI finale37594338289/main37594545438 entières réussies, branche sources supprimée.
+Contrat auth143 publié sure00573c dans #34, CI37598069906 entière/trois jobs/SHA
+exact réussis. Hash/codec144 publié sur22f1694, CI37601878573 entière/trois jobs/SHA
+exact réussis. Persistance145 publiée sur19415ba, CI37605851032 entière/trois jobs/
+SHA exact réussis. CLI146 publiée sur cfde74d, CI37608644994 entière/trois jobs/SHA
+exact réussis. Revue147 favorable/correction espaces seuls vérifiée Windows ;
+publication/CI finale/fusion/main à terminer au commit. Prochain148 : sessions bornées.
+Deux jalons M4/M5 restent, environ16–32lots après clôture147, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3384,10 +3389,15 @@ Clôture138 terminée : #32 fusionnée sur0d2cad4, CI finale37581947764/main3758
 entières réussies, branche doctor supprimée. Contrat source139 publié surcfd2b39
 dans #33, CI37585141938 entière réussie. YAML source140 publié sur455148a,
 CI37588258338 entière réussie. Conversion141 publiée sur223849c, CI37591355873
-entière réussie. Relecture142 favorable : publier, vérifier CI finale/trois jobs/SHA
-exact, revue COMMENT assistée, ready/fusion #33 puis CI main et nettoyage.
-Prochain lot143 : contrat pur du compte administrateur local et paramètres de
-hachage bornés, tests/doc ; persistance/CLI/sessions dans les lots suivants.
+entière réussie. Clôture142 fusionnée #33 sur19843d6, CI finale37594338289/
+main37594545438 entières réussies, branche sources supprimée. Auth143 publié
+sure00573c dans #34, CI37598069906 entière réussie. Hash144 publié sur22f1694,
+CI37601878573 entière réussie. Persistance145 publiée sur19415ba/CI37605851032
+entière réussie. CLI146 publiée sur cfde74d/CI37608644994 entière réussie. Revue147
+favorable/correction vérifiée Windows : publier dans #34, CI finale/trois jobs/SHA
+exact puis revue COMMENT/ready/fusion/main/nettoyage. Prochain148 : sessions en
+mémoire bornées/émission/expiration/révocation/tests, sans HTTP/login ; liste adaptée
+au futur login à traiter dans les protections HTTP, autres critères auth toujours ouverts.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3395,7 +3405,7 @@ Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des s
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques, CLI de diagnostic et configuration restent au jalon d'application.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-source-config.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-local-auth.
 
 ## Suite à découper au fil des reprises
 
@@ -4318,3 +4328,257 @@ Prochain lot143 : contrat pur compte administrateur local et paramètres de hach
 bornés, tests/doc selon ADR-006 ; persistance/CLI/sessions/protections ensuite.
 M4 reste7–15lots (clôture sources terminée après succès), M5 10–18,
 total17–33 après142, estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Clôture effective142 consignée à la reprise143 :
+`2e813fcc78261281316db61b89cfe4da66c4e7a1` publié dans #33, CI37594338289 entière
+réussie/trois jobs/SHA exact, revue COMMENT assistée5439690236 sur cette tête.
+PR prête puis fusionnée sur `19843d6a012fb3f260173e92055be6b0a5f1d0c3` ;
+CI main37594545438 entière réussie/trois jobs/SHA exact. Main propre/actualisé,
+branche sources supprimée local/GitHub. À la reprise143 : fetch effectué, main/
+origin identiques et PR fusionnée/run main réussis revérifiés REST.
+Les attentes142 précédentes sont le snapshot prépublication, terminé.
+
+## Lot143 : contrat pur de l'identité locale et des coûts de hachage
+
+Résultat attendu : identité du futur compte administrateur local et paramètres
+Argon2id bornés, validations sans IO/mutation/hash, tests/doc. Nouvelle branche
+codex/m4-local-auth depuis main14219843d6 ; pas de stockage/CLI/HTTP dans ce lot.
+
+Nouveau package internal/auth : LocalIdentity/NewLocalIdentity/Validate, identifiant
+ASCII1..64 alphanumérique initial puis ._-, casse conservée, sans compte par défaut.
+Erreurs fixes sans username, construction invalide renvoie valeur zéro ; aucune
+authentification/autorisation/uniqueness accordée par cette identité syntaxique.
+Parameters/DefaultParameters/Validate : mémoire64..256Mio, passes3..6, voies1..4,
+mémoire alignée sur4*voies ; zéros invalides et aucune sélection implicite de défauts.
+Défaut64Mio/3/4, version19/sel16octets/hash32 fixés pour le futur codec, seconde
+recommandation RFC9106 vérifiée avec documentation Go officielle. Les bornes sont
+une politique applicative, pas une garantie de latence ou de mémoire globale.
+
+Quatre tests auth, vet/format/diff Windows passés : identité/casse/indépendance,
+refus privés/zéro, défauts/profil, bornes inclusives/maxima/zéros/alignement.
+Pas d'appel Argon2, de sel généré, de format hash accepté ou dépendance ajoutée.
+CLI/config/SQLite/FileSource/workflow inchangés ; fondations locales non relancées
+sans risque nouveau. CI Linux existante go test/vet ./... couvre le nouveau package.
+Contrat et références dans docs/local-auth.md ; admission/essais/CSRF/sessions requis
+à la frontière HTTP future. MIT conservée, AD/OIDC après MVP selon ADR-008.
+
+Au moment du commit143 : publication/PR/CI à terminer ; dernier main validé142
+19843d6/CI37594545438. Publier/créer et attacher la PR auth cohérente, vérifier
+workflow entier/trois jobs/SHA exact puis consigner dans PR/reprise144.
+Prochain lot144 : hash/vérification Argon2id, codec strict/borné, sel aléatoire,
+comparaison constante et tests/vecteurs/doc ; politique de mot de passe à fixer.
+Puis persistance atomique145 et CLI146, sessions, protections HTTP et revue dans
+des lots distincts. Le contrat143 ne constitue pas un compte utilisable.
+
+Estimation révisée143 : M4 10–18lots, M5 10–18, total20–36, deux jalons.
+La borne7–15 après142 sous-estimait l'auth3–5 : six lots restent au minimum
+hash/codec, persistance, CLI, sessions, protections HTTP et revue, puis API2–3 et
+Web/revue2–4, avec marge d'intégration/diagnostic jusqu'à18. Pas d'élargissement
+fonctionnel ni pourcentage livré ; ce découpage évite de réunir les sous-systèmes.
+
+Validation effective143 consignée à la reprise144 :
+`e00573ce861ce2f3a20e99f7a9cc064174b9bd27` publié dans #34 en brouillon,
+CI37598069906 entière réussie/trois jobs/SHA exact. Tests/vet/format Linux incluant
+auth, smoke/race source-file/builds et CLI/config/diagnostics Windows passés.
+À la reprise144 : fetch, checkout propre/têtes locale/origin/PR identiques,
+main14219843d6 inchangé, PR ouverte/brouillon/mergeable/clean et workflow réussi
+revérifiés REST. Attentes143 prépublication terminées ; #34 réattachée.
+
+## Lot144 : hash/vérification et codec Argon2id borné
+
+Résultat attendu : hash avec sel aléatoire, vérification/comparaison constante,
+codec strict avant allocation Argon2, tests/vecteur indépendant/doc ; même #34.
+API HashPassword/VerifyPassword/ValidatePasswordHash et ValidatePassword, dépendance
+Go officielle golang.org/x/crypto v0.57.0 épinglée ; autres versions inchangées.
+Profil/coûts143, sel16octets crypto/rand et hash32 via IDKey, version19.
+Codec128octets/six segments/ordre exact, entiers décimaux sans signes/zéros initiaux,
+coûts+alignement validés avant dérivation, base64 standard strict/canonique sans
+padding/CRLF, tailles fixes. Erreurs fixes sans valeur privée ; record zéro en erreur.
+Hash retourne chaîne vide en erreur ; Verify vrai si correspondance, faux,nil
+pour mismatch bien formé, faux/erreur pour entrée/hash invalide. Comparaison des
+32octets à temps constant ; fonction complète/validation pas à temps constant.
+
+Secrets UTF-8 15..256points de code/1024octets max, pas de trim/troncature/case
+folding/normalisation ; buffers inchangés, aucune garantie d'effacement mémoire.
+Limites non assimilées à une force suffisante ou conformité NIST globale ; liste
+de mots de passe compromis/courants/dérivés requise au CLI146. Aucune IO de stockage,
+aucun compte/route/session créé. Admission/essais/comptes inconnus/CSRF futurs,
+pas de limite globale de mémoire/concurrence/deadline par cette primitive.
+
+Cinq tests nouveaux144/neuf auth et vet/format/diff Windows passés : frontières,
+secret littéral, vecteur externe libargon2 via argon2-cffi25.1.0 figé, version
+algorithmique, mismatches, sels distincts, refus avant entropie/erreur sans résultat,
+codec hostile/tailles/versions/coûts/maxima sans hash coûteux. Fuzzer codec5s/2workers,
+633884exécutions réussies Windows, aucune dérivation dans la campagne. Helper privé
+permet source d'entropie sentinelle ; API publique toujours crypto/rand.
+CI Windows étendue à tests auth, Linux existant couvre tests/vet/build ; CLI/config/
+SQLite/FileSource inchangés, pas de rerun local des fondations sans nouveau risque.
+Contrat/provenance/vérifications/limites dans docs/local-auth.md.
+
+Au moment du commit144 : publication/CI à terminer, dernier publié validé143
+e00573c/CI37598069906, dernier main14219843d6/CI37594545438. Publier dans #34,
+vérifier workflow entier/trois jobs/SHA exact, consigner PR puis reprise145.
+Prochain lot145 : persistance atomique/lecture bornée du compte identité+hash,
+validation sans dérivation, refus sans écrasement, tests/doc ; CLI146 puis revue,
+sessions/protections HTTP dans un chantier distinct. M4 reste9–17lots (hash/codec
+terminé, cinq lots auth minimum restent), M5 10–18, total19–35, estimation incertaine.
+MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Validation effective144 consignée à la reprise145 :
+`22f1694a19c806b84e692ecc4ab2fdd319d6ddfd` publié dans #34 en brouillon,
+CI37601878573 entière réussie/trois jobs/SHA exact. Nouvelle étape Windows auth
+réussie ; Linux tests/vet/format/smoke/race source-file/builds statiques passés.
+À la reprise145 : fetch effectué, checkout propre/têtes locale/origin/PR identiques,
+main14219843d6 inchangé, PR ouverte/brouillon/mergeable/clean et workflow réussi
+revérifiés REST. Les attentes144 précédentes sont le snapshot prépublication, terminé.
+
+## Lot145 : persistance atomique et lecture bornée du compte local
+
+Résultat attendu : LocalAccount identité/hash validés sans dérivation, record JSON
+strict/borné, création complète sans remplacement, tests/doc ; même branche/#34.
+Choix MVP : fichier local-admin.json distinct de SQLite, version1/username/password_hash
+uniquement. Répertoire existant fiable/privé requis, aucune création/chmod des parents.
+os.Root borne opérations sous répertoire ouvert ; temporaire exclusif0600 aléatoire,
+write/Sync/Close puis Link atomique sans écrasement, retrait temporaire et Sync
+répertoire Linux. Liens durs non supportés = erreur sans fallback dangereux.
+Destination existante de tout type conservée, concurrence au plus un gagnant.
+
+Lecture Lstat/Stat/identité/type/droits,4Kio max/4097octets lus, JSON UTF-8/un objet,
+champs exacts/types/version/duplicates/contrats143–144 validés sans hash ; taille/mtime
+revérifiés après lecture, fermeture avant retour. Toute erreur compte zéro et
+diagnostic fixe sans chemin/contenu/identifiant/hash/erreur brute OS. ErrAccountPublished
+signale compte déjà créé si nettoyage/Sync tardif échoue, sans supprimer le final.
+Linux nofollow/nonblock et droits sans groupe/autres ; Windows ACL non attestées,
+pas de Sync de répertoire portable. Pas de garantie de coupure physique/test crash,
+Root initial suit symlinks parent, propriétaire/espace de noms doivent rester fiables.
+Temporaire orphelin possible après crash/échec nettoyage, ignoré et non purgé
+automatiquement ; pas de reset/remplacement/migration ou authentification via lecture.
+
+Cinq tests communs nouveaux145/quatorze auth et vet/format/diff Windows passés :
+roundtrip/format/ownership, refus sans effets/confidentialité, huit créateurs/un gagnant
+et lectures complètes, JSON strict/bornes/read errors, corruptions/surtailles intactes.
+Deux tests Linux supplémentaires écrits/droits partagés/links/FIFO et gardes directes,
+à exécuter en CI ; seize tests Linux au total, auth race ajouté au job Go1.26.x.
+Branches Sync/nettoyage tardif relues sans injection ; aucun résultat Linux local
+revendiqué. CLI/config/SQLite/hash/modules inchangés ; fondations non relancées
+sans risque nouveau. Contrats/limites détaillés dans docs/local-auth.md.
+
+Au moment du commit145 : publication/CI à terminer, dernier publié validé144
+22f1694/CI37601878573, dernier main14219843d6/CI37594545438. Publier dans #34,
+vérifier workflow entier/trois jobs/SHA exact dont tests Linux/race auth, consigner
+dans PR puis reprise146. Prochain lot146 : CLI admin create, dir existant/username
+explicites, secret stdin borné et contrôle mots de passe courants/dérivés, hash/création
+existants, codes/diagnostics/binaire/doc. Puis revue du compte, sessions/HTTP séparés.
+M4 reste8–16lots (persistance terminée après CI Linux, quatre lots auth minimum
+restent), M5 10–18, total18–34, estimation incertaine. MIT, AD/OIDC après MVP.
+
+Correction dans le même lot145 : première tête cc12df7 publiée, CI37605619494
+échouée dans tests auth Linux avant race/builds. Logs lus : les fixtures utilisaient
+testing.TempDir, dont le sous-répertoire numéroté est créé en0777 sous umask et
+restait0755 en CI, donc refus attendu par openAccountRoot. Fixtures explicitement
+chmodées0700 sur POSIX via helper de test ; production et contrat inchangés.
+Tests auth/vet/format/diff Windows repassés après correction ; nouveau commit/push
+et CI entière à vérifier. Lot145 non validé Linux tant que cette CI n'est pas verte.
+
+Validation effective145 consignée à la reprise146 :
+`19415ba07989db2422f3ce1a51b10d6bf998e653` publié dans #34,
+CI37605851032 entière réussie/trois jobs/SHA exact ; tests auth Windows14/Linux16,
+droits/liens/FIFO et race auth Go1.26.x réussis. Fixtures POSIX0700 corrigées,
+production inchangée, première CI37605619494 échouée maintenant historique.
+À la reprise146 : fetch effectué, checkout propre/local/origin/PR identiques,
+main14219843d6 inchangé, PR ouverte/brouillon/mergeable/clean et run réussi
+revérifiés REST ; #34 réattachée, attentes145 précédentes terminées.
+
+## Lot146 : CLI de création du compte administrateur
+
+Résultat attendu : admin create, username/dir existant explicites, secret stdin
+borné/politique locale, hash144/création145, codes privés/tests/binaire/doc ; même #34.
+Syntaxe unique : admin create --directory <path> --username <name> --password-stdin,
+aides admin/create/global sans IO ; aucune option de secret argv/environment.
+Identité validée et stockage Load prévalidé avant stdin, compte occupé/corrompu/IO
+refusé ; Create revalide/arbitre toujours concurrence, préflight ne réserve rien.
+
+stdin pipe/fichier UTF-8/EOF, max1027octets consommés, secret14415..256points de
+code/1024octets, LF/CRLF final de transport retiré, CR/LF restant refusé ; espaces/
+Unicode/octets acceptés hachés littéralement. Character-device/console refusée
+avant lecture, aucun prompt echo ; pipe sans EOF peut attendre, sans deadline.
+ValidateNewPassword : bornes144 puis liste initiale locale finie27valeurs publiques,
+15suffixes compte/QueueAtlas et répétitions deux/trois fois/quatre séparateurs.
+Comparaison complète seulement, sans casse/espaces autour ; aucun substring ni
+composition imposée. Liste initiale pas corpus exhaustif/force/conformité NIST ;
+réévaluer avant login/release avec essais bornés. Vérification144 indépendante de
+la politique de création ; changement futur de liste ne désactive pas un compte.
+
+Hash défaut143/sel frais puis Create145, succès fixe/stdout/code0. Syntaxe/identité/
+secret/liste refusés2, IO/hash/création/compte occupé/output1 ; erreurs sans chemin/
+identifiant/hash/secret/erreur brute. Publication tardive signale compte créé ;
+stdout en échec conserve final, pas de rollback/reset. Buffer CLI clear au mieux,
+copies string/Argon2/shell/pagination non garanties ; entrée opérateur fiable.
+
+Cinq nouveaux tests CLI/un auth,20CLI/15auth/vet/format/diff Windows passés :
+args/aides sans lecture, records LF/CRLF/EOF et littéral/bornes Unicode4octets,
+limite de consommation/character-device/erreur input, hash vérifiable, deuxième
+création sans lecture/écrasement, refus sans état/disclosure/corruption conservée,
+stdout échoué sans suppression. Test binaire existant enrichi, un build réutilisé :
+stdin/codes0/1/2/hash vérifiable après reopen. Linux17auth attendus/race et CLI par
+workflow existant, à vérifier après publication ; aucune exécution Linux locale
+revendiquée. Config/SQLite/FileSource/modules/workflow inchangés, pas de rerun local
+fondations hors packages CLI/auth réellement modifiés.
+
+Contrat dans docs/local-auth.md, usage/transport/exemple Bash sans secret littéral
+dans docs/m4-cli.md ; ACL Windows/operator namespace fiables toujours requis.
+Au moment du commit146 : publication/CI à terminer, dernier publié validé145
+19415ba/CI37605851032, dernier main14219843d6/CI37594545438. Publier dans #34,
+vérifier workflow entier/trois jobs/SHA exact, consigner PR puis reprise147.
+Prochain147 : revue/clôture #34 sur comptes143–146, limites de la liste avant futur
+login/contrôles ciblés/corrections utiles/doc, CI finale/fusion/main ; sessions et
+protections HTTP dans un nouveau chantier cohérent ensuite. Compte initialisable,
+pas de serveur/login/cookie/Web livré. M4 reste7–15lots après CI146 (trois lots auth
+minimum), M5 10–18, total17–33, estimation incertaine. MIT, AD/OIDC après MVP.
+
+Validation effective146 consignée à la reprise147 :
+`cfde74d52dfa8fd8a58864e3434e70e67d796c3c` publié dans #34,
+CI37608644994 entière réussie/trois jobs Windows/Linux Go1.26.x/stable/SHA exact ;
+20CLI/binaire, auth Windows15/Linux17, race auth et builds statiques réussis.
+À la reprise147 : fetch effectué, checkout propre/local/origin/PR identiques,
+main14219843d6 inchangé, PR ouverte/brouillon/mergeable/clean, aucune revue/thread
+en attente, workflow entier et trois jobs réussis revérifiés REST. #34 réattachée.
+Les attentes146 prépublication sont le snapshot terminé.
+
+## Lot147 : revue et clôture du compte local143–146
+
+Résultat attendu : revue/correction ciblée/doc, CI finale puis COMMENT assisté sur
+tête finale/ready/fusion/CI main et nettoyage ; même #34. Revue code/diff/tests/
+preuves/ADR-006 et limites consignée docs/reviews/m4-local-account.md. Favorable à
+la clôture du compte/CLI après correction et CI ; pas une approbation humaine
+indépendante, aucune clôture globale de M4 ou validation d'une release login.
+
+Défaut identifié/corrigé : secret15espaces satisfaisait les bornes144 mais la valeur
+de comparaison vide n'était pas bloquée146. ValidateNewPassword refuse maintenant
+la valeur vide après TrimSpace avec ErrBlockedPassword avant hash/stockage.
+Passphrases avec espaces conservées, ValidatePassword/VerifyPassword inchangés :
+pas de désactivation de comptes existants. Tests existants enrichis (pas de nouveau
+test/sous-système) : ASCII15/256, NBSP/EM SPACE15/ownership/bornes de vérification
+indépendantes, CLI sans état, code2 réel du binaire. Trois tests ciblés Windows et
+vet auth/CLI/format/diff passés ; autres validations acquises réutilisées, pas de
+rerun local de fondations/fuzz/vecteur sans risque nouveau. CI finale toute suite/race.
+
+Liste initiale finie27valeurs/suffixes/dérivés non déclarée suffisante pour release
+login : évaluation/enrichissement selon corpus local documenté/provenance/licence,
+valeurs représentatives et essais admis requis dans chantier protections HTTP.
+Pas de lookup réseau de secret. Admission globale/mémoire/essais/comptes inconnus,
+sessions/cookies/CSRF/TLS et routes de données protégées restent ouverts ADR-006.
+Stockage propriétaire/namespace/ancêtres fiables, ACL Windows/Sync répertoire,
+crash/temporaire/erreurs tardives non injectées, stdin EOF sans deadline/mémoire
+conservent limites documentées. Sauvegarde/ACL/restauration restent M5.
+
+Au moment du commit147 : publication/CI finale/revue COMMENT/ready/fusion/main
+à terminer, dernier publié validé146cfde74d/CI37608644994, main14219843d6/
+CI37594545438. Publier dans #34, vérifier workflow entier/trois jobs/SHA exact,
+revue COMMENT sur tête finale puis ready/fusion SHA gardé, vérifier CI push main
+exacte, fast-forward checkout propre et supprimer branche fusionnée. Consigner
+preuves effectives dans PR puis reprise148 ; ne pas commencer148 dans ce lot.
+Prochain148 : sessions en mémoire bornées, émission/expiration/révocation/tests
+sans HTTP/login, nouvelle branche/PR cohérente depuis main147 validé. M4 reste6–14
+lots après clôture147 (deux auth minimum sessions/protections avec liste), M5 10–18,
+total16–32, estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.

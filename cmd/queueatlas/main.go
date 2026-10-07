@@ -15,14 +15,21 @@ import (
 // stays explicitly marked as a development build rather than inventing a tag.
 var version = "dev"
 
-const usage = "Usage: queueatlas version\n       queueatlas check-config --config <path>\n       queueatlas db stats --config <path>\n       queueatlas doctor --config <path>\n       queueatlas --help\n"
+const usage = "Usage: queueatlas version\n       queueatlas check-config --config <path>\n       queueatlas db stats --config <path>\n       queueatlas doctor --config <path>\n       queueatlas admin create --directory <path> --username <name> --password-stdin\n       queueatlas --help\n"
 const checkConfigUsage = "Usage: queueatlas check-config --config <path>\n"
 
 func main() {
-	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
+	os.Exit(runWithInput(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
 }
 
 func run(args []string, stdout, stderr io.Writer) int {
+	return runWithInput(args, nil, stdout, stderr)
+}
+
+func runWithInput(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
+	if len(args) > 0 && args[0] == "admin" {
+		return adminCommand(args[1:], stdin, stdout, stderr)
+	}
 	if len(args) > 0 && args[0] == "doctor" {
 		return doctorCommand(args[1:], stdout, stderr)
 	}

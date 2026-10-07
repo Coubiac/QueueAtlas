@@ -63,3 +63,13 @@ Prochain lot143 : contrat pur du compte administrateur local et paramètres de
 hachage bornés, tests/doc selon ADR-006. Persistance, CLI d'initialisation et
 sessions/protections dans les lots suivants. M4 reste7–15lots, M5 10–18,
 total17–33 après142, estimation incertaine à périmètre constant.
+
+## Clôture effective142, consignée à la reprise143
+
+Bilan publié sur `2e813fcc78261281316db61b89cfe4da66c4e7a1` ;
+[CI finale37594338289](https://github.com/Coubiac/QueueAtlas/actions/runs/37594338289)
+entière réussie/trois jobs/SHA exact. Revue COMMENT assistée5439690236 sur cette
+tête, #33 prête puis fusionnée sur `19843d6a012fb3f260173e92055be6b0a5f1d0c3`.
+[CI main37594545438](https://github.com/Coubiac/QueueAtlas/actions/runs/37594545438)
+entière réussie/trois jobs/SHA exact. Main actualisé propre, branche du chantier
+supprimée local/GitHub. Attentes142 prépublication terminées ; M4 en cours.

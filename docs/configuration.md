@@ -275,3 +275,8 @@ entière réussie/trois jobs/SHA exact revérifiés à la reprise142 ; attentes1
 prépublication terminées. [Relecture142](reviews/m4-source-config.md) favorable
 au chantier139–141, sans changement de code ; publication/CI finale/fusion/main
 à terminer au commit de clôture. Le raccordement à l'ingestion reste ultérieur.
+
+Clôture142 effective : #33 fusionnée sur19843d6, CI finale37594338289 et
+main37594545438 entières réussies/trois jobs/SHA exact, branche sources supprimée.
+Le [contrat d'auth143](local-auth.md) est indépendant du YAML : aucun compte,
+secret ou paramètre auth accepté par le chargeur à ce stade.
