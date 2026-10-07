@@ -30,9 +30,11 @@ Lot128 publié dans #30 sur921155a, CI37559870551 entière réussie/trois jobs/S
 vérifiés ; point d'entrée CLI version/aide/codes et test réel de l'exécutable.
 Lot129 publié surd9a2fb8 dans #30, CI37562294743 entière réussie/trois jobs/SHA
 vérifiés ; contrat pur de configuration serveur local/SQLite et défauts/validation.
-Lot130 : chargeur YAML strict/borné et chemins résolus, sept tests nouveaux/suite
-config/vet/go mod verify Windows réussis ; publication/CI130 à terminer.
-Deux jalons M4/M5 restent, environ22–40lots après130, M3 zéro lot restant ;
+Lot130 publié sur8bba11e dans #30, CI37564852420 entière réussie/trois jobs/SHA
+vérifiés ; chargeur YAML strict/borné et chemins résolus.
+Lot131 : CLI check-config, trois tests nouveaux/binaire étendu, sept tests CLI/vet
+et go run Windows passés ; publication/CI131 à terminer.
+Deux jalons M4/M5 restent, environ21–39lots après131, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -52,6 +54,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot130 publié : `8bba11eb3215ab3386dd511702920c348694c8fd`, #30 en brouillon,
+  [CI37564852420](https://github.com/Coubiac/QueueAtlas/actions/runs/37564852420)
+  entière réussie, trois jobs/SHA exact, étape Windows config et builds Linux passés.
+  Lot131 validé localement, publication/CI encore à terminer ; dernier fusionné127.
 - Lot129 publié : `d9a2fb8fe8d50718cbda30b2b0f9ed9b26cc4954`, #30 en brouillon,
   [CI37562294743](https://github.com/Coubiac/QueueAtlas/actions/runs/37562294743)
   entière réussie, trois jobs/SHA exact et étape Windows config vérifiés.
@@ -3323,10 +3329,10 @@ CI entière réussie ; clôture122 fusionnée #28, CI finale et main vertes.
 Matrice123, contrôle124, benchmarks125 et mesures126 publiés/CI entières réussies.
 M3 clôturé127, fusion/CI finale/main vérifiées. CLI128 publié dans #30 attachée,
 CI37559870551 entière réussie. Contrat129 publié/CI37562294743 entière réussie.
-Chargeur YAML130 validé localement : publier le commit et vérifier CI130 sur la
-tête exacte, réutiliser #30 (brouillon cohérent). Branche codex/m4-cli depuis
-main038c6c9. Prochain lot131 : CLI check-config/flux/codes/tests du binaire,
-sans démarrage de serveur, ouverture DB ou ingestion.
+Chargeur YAML130 publié/CI37564852420 entière réussie. CLI check-config131 validée
+localement : publier le commit et vérifier CI131 sur la tête exacte, réutiliser #30
+(brouillon cohérent). Branche codex/m4-cli depuis main038c6c9. Prochain lot132 :
+revue/clôture CLI/config128–131, CI exacte, prêt/fusion #30 puis contrôle CI main.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3781,3 +3787,36 @@ après CI130 : `check-config --config <chemin>`, flux/codes et tests du binaire.
 M4 reste12–22lots estimés/M5 10–18, total22–40 après130, deux jalons. Serve,
 sources/config composants, auth/API/Web restent M4 ; service/paquets/pilote M5.
 MIT conservée, AD/OIDC après MVP, aucune release installable annoncée.
+
+Validation effective130 enregistrée à la reprise131 :
+`8bba11eb3215ab3386dd511702920c348694c8fd` publiée dans #30,
+CI37564852420 entièrement réussie/trois jobs/SHA exact, étape Windows config passée.
+Les mentions « à terminer » ci-dessus décrivent l'état avant le commit130.
+
+## Lot131 : commande CLI check-config
+
+Résultat attendu/acquis localement : `queueatlas check-config --config <chemin>`
+valide via config.Load130. Code0 et stdout `Configuration valid` sans stderr ;
+code2 pour arguments invalides (usage fixe) ou contenu refusé (champ/règle connus),
+code1 pour lecture impossible (message fixe) ou échec de sortie stdout valide.
+Aucune valeur/chemin privé recopié, aucune DB ouverte/créée, config non modifiée,
+aucun composant démarré. Aide globale et check-config --help/-h disponibles.
+Forme canonique seule : --config séparé, un chemin, aucune option supplémentaire,
+pas de fichier implicite/stdin ; limites du chargeur et périmètre129 conservés.
+
+Trois tests nouveaux : flux/codes/readonly, arguments/aide, sortie défaillante.
+Test du binaire existant étendu : version avec linker, check-config valide,
+contenu refusé, fichier absent et usage ; codes0/1/2, flux et absence de création
+DB vérifiés. Sept tests CLI/vet/format/diff, go run sur examples/queueatlas.yaml
+passés Windows. Chargeur/fondations inchangés, pas de nouvelle dépendance ;
+tests CI CLI Windows et suite/vet/builds Linux existants couvrent le changement.
+README, exemples et contrats config/CLI actualisés. Une validation syntaxique ne
+certifie pas les droits/disque local DB, le port disponible ou le futur serveur.
+
+Au moment de cet enregistrement131 : commit/publication/CI131 encore à terminer
+sur codex/m4-cli dans #30 réutilisée. Dernière tête publiée validée1308bba11e /
+CI37564852420 ; dernier main fusionné127038c6c9/mainCI37557390479. Prochain lot132
+après CI131 : revue/clôture chantier CLI/config128–131, CI tête exacte, prêt/fusion
+#30 puis contrôle CI main. M4 reste11–21lots/M5 10–18, total21–39 après131,
+deux jalons restants. Auth/API/Web puis service/paquets/pilote restent à développer.
+MIT conservée, AD/OIDC après MVP ; aucun service ou paquet installable livré.

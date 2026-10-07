@@ -24,10 +24,12 @@ Depuis les sources du chantier M4 :
 
 ```powershell
 go run ./cmd/queueatlas version
+go run ./cmd/queueatlas check-config --config examples/queueatlas.yaml
 ```
 
 Affiche `QueueAtlas dev` pour un build ordinaire. Voir [commandes, compilation et
 codes de sortie](docs/m4-cli.md). Le [contrat initial de configuration](docs/configuration.md)
 fixe les défauts et leur validation (lot129), avec un chargeur YAML strict et borné
-(lot130) et un [exemple](examples/queueatlas.yaml). La commande `check-config` et
-la consultation authentifiée restent à développer.
+(lot130) et un [exemple](examples/queueatlas.yaml). `check-config` valide ce fichier
+et affiche `Configuration valid` sans ouvrir de base (lot131). La consultation
+authentifiée reste à développer.

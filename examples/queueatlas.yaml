@@ -1,4 +1,4 @@
-# Copy to a private state directory. No service/check-config command exists yet.
+# Copy to a private state directory. Validate with check-config --config <path>.
 server:
   listen: "127.0.0.1:8080"
   read_header_timeout: 5s

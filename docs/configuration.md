@@ -1,8 +1,9 @@
 # Configuration — contrat initial M4
 
 Lots129–130 : `internal/config` définit un socle de paramètres, une validation pure
-et le chargement YAML. Le package n'est pas encore raccordé à la CLI ou à un
-serveur. Un [fichier d'exemple](../examples/queueatlas.yaml) est chargé dans les tests.
+et le chargement YAML. La CLI `check-config --config <chemin>` utilise ce chargeur
+depuis le lot131 ; le serveur reste à implémenter. Un
+[fichier d'exemple](../examples/queueatlas.yaml) est chargé dans les tests.
 
 ## Valeurs par défaut et bornes
 
@@ -103,10 +104,13 @@ et absence d'expansion, entrées ambiguës/types/nulls et diagnostics privés, b
 d'octets/structure, erreurs IO et répertoire de base, chemins Windows ambigus,
 exemple du dépôt. Suite config (douze tests), vet/format/diff locaux Windows passés.
 L'étape Windows config existante et les jobs Linux couvrent le chargeur ;
-publication/CI130 à vérifier après commit.
+Lot130 publié sur `8bba11eb3215ab3386dd511702920c348694c8fd` dans #30 ;
+[CI37564852420](https://github.com/Coubiac/QueueAtlas/actions/runs/37564852420)
+entière réussie, trois jobs/SHA exact et étape Windows config vérifiés.
 
-Prochain lot131 : commande CLI `check-config --config <chemin>`, flux/codes de sortie
-et tests du binaire, sans démarrage de composant. `serve` reste à développer.
+Lot131 : [CLI check-config](m4-cli.md#lot131--check-config), codes0/1/2, diagnostics
+sanitisés, tests du binaire sans création DB ; vérifications locales Windows
+passées, publication/CI131 à terminer. Prochain lot132 : revue/clôture #30.
 Les sources, CIDR/domaines, rétention et paramètres d'authentification demanderont
-des contrats séparés selon les composants raccordés. `check-config`, `serve`,
+des contrats séparés selon les composants raccordés. `serve`,
 doctor/db stats, auth/API/Web restent à développer. AD/OIDC après MVP, MIT conservée.
