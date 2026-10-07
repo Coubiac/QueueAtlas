@@ -66,6 +66,7 @@ Go ne remplace pas cette validation. Aucun test navigateur revendiqué au lot159
 
 Depuis160, un candidat attribué possède un lien canonique local vers le
 [détail Web protégé](web-detail.md). NOQUEUE/streams non attribués restent sans lien.
-Prochain161 : timeline Web, dans la même PR #37. Affichage brut sous permission,
-connexion Web et montage serveur sont distincts.
+Depuis161, le détail mène à la [timeline Web](web-timeline.md) avec brut sous
+permission explicite. Prochain162 : connexion Web locale, même PR #37.
+Montage serveur et revue navigateur restent distincts.
 L'issue #7 reste ouverte ; MIT conservée, AD/OIDC/Keycloak après MVP.

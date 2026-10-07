@@ -55,7 +55,8 @@ références HTML>1MiB refusées sans données partielles, slot libéré ensuite
 
 La validation navigateur de bout en bout, clavier/rendu adaptatif et traitement
 des caractères de présentation restent pour la revue Web ; aucun navigateur réel
-ni Linux local revendiqué. Prochain161 : timeline Web paginée avec tentatives,
-permission brute explicite et rendu texte. Même PR #37. Connexion/montage serveur,
+ni Linux local revendiqué. Depuis161, lien vers la [timeline Web](web-timeline.md)
+paginée avec tentatives/permission brute explicite/rendu texte. Même PR #37.
+Prochain162 : connexion Web locale. Connexion/montage serveur,
 filtres/diagnostics et revue restent ; l'issue #7/M4 ne sont pas clos. MIT,
 AD/OIDC/Keycloak après MVP.

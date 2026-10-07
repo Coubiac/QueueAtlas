@@ -156,7 +156,7 @@ func TestCandidatePageProtocolBeforeReadAndHTTPSNativeText(t *testing.T) {
 		{func(r *http.Request) { r.Header.Set("Origin", "https://foreign.example.test") }, 403},
 		{func(r *http.Request) { r.URL.Path = CandidatePagePrefix + "invalid" }, 400},
 		{func(r *http.Request) { r.URL.RawQuery = "raw=1&password=synthetic-secret" }, 400}, {func(r *http.Request) { r.URL.ForceQuery = true }, 400},
-		{func(r *http.Request) { r.URL.Path += "/events" }, 404}, {func(r *http.Request) { r.URL.Path = CandidatePagePrefix }, 404},
+		{func(r *http.Request) { r.URL.Path += "/events/extra" }, 404}, {func(r *http.Request) { r.URL.Path = CandidatePagePrefix }, 404},
 		{func(r *http.Request) { r.URL.RawPath = "/%6dessages/" + goldenCandidateID }, 400},
 		{func(r *http.Request) { r.Method = "POST"; r.Header.Set("Origin", searchTestOrigin) }, 405},
 		{func(r *http.Request) { r.ContentLength = 1; r.Body = panicSearchBody{} }, 400},

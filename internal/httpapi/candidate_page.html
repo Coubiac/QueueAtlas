@@ -17,6 +17,7 @@
     <p class="notice">Couverture des journaux non prouvée. Ce candidat n’est pas une identité globale de message. Un rapport de transport ne prouve pas la livraison finale.</p>
     <section class="panel" aria-labelledby="candidate-title">
       <h2 id="candidate-title">File <code>{{.Candidate.QueueID}}</code></h2>
+      <p><a class="timeline-link" href="{{timelineURL .Candidate.ID}}">Consulter la timeline et les tentatives</a></p>
       <dl>
         <dt>Instance</dt><dd><code>{{.Candidate.Instance}}</code></dd>
         <dt>Génération candidate</dt><dd>{{.Candidate.Generation}}</dd>

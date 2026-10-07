@@ -73,10 +73,11 @@ SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Clôtur
 fusionnée #36 sur8c3aa85, CI finale37653248114 et main37653544179 entières réussies,
 branche API nettoyée ; preuves revérifiées159. Recherche Web159 publiée dans #37
 sur b907914, CI37657564872 entière/trois jobs/SHA exact/HTTPAPI Windows/race
-Linux1.26 réussis, revérifiés160. Détail Web160 réalisé localement,28tests HTTPAPI
-Windows/vet/format/diff passent ; publication/CI à terminer au commit.
-Prochain161 : timeline Web paginée. Deux jalons M4/M5 restent, environ15–30lots
-après160/CI ; estimation M4 corrigée5–12 selon les comportements explicitement restants,
+Linux1.26 réussis, revérifiés160. Détail160 publié sur29cf545 dans #37,
+CI37660252622 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés161. Timeline Web161 réalisée localement,32tests HTTPAPI Windows/vet/
+format/diff passent ; publication/CI à terminer au commit. Prochain162 : connexion
+Web locale. Deux jalons M4/M5 restent, environ14–29lots après161/CI (M4 4–11),
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3440,10 +3441,12 @@ sur8c3aa85, CI finale37653248114/main37653544179 entières réussies, revue COMM
 5445385773 sur tête e8bde71, branche nettoyée ; preuves revérifiées159.
 Lot159 recherche Web publiée #37/b907914, CI37657564872 entière/trois jobs/SHA exact/
 HTTPAPI Windows/race Linux1.26 réussis, revérifiés160. Branche propre/synchronisée.
-Lot160 détail Web réalisé, voir [contrat](web-detail.md). Au commit : publier sur
-codex/m4-web, même #37 brouillon ; vérifier workflow entier/trois jobs/SHA exact/
-HTTPAPI Windows/race Linux1.26 et consigner preuve dans PR puis reprise161.
-Prochain161 : timeline Web paginée ; aucun161 commencé dans cette reprise.
+Lot160 détail Web publié29cf545, CI37660252622 entière/trois jobs/SHA exact/HTTPAPI
+Windows/race Linux1.26 réussis, revérifiés161. Lot161 timeline Web réalisée,
+voir [contrat](web-timeline.md). Au commit : publier sur codex/m4-web, même #37
+brouillon, vérifier workflow entier/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26 et consigner preuve dans PR puis reprise162. Prochain162 : connexion
+Web locale ; aucun162 commencé dans cette reprise.
 Ne pas présenter un événement comme identité globale ni reconstruire depuis une
 seule page. Bibliothèque API relue ; listener/serve/autres vues Web/filtres complémentaires
 et raccordements restent à réaliser. MIT, AD/OIDC/Keycloak après MVP.
@@ -5495,3 +5498,53 @@ montage et compléments étaient implicites. Au moins cinq comportements distinc
 restent, M4 corrigé5–12 après160/CI ; M5 10–18, total15–30/deux jalons. Périmètre
 MVP inchangé, fourchette de planification incertaine. #7/M4/MVP non clos, aucun161
 commencé. MIT, AD/OIDC/Keycloak après MVP. Un seul petit lot dans cette reprise.
+
+## Lot161 — timeline Web et lignes brutes sous permission
+
+Résultat attendu : navigation détail→timeline paginée de la génération, tentatives
+et octets natifs en texte échappé, brut opt-in explicite. Même #37, aucun nouveau
+stockage/source/corrélation ou montage serveur ; un seul lot dans cette reprise.
+
+Départ propre sur codex/m4-web, locale/origin/#37 au SHA
+`29cf545b8dea8e2be413c24bf197601db21f9942`, base main1588c3aa85, PR brouillon ouverte.
+[CI16037660252622](https://github.com/Coubiac/QueueAtlas/actions/runs/37660252622)
+entière completed/success sur ce SHA : Windows112925637868, stable112925638203,
+Go1.26 112925638339. HTTPAPI Windows et race HTTPAPI Linux1.26 réussis, stable race
+skipped comme prévu. Workflow/jobs/SHA/étapes/tête/base revérifiés REST161 après
+fetch/prune. #7 actualisée160 et ouverte. Aucune nouvelle fusion depuis158.
+
+GET/HEAD `/messages/{id}/events`, même decode/parseTimelineRequest/lecture API.
+Liens locaux canoniques, paramètres limit/cursor/raw fermés, pagination liée à
+ID/révision/mode ; nouveau submit sans curseur. Budget de file complet puis faits
+de cette génération seulement, hors période conservés. Stale409 avant position,
+absence404, query/ID400, budget422, admission429, erreurs privées/annulation/cap503.
+Raw1 interdit403 avant base sans AllowRawLogs ; permission seule ne l'affiche pas,
+contrôle proposé seulement si autorisé. Métadonnées SMTP privées visibles sans
+brut, absence/vide/base64 distingués, statuts natifs/transport/réserves conservés.
+
+Rendu html/template, native text ordinaire, base64 explicitement étiqueté ; CR/LF/
+tabulation/ANSI/C1/direction visibles et antislash doublé, aucun octet original
+modifié en DTO/SQLite. La présentation HTML n'est pas un export identique. Champs/
+provenance timeline traités, autres vues à relire au lot de revue. CSS embarquée/
+CSP/cache/anti-framing communs, HTML entier1MiB avant200, pas une borne de RAM.
+Contrat [web-timeline](web-timeline.md), liens détail/recherche/API actualisés.
+
+Quatre nouveaux tests,32HTTPAPI total Windows Go1.26 `-count=1` passe (2.336s),
+vet HTTPAPI/gofmt/diff passent. SQLite pages/lien/faits complets/origines/réserves/
+raw/budget/stale ; brut binaire SQLite exact en base64 HTML. Protocole/raw interdit
+avant base, API seule inchangée ; HTTPS réel texte hostile/contrôles/vide/absence/
+métadonnées sans raw/tentatives simultanées/binaireDTO/HEAD/révocation. Admission
+API/toutes vues Web partagée, annulation et expansion raw64KiB×4 refusée sans
+préfixe partiel puis page1 complète. Champ binaire via seam, pas import SQLite de
+champ binaire revendiqué. Test corrigé : fixture sans reply natif reste Non observé,
+ne pas extraire un verdict/réponse en reparsant Message pour le rendu.
+Pas de navigateur réel/Linux local revendiqué ; revue clavier/CSP/XSS source→rendu/
+caractères de présentation/rendu adaptatif reste à faire.
+
+Au commit161 : publier même branche/#37 brouillon, vérifier CI entière/trois jobs/
+SHA exact/HTTPAPI Windows/race Linux1.26 ; preuve dans PR puis reprise162. Dernier
+publié validé16029cf545/CI37660252622, main1588c3aa85/CI37653544179.
+Prochain162 : connexion Web locale ; montage, filtres/diagnostics et revue ensuite.
+Timeline réalisée retire un comportement : M4 4–11 après161/CI, M5 10–18,
+total14–29/deux jalons, marge des compléments conservée. #7/M4/MVP non clos,
+MIT et AD/OIDC/Keycloak après MVP. Aucun162 commencé.

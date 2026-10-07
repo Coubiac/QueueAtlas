@@ -57,6 +57,10 @@ func (h *searchHandler) serveCandidatePage(w http.ResponseWriter, r *http.Reques
 }
 
 func candidatePageError(w http.ResponseWriter, r *http.Request, status int) {
+	_ = writeHTMLPage(w, r, context.Background(), status, "candidate_page.html", candidatePageData{Error: candidatePageErrorMessage(status)})
+}
+
+func candidatePageErrorMessage(status int) string {
 	message := "Détail indisponible. Réessayez plus tard."
 	switch status {
 	case 400:
@@ -70,5 +74,5 @@ func candidatePageError(w http.ResponseWriter, r *http.Request, status int) {
 	case 429:
 		message = "Consultation occupée. Réessayez dans quelques instants."
 	}
-	_ = writeHTMLPage(w, r, context.Background(), status, "candidate_page.html", candidatePageData{Error: message})
+	return message
 }

@@ -20,7 +20,7 @@ import (
 
 const SearchPagePath = "/messages"
 
-//go:embed search_page.html search_page.css candidate_page.html
+//go:embed search_page.html search_page.css candidate_page.html timeline_page.html
 var searchPageAssets embed.FS
 
 var (
@@ -32,7 +32,9 @@ var (
 		"date":   func(t time.Time) string { return t.UTC().Format(time.RFC3339Nano) },
 		// Candidate IDs come from the canonical encoder, not native log URLs.
 		"candidateURL": func(id string) string { return CandidatePagePrefix + id },
-	}).ParseFS(searchPageAssets, "search_page.html", "candidate_page.html"))
+		"timelineURL":  timelinePageURL,
+		"visible":      visibleNativeText,
+	}).ParseFS(searchPageAssets, "search_page.html", "candidate_page.html", "timeline_page.html"))
 )
 
 func embeddedSearchStyle() (string, string) {
@@ -45,7 +47,7 @@ func embeddedSearchStyle() (string, string) {
 }
 
 // NewConsultationHandler returns one protected router for the API and HTML
-// search/detail pages, sharing its store, admission and deadlines. Mount auth separately.
+// search/detail/timeline pages, sharing its store, admission and deadlines. Mount auth separately.
 // No listener or login page is created. NewSearchHandler remains API-only.
 func NewConsultationHandler(guard *auth.HTTPHandler, store *sqlite.Store, options SearchOptions) (http.Handler, error) {
 	if store == nil {
@@ -183,6 +185,8 @@ func searchPageLabel(value any) string {
 		"undated": "Origine sans date exploitable", "boundary_unproven": "Limite de génération non prouvée", "conflicting_message_ids": "Message-ID contradictoires",
 		"warning": "Avertissement, pas un rejet", "rejected": "Rejet observé",
 		"sent": "sent (transport)", "delivered": "delivered (remise reconnue)", "deferred": "Différé", "bounced": "Échec rapporté",
+		"smtp_peer": "Prochain saut SMTP", "lmtp_peer": "Transport LMTP", "pipe_command": "Commande pipe", "local_agent": "Agent local", "virtual_agent": "Agent virtuel", "local_mailbox": "Boîte locale", "virtual_mailbox": "Boîte virtuelle",
+		"connect": "Connexion observée", "disconnect": "Déconnexion observée", "wall_only": "Heure sans année ni fuseau", "year_without_zone": "Année sans fuseau",
 	}
 	var key string
 	switch v := value.(type) {
@@ -197,6 +201,8 @@ func searchPageLabel(value any) string {
 	case model.TimeQuality:
 		key = string(v)
 	case correlation.DeliveryStatus:
+		key = string(v)
+	case correlation.DeliveryScope:
 		key = string(v)
 	default:
 		return "Inconnu"
