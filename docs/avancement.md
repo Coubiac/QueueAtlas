@@ -33,8 +33,8 @@ CI37579618027 entière réussie. Clôture138 fusionnée #32 sur0d2cad4,
 CI finale37581947764/main37582076645 entières réussies, branche doctor supprimée.
 Contrat source139 publié surcfd2b39 dans #33, CI37585141938 entière réussie.
 YAML source140 publié sur455148a, CI37588258338 entière réussie. Conversion141
-implémentée/vérifiée localement, publication/CI à terminer au commit dans #33,
-chantier codex/m4-source-config ; relecture/clôture142 ensuite.
+publiée sur223849c, CI37591355873 entière réussie. Relecture142 favorable,
+publication/CI finale/fusion/main à terminer au commit dans #33.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -49,7 +49,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 141 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 142 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -66,17 +66,18 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136 et doctor initial137–138 fusionnés/CI main verte ; contrat139/YAML140 publiés/CI verte, conversion141 vérifiée localement | Revue sources, diagnostic élargi, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 8–16 après141 |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136 et doctor initial137–138 fusionnés/CI main verte ; source139–141 publiée/CI verte, relecture142 favorable/fusion à terminer | Diagnostic élargi, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 7–15 après clôture142 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après141** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **18–34** |
+| **Total après clôture142** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **17–33** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
 compte/sessions/protections3–5, API2–3, Web et revue2–4, avec marge d'intégration
 jusqu'à18lots M4. La fourchette suit ces comportements restants et ne diminue pas
 automatiquement à chaque numéro de lot. Le périmètre MVP demeure celui du cadrage.
-Après141, le chargement YAML et la conversion sont développés ; un lot de clôture
-sources reste, d'où8–16lots pour M4, sans autre changement de périmètre.
+Après clôture142, contrat/YAML/conversion/revue sources réalisés ; les trois lots
+restants de ce chantier après139 sont terminés, d'où7–15lots pour M4,
+sans autre changement de périmètre. Publication/fusion142 encore à terminer au commit.
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -566,3 +567,17 @@ constructeur beginning/end accepté sans lecture d'état/normalisation/fichier c
 Aucune ingestion applicative ; publication/CI141 dans #33 à terminer au commit.
 Prochain lot142 : relecture/clôture139–141, CI finale/fusion/main et nettoyage.
 M4 reste8–16lots, M5 10–18, total18–34 après141, estimation incertaine.
+
+Validation141 effective : 223849c publié dans #33,
+[CI37591355873](https://github.com/Coubiac/QueueAtlas/actions/runs/37591355873)
+entière réussie/trois jobs/SHA exact. Attentes141 ci-dessus prépublication terminées.
+
+## Bilan142 — relecture/clôture configuration source
+
+[Relecture assistée](reviews/m4-source-config.md) favorable au chantier139–141,
+aucune approbation humaine indépendante revendiquée. Lot documentaire seulement,
+CI141 entière revérifiée ; publication/CI finale/fusion/main à terminer au commit.
+Aucune ingestion applicative ni diagnostic source physique ; M4 reste en cours.
+Prochain lot143 : contrat pur compte administrateur local et paramètres de hachage
+bornés, tests/doc ; persistance/CLI/sessions/protections dans les lots suivants.
+M4 reste7–15lots après succès de clôture, M5 10–18, total17–33, estimation incertaine.

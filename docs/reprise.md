@@ -45,10 +45,11 @@ sur d1feeb9, CI37579618027 entière/trois jobs/SHA exact réussis. Clôture138 f
 #32 sur0d2cad4, CI finale37581947764/main37582076645 entières réussies, branche
 doctor supprimée. Contrat source fichier139 publié surcfd2b39 dans #33,
 CI37585141938 entière/trois jobs/SHA exact réussis. YAML source140 publié sur455148a,
-CI37588258338 entière/trois jobs/SHA exact réussis. Conversion pure141 implémentée
-et vérifiée localement sur codex/m4-source-config ; publication/CI à terminer
-au moment du commit. Prochain lot142 : relecture/clôture de #33 (lots139–141).
-Deux jalons M4/M5 restent, environ18–34lots après141, M3 zéro lot restant ;
+CI37588258338 entière/trois jobs/SHA exact réussis. Conversion141 publiée sur223849c,
+CI37591355873 entière/trois jobs/SHA exact réussis. Relecture142 favorable ;
+publication/CI finale/fusion/main de #33 à terminer au moment du commit.
+Prochain lot143 : contrat pur du compte administrateur local et paramètres de hachage.
+Deux jalons M4/M5 restent, environ17–33lots après142, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3382,10 +3383,11 @@ Doctor137 publié sur d1feeb9 dans #32, CI37579618027 entière/trois jobs/SHA ex
 Clôture138 terminée : #32 fusionnée sur0d2cad4, CI finale37581947764/main37582076645
 entières réussies, branche doctor supprimée. Contrat source139 publié surcfd2b39
 dans #33, CI37585141938 entière réussie. YAML source140 publié sur455148a,
-CI37588258338 entière réussie. Conversion141 validée localement : publier dans
-la même PR puis vérifier CI entière/trois jobs/SHA exact, consigner preuve.
-Prochain lot142 : relecture du chantier139–141, clôture de #33 après CI finale
-réussie, fusion, vérification CI main et nettoyage de la branche fusionnée.
+CI37588258338 entière réussie. Conversion141 publiée sur223849c, CI37591355873
+entière réussie. Relecture142 favorable : publier, vérifier CI finale/trois jobs/SHA
+exact, revue COMMENT assistée, ready/fusion #33 puis CI main et nettoyage.
+Prochain lot143 : contrat pur du compte administrateur local et paramètres de
+hachage bornés, tests/doc ; persistance/CLI/sessions dans les lots suivants.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4283,3 +4285,36 @@ Prochain lot142 : relecture/clôture139–141, CI finale, fusion et CI main/nett
 auth locale/API/Web ensuite, démarrage de source au raccordement applicatif ultérieur.
 M4 reste8–16lots (revue sources1lot au lieu de2 après140), M5 10–18,
 total18–34 après141, deux jalons, estimation incertaine. MIT, AD/OIDC après MVP.
+
+Validation effective141 consignée à la reprise142 :
+`223849c950beac3f48dd22695697db8bd3d5533c` publié dans #33 en brouillon,
+CI37591355873 entière réussie/trois jobs/SHA exact revérifiés REST. Config/CLI/
+diagnostics Windows et tests/vet/format/race/smoke/builds Linux passés. Fetch effectué,
+checkout propre et têtes locale/origin/PR identiques ; main1380d2cad4 inchangé,
+PR ouverte/brouillon/mergeable/clean, aucune revue/thread en attente.
+Les attentes141 précédentes sont le snapshot prépublication, terminé.
+
+## Lot142 : relecture/clôture configuration source fichier
+
+Résultat attendu : bilan139–141, publication/CI finale, revue COMMENT assistée,
+ready/fusion #33, CI main et nettoyage de la branche fusionnée. Relecture favorable
+dans docs/reviews/m4-source-config.md : aucune anomalie bloquante identifiée ;
+pas d'approbation humaine indépendante revendiquée. Identité/bornes/YAML/chemins/
+erreurs zéro/copie/reprise stricte confrontés au code et aux tests acquis.
+
+Une seule source fichier configurable ; pas de vérification physique/droits/format/
+checkpoints ni preuve d'hôte. Conversion sans construction ou Run, Config.Source
+non nil à contrôler et erreurs à traiter par l'appelant. Doctor conserve son
+périmètre initial. Ingestion applicative et critères #4/#5 ultérieurs, M4 en cours.
+Lot documentaire seulement : code/tests/modules/workflow inchangés, pas de rerun
+local des fondations sans risque nouveau ; CI141 entière revérifiée, diff à vérifier.
+
+Au moment du commit142 : publication/CI finale/revue COMMENT/fusion/main à terminer,
+dernier publié validé141223849c/CI37591355873, dernier main1380d2cad4/CI37582076645.
+Publier dans #33, vérifier trois jobs/workflow/SHA exact puis fusion avec tête
+attendue ; vérifier CI main et actualiser checkout/nettoyer branche après succès.
+Consigner résultats effectifs dans PR puis au point de reprise143.
+Prochain lot143 : contrat pur compte administrateur local et paramètres de hachage
+bornés, tests/doc selon ADR-006 ; persistance/CLI/sessions/protections ensuite.
+M4 reste7–15lots (clôture sources terminée après succès), M5 10–18,
+total17–33 après142, estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.

@@ -231,8 +231,10 @@ YAML140 publié sur455148a dans #33,
 entière réussie/trois jobs/SHA exact. La [conversion141](configuration.md#lot141--conversion-vers-filesource)
 est disponible en bibliothèque : copie indépendante revalidée, chemin absolu et
 reprise stricte. Aucun appel CLI ni démarrage applicatif ; doctor garde ses limites.
-Vingt-quatre tests config/vet/format/diff Windows passés ; publication/CI141 à terminer,
-relecture/clôture142 ensuite.
+Vingt-quatre tests config/vet/format/diff Windows passés ; conversion141 publiée
+sur223849c, [CI37591355873](https://github.com/Coubiac/QueueAtlas/actions/runs/37591355873)
+entière réussie/trois jobs/SHA exact. [Relecture142](reviews/m4-source-config.md)
+favorable ; publication/CI finale/fusion/main encore à terminer au commit142.
 Configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

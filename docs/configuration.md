@@ -268,3 +268,10 @@ sans lecture d'état, normalisation, fichier créé ou Run. La méthode de produ
 ne construit aucun composant ; l'ingestion applicative reste à développer.
 Vingt-quatre tests config/vet/format/diff locaux Windows passés ; publication/CI141
 à vérifier après commit dans #33, puis revue/clôture142 du chantier139–141.
+
+Validation141 effective : 223849c publié dans #33,
+[CI37591355873](https://github.com/Coubiac/QueueAtlas/actions/runs/37591355873)
+entière réussie/trois jobs/SHA exact revérifiés à la reprise142 ; attentes141
+prépublication terminées. [Relecture142](reviews/m4-source-config.md) favorable
+au chantier139–141, sans changement de code ; publication/CI finale/fusion/main
+à terminer au commit de clôture. Le raccordement à l'ingestion reste ultérieur.
