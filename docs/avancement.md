@@ -54,8 +54,10 @@ CI37642563497 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux réussis,
 revérifiés REST156. Identité/détail156 publiés sur2298709, CI37646414652 entière/
 trois jobs/SHA exact réussis, race HTTPAPI Linux1.26/journal Windows vérifiés,
 revérifiés REST157. Timeline157 publiée sur277d981, CI37650350084 entière/trois jobs/
-SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Revue158
-favorable, publication finale/fusion/main à terminer au commit.
+SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Clôture158
+fusionnée #36 sur8c3aa85 ; CI finale37653248114/main37653544179 entières réussies,
+branche API nettoyée, revérifiées159. Recherche Web159 réalisée localement,
+25tests HTTPAPI/vet/format/diff Windows réussis ; publication/CI à terminer au commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -70,7 +72,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 158 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 159 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -87,9 +89,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147 et auth148–153 fusionnés/CI main verte ; API154–157 publiée/CI verte, revue158 favorable/fusion à terminer | Web et revue, filtres complémentaires/diagnostic, raccordement | 2–9 après158/fusion/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147, auth148–153 et API154–158 fusionnés/CI main verte ; recherche Web159 réalisée localement/publication à terminer | Détail/timeline Web et revue navigateur, filtres complémentaires/diagnostic, raccordement | 2–9 après159/CI |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après158/fusion/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **12–27** |
+| **Total après159/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **12–27** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
@@ -953,3 +955,24 @@ de clôture retiré, Web+revue au moins2, marge filtres/état sources/health/rea
 raccordement/diagnostic conservée. M4 2–9 après158/fusion/CI, M5 10–18,
 total12–27/deux jalons, à préciser au Web sans annoncer M4/MVP terminés.
 MIT conservée, AD/OIDC/Keycloak après MVP ; aucun159 commencé.
+
+## Bilan du lot 159 — première vue Web
+
+Clôture158 effective : #36 fusionnée sur8c3aa85 ; tête finale e8bde71,
+CI37653248114/main37653544179 entières/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26 réussis, revue COMMENT5445385773, branche API nettoyée. Revérifiés REST159.
+
+[Recherche Web](web-search.md) réalisée sur codex/m4-web : formulaire protégé,
+six critères, pagination aux dates figées, événements/réserves/provenance en texte
+échappé, budgets partagés avec l'API, CSP CSS embarquée sans JavaScript, réponse
+HTML <=1MiB avant succès. Vide et NOQUEUE conservateurs.25tests HTTPAPI Windows
+Go1.26/vet/format/diff passent, incluant SQLite et client HTTPS réels. Publication
+et CI159 encore à terminer au commit ; preuve après publication dans la PR Web.
+Rendu/attaque XSS dans un navigateur réel et parcours clavier pas encore validés.
+
+Prochain160 : détail Web, même PR ; timeline et revue navigateur ensuite. L'ancienne
+borne Web+revue regroupait les vues ; au moins deux lots restent, découpage précis
+des vues/raccordements dans la marge. Conserver M4 2–9 après159/CI, M5 10–18,
+total12–27/deux jalons sans décrément artificiel. L'issue #7 reste ouverte,
+mise à jour de progression après publication ; M4/MVP non terminés. MIT conservée,
+AD/OIDC/Keycloak après MVP ; aucun160 commencé.

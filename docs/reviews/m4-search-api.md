@@ -80,3 +80,20 @@ La preuve post-publication est consignée dans #36 puis à la reprise159.
 Prochain159 : premier lot Web, page de recherche protégée exploitant les six
 critères existants, résultats échappés et réserves visibles ; détail/timeline Web
 dans les lots suivants. MIT conservée, AD/OIDC/Keycloak après MVP.
+
+## Clôture effective158, consignée159
+
+Tête finale `e8bde7189be8ae45ff0e156cd7ed0924e9a0c1b2` :
+[CI37653248114](https://github.com/Coubiac/QueueAtlas/actions/runs/37653248114)
+entière completed/success, trois jobs Windows112901746659, Go1.26 112901747061,
+stable112901747095 ; HTTPAPI Windows/race HTTPAPI Linux1.26 réussis.
+Revue COMMENT5445385773 sur cette tête, puis #36 rendue prête et fusionnée par
+merge avec SHA attendu, sans écraser les petits commits. Revue assistée uniquement.
+
+Main `8c3aa859eb9489f0e969cb47b087053448126ac4` :
+[CI37653544179](https://github.com/Coubiac/QueueAtlas/actions/runs/37653544179)
+entière completed/success, trois jobs Windows112902777063, Go1.26 112902777243,
+stable112902777253 ; HTTPAPI Windows/race HTTPAPI Linux1.26 réussis.
+Métadonnées/SHA/étapes revérifiés REST159. Branche codex/m4-search-api supprimée
+GitHub/local après vérification d'ascendance ; main propre avant codex/m4-web.
+Ce résultat clôt l'API bibliothèque, pas l'issue #7 ni M4.

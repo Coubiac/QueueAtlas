@@ -69,10 +69,12 @@ CI37642563497 entière/trois jobs/SHA exact/HTTPAPI Windows/race HTTPAPI Linux
 réussis, revérifiés REST156. Lot156 publié sur2298709, CI37646414652 entière/trois
 jobs/SHA exact réussis, race HTTPAPI Linux1.26 et journal HTTPAPI Windows vérifiés,
 état revérifié REST157. Lot157 publié sur277d981, CI37650350084 entière/trois jobs/
-SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Revue158
-favorable ; publication finale/fusion/main à terminer au commit. Prochain159 :
-page Web de recherche protégée. Deux jalons M4/M5 restent, environ12–27lots
-après clôture158/CI,
+SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Clôture158
+fusionnée #36 sur8c3aa85, CI finale37653248114 et main37653544179 entières réussies,
+branche API nettoyée ; preuves revérifiées159. Page Web159 réalisée localement sur
+codex/m4-web,25tests HTTPAPI Windows/vet/format/diff passent ; publication et CI
+encore à terminer au commit. Prochain160 : détail Web protégé du candidat.
+Deux jalons M4/M5 restent, environ12–27lots après159/CI,
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3431,15 +3433,16 @@ HTTPAPI Windows/race HTTPAPI Linux1.26 réussis, revérifiés REST156. Lot156 pu
 sur2298709, CI37646414652 entière/trois jobs/SHA exact réussis, revérifiés REST157 ;
 race HTTPAPI Linux1.26 et journal HTTPAPI Windows réussis vérifiés.
 Lot157 publié sur277d981, CI37650350084 entière/trois jobs/SHA exact/HTTPAPI Windows/
-race Linux1.26 réussis, revérifiés REST158. Revue158 favorable : publier le commit
-documentaire final sur codex/m4-search-api, vérifier sa CI entière/trois jobs/SHA,
-consigner revue COMMENT sur tête finale, rendre #36 prête puis fusionner avec SHA
-attendu, vérifier CI main et supprimer branche fusionnée locale/distante.
-Consigner preuves dans #36 puis reprise159. Prochain159 : page Web de recherche
-protégée, formulaire/résultats échappés et réserves, six critères existants ;
-détail/timeline Web séparés ensuite. Aucun159 à commencer dans la reprise158.
+race Linux1.26 réussis, revérifiés REST158. Clôture158 effective : #36 fusionnée
+sur8c3aa85, CI finale37653248114/main37653544179 entières réussies, revue COMMENT
+5445385773 sur tête e8bde71, branche nettoyée ; preuves revérifiées159.
+Lot159 page Web de recherche réalisée localement, voir [contrat](web-search.md).
+Au commit159 : publier codex/m4-web dans une nouvelle PR Web brouillon ; vérifier
+workflow entier/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 et consigner
+preuve dans la PR. Prochain160 : détail Web protégé du candidat, même PR.
+Timeline Web et revue navigateur ensuite ; aucun160 commencé dans cette reprise.
 Ne pas présenter un événement comme identité globale ni reconstruire depuis une
-seule page. Bibliothèque API relue ; listener/serve/Web/filtres complémentaires
+seule page. Bibliothèque API relue ; listener/serve/autres vues Web/filtres complémentaires
 et raccordements restent à réaliser. MIT, AD/OIDC/Keycloak après MVP.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
@@ -5369,3 +5372,62 @@ réalisée retire son seul lot de clôture : M4 2–9 après158/fusion/CI, M5 10
 total12–27/deux jalons ; marge des compléments/raccordement conservée et à préciser
 au Web. Pas de pourcentage livré, aucune sortie M4 annoncée. MIT conservée,
 AD/OIDC/Keycloak après MVP. Aucun159 commencé, un seul lot par reprise.
+
+## Lot 159 — page Web de recherche protégée
+
+Résultat attendu : formulaire GET, événements/candidats/réserves échappés et
+pagination conservant les six critères API. Détail/timeline Web dans des lots
+distincts, un seul petit lot dans cette reprise.
+
+### Départ et clôture effective158
+
+Main propre `8c3aa859eb9489f0e969cb47b087053448126ac4`, locale/origin identiques.
+PR #36 fusionnée ; tête finale e8bde7189be8ae45ff0e156cd7ed0924e9a0c1b2,
+CI37653248114 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis.
+Revue COMMENT5445385773 sur cette tête, passage prêt et merge avec SHA attendu.
+CI main37653544179 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26
+réussis ; preuves revérifiées REST159, détails dans [revue API](reviews/m4-search-api.md).
+Branche API supprimée GitHub/local après contrôle d'ascendance. Création de
+codex/m4-web depuis ce main validé ; aucune PR Web existante à réutiliser.
+
+### Comportement réalisé
+
+`NewConsultationHandler` ajoute GET/HEAD `/messages` au routeur protégé API,
+même Store/admission/délai ; constructeur API seul inchangé. Formulaire sans query
+sans lecture SQLite ; défaut24hUTC/50. Même validateur fermé, six critères,
+période31jours, pagination canonique aux dates effectives figées. Nouveau submit
+sans curseur. Résultats `html/template` : date/qualité, comptes prudents, réserves,
+provenance/offsets exacts ; NOQUEUE warning n'est pas rejeté, non assigné reste tel.
+Pas de diagnostics/lignes brutes/chemins privés en page de recherche.
+
+CSS embarquée seule déclarée fiable, CSP hash sur octets exacts, aucun script/
+réseau externe ; anti-framing/referrer/cache. Aucun champ SMTP devient HTML/URL
+actif. HTML tamponné <=1MiB avant200, erreurs fixes400/422/429/503 sans résultat
+partiel, garde/protocole antérieurs gardent leurs refus existants. HEAD mêmes
+lectures sans corps, contexte/admission API et Web communs.
+[Contrat](web-search.md) : détails et limites, GET/historique privé, budget de
+réponse distinct de la RAM totale et délais coopératifs.
+
+### Vérifications et suite
+
+Quatre nouveaux tests,25HTTPAPI total : Windows Go1.26 `go test ./internal/httpapi
+-count=1` passe (2.290s), vet HTTPAPI, gofmt/diff passent. SQLite réel pagination/
+faits hors fenêtre/réserves/vide/NOQUEUE/budget complet ; client HTTPS réel avec
+payload hostile/offset>2^53/HEAD/révocation, aucun accès sans session. Budgets
+API/Web partagés, annulation tardive et expansion HTML>1MiB refusées atomiquement.
+CSP correspond aux octets CSS réellement rendus. Pas de Linux local ni navigateur
+réel revendiqué ; parcours clavier/rendu adaptatif/XSS de la source au navigateur
+restent au critère de revue Web. Pas de nouveau schéma/SQL/source/dépendance.
+
+Au commit159 : publier codex/m4-web et nouvelle PR Web brouillon, vérifier CI
+entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 ; consigner preuves dans
+la PR puis reprise160. Dernier fusionné validé1588c3aa85/CI37653544179.
+L'issue #7 reste ouverte pour les vues restantes et les critères applicatifs ;
+suivi GitHub à actualiser après publication/CI159, sans clôture prématurée.
+
+Prochain160 : vue de détail protégée du candidat, même PR Web ; timeline et revue
+navigateur ensuite. La borne Web+revue précédente regroupait les vues : au moins
+deux lots restent (vues restantes/revue), leur découpage précis et raccordement
+restent dans la marge. M4 2–9 après159/CI, M5 10–18, total12–27/deux jalons,
+fourchette conservée sans réduction automatique à chaque numéro. Aucun160 commencé.
+MIT, AD/OIDC/Keycloak après MVP. Aucun serveur installable ou M4 terminé annoncé.

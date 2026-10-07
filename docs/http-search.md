@@ -8,6 +8,9 @@ La sélection porte sur des événements indexés, pas sur une identité globale
 message ni une preuve de livraison. Le handler rattache chaque événement à un
 candidat reconstruit depuis les faits complets de sa file, ou le laisse non assigné.
 
+Depuis159, `NewConsultationHandler` ajoute la [page Web](web-search.md) avec la
+même garde et les mêmes budgets ; `NewSearchHandler` reste limité à l'API.
+
 ## Paramètres
 
 Les noms sont exacts et sensibles à la casse. Tous sont uniques, y compris après

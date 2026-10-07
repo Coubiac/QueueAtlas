@@ -57,10 +57,14 @@ func NewSearchHandler(guard *auth.HTTPHandler, store *sqlite.Store, options Sear
 }
 
 func newSearchHandler(guard *auth.HTTPHandler, reader searchReader, options SearchOptions, now func() time.Time) (http.Handler, error) {
+	return newReadHandler(guard, reader, options, now, false)
+}
+
+func newReadHandler(guard *auth.HTTPHandler, reader searchReader, options SearchOptions, now func() time.Time, web bool) (http.Handler, error) {
 	if guard == nil || reader == nil || now == nil || options.Validate() != nil {
 		return nil, ErrSearchSetup
 	}
-	h := &searchHandler{reader: reader, options: options, now: now, slots: make(chan struct{}, options.MaxConcurrent)}
+	h := &searchHandler{reader: reader, options: options, now: now, slots: make(chan struct{}, options.MaxConcurrent), web: web}
 	protected, err := guard.Protect(h)
 	if err != nil {
 		return nil, ErrSearchSetup
@@ -73,6 +77,7 @@ type searchHandler struct {
 	options SearchOptions
 	now     func() time.Time
 	slots   chan struct{}
+	web     bool
 }
 
 func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -86,7 +91,11 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	detailID := ""
 	timeline := false
-	if r.URL.Path != SearchPath {
+	page := h.web && r.URL.Path == SearchPagePath
+	if page {
+		searchPageHeaders(w)
+	}
+	if !page && r.URL.Path != SearchPath {
 		if !strings.HasPrefix(r.URL.Path, SearchPath+"/") {
 			searchHTTPError(w, r, http.StatusNotFound, "not_found")
 			return
@@ -110,6 +119,10 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// are refused even when they would happen to be empty.
 	if r.ContentLength != 0 || len(r.TransferEncoding) != 0 {
 		searchHTTPError(w, r, http.StatusBadRequest, "invalid_request")
+		return
+	}
+	if page {
+		h.serveSearchPage(w, r)
 		return
 	}
 	var query sqlite.SearchQuery
