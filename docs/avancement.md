@@ -26,7 +26,8 @@ CI37567003805 entière réussie. Clôture132 fusionnée #30 sur118634f,
 CI finale37569190697/main37569292737 entières réussies, branche CLI supprimée.
 Ouverture readonly de diagnostic133 publiée dans #31 sur41fbf0f, CI37571495723
 entière réussie. Métadonnées134 publiées sur8e9008b, CI37572091851 entière réussie.
-CLI db stats135 validée localement ; publication/CI encore à terminer au moment du commit.
+CLI db stats135 publiée surcae194c, CI37574528679 entière réussie. Relecture136
+favorable ; publication/CI finale/fusion/main encore à terminer au moment du commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -41,7 +42,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 135 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 136 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -58,9 +59,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132 fusionnés/CI main verte ; diagnostics133–134 publiés/CI verte, CLI db stats135 validée localement | Publication/CI135, relecture/fusion diagnostics, doctor/config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 7–17 après135 |
+| M4 — consultation sûre | CLI/config128–132 fusionnés/CI main verte ; diagnostics133–135 publiés/CI verte, relecture136 favorable | Clôture #31/CI main, doctor/config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 6–16 après136 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après135** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **17–35** |
+| **Total après136** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **16–34** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -456,3 +457,21 @@ et effets readonly vérifiés. Publication/CI135 encore à terminer dans #31 au 
 du commit. Prochain lot136 : relecture/clôture diagnostics133–135, CI finale/fusion/
 main ; pas de comportement indépendant. M4 reste7–17lots/M5 10–18, total17–35 après135,
 estimation incertaine. Service/auth/Web ne sont pas livrés par cette commande.
+
+Validation135 effective : cae194c publié dans #31 en brouillon,
+[CI37574528679](https://github.com/Coubiac/QueueAtlas/actions/runs/37574528679)
+entière réussie, trois jobs/SHA exact revérifiés REST à la reprise136 ; Windows CLI
+passé. Les attentes précédentes sont le snapshot prépublication135.
+
+## Bilan136 — relecture/clôture diagnostics
+
+[Relecture assistée](reviews/m4-diagnostics.md) favorable surcae194c, aucun défaut
+bloquant identifié ; aucune approbation humaine indépendante revendiquée. Contrats,
+code, tests synthétiques et CI135 confrontés ; lot documentaire seulement, pas de
+rerun local des fondations sans risque nouveau. Publication/CI finale/ready/fusion
+#31 et CI main encore à terminer au moment du commit.
+
+Après clôture effective : M4 toujours en cours, M5 à réaliser. Prochain lot137 :
+doctor --config en lecture seule, rapport de config/compatibilité DB limité aux
+vérifications disponibles, sans intégrité/déploiement attestés. M4 reste6–16lots,
+M5 10–18, total16–34 après136, estimation incertaine. MIT conservée, AD/OIDC après MVP.

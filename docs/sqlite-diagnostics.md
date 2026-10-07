@@ -145,3 +145,10 @@ coopératif10secondes ; pas de deadline dure IO. Aucun changement de stockage134
 compteur de lignes, migration/checkpoint ni composant réseau. Les auxiliaires
 SQLite restent possibles. Tests réels du binaire et vérifications CLI Windows
 passés ; publication/CI135 encore à terminer dans #31 au moment du commit.
+
+Validation effective135 : cae194c publié,
+[CI37574528679](https://github.com/Coubiac/QueueAtlas/actions/runs/37574528679)
+entière réussie, trois jobs/SHA exact revérifiés à la reprise136.
+[Relecture136](reviews/m4-diagnostics.md) favorable ; publication/CI finale/fusion/
+main encore à terminer au moment du commit. La clôture de ce chantier ne clôture
+pas M4 et ne rend pas l'application installable/authentifiée.

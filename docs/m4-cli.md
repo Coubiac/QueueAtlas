@@ -153,8 +153,13 @@ Lectures bornées134 publiées sur8e9008b,
 [CI37572091851](https://github.com/Coubiac/QueueAtlas/actions/runs/37572091851)
 entière réussie, trois jobs/SHA exact vérifiés. Lot135 : quatre tests CLI nouveaux
 et binaire étendu à db stats/codes0/1/2 ; onze tests CLI et vet/format/diff passés
-sous Windows. Publication/CI135 encore à terminer au moment du commit dans #31.
-Prochain lot136 : relecture/clôture diagnostics133–135, puis CI finale/fusion/main.
+sous Windows. Lot135 publié surcae194c,
+[CI37574528679](https://github.com/Coubiac/QueueAtlas/actions/runs/37574528679)
+entière réussie, trois jobs/SHA exact revérifiés à la reprise136.
+[Relecture136](reviews/m4-diagnostics.md) favorable ; publication/CI finale/fusion/
+main encore à terminer au moment du commit. Prochain lot137 après clôture : doctor
+--config en lecture seule, rapport limité à config/compatibilité SQLite, sans
+attestation d'intégrité ou de déploiement.
 Doctor, configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.
