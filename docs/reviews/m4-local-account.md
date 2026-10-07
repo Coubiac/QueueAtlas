@@ -104,3 +104,18 @@ tête, PR prête puis fusionnée sur9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9.
 [CI main37611762238](https://github.com/Coubiac/QueueAtlas/actions/runs/37611762238)
 entière réussie/trois jobs/SHA exact, main propre/actualisé, branche locale et
 distante supprimées. Attentes147 prépublication terminées, limites login ouvertes.
+
+## Traitement du corpus au lot 152 — revue du login encore requise
+
+Le [corpus d'enrôlement](../password-blocklist.md) ajoute 10 898 empreintes de
+valeurs longues du sous-ensemble public SecLists/Xato d'un million de lignes.
+Révision, SHA-256 source/sortie, import reproductible et licence MIT/notice
+conservée sont documentés. Exemples/dérivés locaux maintenus ; aucun lookup externe.
+Tests synthétiques de rejet complet, intégrité, CLI et ancien compte toujours
+accepté au login Argon2id ; guide opérateur fourni après rejet.
+
+Cette livraison traite la demande de corpus/provenance/tests/guide de 147.
+Elle ne clôt pas la revue de l'authentification : le lot 153 doit évaluer ce choix
+historique/limité avec le budget global renouvelable et les autres protections
+148–151 avant de décider la clôture de #35. Aucune suffisance universelle ou
+conformité NIST déclarée. Conditions avant release/pilote conservées.

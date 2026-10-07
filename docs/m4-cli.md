@@ -283,9 +283,12 @@ peut changer le secret ; vérifier le fournisseur stdin utilisé.
 
 Entrée :15..256points de code UTF-8/1024octets max ; au plus un LF/CRLF final retiré,
 CR/LF restants refusés. Espaces et autres octets acceptés conservés pour le hash.
-Liste locale initiale finie de valeurs courantes/dérivées, comparaisons complètes
-sans casse/espaces autour, pas de contrôle réseau ou composition imposée ; limites
-et détails dans [auth locale](local-auth.md#lot146--initialisation-cli).
+Corpus local embarqué de 10 898 empreintes (lot 152), complété par les exemples
+locaux et dérivés du compte/service. Comparaisons complètes sans casse/espaces
+autour, pas de contrôle réseau ou composition imposée ; provenance MIT et limites
+dans [le corpus d'enrôlement](password-blocklist.md). Après rejet, choisir une
+nouvelle valeur générée ou une longue passphrase originale plutôt qu'une simple
+modification d'un exemple public. Les octets acceptés restent littéraux au login.
 
 Code0 : `Local administrator created`, stderr vide ; fichier local-admin.json avec
 identité/hash uniquement, sel frais et création atomique sans remplacement145.

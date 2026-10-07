@@ -1,16 +1,39 @@
 package auth
 
 import (
+	"crypto/sha256"
+	_ "embed"
+	"encoding/hex"
 	"errors"
+	"sort"
 	"strings"
 )
 
 var ErrBlockedPassword = errors.New("password is common or account-related")
 
+// Sorted, lowercase hex digests, one 64-byte digest plus LF per entry.
+// Source, license and reproducible import: docs/password-blocklist.md.
+//
+//go:embed password_blocklist.sha256
+var passwordBlocklist string
+
+func corpusBlocksPassword(candidate string) bool {
+	digest := sha256.Sum256([]byte(candidate))
+	var encoded [64]byte
+	hex.Encode(encoded[:], digest[:])
+	key := string(encoded[:])
+	const stride = 65
+	count := len(passwordBlocklist) / stride
+	i := sort.Search(count, func(i int) bool {
+		return passwordBlocklist[i*stride:i*stride+64] >= key
+	})
+	return i < count && passwordBlocklist[i*stride:i*stride+64] == key
+}
+
 // ValidateNewPassword is enrollment policy, never verification policy. It checks
 // complete values, ignoring surrounding whitespace and case for comparison.
-// Accepted bytes remain literal for hashing. The finite starter list is not a complete
-// breach corpus or an assurance of password strength; review before login release.
+// Accepted bytes remain literal for hashing. The pinned public corpus and local
+// examples are finite; acceptance is not an assurance of password strength.
 func ValidateNewPassword(password []byte, identity LocalIdentity) error {
 	if err := identity.Validate(); err != nil {
 		return err
@@ -19,7 +42,7 @@ func ValidateNewPassword(password []byte, identity LocalIdentity) error {
 		return err
 	}
 	candidate := strings.ToLower(strings.TrimSpace(string(password)))
-	if candidate == "" {
+	if candidate == "" || corpusBlocksPassword(candidate) {
 		return ErrBlockedPassword
 	}
 	for _, blocked := range []string{

@@ -43,7 +43,9 @@ CI finale37611573008/main37611762238 entières réussies, branche nettoyée.
 Sessions148 publiées surbd862cd dans #35, CI37615586790 entière/trois jobs/SHA exact
 et race auth réussis. Login149 publié sur94ef705, CI37619138226 entière/trois jobs/
 SHA exact/race auth réussis. HTTP150 publié surc50c678, CI37623116898 entière/trois
-jobs/SHA exact/race auth réussis. Garde HTTP151 vérifiée Windows ; publication/CI à terminer.
+jobs/SHA exact/race auth réussis. Garde HTTP151 publiée sur eb5d29c, CI37626687859
+entière/trois jobs/SHA exact/race auth réussis, revérifiés REST152. Corpus152
+réalisé/vérifié Windows ; publication/CI à terminer au commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -58,7 +60,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 151 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 152 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -75,9 +77,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142 et compte143–147 fusionnés/CI main verte ; sessions/login/HTTP148–150 publiés/CI verte, garde151 vérifiée Windows | Corpus de mots de passe adapté et revue, diagnostic élargi, API bornée, recherche/détail/timeline Web | 6–13 après151/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142 et compte143–147 fusionnés/CI main verte ; sessions/login/HTTP/garde148–151 publiés/CI verte, corpus152 vérifié Windows | Revue auth/corpus, diagnostic élargi, API bornée, recherche/détail/timeline Web | 5–12 après152/CI |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après151/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **16–31** |
+| **Total après152/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **15–30** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
@@ -118,6 +120,9 @@ sans ajouter de critère MVP ni réduire automatiquement au numéro de lot.
 Après151/CI, garde de routes réalisée en bibliothèque ; corpus et revue/clôture
 restent avant sortie du chantier auth, puis API2–3/Web/revue2–4. M4 devient6–13,
 sans changement de marge ou de périmètre, aucune API/Web/listener livré151.
+Après152/CI, corpus d'enrôlement/provenance/licence/guide/tests réalisés ; revue
+du chantier auth153 encore requise, puis API2–3/Web/revue2–4. M4 devient5–12,
+M5 reste10–18, total15–30, sans modification de marge ou critères MVP.
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -765,3 +770,22 @@ Sept tests/43auth/vet/format/diff Windows passés ; HTTPS réel et32accès concu
 Publication/CI/Linux45/race à terminer au commit151. Pas d'API/Web/serveur livré.
 Prochain152 : corpus local d'enrôlement adapté/provenance/licence, revue/clôture153
 ensuite. M4 6–13 après CI151, M5 10–18, total16–31 ; périmètre/marge inchangés.
+
+## Bilan du lot 152 — corpus local d'enrôlement
+
+Garde151 publiée sur eb5d29c dans #35, CI37626687859 entière/trois jobs/SHA exact/
+race auth réussis, revérifiés REST152. Le [corpus](password-blocklist.md) ajoute
+10 898 empreintes embarquées de valeurs longues d'une source publique SecLists
+figée sous MIT. Provenance/licence/notice, import reproductible et intégrité
+complète documentés ; aucune vérification réseau ou fichier à la création.
+Valeurs complètes seulement, exemples/dérivés conservés, octets acceptés littéraux.
+Les comptes existants restent utilisables malgré l'évolution de la liste.
+
+Deux nouveaux tests/45auth Windows,20CLI enrichis dont binaire et un test d'import
+avec données synthétiques ; vet/format/diff passés. Deux générations identiques.
+Publication/CI/Linux47/race encore à terminer au commit152. Corpus historique fini,
+sans preuve de force/conformité NIST ; revue153 doit évaluer la sélection avec
+les essais renouvelables. Aucun listener/API/Web livré ; MIT/AD/OIDC après MVP.
+
+Prochain153 : revue/clôture de #35 puis API2–3/Web/revue2–4. M4 5–12 après CI152,
+M5 10–18, total15–30/deux jalons ; marge et périmètre inchangés.

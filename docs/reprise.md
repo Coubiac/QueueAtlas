@@ -58,9 +58,10 @@ dans #35, CI37615586790 entière/trois jobs/SHA exact/race auth réussis.
 Login149 publié sur94ef705 dans #35, CI37619138226 entière/trois jobs/SHA exact/
 race auth réussis, REST revérifié150. HTTP150 publié surc50c678 dans #35,
 CI37623116898 entière/trois jobs/SHA exact/race auth réussis, REST revérifié151.
-Garde HTTP151 vérifiée Windows ; publication/CI à terminer au commit.
-Prochain152 : corpus local d'enrôlement. Deux jalons M4/M5 restent,
-environ16–31lots après151/CI, M3 zéro lot restant ;
+Garde HTTP151 publiée sur eb5d29c dans #35, CI37626687859 entière/trois jobs/
+SHA exact/race auth réussis, revérifiés REST152. Corpus152 réalisé/vérifié Windows ;
+publication/CI à terminer au commit. Prochain153 : revue/clôture auth dans #35.
+Deux jalons M4/M5 restent, environ15–30lots après152/CI, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3405,11 +3406,13 @@ branche nettoyée. Sessions148 publiées surbd862cd dans #35, CI37615586790 enti
 trois jobs/SHA exact/race auth réussis, revérifiés REST à la reprise149.
 Login149 publié sur94ef705, CI37619138226 entière/trois jobs/SHA exact/race auth
 réussis, REST revérifié150. HTTP150 publié surc50c678, CI37623116898 entière/trois
-jobs/SHA exact/race auth réussis, REST revérifié151. Garde HTTP151 validée Windows :
-publier sur codex/m4-sessions dans #35 réutilisée, vérifier CI entière/trois jobs/
-SHA exact/race auth ; preuve effective dans PR puis reprise152. Prochain152 :
-corpus local d'enrôlement adapté/provenance/licence ; revue/clôture153 ensuite.
-Ne pas commencer152 ni fusionner #35 au lot151. Aucun listener/serve/Web/API livré.
+jobs/SHA exact/race auth réussis, REST revérifié151. Garde HTTP151 publiée sur
+eb5d29c, CI37626687859 entière/trois jobs/SHA exact/race auth réussis, revérifiés
+REST152. Corpus152 réalisé/vérifié Windows : publier sur codex/m4-sessions dans
+#35 réutilisée, vérifier CI entière/trois jobs/SHA exact/race auth ; consigner la
+preuve effective dans PR puis reprise153. Prochain153 : revue/clôture auth et
+corpus dans #35, CI finale, décision de fusion puis CI main/nettoyage.
+Ne pas commencer153 ni fusionner #35 au lot152. Aucun listener/serve/Web/API livré.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4850,3 +4853,63 @@ clôture153. Liste initiale non déclarée suffisante pour release login. Estima
 après151/CI M4 6–13 (garde réalisée ; corpus/revue puis API2–3/Web/revue2–4),
 M5 10–18, total16–31/deux jalons, marge/périmètre inchangés. MIT/AD/OIDC après MVP.
 Aucun lot152 commencé ni fusion #35 prévue dans151.
+
+## Lot 152 — corpus d'enrôlement local avec provenance et licence
+
+Résultat attendu : enrichir la liste de refus lors de la création du compte,
+avec source locale figée, licence/provenance/import reproductible, tests utiles
+et guide après rejet. Un seul comportement d'enrôlement ; auth existante séparée.
+
+État initial propre sur codex/m4-sessions. Local/origin/#35 sur
+eb5d29cc86a5275e1312051c9fcf2e8c3e8d99d3 ; #35 ouverte/draft, base main147
+9cd6cecaff00d58e43f5ca05b49271ed7ada7ae9. CI15137626687859 completed/success et
+ses trois jobs Windows/Linux Go1.26.x/stable completed/success sur le SHA exact,
+revérifiés par REST ; race auth1.26 passée. Preuve151 prépublication terminée.
+
+Source publique SecLists/Xato, fichier top1million, révision
+47cd752f4323f703e304104173633ee31462b9b3, sous MIT avec copyright/notice complète
+conservée et THIRD_PARTY_NOTICES.md. Un million de lignes/8557632octets, SHA source
+424a3e03a17df0a2bc2b3ca749d81b04e79d59cb7aeec8876a5a3f308d0caf51.
+10908 valeurs dans les bornes UTF-8/15..256/1024octets, 10898 empreintes uniques
+après lower/TrimSpace identiques à la politique existante ; sortie708370octets,
+SHA a5b8b74b66c0ed54d90098285cb0dbe02217ae41d7c91f0c57cf4a761e14521a.
+Pas de plaintext source commité ni données personnelles de test ; fixtures
+construites synthétiquement. Donnée publique produit, empreintes non secrètes.
+
+go:embed string immuable, SHA256 une fois puis recherche dichotomique dans lignes
+hex64+LF ; format/cardinalité/SHA/tri/unicité entièrement figés par test. Aucun
+fichier/réseau à l'enrôlement, aucune map initialisée ou recherche de sous-chaîne.
+27 exemples et dérivés compte/service conservés, ErrBlockedPassword/code2/fixe
+avant hash/création inchangés. Valeurs acceptées littérales/non mutées ; aucune
+politique de création dans VerifyPassword/LocalLogin. Argon2id compte inchangé.
+
+Outil de maintenance blocklistgen lit seulement une source locale, bornée et
+vérifiée par taille/SHA/lignes avant import, déduplique/trie les digests. Deux
+générations ont produit l'empreinte identique ; source en clair téléchargée dans
+le répertoire temporaire queueatlas-password-corpus-152, pas le dépôt. Test d'un
+import petit/taille exacte mais SHA faux avec données synthétiques, sortie revue
+préservée. Licence complète/notices à inclure dans les futurs paquets M5.
+
+Deux nouveaux tests auth,45auth Windows ;20CLI existants enrichis et un test du
+générateur. Motifs synthétiques chiffres/clavier, casse/espaces, intégrité de toutes
+les entrées/valeurs complètes et absence de mutation/sous-chaînes ; ancien compte
+hashé/VerifyPassword/login Argon2id réellement accepté malgré blocage à création,
+variante normalisée refusée au login. CLI refus sans compte/diagnostic privé,
+code2 réel du binaire compilé. Tests/vet/format/diff Windows réussis ; Linux47/
+race/CI entière restent à vérifier après publication. Pas de rerun optionnel
+fondations local ; workflow couvrira full tests/vet/race/builds habituels.
+
+Guide/provenance/mesures/régénération/maintenance dans docs/password-blocklist.md,
+auth locale/CLI/relecture147/avancement actualisés. Corpus historique fini, pas
+de couverture exhaustive/actuelle/force ni conformité NIST ; choix justifié par
+minimum15 et budget global par défaut5/minute/1simultané, budget renouvelable et
+restart/burst conservés. Réexaminer avant release/pilote ou changement des essais/
+bornes/providers ; revue153 doit évaluer cet ensemble avant clôture de #35.
+
+Au commit152 publication/CI à terminer ; dernier publié validé151eb5d29c /
+CI37626687859, main1479cd6cec/CI37611762238. Publier #35 cohérente, vérifier CI
+entière/trois jobs/SHA/race auth et consigner preuve effective dans PR/reprise153.
+Prochain153 : revue/clôture sessions/login/HTTP/garde/corpus148–152, CI finale puis
+décision de fusion/main/nettoyage. Après152/CI, M4 5–12 (revue puis API2–3/Web/
+revue2–4/marge), M5 10–18, total15–30/deux jalons ; périmètre inchangé. Aucun
+lot153 commencé ni fusion #35 prévue dans152. MIT/AD/OIDC/Keycloak après MVP.

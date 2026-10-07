@@ -323,3 +323,20 @@ raccorde le compte aux sessions après vérification Argon2id, budget partagé e
 admission concurrente ; vérifié Windows, publication/CI à terminer au commit149.
 Le transport/cookies150, protections transversales/liste adaptée et revue restent
 requis avant exposition. Aucune route Web ou option YAML login livrée149.
+
+## Lot 152 : corpus d'enrôlement embarqué
+
+Le [corpus documenté](password-blocklist.md) ajoute 10 898 empreintes de valeurs
+complètes issues d'une révision figée de SecLists, sous MIT avec notice conservée.
+Filtrage aux bornes 15..256/UTF-8, normalisation de comparaison identique à 146,
+import reproductible avec contrôles de source et d'intégrité. Comparaison locale
+embarquée, sans fichier/réseau à l'enrôlement ; hash du compte toujours Argon2id.
+Les 27 exemples locaux et dérivés du compte/service sont conservés.
+
+Tests synthétiques de corpus/CLI et ancien compte vérifié par Argon2id/login :
+la liste n'est jamais réappliquée à la connexion, les octets restent littéraux.
+Ni corpus exhaustif/actuel ni preuve de force ; choix à revoir avec le budget
+d'essais avant release/pilote. Garde HTTP151 publiée sur eb5d29c, CI37626687859
+entière/trois jobs/SHA exact/race auth verts, revérifiés REST au début de 152.
+Revue/clôture du chantier dans #35 prévue au lot 153 ; aucun listener/API/Web
+livré ici. MIT, AD/OIDC/Keycloak après MVP.
