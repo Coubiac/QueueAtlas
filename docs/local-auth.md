@@ -212,10 +212,76 @@ droits0755 sous Linux, refus correct du stockage privé. Correction des fixtures
 par chmod0700 POSIX explicite, aucun changement de production ; tests/vet Windows
 repassés, CI corrective Linux/race à vérifier avant validation du lot.
 
-## Suite après145
+## Suite après145 (snapshot)
 
 Lot146 : CLI admin create, répertoire explicite existant/username/secret via stdin
 borné, contrôle des mots de passe courants/dérivés, hash144 puis création145, codes
 et diagnostics sans secret/chemin, tests du binaire/doc. Aucune commande admin,
 route login ou session encore disponible. Revue/clôture du compte local ensuite ;
 sessions/protections HTTP dans un chantier distinct. MIT, AD/OIDC après MVP.
+
+Validation145 effective : tête corrective19415ba07989db2422f3ce1a51b10d6bf998e653,
+[CI37605851032](https://github.com/Coubiac/QueueAtlas/actions/runs/37605851032)
+entière réussie/trois jobs/SHA exact ; tests auth Windows14/Linux16, race auth
+Linux Go1.26.x réussis. Fixtures POSIX0700 corrigées, production inchangée.
+Les attentes145 et sa première CI échouée sont des snapshots historiques terminés.
+
+## Lot146 : initialisation CLI
+
+Commande disponible : `queueatlas admin create --directory <path> --username <name> --password-stdin`.
+Syntaxe/ordre uniques, options et valeurs séparées, aucune config implicite ; aides
+admin/create sans IO. Le répertoire existant doit remplir le contrat145, avec ACL
+Windows administrées séparément. Le chemin et l'identifiant restent littéraux.
+Stockage prévalidé avant lecture du secret ; compte existant/corrompu/IO refusé.
+Cette vérification ne réserve pas la destination : Create arbitre toujours la
+publication atomique sans remplacement et revalide le répertoire.
+
+stdin doit fournir un seul record UTF-8 via pipe ou fichier. EOF requis, lecture
+limitée à1027octets, mot de passe144 limité à1024octets/15..256points de code.
+Un LF ou CRLF final est le séparateur de transport retiré ; CR/LF internes ou
+supplémentaires refusés. Aucun trim/normalisation du secret haché, espaces initiaux/
+finaux et Unicode conservés. Pas de mot de passe en argv, variable d'environnement
+ou option par la CLI. Entrée fichier character-device/console refusée avant lecture,
+pas de prompt interactif avec echo ; pipe local bloqué sans EOF peut attendre,
+pas de deadline ajoutée. L'opérateur fournit une entrée fiable et privée.
+
+`ValidateNewPassword(password, identity)` applique les bornes144 et une liste
+initiale **finie**, autonome sans réseau :27valeurs complètes,15suffixes du nom du
+compte/QueueAtlas, répétitions deux/trois fois avec quatre séparateurs. Casse et
+espaces autour ignorés pour la comparaison uniquement ; aucun rejet par substring,
+aucune composition imposée. Octets acceptés inchangés pour HashPassword. Liste dans
+[password_policy.go](../internal/auth/password_policy.go), test synthétique/public ;
+la phrase publique « correct horse battery staple » est refusée comme exemple connu.
+Erreur fixe ErrBlockedPassword ; la CLI explique le rejet et propose une valeur
+générée différente ou passphrase. Aucun mot de passe fourni recopié.
+
+Cette liste initiale n'est pas un corpus exhaustif de compromissions, ni une preuve
+de force. Taille/valeurs à réexaminer avant login/release avec la limitation d'essais.
+Le [NIST §3.1.1.2](https://pages.nist.gov/800-63-4/sp800-63b.html#passwordver)
+prévoit la comparaison des valeurs complètes, notamment liées au compte/service,
+avec une liste adaptée aux essais permis. Aucune conformité NIST globale revendiquée.
+La vérification d'un hash144 n'applique pas cette politique de création, afin de ne
+désactiver aucun compte si la liste évolue.
+
+En succès : HashPassword avec défaut143 et sel frais, Create145, sortie fixe/code0.
+Codes2 pour syntaxe/identité/record/borne/liste refusés ; codes1 pour IO stdin ou
+stockage, hash/création, publication tardive et sortie. ErrAccountPublished donne
+un diagnostic explicite : compte créé, inspecter avant retry. Échec stdout après
+publication garde le compte ; aucune suppression/reset. Erreurs/outputs sans chemin,
+identifiant/hash/secret ni erreur brute de dépendance. Buffer secret effacé au mieux
+via clear ; copies strings, mémoire Argon2/shell et pagination OS non attestées.
+
+Cinq nouveaux tests CLI,20CLI et15auth/vet/format/diff Windows passés : aides/args
+sans lecture, frames EOF/LF/CRLF/UTF-8/Unicode4octets/borne1024 et1027octets lus max,
+character-device/erreur reader, compte vérifiable/littéral, seconde création sans
+lecture/écrasement, refus sans état/diagnostic privé, compte corrompu conservé,
+stdout échoué sans rollback. Test du binaire compilé existant enrichi, build réutilisé :
+stdin/codes0/1/2 et hash vérifiable après reopen. Un nouveau test auth couvre valeurs
+complètes/casse/espaces/comptes/dérivés et absence de mutation ; Linux17tests attendus
+avec deux spécifiques145/race via workflow existant, à vérifier après publication146.
+Pas de modification SQLite/config/FileSource/modules/workflow, pas de login/session.
+
+Prochain lot147 : revue/clôture du compte local143–146 dans #34, contrôles ciblés,
+évaluation des limites de la liste pour le futur login, corrections utiles/doc puis
+CI finale/fusion/main. Sessions/protections HTTP dans un chantier suivant. MIT,
+AD/OIDC/Keycloak après MVP.

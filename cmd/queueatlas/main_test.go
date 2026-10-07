@@ -138,6 +138,7 @@ func TestLinkedBinaryVersionAndProcessExitCodes(t *testing.T) {
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build command: %v\n%s", err, output)
 	}
+	assertAdminBinaryEnrollment(t, ctx, binary)
 	dir := t.TempDir()
 	valid := filepath.Join(dir, "synthetic-private-valid.yaml")
 	invalid := filepath.Join(dir, "synthetic-private-invalid.yaml")

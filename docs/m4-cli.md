@@ -34,6 +34,9 @@ que le linker et l'exécutable utilisent réellement l'étiquette synthétique.
 | --- | --- | ---: |
 | `queueatlas version` | Version et newline sur stdout | 0 |
 | `queueatlas --help` ou `queueatlas -h` | Usage sur stdout | 0 |
+| `queueatlas admin create --directory <chemin> --username <nom> --password-stdin` valide | `Local administrator created` sur stdout | 0 |
+| Syntaxe/identité/mot de passe refusés | Diagnostic fixe sur stderr | 2 |
+| Compte déjà créé/stockage ou stdin indisponibles/échec de création | Diagnostic fixe sur stderr | 1 |
 | `queueatlas check-config --config <chemin>` valide | `Configuration valid` et newline sur stdout | 0 |
 | `queueatlas check-config --help` ou `-h` | Usage de la commande sur stdout | 0 |
 | Configuration refusée | Champ/règle connus sur stderr, aucune valeur fournie | 2 |
@@ -237,8 +240,63 @@ entière réussie/trois jobs/SHA exact. [Relecture142](reviews/m4-source-config.
 favorable ; publication/CI finale/fusion/main encore à terminer au commit142.
 Clôture142 effective : #33 fusionnée sur19843d6, CI finale37594338289/main37594545438
 entières réussies, branche sources supprimée. Le [contrat auth143](local-auth.md)
-prépare identité locale/coûts Argon2id en bibliothèque ; aucune commande admin,
-route login ou session n'est encore disponible.
+prépare identité locale/coûts Argon2id en bibliothèque ; l'initialisation CLI est
+disponible au146, décrite ci-dessous. Route login et sessions restent à développer.
 Configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.
+
+## Lot146 : admin create
+
+Après build, syntaxe unique (ordre des options requis) :
+
+```text
+queueatlas admin create --directory <répertoire-existant> --username <identifiant> --password-stdin
+```
+
+`admin --help` et `admin create --help` (aussi `-h`) affichent l'aide sans IO.
+Le répertoire doit exister, être privé/fiable et accessible à l'utilisateur du
+processus ; Linux exige aucun droit groupe/autres (normalement0700), record0600.
+La CLI ne crée/chmode pas les parents et ne modifie pas les ACL Windows.
+Chemin relatif évalué depuis le cwd, indépendamment du YAML/SQLite.
+
+Exemple **Bash sur Linux**, dans un shell sans traçage `set -x`, après préparation
+d'un répertoire privé. Le secret est fourni sans echo par le shell et transmis par
+son builtin printf ; aucune valeur de secret littérale dans la commande/historique :
+
+```bash
+unset qa_password
+read -r -s -p 'Mot de passe généré ou passphrase : ' qa_password
+printf '\n' >&2
+builtin printf '%s' "$qa_password" | ./queueatlas admin create --directory ./queueatlas-auth --username operator --password-stdin
+qa_status=$?
+unset qa_password
+printf 'Code de sortie : %s\n' "$qa_status"
+```
+
+Employer un mot de passe généré par un gestionnaire ou une longue passphrase
+différente des exemples publics. Le pipe doit fermer son entrée : EOF requis.
+Sous Windows, fournir également un pipe/fichier **UTF-8** depuis une source privée,
+avec ACL adaptées ; aucune saisie console directe, option password ou lecture
+de variable d'environnement n'est prévue. Une conversion d'encodage par le shell
+peut changer le secret ; vérifier le fournisseur stdin utilisé.
+
+Entrée :15..256points de code UTF-8/1024octets max ; au plus un LF/CRLF final retiré,
+CR/LF restants refusés. Espaces et autres octets acceptés conservés pour le hash.
+Liste locale initiale finie de valeurs courantes/dérivées, comparaisons complètes
+sans casse/espaces autour, pas de contrôle réseau ou composition imposée ; limites
+et détails dans [auth locale](local-auth.md#lot146--initialisation-cli).
+
+Code0 : `Local administrator created`, stderr vide ; fichier local-admin.json avec
+identité/hash uniquement, sel frais et création atomique sans remplacement145.
+Code2 : syntaxe/identité/mot de passe ou liste refusés ; raison fixe sans valeur.
+Code1 : IO/hash/création, compte déjà présent, ou sortie échouée. Aucun diagnostic
+n'affiche chemin/nom/hash/secret. Compte existant/corrompu refusé avant lecture stdin,
+compte manquant dans stockage privé seul autorise la création.
+
+Une erreur de finalisation tardive indique explicitement qu'un compte est déjà
+créé ; inspecter le stockage avant de réessayer. Une erreur stdout ne supprime pas
+le compte publié. Il n'existe aucune commande de reset/remplacement dans ce lot.
+Lecture bornée1027octets, mais pas de délai pour un pipe local bloqué. Mémoire shell/
+copies/effacement physique non garantis ; buffer CLI effacé au mieux. Cette commande
+initialise le compte ; aucun serveur, login, cookie ou accès Web encore disponible.

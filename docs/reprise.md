@@ -50,9 +50,10 @@ CI37591355873 entière/trois jobs/SHA exact réussis. Clôture142 fusionnée #33
 CI finale37594338289/main37594545438 entières réussies, branche sources supprimée.
 Contrat auth143 publié sure00573c dans #34, CI37598069906 entière/trois jobs/SHA
 exact réussis. Hash/codec144 publié sur22f1694, CI37601878573 entière/trois jobs/SHA
-exact réussis. Persistance145 implémentée/vérifiée Windows ; publication/CI dont
-contrôles Linux à terminer au commit. Prochain lot146 : CLI admin create.
-Deux jalons M4/M5 restent, environ18–34lots après145, M3 zéro lot restant ;
+exact réussis. Persistance145 publiée sur19415ba, CI37605851032 entière/trois jobs/
+SHA exact réussis. CLI admin create146 implémentée/vérifiée Windows ; publication/
+CI à terminer au commit. Prochain lot147 : revue/clôture du compte dans #34.
+Deux jalons M4/M5 restent, environ17–33lots après146/CI, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3390,10 +3391,11 @@ CI37588258338 entière réussie. Conversion141 publiée sur223849c, CI3759135587
 entière réussie. Clôture142 fusionnée #33 sur19843d6, CI finale37594338289/
 main37594545438 entières réussies, branche sources supprimée. Auth143 publié
 sure00573c dans #34, CI37598069906 entière réussie. Hash144 publié sur22f1694,
-CI37601878573 entière réussie. Persistance145 validée Windows : publier dans #34
-puis vérifier CI entière/trois jobs/SHA exact et tests/gardes Linux/race auth.
-Prochain lot146 : CLI admin create, secret stdin borné/contrôle mots de passe,
-hash/création existants, codes/diagnostics/binaire/doc ; revue puis sessions/HTTP séparés.
+CI37601878573 entière réussie. Persistance145 publiée sur19415ba/CI37605851032
+entière réussie. CLI146 validée Windows : publier dans #34 puis vérifier CI entière/
+trois jobs/SHA exact incluant CLI/auth Linux/race et binaire Windows.
+Prochain lot147 : revue/clôture #34, limites de la liste avant futur login,
+contrôles ciblés/corrections utiles/doc, CI finale/fusion/main ; sessions/HTTP séparés.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4475,3 +4477,59 @@ restait0755 en CI, donc refus attendu par openAccountRoot. Fixtures explicitemen
 chmodées0700 sur POSIX via helper de test ; production et contrat inchangés.
 Tests auth/vet/format/diff Windows repassés après correction ; nouveau commit/push
 et CI entière à vérifier. Lot145 non validé Linux tant que cette CI n'est pas verte.
+
+Validation effective145 consignée à la reprise146 :
+`19415ba07989db2422f3ce1a51b10d6bf998e653` publié dans #34,
+CI37605851032 entière réussie/trois jobs/SHA exact ; tests auth Windows14/Linux16,
+droits/liens/FIFO et race auth Go1.26.x réussis. Fixtures POSIX0700 corrigées,
+production inchangée, première CI37605619494 échouée maintenant historique.
+À la reprise146 : fetch effectué, checkout propre/local/origin/PR identiques,
+main14219843d6 inchangé, PR ouverte/brouillon/mergeable/clean et run réussi
+revérifiés REST ; #34 réattachée, attentes145 précédentes terminées.
+
+## Lot146 : CLI de création du compte administrateur
+
+Résultat attendu : admin create, username/dir existant explicites, secret stdin
+borné/politique locale, hash144/création145, codes privés/tests/binaire/doc ; même #34.
+Syntaxe unique : admin create --directory <path> --username <name> --password-stdin,
+aides admin/create/global sans IO ; aucune option de secret argv/environment.
+Identité validée et stockage Load prévalidé avant stdin, compte occupé/corrompu/IO
+refusé ; Create revalide/arbitre toujours concurrence, préflight ne réserve rien.
+
+stdin pipe/fichier UTF-8/EOF, max1027octets consommés, secret14415..256points de
+code/1024octets, LF/CRLF final de transport retiré, CR/LF restant refusé ; espaces/
+Unicode/octets acceptés hachés littéralement. Character-device/console refusée
+avant lecture, aucun prompt echo ; pipe sans EOF peut attendre, sans deadline.
+ValidateNewPassword : bornes144 puis liste initiale locale finie27valeurs publiques,
+15suffixes compte/QueueAtlas et répétitions deux/trois fois/quatre séparateurs.
+Comparaison complète seulement, sans casse/espaces autour ; aucun substring ni
+composition imposée. Liste initiale pas corpus exhaustif/force/conformité NIST ;
+réévaluer avant login/release avec essais bornés. Vérification144 indépendante de
+la politique de création ; changement futur de liste ne désactive pas un compte.
+
+Hash défaut143/sel frais puis Create145, succès fixe/stdout/code0. Syntaxe/identité/
+secret/liste refusés2, IO/hash/création/compte occupé/output1 ; erreurs sans chemin/
+identifiant/hash/secret/erreur brute. Publication tardive signale compte créé ;
+stdout en échec conserve final, pas de rollback/reset. Buffer CLI clear au mieux,
+copies string/Argon2/shell/pagination non garanties ; entrée opérateur fiable.
+
+Cinq nouveaux tests CLI/un auth,20CLI/15auth/vet/format/diff Windows passés :
+args/aides sans lecture, records LF/CRLF/EOF et littéral/bornes Unicode4octets,
+limite de consommation/character-device/erreur input, hash vérifiable, deuxième
+création sans lecture/écrasement, refus sans état/disclosure/corruption conservée,
+stdout échoué sans suppression. Test binaire existant enrichi, un build réutilisé :
+stdin/codes0/1/2/hash vérifiable après reopen. Linux17auth attendus/race et CLI par
+workflow existant, à vérifier après publication ; aucune exécution Linux locale
+revendiquée. Config/SQLite/FileSource/modules/workflow inchangés, pas de rerun local
+fondations hors packages CLI/auth réellement modifiés.
+
+Contrat dans docs/local-auth.md, usage/transport/exemple Bash sans secret littéral
+dans docs/m4-cli.md ; ACL Windows/operator namespace fiables toujours requis.
+Au moment du commit146 : publication/CI à terminer, dernier publié validé145
+19415ba/CI37605851032, dernier main14219843d6/CI37594545438. Publier dans #34,
+vérifier workflow entier/trois jobs/SHA exact, consigner PR puis reprise147.
+Prochain147 : revue/clôture #34 sur comptes143–146, limites de la liste avant futur
+login/contrôles ciblés/corrections utiles/doc, CI finale/fusion/main ; sessions et
+protections HTTP dans un nouveau chantier cohérent ensuite. Compte initialisable,
+pas de serveur/login/cookie/Web livré. M4 reste7–15lots après CI146 (trois lots auth
+minimum), M5 10–18, total17–33, estimation incertaine. MIT, AD/OIDC après MVP.
