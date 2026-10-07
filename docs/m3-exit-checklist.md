@@ -1,8 +1,8 @@
 # Sortie M3 — matrice de vérification
 
-État au lot126, 7 octobre 2026. M3 reste ouvert. Cette matrice inventorie les
-vérifications acquises et les travaux restants. Le contrôle ciblé124 est publié,
-CI entière réussie ; benchmarks125 publiés/CI verte, mesures répétées126 analysées.
+État au lot127, 7 octobre 2026. [Relecture de sortie](reviews/m3-exit.md) favorable
+dans le périmètre bibliothèque M3 ; clôture effective conditionnée à CI finale,
+fusion #29 et CI main. Contrôle124, benchmarks125 et mesures126 publiés/CI vertes.
 
 Référence : [roadmap](phase-0-proposal.md#11-roadmap-et-critères-mvp) et
 [ADR-005](adr/ADR-005-postfix-correlation.md). La sortie M3 concerne les API de
@@ -82,13 +82,18 @@ Build,134–137ms Install,74–76ms Current ; allocations cumulées Go significa
 7,268–13,597ms entre moyennes. Ces profils réguliers/cache chaud ne mesurent ni
 liens/NOQUEUE/origines multiples ni concurrence/Linux pilote. Aucune optimisation
 ou nouvelle garantie. [Résultats et limites126](projection-measurements.md#campagne126-et-résultats).
-Publication/CI126 à vérifier après commit ; M3 encore ouvert.
+Lot126 publié surf4c24d22e64baa8d09a2ec0583ae46294882dfac dans #29,
+[CI37554852072](https://github.com/Coubiac/QueueAtlas/actions/runs/37554852072)
+entièrement réussie, trois jobs/SHA exact vérifiés REST.
 
-Après126 : relire la matrice, les résultats et les limites au lot127 avant de
-déclarer M3 terminé. Réutiliser les tests
-scellés ; élargir seulement pour un risque concret. Les logs incomplets demeurent
+Relecture127 de la matrice, des résultats, des limites et du diff #29 favorable ;
+aucun défaut bloquant identifié. Les contrôles scellés sont réutilisés sans
+remesure ou suite locale supplémentaire. CI finale/fusion/main restent à vérifier.
+Les logs incomplets demeurent
 un cas avec réserves. Une future fusion prouvée exige producteur fiable,
 revalidation et règles propres ; elle n'est pas implicitement livrée par ce bilan.
+Après clôture effective, M4 commence avec un point d'entrée CLI `queueatlas version`
+au lot128. La validation applicative et le pilote Linux restent aux jalons suivants.
 
 ## Vérifications du lot123
 

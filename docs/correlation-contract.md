@@ -400,8 +400,9 @@ La [matrice de sortie M3](m3-exit-checklist.md) inventorie les vérifications.
 Le contrôle124 publié/CI verte valide le conflit de résultats à date égale après
 persistance et reopen, avec insertion inverse et réserves conservées.
 Les [mesures locales125–126](projection-measurements.md) couvrent un profil
-synthétique borné de reconstruction/installation/lecture. M3 reste ouvert pour
-sa relecture et sa clôture ; aucune capacité ou couverture complète certifiée.
+synthétique borné de reconstruction/installation/lecture. La [relecture127](reviews/m3-exit.md)
+valide la sortie M3 en bibliothèque, sous réserve de CI finale/fusion/main ;
+aucune capacité ou couverture complète certifiée.
 Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.
