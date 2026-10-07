@@ -26,9 +26,11 @@ Lot125 publié suraa5f3c9, CI37552260931 entière réussie, smoke Linux Go1.26 p
 Lot126 publié surf4c24d2, CI37554852072 entière réussie ;36échantillons/12cas conservés.
 Lot127 clôturé : #29 fusionnée sur038c6c9, CI finale37557272778 et main37557390479
 entièrement réussies. M3 terminé en bibliothèque, branche du chantier supprimée.
-Lot128 : point d'entrée CLI version/aide/codes de sortie, quatre tests/vet et
-go run Windows réussis ; publication/CI128 à terminer sur codex/m4-cli.
-Deux jalons M4/M5 restent, environ24–42lots après128, M3 zéro lot restant ;
+Lot128 publié dans #30 sur921155a, CI37559870551 entière réussie/trois jobs/SHA
+vérifiés ; point d'entrée CLI version/aide/codes et test réel de l'exécutable.
+Lot129 : contrat pur de configuration serveur local/SQLite, défauts/validation,
+cinq tests/vet locaux réussis ; publication/CI129 à terminer sur codex/m4-cli.
+Deux jalons M4/M5 restent, environ23–41lots après129, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -48,6 +50,11 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot128 publié : `921155a6accf9714ba5420ccb3e0bec658c1a0b9`,
+  [PR #30](https://github.com/Coubiac/QueueAtlas/pull/30) en brouillon,
+  [CI37559870551](https://github.com/Coubiac/QueueAtlas/actions/runs/37559870551)
+  entière réussie, trois jobs/SHA exact vérifiés ; Windows CLI réussi.
+  Lot129 localement validé, publication/CI encore à terminer ; dernier fusionné127.
 - Lot127 terminé/fusionné : finale `d26e0bd97987b42417853338cab8fac6d7105675`,
   [CI finale37557272778](https://github.com/Coubiac/QueueAtlas/actions/runs/37557272778)
   entière réussie. Merge `038c6c90ee515d584669a8d879b5e267d30d8f13`,
@@ -3308,10 +3315,11 @@ Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
 automatique. L'intégration pure aux clés révisables121 est publiée dans la même PR,
 CI entière réussie ; clôture122 fusionnée #28, CI finale et main vertes.
 Matrice123, contrôle124, benchmarks125 et mesures126 publiés/CI entières réussies.
-M3 clôturé127, fusion/CI finale/main vérifiées. CLI128 développé localement :
-publier/vérifier CI128 et créer/attacher une PR CLI/configuration à réutiliser.
-Branche codex/m4-cli depuis main038c6c9 propre. Prochain lot129 : contrat de
-configuration/valeurs par défaut ; chargement YAML durci séparé ensuite.
+M3 clôturé127, fusion/CI finale/main vérifiées. CLI128 publié dans #30 attachée,
+CI37559870551 entière réussie. Contrat129 validé localement : publier le commit
+et vérifier CI129 sur la tête exacte, réutiliser #30 (brouillon cohérent).
+Branche codex/m4-cli depuis main038c6c9. Prochain lot130 : chargeur YAML strict,
+borné, défauts/champs absents et résolution des chemins ; aucune commande serve.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3692,3 +3700,39 @@ Créer/attacher une PR puis la réutiliser pour les lots cohérents de CLI/confi
 Prochaine action129 après publication/CI128 : contrat de configuration et valeurs
 par défaut ; chargement YAML à découper ensuite. M4 reste14–24lots estimés/M5 10–18,
 total24–42 après128, deux jalons restants. Aucun service ou paquet installable livré.
+
+Validation effective128 enregistrée à la reprise129 : publication
+`921155a6accf9714ba5420ccb3e0bec658c1a0b9` dans #30 créée/attachée en brouillon,
+CI37559870551 entièrement réussie (trois jobs/SHA exact, étape Windows CLI réussie).
+Les mentions « à terminer » ci-dessus décrivent l'état avant le commit128.
+
+## Lot129 : contrat de configuration et défauts
+
+Résultat attendu/acquis localement : socle `internal/config` indépendant de la CLI,
+défauts portables serveur local/chemin SQLite, validation pure avant chargement YAML.
+Adresse IP loopback littérale/port1–65535, délais1ms–1m (idle1ms–10m), chemin fichier
+sans contrôle/URI/memory/UNC ni séparateur final. Erreurs ErrInvalid par champ/règle,
+valeurs fournies jamais recopiées. Validation sans normalisation/DNS/IO ; défauts
+indépendants et zéro explicite refusé. Documentation : docs/configuration.md.
+
+Cinq tests synthétiques : défauts/indépendance/zéro ; IP/ports/absence de mutation ;
+bornes inclusives/délais zéro ; syntaxe chemins/absence de création d'état ;
+diagnostics sans valeurs privées. Tests/vet/config, format et diff locaux Windows
+réussis. Nouvelle étape Windows configuration dans la CI, suite/vet/builds Linux
+existants couvrent le package. Pas de nouvelle dépendance ni rerun des fondations.
+
+Limites : aucune lecture YAML/commande check-config/serve ni authentification
+livrée ; la validation n'atteste ni disque local/droits ni comportement HTTP.
+Le bind distant reste refusé jusqu'au raccordement auth+TLS ; loopback ne dispense
+pas le futur serveur de l'auth locale. Chemin relatif à résoudre par le futur
+chargeur depuis le répertoire de config, package Linux devra expliciter l'état
+sous /var/lib/queueatlas. Sources/CIDR/domaines/rétention/auth seront des contrats
+séparés. MIT conservée, AD/OIDC après MVP.
+
+Au moment de cet enregistrement129 : code/tests locaux passés, commit/publication/
+CI129 encore à terminer sur codex/m4-cli dans #30 réutilisée (brouillon).
+Dernière tête publiée validée128921155a/CI37559870551, dernier main fusionné127
+038c6c9/mainCI37557390479. Prochain lot130 après CI129 : chargeur YAML strict et
+borné, champs inconnus/doublons, défauts uniquement pour absents, durées textuelles,
+résolution des chemins. M4 reste13–23lots estimés/M5 10–18, total23–41 après129,
+deux jalons restants ; aucune release installable annoncée.

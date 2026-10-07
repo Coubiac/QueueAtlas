@@ -27,5 +27,6 @@ go run ./cmd/queueatlas version
 ```
 
 Affiche `QueueAtlas dev` pour un build ordinaire. Voir [commandes, compilation et
-codes de sortie](docs/m4-cli.md). Configuration et consultation authentifiée
-restent à développer ; ce point d'entrée est le premier lot M4.
+codes de sortie](docs/m4-cli.md). Le [contrat initial de configuration](docs/configuration.md)
+fixe les défauts et leur validation (lot129). Le chargement YAML et la consultation
+authentifiée restent à développer.

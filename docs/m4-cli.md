@@ -49,9 +49,14 @@ recopie, erreur d'écriture, binaire réellement compilé avec étiquette synth�
 et codes0/2. Tests/vet ciblés, `go run ... version`, format/diff locaux Windows
 réussis. La CI Linux exécute aussi ces tests via `go test ./...` ; une étape CLI
 Windows dédiée est ajoutée. Les builds statiques existants compilent le point
-d'entrée amd64/arm64. Publication/CI128 à vérifier après commit.
+d'entrée amd64/arm64. Lot128 publié dans [PR #30](https://github.com/Coubiac/QueueAtlas/pull/30)
+sur `921155a6accf9714ba5420ccb3e0bec658c1a0b9` ;
+[CI37559870551](https://github.com/Coubiac/QueueAtlas/actions/runs/37559870551)
+entière réussie, trois jobs et SHA exact vérifiés. Étape Windows CLI réussie.
 
-Prochain lot129 : contrat de configuration et valeurs par défaut, par petit lot
-distinct. Chargement YAML durci, check-config, doctor/db stats, auth locale/API/Web
+Lot129 : [contrat initial de configuration](configuration.md), défauts et validation
+pure du serveur local/chemin SQLite, tests/vet locaux réussis ; publication/CI129
+à terminer dans la même PR. Prochain lot130 : chargement YAML strict et borné.
+Check-config, doctor/db stats, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.
