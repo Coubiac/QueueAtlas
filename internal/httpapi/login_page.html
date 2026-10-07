@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion — QueueAtlas</title>
+  <style>{{styles}}</style>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <header class="top"><a class="brand" href="/login">QueueAtlas</a><span>Suivi Postfix</span></header>
+  <main id="main">
+    <div class="heading"><p class="eyebrow">Compte local</p><h1>Connexion</h1><p>Connectez-vous pour consulter les journaux Postfix.</p></div>
+    {{if .Error}}<section class="panel error" aria-labelledby="error-title"><h2 id="error-title">Connexion interrompue</h2><p role="alert">{{.Error}}</p></section>{{end}}
+    <section class="panel" aria-labelledby="login-title">
+      <h2 id="login-title">Identifiants du compte local</h2>
+      <form method="post" action="/login">
+        <div class="fields">
+          <div><label for="username">Identifiant</label><input id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+          <div><label for="password">Mot de passe</label><input id="password" type="password" name="password" autocomplete="current-password" required></div>
+        </div>
+        <div class="actions"><button type="submit">Se connecter</button></div>
+      </form>
+    </section>
+  </main>
+  <footer>QueueAtlas · Accès local protégé</footer>
+</body>
+</html>

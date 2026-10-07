@@ -64,5 +64,6 @@ de raw64KiB×4 refusée ; limit1 conserve une ligne complète, sans troncature.
 
 Aucun navigateur réel/Linux local revendiqué. Revue XSS de la source au rendu,
 CSP, clavier, caractères de présentation et affichage adaptatif reste à faire.
-Prochain162 : connexion Web locale, même PR #37 ; montage et compléments ensuite.
+[Connexion Web locale](web-login.md) livrée162, même PR #37 ; déconnexion Web163,
+montage et compléments ensuite.
 Issue #7/M4 restent ouverts. MIT, AD/OIDC/Keycloak après MVP.

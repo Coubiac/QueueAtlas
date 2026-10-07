@@ -60,8 +60,9 @@ branche API nettoyée, revérifiées159. Recherche Web159 publiée dans #37 surb
 CI37657564872 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
 revérifiés160. Détail160 publié sur29cf545 dans #37, CI37660252622 entière/trois
 jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés161. Timeline161
-réalisée localement,32tests HTTPAPI/vet/format/diff Windows réussis ; publication/
-CI à terminer au commit.
+publiée94095f8, CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26 réussis, revérifiés162. Connexion Web162 réalisée localement, tests auth/
+34HTTPAPI/vet/format/diff Windows réussis ; publication/CI à terminer au commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -76,7 +77,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 161 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 162 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -93,9 +94,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147, auth148–153 et API154–158 fusionnés/CI main verte ; Web159–160 publiés/CI verte, timeline161 locale/publication à terminer | Connexion Web, montage serveur, filtres/diagnostics et revue navigateur | 4–11 après161/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147, auth148–153 et API154–158 fusionnés/CI main verte ; Web159–161 publiés/CI verte, connexion162 locale/publication à terminer | Déconnexion Web, montage serveur, filtres/diagnostics et revue navigateur | 4–11 après162/CI |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après161/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **14–29** |
+| **Total après162/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **14–29** |
 
 Révision160 : la borne2–9 après159 ne comptait pas explicitement connexion Web,
 montage serveur et compléments de consultation. Elle était trop optimiste.
@@ -1026,3 +1027,25 @@ revendiqué. Publication/CI161 encore à terminer au commit dans la même #37.
 Prochain162 : connexion Web locale ; pas commencé. Timeline réalisée retire un
 comportement de la révision160 : M4 4–11, M5 10–18, total14–29/deux jalons après
 161/CI. #7/M4/MVP restent ouverts, MIT conservée, AD/OIDC/Keycloak après MVP.
+
+## Bilan162 — connexion Web locale
+
+Timeline161 publiée94095f8/#37 brouillon, CI37664362505 entière/trois jobs/SHA exact/
+HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST162. Main reste1588c3aa85.
+Formulaire local public, POST sécurisé partageant l'auth API, cookie frais avec
+rotation et303 fixe vers la recherche. Erreurs HTML privées et aucun credential
+réinjecté ; l'API login/logout conserve ses réponses. [Contrat](web-login.md).
+
+Trois nouveaux tests auth et deux HTTPAPI, 34HTTPAPI total ; tests Windows Go1.26,
+vet/gofmt/diff passent. HTTPS réel/vrai Argon2id/cookiejar, refus avant body/hash,
+budget partagé, session sur rotation/révocation/IO/cancellation couverts.
+Publication/CI162 encore à terminer au commit dans la même #37. Pas de navigateur
+réel ou serveur applicatif livré ; le logout API204 testé n'est pas un parcours
+Web. Prochain163 : déconnexion Web avec retour au formulaire et navigation depuis
+les vues protégées. Aucun163 commencé.
+
+Précision162 : le comportement « connexion » de l'ancienne estimation regroupait
+encore connexion et déconnexion. Le formulaire/succès est réalisé ; la déconnexion
+Web reste un lot distinct avant montage/compléments/revue. Borne M4 maintenue4–11,
+M5 10–18, total14–29 après162/CI, deux jalons. Aucun pourcentage déduit du numéro.
+#7/M4/MVP ouverts, MIT conservée, AD/OIDC/Keycloak après MVP.

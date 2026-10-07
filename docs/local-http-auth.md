@@ -119,3 +119,12 @@ revérifiée REST153. [Relecture assistée](reviews/m4-local-http.md) favorable 
 clôture de la bibliothèque, avec TLS direct et limites d'assemblage conservées.
 Au commit153, CI finale/fusion/main encore à terminer ; preuves dans #35 puis
 reprise154. Les routes de recherche et les flux navigateur restent à développer.
+
+## Adaptation navigateur au lot162
+
+Le [formulaire Web local](web-login.md) ajoute GET/HEAD/POST `/login` avec le même
+handler auth et le même budget API/Web. Le parseur/guards/hash/sessions restent
+communs ; seul le succès navigateur devient303 vers `/messages` et les erreurs
+ont un rendu HTML fixe. API login200/logout204 compatibles. Cookie frais/rotation
+et révocation sur écriture échouée/partielle/panique/annulation réutilisés et testés.
+La déconnexion Web reste au lot163 ; aucun listener ou provider supplémentaire.

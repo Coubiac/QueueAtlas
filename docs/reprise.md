@@ -75,9 +75,11 @@ branche API nettoyée ; preuves revérifiées159. Recherche Web159 publiée dans
 sur b907914, CI37657564872 entière/trois jobs/SHA exact/HTTPAPI Windows/race
 Linux1.26 réussis, revérifiés160. Détail160 publié sur29cf545 dans #37,
 CI37660252622 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
-revérifiés161. Timeline Web161 réalisée localement,32tests HTTPAPI Windows/vet/
-format/diff passent ; publication/CI à terminer au commit. Prochain162 : connexion
-Web locale. Deux jalons M4/M5 restent, environ14–29lots après161/CI (M4 4–11),
+revérifiés161. Timeline Web161 publiée sur94095f8 dans #37,
+CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés162. Connexion Web162 réalisée localement ; tests auth/34HTTPAPI/vet/
+format/diff passent, publication/CI à terminer au commit. Prochain163 : déconnexion
+Web locale. Deux jalons M4/M5 restent, environ14–29lots après162/CI (M4 4–11),
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3442,11 +3444,13 @@ sur8c3aa85, CI finale37653248114/main37653544179 entières réussies, revue COMM
 Lot159 recherche Web publiée #37/b907914, CI37657564872 entière/trois jobs/SHA exact/
 HTTPAPI Windows/race Linux1.26 réussis, revérifiés160. Branche propre/synchronisée.
 Lot160 détail Web publié29cf545, CI37660252622 entière/trois jobs/SHA exact/HTTPAPI
-Windows/race Linux1.26 réussis, revérifiés161. Lot161 timeline Web réalisée,
-voir [contrat](web-timeline.md). Au commit : publier sur codex/m4-web, même #37
-brouillon, vérifier workflow entier/trois jobs/SHA exact/HTTPAPI Windows/race
-Linux1.26 et consigner preuve dans PR puis reprise162. Prochain162 : connexion
-Web locale ; aucun162 commencé dans cette reprise.
+Windows/race Linux1.26 réussis, revérifiés161. Lot161 timeline Web publiée94095f8,
+CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés162. Lot162 [connexion Web locale](web-login.md) réalisée. Au commit :
+publier sur codex/m4-web, même #37 brouillon, vérifier workflow entier/trois jobs/
+SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 ; consigner preuve
+dans PR puis reprise163. Prochain163 : déconnexion Web locale avec retour au
+formulaire et navigation depuis les vues protégées ; aucun163 commencé.
 Ne pas présenter un événement comme identité globale ni reconstruire depuis une
 seule page. Bibliothèque API relue ; listener/serve/autres vues Web/filtres complémentaires
 et raccordements restent à réaliser. MIT, AD/OIDC/Keycloak après MVP.
@@ -5548,3 +5552,49 @@ Prochain162 : connexion Web locale ; montage, filtres/diagnostics et revue ensui
 Timeline réalisée retire un comportement : M4 4–11 après161/CI, M5 10–18,
 total14–29/deux jalons, marge des compléments conservée. #7/M4/MVP non clos,
 MIT et AD/OIDC/Keycloak après MVP. Aucun162 commencé.
+
+## Lot162 — formulaire de connexion local et redirection fixe
+
+Résultat attendu : formulaire public GET/HEAD et soumission POST `/login`,
+authentification locale partagée avec l'API, rotation de session et303 vers la
+recherche. Un seul comportement ; déconnexion Web et montage dans des lots suivants.
+
+Départ propre sur codex/m4-web, locale/origin/#37 sur
+`94095f88aa4b20932a9ba12b0670522b7fdc81cc`, main1588c3aa85, PR ouverte brouillon.
+[CI16137664362505](https://github.com/Coubiac/QueueAtlas/actions/runs/37664362505)
+entière completed/success sur ce SHA : Windows112939662675,
+stable112939662999, Go1.26 112939663015. HTTPAPI Windows et race HTTPAPI Linux1.26
+réussis, stable race skipped comme prévu. Workflow/jobs/SHA/étapes/tête/base
+revérifiés REST162. #7 ouverte, main CI37653544179 verte, aucune nouvelle fusion.
+
+Formulaire français, labels/autocomplete/lien d'évitement, aucun JavaScript.
+Lecture publique contrôlée HTTPS/origine/cookies sans Resolve/renouvellement ni
+budget de tentative. POST réutilise le parseur/guards/hash/admission/magasin
+existants ; aucune deuxième autorité d'authentification. Cookie sécurisé frais,
+ancien token révoqué et303 Location fixe `/messages` ; aucune query/next admise.
+Refus HTML fixes/champs vides, aucun credential reflété ; API200/logout204 restent
+compatibles. CSS/hash CSP/cache/anti-framing identiques aux vues, y compris303.
+Erreur/écriture courte/panique/annulation après émission révoque la nouvelle session.
+Write réussi ne prouve pas réception client ; ancienne révocation non annulée.
+[Contrat Web](web-login.md), contrats des vues et auth HTTP actualisés.
+
+Trois nouveaux tests auth, deux nouveaux tests HTTPAPI (34HTTPAPI total).
+Windows Go1.26 `go test ./internal/auth ./internal/httpapi -count=1` passe
+(auth1.453s, HTTPAPI2.480s), vet sur ces packages/gofmt/diff passent. Rejets avant
+body/hash, budget API/Web partagé, rotation, destination fixe, ancien token sur
+refus et cleanup sur IO/annulation. HTTPS réel/vrai Argon2id/cookiejar : formulaire,
+HEAD, connexion/rotation, recherche protégée et révocation via logout API existant.
+Pas de navigateur réel/Linux local revendiqué. Lecture lente/deadlines du futur
+serveur, parcours clavier/adaptatif/SameSite et revue XSS restent à vérifier.
+
+Au commit162 : publication/CI à terminer dans la même #37 brouillon. Vérifier
+workflow entier/trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI
+Linux1.26 ; preuve dans PR puis reprise163. Dernier publié validé16194095f8/
+CI37664362505, main1588c3aa85/CI37653544179.
+Prochain163 : déconnexion Web locale, retour fixe au formulaire et navigation
+depuis les vues protégées. Aucun bouton Web de logout livré162 ; l'API204 est
+testée et disponible. Montage serveur, compléments et revue ensuite. La connexion
+prévue précédemment regroupait encore connexion/déconnexion : le premier flux
+est livré, le second reste distinct. M4 conservé4–11 après162/CI, M5 10–18,
+total14–29/deux jalons, estimation incertaine par comportements restants.
+#7/M4/MVP non clos, MIT et AD/OIDC/Keycloak après MVP. Aucun163 commencé.

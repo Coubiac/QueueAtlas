@@ -47,54 +47,58 @@ func NewHTTPHandler(login *LocalLogin, origin string) (*HTTPHandler, error) {
 }
 
 func (h *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.serveAuth(w, r, nil)
+}
+
+func (h *HTTPHandler) serveAuth(w http.ResponseWriter, r *http.Request, render WebLoginRenderer) {
 	authResponseHeaders(w)
 	if h == nil || h.login == nil || h.origin == "" {
-		authHTTPError(w, http.StatusServiceUnavailable)
+		authLoginError(w, r, http.StatusServiceUnavailable, render)
 		return
 	}
 	if r.URL == nil || r.URL.RawPath != "" || (r.URL.Path != LoginPath && r.URL.Path != LogoutPath) {
-		authHTTPError(w, http.StatusNotFound)
+		authLoginError(w, r, http.StatusNotFound, render)
 		return
 	}
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
-		authHTTPError(w, http.StatusMethodNotAllowed)
+		authLoginError(w, r, http.StatusMethodNotAllowed, render)
 		return
 	}
 	if !h.requestAllowed(r, true) {
-		authHTTPError(w, http.StatusForbidden)
+		authLoginError(w, r, http.StatusForbidden, render)
 		return
 	}
 	if r.URL.RawQuery != "" || r.URL.ForceQuery {
-		authHTTPError(w, http.StatusBadRequest)
+		authLoginError(w, r, http.StatusBadRequest, render)
 		return
 	}
 	if len(r.Header.Values("Content-Encoding")) != 0 {
-		authHTTPError(w, http.StatusUnsupportedMediaType)
+		authLoginError(w, r, http.StatusUnsupportedMediaType, render)
 		return
 	}
 	oldToken, status := authCookieToken(r)
 	if status != 0 {
-		authHTTPError(w, status)
+		authLoginError(w, r, status, render)
 		return
 	}
 	if r.URL.Path == LogoutPath {
 		h.logout(w, r, oldToken)
 		return
 	}
-	h.connect(w, r, oldToken)
+	h.connect(w, r, oldToken, render)
 }
 
-func (h *HTTPHandler) connect(w http.ResponseWriter, r *http.Request, oldToken string) {
+func (h *HTTPHandler) connect(w http.ResponseWriter, r *http.Request, oldToken string, render WebLoginRenderer) {
 	contentTypes := r.Header.Values("Content-Type")
 	if len(contentTypes) != 1 {
-		authHTTPError(w, http.StatusUnsupportedMediaType)
+		authLoginError(w, r, http.StatusUnsupportedMediaType, render)
 		return
 	}
 	mediaType, params, err := mime.ParseMediaType(contentTypes[0])
 	if err != nil || mediaType != "application/x-www-form-urlencoded" || len(params) > 1 ||
 		(len(params) == 1 && !strings.EqualFold(params["charset"], "utf-8")) {
-		authHTTPError(w, http.StatusUnsupportedMediaType)
+		authLoginError(w, r, http.StatusUnsupportedMediaType, render)
 		return
 	}
 	body := http.MaxBytesReader(w, r.Body, MaxLoginBodyBytes)
@@ -104,15 +108,15 @@ func (h *HTTPHandler) connect(w http.ResponseWriter, r *http.Request, oldToken s
 	if err != nil {
 		var tooLarge *http.MaxBytesError
 		if errors.As(err, &tooLarge) {
-			authHTTPError(w, http.StatusRequestEntityTooLarge)
+			authLoginError(w, r, http.StatusRequestEntityTooLarge, render)
 		} else {
-			authHTTPError(w, http.StatusBadRequest)
+			authLoginError(w, r, http.StatusBadRequest, render)
 		}
 		return
 	}
 	form, err := url.ParseQuery(string(raw))
 	if err != nil || len(form) != 2 || len(form["username"]) != 1 || len(form["password"]) != 1 {
-		authHTTPError(w, http.StatusBadRequest)
+		authLoginError(w, r, http.StatusBadRequest, render)
 		return
 	}
 	password := []byte(form["password"][0])
@@ -121,11 +125,11 @@ func (h *HTTPHandler) connect(w http.ResponseWriter, r *http.Request, oldToken s
 	if err != nil {
 		switch err {
 		case ErrInvalidCredentials:
-			authHTTPError(w, http.StatusUnauthorized)
+			authLoginError(w, r, http.StatusUnauthorized, render)
 		case ErrLoginLimited:
-			authHTTPError(w, http.StatusTooManyRequests)
+			authLoginError(w, r, http.StatusTooManyRequests, render)
 		default:
-			authHTTPError(w, http.StatusServiceUnavailable)
+			authLoginError(w, r, http.StatusServiceUnavailable, render)
 		}
 		return
 	}
@@ -136,12 +140,17 @@ func (h *HTTPHandler) connect(w http.ResponseWriter, r *http.Request, oldToken s
 		}
 	}()
 	if r.Context().Err() != nil || h.login.sessions.Revoke(oldToken) != nil {
-		authHTTPError(w, http.StatusServiceUnavailable)
+		authLoginError(w, r, http.StatusServiceUnavailable, render)
 		return
 	}
 	http.SetCookie(w, authCookie(token, false))
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
+	if render == nil {
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.Header().Set("Location", WebLoginSuccessPath)
+		w.WriteHeader(http.StatusSeeOther)
+	}
 	const message = "authenticated\n"
 	n, err := io.WriteString(w, message)
 	// Headers may already be sent: invalidate on failure/short write/panic or
