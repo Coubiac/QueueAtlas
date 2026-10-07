@@ -167,6 +167,11 @@ func TestLinkedBinaryVersionAndProcessExitCodes(t *testing.T) {
 		{[]string{"db", "stats", "--config", valid}, 1, "", "queueatlas: cannot open database for diagnostics\n"},
 		{[]string{"db", "stats", "--config", invalid}, 2, "", "queueatlas: invalid configuration: yaml: unknown field\n"},
 		{[]string{"db", "stats"}, 2, "", dbUsage},
+		{[]string{"doctor", "--config", statsConfig}, 0, "DOCTOR_JSON", ""},
+		{[]string{"doctor", "--config", valid}, 1, "", "queueatlas: cannot open database for diagnostics\n"},
+		{[]string{"doctor", "--config", invalid}, 2, "", "queueatlas: invalid configuration: yaml: unknown field\n"},
+		{[]string{"doctor", "--config", filepath.Join(dir, "synthetic-private-missing.yaml")}, 1, "", "queueatlas: cannot read configuration\n"},
+		{[]string{"doctor"}, 2, "", doctorUsage},
 	} {
 		command := exec.CommandContext(ctx, binary, test.args...)
 		var stdout, stderr bytes.Buffer
@@ -183,6 +188,10 @@ func TestLinkedBinaryVersionAndProcessExitCodes(t *testing.T) {
 		outputMatches := stdout.String() == test.out
 		if test.out == "JSON" {
 			assertDBStatsJSON(t, stdout.String())
+			outputMatches = true
+		}
+		if test.out == "DOCTOR_JSON" {
+			assertDoctorJSON(t, stdout.String())
 			outputMatches = true
 		}
 		if code != test.code || !outputMatches || stderr.String() != test.err || strings.Contains(stdout.String()+stderr.String(), "synthetic-private") {

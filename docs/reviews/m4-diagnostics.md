@@ -57,3 +57,15 @@ d'aptitude au déploiement. Réutiliser le chargeur/lecteur validés, sans créa
 M4 reste6–16lots, M5 10–18, total16–34 après136 (estimation incertaine). Doctor,
 auth/API/Web/config des composants restent M4 ; service/paquets/pilote restent M5.
 MIT conservée, AD/OIDC/Keycloak après MVP.
+
+## Clôture effective136, consignée à la reprise137
+
+Bilan publié sur `3d78970f0fea555a222647d1d2cae881e63f2ea7` ;
+[CI finale37576814504](https://github.com/Coubiac/QueueAtlas/actions/runs/37576814504)
+entière réussie/trois jobs sur ce SHA. Revue COMMENT assistée5438067398 déposée
+sur cette tête, sans approbation humaine indépendante ; PR #31 prête puis fusionnée
+sur `918ef0c3c798a127533ce65cbdc9fcd458058c86`.
+[CI main37576942301](https://github.com/Coubiac/QueueAtlas/actions/runs/37576942301)
+entière réussie/trois jobs/SHA exact. Main actualisé propre, branche diagnostics
+supprimée localement et sur GitHub. Les attentes ci-dessus sont le snapshot
+prépublication136, désormais terminé ; doctor démarre au lot137 sur une branche séparée.

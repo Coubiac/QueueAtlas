@@ -35,4 +35,8 @@ et affiche `Configuration valid` sans ouvrir de base (lot131). La consultation
 authentifiée reste à développer. `queueatlas db stats --config <chemin>` affiche
 les six [métadonnées SQLite](docs/sqlite-diagnostics.md) en JSON depuis une base
 existante, en lecture seule (lot135). Voir [syntaxe, codes et limites](docs/m4-cli.md#lot135--db-stats).
-La commande ne crée pas de base et ne vérifie pas son intégrité ; `doctor` reste à développer.
+Le chantier diagnostics133–136 est fusionné dans [#31](https://github.com/Coubiac/QueueAtlas/pull/31),
+avec CI finale et main réussies. `queueatlas doctor --config <chemin>` vérifie la
+configuration et la compatibilité du schéma SQLite existant (lot137), puis imprime
+deux statuts JSON. Voir [son contrat limité](docs/m4-cli.md#lot137--doctor).
+Ces commandes ne créent pas de base et ne vérifient pas son intégrité.

@@ -15,7 +15,7 @@ import (
 // stays explicitly marked as a development build rather than inventing a tag.
 var version = "dev"
 
-const usage = "Usage: queueatlas version\n       queueatlas check-config --config <path>\n       queueatlas db stats --config <path>\n       queueatlas --help\n"
+const usage = "Usage: queueatlas version\n       queueatlas check-config --config <path>\n       queueatlas db stats --config <path>\n       queueatlas doctor --config <path>\n       queueatlas --help\n"
 const checkConfigUsage = "Usage: queueatlas check-config --config <path>\n"
 
 func main() {
@@ -23,6 +23,9 @@ func main() {
 }
 
 func run(args []string, stdout, stderr io.Writer) int {
+	if len(args) > 0 && args[0] == "doctor" {
+		return doctorCommand(args[1:], stdout, stderr)
+	}
 	if len(args) > 0 && args[0] == "db" {
 		return dbCommand(args[1:], stdout, stderr)
 	}

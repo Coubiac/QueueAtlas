@@ -39,9 +39,12 @@ entières réussies ; main actualisé propre et branche CLI supprimée local/Git
 Lot133 publié dans #31 sur41fbf0f, CI37571495723 entière réussie/trois jobs/SHA exact.
 Lot134 publié dans #31 sur8e9008b, CI37572091851 entière réussie/trois jobs/SHA exact.
 Lot135 publié dans #31 surcae194c, CI37574528679 entière réussie/trois jobs/SHA exact.
-Lot136 : relecture assistée diagnostics133–135 favorable ; publication/CI finale/
-ready/fusion/main encore à terminer au moment du commit, voir bilan en fin de fichier.
-Deux jalons M4/M5 restent, environ16–34lots après136, M3 zéro lot restant ;
+Lot136 clôturé : #31 fusionnée sur918ef0c, CI finale37576814504/main37576942301
+entières réussies, branche diagnostics supprimée. Lot137 doctor publié dans #32
+sur d1feeb9, CI37579618027 entière/trois jobs/SHA exact réussis. Relecture138
+favorable ; publication/CI finale/fusion/main à terminer au moment du commit,
+voir bilan en fin de fichier. Prochain lot139 après clôture : contrat source fichier.
+Deux jalons M4/M5 restent, environ14–32lots après138, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3369,10 +3372,13 @@ CI37567003805 entière réussie. Clôture132 fusionnée #30 sur118634f,
 CI finale37569190697/main37569292737 entières réussies. Lot133 publié sur41fbf0f
 dans #31, CI37571495723 entière réussie. Lot134 publié sur8e9008b,
 CI37572091851 entière réussie. Lot135 publié surcae194c, CI37574528679 entière
-réussie. Relecture136 favorable : publier le bilan, vérifier CI finale sur tête
-exacte, COMMENT assisté/ready/fusion #31 puis CI main et nettoyage de branche.
-Prochain lot137 après clôture : doctor --config en lecture seule, rapport limité
-à config/compatibilité SQLite, sans création DB/intégrité/déploiement attestés.
+réussie. Clôture136 terminée : #31 fusionnée sur918ef0c, CI finale37576814504 et
+main37576942301 entières réussies, branche diagnostics supprimée.
+Doctor137 publié sur d1feeb9 dans #32, CI37579618027 entière/trois jobs/SHA exact.
+Relecture138 favorable : publier le bilan, vérifier CI finale sur tête exacte,
+COMMENT assisté/ready/fusion #32 et CI main, actualiser main/nettoyer la branche.
+Prochain lot139 après succès : contrat pur de configuration d'une source fichier,
+tests/doc ; chargement YAML et raccordement dans des lots suivants.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -3380,7 +3386,7 @@ Pas de tests optionnels des fondations à relancer ; les pages ne sont pas des s
 complets de corrélation. Continuité et critères applicatifs restent dans le backlog.
 Exporter métriques, CLI de diagnostic et configuration restent au jalon d'application.
 Réutiliser le checkout géré `C:\Users\benoi\.codex\worktrees\review-m1\mailtrace`
-pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-cli.
+pour une éventuelle revue du nouveau chantier ; principal sur codex/m4-doctor.
 
 ## Suite à découper au fil des reprises
 
@@ -4061,3 +4067,80 @@ limité à configuration et compatibilité SQLite réellement vérifiées, sans 
 DB ou attestation d'intégrité/déploiement. Réutiliser chargeur/lecteur validés.
 M4 reste6–16lots, M5 10–18, total16–34 après136, deux jalons, estimation incertaine.
 MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Validation effective136 consignée à la reprise137 :
+`3d78970f0fea555a222647d1d2cae881e63f2ea7` publié dans #31,
+CI37576814504 entière réussie/trois jobs/SHA exact vérifiés REST. Revue COMMENT
+assistée5438067398 sur cette tête, PR prête puis fusionnée sur
+`918ef0c3c798a127533ce65cbdc9fcd458058c86`. CI main37576942301 entière réussie,
+trois jobs/SHA exact ; main actualisé propre, branche diagnostics supprimée local
+et GitHub. Les attentes136 précédentes sont le snapshot prépublication, terminé.
+
+## Lot137 : CLI doctor --config
+
+Résultat attendu : rapport limité à configuration et compatibilité SQLite
+réellement vérifiées. Nouvelle branche codex/m4-doctor depuis main136918ef0c ;
+la PR #31 est fusionnée, créer une PR de chantier séparée après publication137.
+
+Syntaxe stricte doctor --config <chemin>, aide --help/-h sans IO, aide globale
+enrichie. Chargeur existant puis OpenDiagnostics, fermeture avant sortie.
+Succès JSON compact/newline avec deux statuts fixes : configuration=valid et
+database=compatible, code0/stderr vide. Config invalide/code2/diagnostic sûr existant,
+illisible ou diagnostic DB/fermeture échoué code1/message fixe/stdout vide.
+Erreur stdout code1/message partagé ; octets partiels possibles si le flux accepte
+puis échoue. Aucun chemin/valeur/identité/journal ni état partiellement réussi.
+
+Contexte DB coopératif10secondes après config, pas deadline dure pour tout IO.
+Pas de Metadata, compteur, scan, création/migration/checkpoint applicatif, service
+ou réseau. Vérification de version/historique uniquement, sans intégrité/authenticité
+ou aptitude au déploiement attestées ; limites chemins/droits/auxiliaires conservées.
+Contrat immédiat dans docs/m4-cli.md, README actualisé ; stockage/config/workflow
+et dépendances inchangés.
+
+Quatre nouveaux tests doctor : succès JSON à deux champs/newline/borné, base/config
+inchangées/chemin relatif, arguments/aide, refus/codes/no création et sortie échouée.
+Table de refus partagée avec db stats : config absente/invalide, DB absente/vide/
+corrompue/répertoire sans modification/migration. Test du binaire étendu doctor aux
+codes0/1/2/JSON/confidentialité/absence de création et base inchangée. Quinze tests
+CLI/vet/format/diff Windows passés ; fondations non relancées localement sans
+changement. Jobs CLI Windows et Linux existants couvrent ces tests.
+
+Au moment du commit137 : publication/PR/CI à terminer ; dernier main validé
+136918ef0c/CI37576942301. Publier puis créer/attacher la PR, vérifier workflow entier
+et trois jobs sur SHA exact ; consigner résultat dans PR et à la prochaine reprise.
+Prochain lot138 : relecture/clôture doctor137, bilan, CI finale/revue COMMENT assistée/
+ready/fusion puis CI main. Réutiliser la PR du chantier. M4 reste5–15lots,
+M5 10–18, total15–33 après137, deux jalons, estimation incertaine.
+MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Validation effective137 consignée à la reprise138 :
+`d1feeb993f62b8f83ccc9540f0a9835d94846545` publié dans #32 en brouillon,
+CI37579618027 entière réussie, trois jobs/SHA exact revérifiés REST. Windows CLI,
+tests/vet/format Linux, smoke, race source/file et builds statiques passés. Têtes
+locale/origin/PR identiques, main136918ef0c inchangé, PR mergeable/clean.
+Les attentes137 précédentes sont le snapshot prépublication, terminé.
+
+## Lot138 : relecture/clôture du diagnostic initial doctor
+
+Résultat attendu : clôturer #32 après revue, bilan, CI finale sur tête exacte,
+COMMENT assisté/ready/fusion et CI main. Relecture favorable sur d1feeb9, aucun
+défaut bloquant identifié, aucune approbation humaine indépendante revendiquée.
+Bilan dans docs/reviews/m4-doctor.md : arguments/flux, chargeur, ouverture readonly,
+compatibilité limitée, fermeture/sortie, confidentialité et effets confrontés aux
+tests et CI acquis. Limites et diagnostic élargi du cadrage explicitement conservés.
+
+Lot documentaire seulement ; code/tests/dépendances/workflow inchangés. CI137
+entière/trois jobs/SHA exact revérifiés, diff documentaire à contrôler avant commit.
+Pas de rerun local des fondations sans risque nouveau. Compatibilité version/historique
+ne certifie pas intégrité/authenticité ; chemins/ACL/disque/port/service non attestés,
+auxiliaires SQLite possibles, contexte coopératif pas deadline dure IO.
+Sources/formats/checkpoints/lacunes restent au raccordement applicatif ultérieur.
+
+Au moment du commit138 : publication/CI finale/revue ready/fusion #32/CI main à
+terminer. Dernier publié validé137d1feeb9/CI37579618027, dernier main fusionné
+136918ef0c/CI37576942301. Après succès : main actualisé propre, branche doctor
+nettoyée ; consigner les preuves dans la PR et à la prochaine reprise.
+Prochain lot139 : contrat pur de configuration d'une source fichier (identité,
+chemin/politique de départ, bornes existantes), tests/doc ; YAML/raccordement dans
+des lots suivants. M4 reste4–14lots, M5 10–18, total14–32 après138, deux jalons,
+estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.

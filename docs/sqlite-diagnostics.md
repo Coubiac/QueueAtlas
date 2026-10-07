@@ -149,6 +149,15 @@ passés ; publication/CI135 encore à terminer dans #31 au moment du commit.
 Validation effective135 : cae194c publié,
 [CI37574528679](https://github.com/Coubiac/QueueAtlas/actions/runs/37574528679)
 entière réussie, trois jobs/SHA exact revérifiés à la reprise136.
-[Relecture136](reviews/m4-diagnostics.md) favorable ; publication/CI finale/fusion/
-main encore à terminer au moment du commit. La clôture de ce chantier ne clôture
+[Relecture136](reviews/m4-diagnostics.md) favorable ; #31 fusionnée sur918ef0c,
+CI finale37576814504/main37576942301 entières réussies, trois jobs/SHA exact
+vérifiés. La clôture de ce chantier ne clôture
 pas M4 et ne rend pas l'application installable/authentifiée.
+
+## Raccordement doctor137
+
+[doctor --config](m4-cli.md#lot137--doctor) utilise uniquement OpenDiagnostics,
+puis ferme la connexion avant de publier un statut de compatibilité. Il n'appelle
+pas Metadata, ne crée/migre aucune base et ne démarre pas de composant.
+Les limites de version/historique, droits, chemins et auxiliaires restent celles
+de ce lecteur ; aucune attestation d'intégrité/déploiement. Stockage inchangé.
