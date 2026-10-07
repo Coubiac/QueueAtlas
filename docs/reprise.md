@@ -66,9 +66,11 @@ entières/trois jobs/SHA exact/race auth réussis, branche sessions supprimée.
 Lot154 publié sura2947e4 dans #36, CI37639327832 entière/trois jobs/SHA exact/
 race auth réussis, revérifiés REST155. Lot155 publié sur4cf3e65 dans #36,
 CI37642563497 entière/trois jobs/SHA exact/HTTPAPI Windows/race HTTPAPI Linux
-réussis, revérifiés REST156. Lot156 identité/détail validé localement ; publication/
-CI encore à terminer au commit. Prochain157 : timeline paginée. Deux jalons M4/M5
-restent, environ14–29lots après156/CI,
+réussis, revérifiés REST156. Lot156 publié sur2298709, CI37646414652 entière/trois
+jobs/SHA exact réussis, race HTTPAPI Linux1.26 et journal HTTPAPI Windows vérifiés,
+état revérifié REST157. Lot157 timeline validé localement ; publication/CI au commit.
+Prochain158 : revue API154–157, clôture #36 si conforme. Deux jalons M4/M5
+restent, environ13–28lots après157/CI,
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3423,13 +3425,16 @@ main81f9f79, CI37634433660 entière/trois jobs/SHA exact/race auth réussis, bra
 sessions supprimée. Lot154 publié sura2947e4 dans #36 en brouillon,
 CI37639327832 entière/trois jobs/SHA exact réussis, revérifiés REST155.
 Lot155 handler publié sur4cf3e65, CI37642563497 entière/trois jobs/SHA exact/
-HTTPAPI Windows/race HTTPAPI Linux1.26 réussis, revérifiés REST156. Lot156 identité
-révisable/détail validé localement : publier sur codex/m4-search-api, réutiliser #36
-et vérifier CI entière/trois jobs/SHA exact et étapes HTTPAPI Windows/race Linux1.26.
-Consigner les preuves dans PR puis reprise157. Prochain157 : timeline paginée
-liée à cette révision ; revue ensuite. Ne pas présenter un événement
-trouvé comme identité globale ni reconstruire depuis une seule page.
-Un seul lot par reprise. Recherche/détail en bibliothèque156 ; aucun listener/serve/Web.
+HTTPAPI Windows/race HTTPAPI Linux1.26 réussis, revérifiés REST156. Lot156 publié
+sur2298709, CI37646414652 entière/trois jobs/SHA exact réussis, revérifiés REST157 ;
+race HTTPAPI Linux1.26 et journal HTTPAPI Windows réussis vérifiés.
+Lot157 timeline validé localement : publier sur codex/m4-search-api, réutiliser #36
+brouillon, vérifier CI entière/trois jobs/SHA exact et HTTPAPI Windows/race Linux1.26.
+Consigner les preuves dans PR puis reprise158. Prochain158 : revue API154–157,
+clôture de #36 si conforme, CI finale/fusion/main/nettoyage dans ce seul lot.
+Ne pas présenter un événement trouvé comme identité globale ni reconstruire
+depuis une seule page. Un seul lot par reprise. Recherche/détail/timeline en
+bibliothèque157 ; aucun listener/serve/Web. MIT, AD/OIDC/Keycloak après MVP.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -5222,3 +5227,81 @@ privées et politique de lignes brutes explicite ; ne pas changer des faits/parc
 sur une clé périmée. Un seul lot par reprise, aucun157 commencé. Au moins timeline
 et revue API2lots/Web+revue2lots, marge critères supplémentaires/raccordement/
 diagnostic ; M4 4–11, M5 10–18, total14–29/deux jalons. MIT, AD/OIDC après MVP.
+
+## Lot 157 — timeline paginée et politique de lignes brutes
+
+Résultat attendu : pages de faits de la génération sélectionnée, liées à son ID/
+révision, provenance conservée et accès brut explicite. Même PR #36/budget auth,
+pas de nouveau stockage, source, parsing ou interface dans ce lot.
+
+### État de départ et preuve effective156
+
+Reprise sur codex/m4-search-api propre, locale/origin/#36 identiques au SHA
+`22987097f04a969cd8d5526ab3c72281bfeaa105`, base main15381f9f79, PR brouillon ouverte.
+[CI37646414652](https://github.com/Coubiac/QueueAtlas/actions/runs/37646414652)
+entière completed/success sur ce SHA exact, trois jobs : Go1.26 112878240107,
+Windows112878240639, stable112878240588. Race HTTPAPI Linux1.26 réussie ; les
+métadonnées d'étapes Windows restaient retardées malgré le job terminé, journal
+décodé vérifié : HTTPAPI `ok … 2.288s`. Preuve scellée dans #36 ; workflow/jobs/SHA/
+tête PR revérifiés REST157 après fetch/prune. Main fusionné validé reste15381f9f79.
+
+### Comportement livré localement
+
+GET/HEAD `/api/v1/messages/{id}/events`, query fermée limit1..200/défaut50,
+cursor/raw0ou1/défaut0. Validation canonique/bornée avant base. Curseur35octets/
+47caractères base64url : version1, SHA-256 du domaine+ID canonique+mode brut,
+indexuint16 suivant1..4095. Position publique non signée, pas une permission ;
+changement de taille de page permis, changement de candidat/révision/mode refusé.
+
+Helper complet de lecture/reconstruction/révision partagé avec détail156.
+Seulement les faits de la génération, pas les autres cycles/origines/streams
+non résolus ; faits hors période de recherche conservés. Import tardif409 avant
+position, même invalide ; position hors génération courante400, candidat absent404.
+Ordre date puis provenance/offset pour affichage, sans résoudre les conflits
+simultanés. Réserves coverage/date/origines conservées sur chaque page.
+
+DTO explicite provenance/offsets décimaux/date/qualité/texte timestamp/hôte/service/
+PID/kind/parse_failed, sender/Message-ID observés, tentative reconnue avec adresse/
+orig_to/statut natif et interprété/périmètre/relay/DSN/réponse. Valeur native UTF-8
+ou base64, absence distincte du vide, champs bornés, pas de maps/Message/chemins/
+credential/erreur interne. Statuts SMTP et conflits restent ceux de la bibliothèque.
+
+Option serveur `SearchOptions.AllowRawLogs` false par défaut. Même activée, raw
+absent sans `raw=1`. Requête brute interdite403 avant base après garde auth.
+Permission pour les opérateurs locaux de ce handler, pas de rôles/provider/YAML
+livrés. Métadonnées privées DSN/reply accessibles au compte sans ligne brute,
+pas une anonymisation. Raw = octets exacts SQLite, UTF-8 ou base64, CR/LF/NUL
+préservés. Aucun changement du codec JSON des champs parsés du stockage.
+
+Budget complet de faits422 `timeline_too_broad` même pour limit1. Slot partagé
+recherche/détail/timeline429, délai/annulation/volume503 fixe. JSON <=1MiB avant
+succès, aucun préfixe partiel ; grosses lignes : diminuer limit. Plafond de réponse,
+pas limite de mémoire totale de reconstruction. HEAD mêmes lectures sans corps.
+Contrat : [http-timeline](http-timeline.md), contrats détail/recherche actualisés.
+
+### Vérifications et suite
+
+Cinq nouveaux tests/21HTTPAPI total passés Windows Go1.26 : vecteur de curseur
+indépendant Python hashlib/struct/base64, canonicalité/bornes/bindings/paramètres
+hostiles ; SQLite réel pages exactes jusqu'aux faits hors fenêtre, autres origines/
+sans date/foreign instance exclus de la génération, budget complet/import tardif409
+avant position ; protocole/auth/politique brute avant lecture/HEAD et erreurs privées ;
+ligne brute binaire exacte à travers SQLite/JSON, permission seule sans exposition ;
+tentatives/presence/vide/casse/DSN/reply/conflits à date égale/échappement JSON,
+champ binaire DTO via seam (pas preuve d'import de champs SQLite binaires), réponse
+expansée >1MiB atomiquement refusée puis page1 réussie, annulation/lecture tardive503.
+Admission155 enrichie pour timeline ; vet/format/diff passés. Pas de Linux local
+revendiqué, fondations/HTTPS/auth155 réutilisés, aucune dépendance/schema/SQL ajoutés.
+
+Au commit157 : publication/CI encore à terminer dans #36 brouillon. Pousser même
+branche, vérifier workflow entier/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26,
+consigner preuve dans PR puis reprise158. Dernier publié validé1562298709/
+CI37646414652, main15381f9f79/CI37634433660. Ne pas commencer158 dans cette reprise.
+
+Prochain158 : revue cohérente API154–157, corrections concrètes si nécessaires,
+clôture #36 si conforme avec CI finale/fusion/main/nettoyage. Web/filtres du cadrage/
+raccordements/diagnostics restent à réaliser ; aucun listener/serve/YAML/Web livré157.
+Timeline réalisée => revue API au moins1lot puis Web+revue au moins2 ; M4 devient
+3–10 après157/CI, M5 10–18, total13–28/deux jalons, marge inchangée pour les
+compléments. Estimation par comportements, pas pourcentage livré. MIT conservée,
+AD/OIDC/Keycloak après MVP. Un seul petit lot par reprise.

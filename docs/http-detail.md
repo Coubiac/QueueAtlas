@@ -81,8 +81,9 @@ de source/origine UTF-8 bornées et offsets décimaux int64 comme au lot155.
 
 Le détail est une allowlist de métadonnées, pas une sérialisation de Projection ou
 Observation. Pas de lignes/messages bruts, maps de champs, DSN/réponse/relay,
-credential, cookie ou compte opérateur. Les tentatives détaillées, timeline, liens
-et politique d'accès aux lignes brutes restent au lot157/suite du chantier.
+credential, cookie ou compte opérateur. Les tentatives détaillées, la timeline et
+la politique de lignes brutes sont dans [http-timeline](http-timeline.md), lot157.
+Les liens entre files restent au backlog applicatif.
 Les tableaux vides restent `[]`. Encodage JSON standard échappé avant réponse200 ;
 HEAD effectue la même vérification/lecture mais ne retourne pas de corps.
 
@@ -98,6 +99,7 @@ deadline avec réponse tardive refusée. Le test d'admission155 vérifie mainten
 que recherche et détail partagent le slot. Vet/format/diff passent ; CI Windows et
 race HTTPAPI Linux existantes incluront ces tests après publication.
 
-Publication/CI156 encore à terminer au commit, preuve effective dans #36 puis à
-la reprise157. MIT conservée, AD/OIDC/Keycloak après MVP. Prochain157 : timeline
-paginée liée à cette révision, dans la même PR et avec les mêmes bornes privées.
+Lot156 publié sur2298709 ; [CI37646414652](https://github.com/Coubiac/QueueAtlas/actions/runs/37646414652)
+entière/trois jobs/SHA exact réussis, race HTTPAPI Linux1.26 passée, journal Windows
+HTTPAPI réussi vérifié ; état et tête revérifiés REST157. MIT conservée,
+AD/OIDC/Keycloak après MVP. Timeline157 ajoutée dans la même PR ; revue API158 ensuite.

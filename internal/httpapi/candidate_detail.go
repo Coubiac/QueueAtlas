@@ -16,7 +16,7 @@ var (
 	ErrCandidateStale    = errors.New("candidate revision changed")
 )
 
-// NativeValue preserves exact address bytes, including empty/invalid UTF-8.
+// NativeValue preserves exact supplied bytes, including empty/invalid UTF-8.
 // Encoding is utf8 or base64 (standard padded encoding); never normalize a value.
 type NativeValue struct {
 	Encoding string `json:"encoding"`
@@ -70,38 +70,48 @@ func searchCandidate(queue correlation.ProjectedQueue) (SearchCandidate, error) 
 }
 
 func (h *searchHandler) detail(ctx context.Context, key correlation.QueueInstanceKey) (DetailResponse, error) {
-	if err := ctx.Err(); err != nil {
+	queue, _, err := h.candidateSnapshot(ctx, key)
+	if err != nil {
 		return DetailResponse{}, err
+	}
+	return detailResponse(queue)
+}
+
+// Both detail and timeline reconstruct the complete queue before checking its
+// revision. A page or generation alone cannot stand in for this snapshot.
+func (h *searchHandler) candidateSnapshot(ctx context.Context, key correlation.QueueInstanceKey) (correlation.ProjectedQueue, []correlation.Fact, error) {
+	if err := ctx.Err(); err != nil {
+		return correlation.ProjectedQueue{}, nil, err
 	}
 	scope := sqlite.CorrelationScope{Queues: []correlation.QueueKey{{Instance: key.Instance, QueueID: key.QueueID}}}
 	facts, err := h.reader.CorrelationFacts(ctx, scope, h.options.FactLimit)
 	if err != nil {
-		return DetailResponse{}, err
+		return correlation.ProjectedQueue{}, nil, err
 	}
 	if err := ctx.Err(); err != nil {
-		return DetailResponse{}, err
+		return correlation.ProjectedQueue{}, nil, err
 	}
 	if len(facts) == 0 {
-		return DetailResponse{}, ErrCandidateNotFound
+		return correlation.ProjectedQueue{}, nil, ErrCandidateNotFound
 	}
 	for _, fact := range facts {
 		if fact.Instance != key.Instance || fact.Observation.QueueID != key.QueueID || fact.Observation.NoQueue {
-			return DetailResponse{}, sqlite.ErrSearchStoredHit
+			return correlation.ProjectedQueue{}, nil, sqlite.ErrSearchStoredHit
 		}
 	}
 	projection, err := buildQueueProjection(ctx, facts, h.options.FactLimit)
 	if err != nil {
-		return DetailResponse{}, err
+		return correlation.ProjectedQueue{}, nil, err
 	}
 	if projection.Revision != key.Revision {
-		return DetailResponse{}, ErrCandidateStale
+		return correlation.ProjectedQueue{}, nil, ErrCandidateStale
 	}
 	for _, queue := range projection.Queues {
 		if queue.Key == key {
-			return detailResponse(queue)
+			return queue, facts, nil
 		}
 	}
-	return DetailResponse{}, ErrCandidateNotFound
+	return correlation.ProjectedQueue{}, nil, ErrCandidateNotFound
 }
 
 func wireFactRef(ref correlation.FactRef) (SearchRef, error) {

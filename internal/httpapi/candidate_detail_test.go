@@ -191,7 +191,7 @@ func TestCandidateDetailProtocolBeforeReadPrivateErrorsAndHead(t *testing.T) {
 	}{
 		{func(r *http.Request) { r.Header.Del("Cookie") }, 401}, {func(r *http.Request) { r.Header.Set("Origin", "https://foreign.example.test") }, 403},
 		{func(r *http.Request) { r.URL.Path = SearchPath + "/invalid" }, 400}, {func(r *http.Request) { r.URL.RawQuery = "password=synthetic-private" }, 400},
-		{func(r *http.Request) { r.URL.ForceQuery = true }, 400}, {func(r *http.Request) { r.URL.Path += "/events" }, 404},
+		{func(r *http.Request) { r.URL.ForceQuery = true }, 400}, {func(r *http.Request) { r.URL.Path += "/unknown" }, 404},
 		{func(r *http.Request) { r.Method = "POST"; r.Header.Set("Origin", searchTestOrigin) }, 405},
 		{func(r *http.Request) { r.ContentLength = 1; r.Body = panicSearchBody{} }, 400},
 	} {

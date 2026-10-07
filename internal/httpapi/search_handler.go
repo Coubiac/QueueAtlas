@@ -25,6 +25,9 @@ type SearchOptions struct {
 	Timeout       time.Duration
 	FactLimit     int
 	MaxConcurrent int
+	// AllowRawLogs grants the current local operator access to explicitly
+	// requested raw records. Defaults to false; this is not a future role model.
+	AllowRawLogs bool
 }
 
 func DefaultSearchOptions() SearchOptions {
@@ -43,7 +46,7 @@ type searchReader interface {
 	CorrelationFacts(context.Context, sqlite.CorrelationScope, int) ([]correlation.Fact, error)
 }
 
-// NewSearchHandler returns the protected search/detail handler, never a public
+// NewSearchHandler returns the protected search/detail/timeline handler, never a public
 // unguarded reader. Share one instance and an already opened store. Login/logout are mounted
 // separately. No listener, SQL writes, projection installation or roles are added.
 func NewSearchHandler(guard *auth.HTTPHandler, store *sqlite.Store, options SearchOptions) (http.Handler, error) {
@@ -82,12 +85,17 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	detailID := ""
+	timeline := false
 	if r.URL.Path != SearchPath {
 		if !strings.HasPrefix(r.URL.Path, SearchPath+"/") {
 			searchHTTPError(w, r, http.StatusNotFound, "not_found")
 			return
 		}
 		detailID = strings.TrimPrefix(r.URL.Path, SearchPath+"/")
+		if strings.HasSuffix(detailID, "/events") {
+			detailID = strings.TrimSuffix(detailID, "/events")
+			timeline = true
+		}
 		if detailID == "" || strings.Contains(detailID, "/") {
 			searchHTTPError(w, r, http.StatusNotFound, "not_found")
 			return
@@ -106,13 +114,17 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	var query sqlite.SearchQuery
 	var key correlation.QueueInstanceKey
+	var events timelineQuery
 	var err error
 	if detailID != "" {
-		if r.URL.RawQuery != "" || r.URL.ForceQuery {
+		if !timeline && (r.URL.RawQuery != "" || r.URL.ForceQuery) {
 			searchHTTPError(w, r, http.StatusBadRequest, "invalid_request")
 			return
 		}
 		key, err = decodeCandidateID(detailID)
+		if err == nil && timeline {
+			events, err = parseTimelineRequest(r.URL.RawQuery, detailID)
+		}
 	} else {
 		query, err = ParseSearchRequest(r.URL.RawQuery, h.now())
 	}
@@ -122,6 +134,10 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else {
 			searchHTTPError(w, r, http.StatusBadRequest, "invalid_request")
 		}
+		return
+	}
+	if timeline && events.Raw && !h.options.AllowRawLogs {
+		searchHTTPError(w, r, http.StatusForbidden, "raw_forbidden")
 		return
 	}
 	select {
@@ -134,13 +150,17 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), h.options.Timeout)
 	defer cancel()
 	var response any
-	if detailID != "" {
+	if timeline {
+		response, err = h.timeline(ctx, key, detailID, events)
+	} else if detailID != "" {
 		response, err = h.detail(ctx, key)
 	} else {
 		response, err = h.search(ctx, query)
 	}
 	if err != nil || ctx.Err() != nil {
-		if ctx.Err() == nil && errors.Is(err, ErrCandidateNotFound) {
+		if ctx.Err() == nil && errors.Is(err, ErrTimelineRequest) {
+			searchHTTPError(w, r, http.StatusBadRequest, "invalid_request")
+		} else if ctx.Err() == nil && errors.Is(err, ErrCandidateNotFound) {
 			searchHTTPError(w, r, http.StatusNotFound, "not_found")
 		} else if ctx.Err() == nil && errors.Is(err, ErrCandidateStale) {
 			searchHTTPError(w, r, http.StatusConflict, "stale_candidate")
@@ -148,6 +168,9 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			code := "search_too_broad"
 			if detailID != "" {
 				code = "detail_too_broad"
+			}
+			if timeline {
+				code = "timeline_too_broad"
 			}
 			searchHTTPError(w, r, http.StatusUnprocessableEntity, code)
 		} else {

@@ -104,7 +104,7 @@ func TestSearchHandlerConstructionAndProtocolBeforeStorage(t *testing.T) {
 	if options != (SearchOptions{Timeout: 5 * time.Second, FactLimit: 1024, MaxConcurrent: 2}) {
 		t.Fatal("defaults changed")
 	}
-	for _, bad := range []SearchOptions{{}, {time.Second - 1, 1, 1}, {30*time.Second + 1, 1, 1}, {time.Second, 0, 1}, {time.Second, 4097, 1}, {time.Second, 1, 0}, {time.Second, 1, 9}} {
+	for _, bad := range []SearchOptions{{}, {time.Second - 1, 1, 1, false}, {30*time.Second + 1, 1, 1, false}, {time.Second, 0, 1, false}, {time.Second, 4097, 1, false}, {time.Second, 1, 0, false}, {time.Second, 1, 9, false}} {
 		if h, err := newSearchHandler(guard, reader, bad, time.Now); h != nil || err != ErrSearchSetup {
 			t.Fatal("bad options accepted")
 		}
@@ -330,13 +330,16 @@ func TestSearchHandlerDeadlineCancellationAdmissionAndPrivateErrors(t *testing.T
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, searchReadRequest("GET", searchTestURL(), token))
 	assertSearchHTTP(t, w, 429)
-	// Search and detail share this same admission budget.
+	// Search, detail and timeline share this same admission budget.
 	detailID, err := EncodeCandidateID(goldenCandidateKey())
 	if err != nil {
 		t.Fatal(err)
 	}
 	w = httptest.NewRecorder()
 	h.ServeHTTP(w, searchReadRequest("GET", SearchPath+"/"+detailID, token))
+	assertSearchHTTP(t, w, 429)
+	w = httptest.NewRecorder()
+	h.ServeHTTP(w, searchReadRequest("GET", SearchPath+"/"+detailID+"/events", token))
 	assertSearchHTTP(t, w, 429)
 	cancel()
 	if storeCtx.Err() != context.Canceled {

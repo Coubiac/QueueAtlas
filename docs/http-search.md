@@ -160,7 +160,8 @@ Recherche et faits sont deux snapshots de lecture distincts. Un import tardif
 peut changer la révision ; si une rétention fait disparaître un match entre les
 lectures, toute la réponse est refusée. Cette bibliothèque ne crée pas de listener,
 ne configure pas le YAML ou le service et ne livre pas encore le Web. Détail156
-raccordé au même handler protégé et budget ; prochain157 : timeline paginée.
+raccordé au même handler protégé et budget ; timeline157 dans
+[http-timeline](http-timeline.md), option serveur `AllowRawLogs` false par défaut.
 
 ## Vérifications réalisées
 
