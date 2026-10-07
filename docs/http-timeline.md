@@ -102,8 +102,10 @@ protocole/auth/politique brute avant base/HEAD, record SQLite binaire exact, per
 seule sans exposition, métadonnées/presence/casse/conflits simultanés/échappement JSON,
 cap1MiB expansé atomique puis page1 réussie et annulation avec réponse tardive refusée.
 Admission155 actualisée pour le slot commun recherche/détail/timeline. Vet/format/diff
-passent ; publication/CI157 à terminer au commit, preuve effective dans #36.
+passent ; lot157 publié sur277d981, [CI37650350084](https://github.com/Coubiac/QueueAtlas/actions/runs/37650350084)
+entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158.
 
-Prochain158 : revue du chantier API154–157 et clôture de #36 si les vérifications
-le permettent. Web, filtres supplémentaires et raccordements applicatifs restent
-au backlog M4. MIT conservée, AD/OIDC/Keycloak après MVP.
+Revue158 : [bilan API](reviews/m4-search-api.md), favorable dans ce périmètre.
+CI finale/fusion/main encore à terminer au commit158, preuve dans #36 puis reprise159.
+Web, filtres supplémentaires et raccordements applicatifs restent au backlog M4.
+MIT conservée, AD/OIDC/Keycloak après MVP.

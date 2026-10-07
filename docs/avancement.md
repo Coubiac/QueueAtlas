@@ -53,7 +53,9 @@ jobs/SHA exact réussis, revérifiés REST155. Handler155 publié sur4cf3e65,
 CI37642563497 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux réussis,
 revérifiés REST156. Identité/détail156 publiés sur2298709, CI37646414652 entière/
 trois jobs/SHA exact réussis, race HTTPAPI Linux1.26/journal Windows vérifiés,
-revérifiés REST157. Timeline157 validée localement ; publication/CI au commit.
+revérifiés REST157. Timeline157 publiée sur277d981, CI37650350084 entière/trois jobs/
+SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Revue158
+favorable, publication finale/fusion/main à terminer au commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -68,7 +70,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 157 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 158 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -85,9 +87,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147 et auth148–153 fusionnés/CI main verte ; API154–156 publiée/CI verte, timeline157 validée localement | Revue API, filtres complémentaires/diagnostic, Web et raccordement | 3–10 après157/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147 et auth148–153 fusionnés/CI main verte ; API154–157 publiée/CI verte, revue158 favorable/fusion à terminer | Web et revue, filtres complémentaires/diagnostic, raccordement | 2–9 après158/fusion/CI |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après157/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **13–28** |
+| **Total après158/fusion/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **12–27** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
@@ -929,3 +931,25 @@ Prochain158 : revue/clôture API154–157 si conforme. Timeline réalisée : rev
 au moins1lot puis Web+revue au moins2, marge compléments/filtres/raccordement/diagnostic
 conservée. M4 devient3–10 après157/CI, M5 10–18, total13–28/deux jalons. Pas de
 listener/serve/YAML/Web livré157, API en bibliothèque. MIT, AD/OIDC après MVP.
+
+## Bilan du lot 158 — revue et clôture API
+
+Lot157 publié `277d981`, #36 brouillon, [CI37650350084](https://github.com/Coubiac/QueueAtlas/actions/runs/37650350084)
+entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158.
+[Relecture API](reviews/m4-search-api.md) favorable : aucun défaut bloquant identifié
+dans154–157, aucun changement de code/tests nécessaire. Frontières auth/SQL,
+révisions/faits complets, pagination/DTO/provenance/réserves, politique brute,
+budgets/cap/cache/erreurs relus. Revue assistée, pas une approbation indépendante.
+
+21tests HTTPAPI relancés Windows Go1.26 passent, format/diff passés ; CI complète
+157/fondations réutilisées. Limites de mémoire, calculs coopératifs, snapshots,
+montage serveur et rendu navigateur documentées. Aucune mesure de charge/browser
+ajoutée, aucun nouveau comportement. Publication/CI finale/revue COMMENT/prêt/
+fusion/main/nettoyage encore à terminer au commit158 ; preuves dans #36 puis159.
+
+Prochain159 : page Web de recherche protégée, formulaire/résultats échappés et
+réserves à six critères, détail/timeline Web ensuite. Revue API réalisée : son lot
+de clôture retiré, Web+revue au moins2, marge filtres/état sources/health/ready/liens/
+raccordement/diagnostic conservée. M4 2–9 après158/fusion/CI, M5 10–18,
+total12–27/deux jalons, à préciser au Web sans annoncer M4/MVP terminés.
+MIT conservée, AD/OIDC/Keycloak après MVP ; aucun159 commencé.
