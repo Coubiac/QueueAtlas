@@ -64,10 +64,11 @@ CI37631390279 entière/trois jobs/SHA exact/race auth réussis, revérifiés RES
 Clôture153 fusionnée #35 sur81f9f79 ; CI finale37634089599 et main37634433660
 entières/trois jobs/SHA exact/race auth réussis, branche sessions supprimée.
 Lot154 publié sura2947e4 dans #36, CI37639327832 entière/trois jobs/SHA exact/
-race auth réussis, revérifiés REST155. Lot155 handler de recherche authentifié
-validé localement ; publication/CI encore à terminer au commit sur codex/m4-search-api.
-Prochain156 : identité révisable et détail. Deux jalons M4/M5 restent,
-environ14–29lots après155/CI,
+race auth réussis, revérifiés REST155. Lot155 publié sur4cf3e65 dans #36,
+CI37642563497 entière/trois jobs/SHA exact/HTTPAPI Windows/race HTTPAPI Linux
+réussis, revérifiés REST156. Lot156 identité/détail validé localement ; publication/
+CI encore à terminer au commit. Prochain157 : timeline paginée. Deux jalons M4/M5
+restent, environ14–29lots après156/CI,
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3421,13 +3422,14 @@ race auth réussis, revérifiés REST153. Clôture153 publiée surf49381d, revue
 main81f9f79, CI37634433660 entière/trois jobs/SHA exact/race auth réussis, branche
 sessions supprimée. Lot154 publié sura2947e4 dans #36 en brouillon,
 CI37639327832 entière/trois jobs/SHA exact réussis, revérifiés REST155.
-Lot155 handler GET/HEAD de recherche protégé, lecture complète et réponses bornées,
-validé localement : publier sur codex/m4-search-api, réutiliser #36 et vérifier
-CI entière/trois jobs/SHA exact, HTTPAPI Windows et race HTTPAPI Linux1.26.
-Consigner les preuves dans PR puis reprise156. Prochain156 : identité révisable
-et lecture de détail ; timeline et revue ensuite. Ne pas présenter un événement
+Lot155 handler publié sur4cf3e65, CI37642563497 entière/trois jobs/SHA exact/
+HTTPAPI Windows/race HTTPAPI Linux1.26 réussis, revérifiés REST156. Lot156 identité
+révisable/détail validé localement : publier sur codex/m4-search-api, réutiliser #36
+et vérifier CI entière/trois jobs/SHA exact et étapes HTTPAPI Windows/race Linux1.26.
+Consigner les preuves dans PR puis reprise157. Prochain157 : timeline paginée
+liée à cette révision ; revue ensuite. Ne pas présenter un événement
 trouvé comme identité globale ni reconstruire depuis une seule page.
-Un seul lot par reprise. Handler livré en bibliothèque155 ; aucun listener/serve/Web.
+Un seul lot par reprise. Recherche/détail en bibliothèque156 ; aucun listener/serve/Web.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -5143,3 +5145,80 @@ faits complets et même révision de file ; timeline et revue ensuite. Un seul l
 par reprise, aucun156 commencé. M4 4–11, M5 10–18, total14–29/deux jalons, estimation
 à préciser avec détail/timeline/filtres supplémentaires/raccordement ; MIT,
 AD/OIDC/Keycloak après MVP.
+
+## Lot 156 — identité révisable et détail de candidat
+
+Résultat attendu : donner aux candidats de recherche un ID borné/canonique et
+une route de détail GET/HEAD authentifiée qui relit les faits complets et contrôle
+la révision avant sélection. Résumé/destinataires uniquement ; timeline reportée157.
+
+### État de départ et preuve effective155
+
+Reprise sur codex/m4-search-api propre, locale/origin/#36 identiques au commit
+`4cf3e65f4672860ec189ae6ee88be4660a5ff806`, base main15381f9f79, PR brouillon ouverte.
+[CI37642563497](https://github.com/Coubiac/QueueAtlas/actions/runs/37642563497)
+entière completed/success sur ce SHA exact, trois jobs : Go1.26 112866643936,
+Windows112866644303, stable112866644807. HTTPAPI Windows et race HTTPAPI Linux1.26
+passés, preuve scellée dans #36 ; workflow entier/jobs/SHA/tête PR revérifiés REST156
+après fetch/prune. Push155 avait réussi après deux erreurs internes GitHub,
+sans réécriture. Dernier main fusionné/validé reste15381f9f79.
+
+### Comportement livré localement
+
+Codec `EncodeCandidateID` : version1/base64url canonique sans padding, révision
+SHA-25632octets/générationuint16/longueursinstanceuint16+fileuint8/octets exacts.
+ID54..1459caractères, génération0..4095, instance1..1024octetsUTF-8, file1..32,
+révision64hex minuscules. Decode borné avant allocation/base, version/longueurs/
+UTF-8/contrôles/padding/bits inutilisés refusés, erreur fixe et clé nulle.
+Non signé/non secret/non autorisation/non identité globale. Les candidats de
+recherche exposent maintenant `id`; NOQUEUE et streams non résolus restent sans ID.
+
+GET/HEAD `/api/v1/messages/{id}` dans le même handler protégé auth151 et budget155.
+Aucun query même `?` vide, ni corps lu/mergé. Segment supplémentaire404, ID/query
+malformés400 avant lecture. Une lecture complète de l'instance/file, toutes
+origines/cycles/dates/sans date, pas de recherche/filtre temporel/écriture/projection
+persistée. Helper de reconstruction partagé avec recherche, options identiques
+fenêtre1minute/sans binding SMTP. Révision vérifiée avant sélection de génération.
+Faits changés =>409 stale_candidate fixe, pas de nouvelle révision révélée ni
+ancien ordinal affecté silencieusement à une autre génération. File/génération
+absente =>404 snapshot, pas une preuve d'absence de logs. Budget faits422 entier,
+annulation/erreur/volume/données invalides503, pas de résultat partiel.
+
+DTO détail explicite : candidat/réserves/compteurs, ancre/removal observés,
+receipt_observed, réserves de dates/origines/coverage_unproven ; destinataires
+exacts avec dernier statut observé, ordre incertain, adresse non spécifiée, nombre
+de tentatives et toutes refs à la dernière date. Conflit simultané reste unknown,
+SMTP sent reste distinct de delivered, cycles/origines non fusionnés.
+Adresse UTF-8 littérale ou base64 standard si le lecteur fournit des octets non
+UTF-8, vide/casse préservés, max1024octets ; conversion ne modifie pas le codec
+de champs du stockage. Pas de revendication d'import SQLite de champs binaires :
+test bytes utilise le seam de lecteur privé. Ref source/origine UTF-8 bornées,
+offsets int64 en chaînes décimales. Arrays vides[], removal absent=null.
+Pas de Raw/Message/maps/credential/cookie/compte/DSN/reply/relay dans ce DTO.
+JSON plafonné/échappé et HEAD sans corps, mêmes budgets/cache/garde que155.
+
+Contrat : [http-detail](http-detail.md), recherche actualisée. Aucun changement
+de schéma/dépendance/SQL/auth/provider, listener/YAML/service/Web livré156.
+
+### Vérifications et suite
+
+Quatre nouveaux tests/seize HTTPAPI total passés Windows Go1.26 : vecteur ID
+struct/base64 indépendant, canonicalité/versions/longueurs/UTF-8/ordinal/erreurs
+privées ; SQLite réel recherche→détail, faits après fenêtre, origines indépendantes
+et sans date/foreign instance, ordinal distinct/inexistant, budget entier et
+import tardif409 puis nouvelle recherche révisée ; protocole/auth/query avant base,
+HEAD succès/erreur, erreurs SQL privées ; adresses literal empty/binary/case,
+conflits latest et deadline avec réponse tardive refusée. Admission155 enrichie
+pour vérifier slot commun recherche/détail. Vet/format/diff passés ; tests SQLite
+de fondation et HTTPS/auth155 réutilisés, pas de Linux local revendiqué.
+
+Au commit156 : publication/CI encore à terminer dans #36 brouillon. Pousser la même
+branche, vérifier CI entière/trois jobs/SHA et étapes HTTPAPI Windows/race Linux1.26,
+consigner preuve dans PR puis reprise157. Dernier publié validé1554cf3e65/
+CI37642563497, main15381f9f79/CI37634433660. Pas de fusion avant timeline/revue.
+
+Prochain157 : timeline paginée liée à cette révision et références, avec limites
+privées et politique de lignes brutes explicite ; ne pas changer des faits/parcours
+sur une clé périmée. Un seul lot par reprise, aucun157 commencé. Au moins timeline
+et revue API2lots/Web+revue2lots, marge critères supplémentaires/raccordement/
+diagnostic ; M4 4–11, M5 10–18, total14–29/deux jalons. MIT, AD/OIDC après MVP.

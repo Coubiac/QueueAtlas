@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/Coubiac/QueueAtlas/internal/auth"
@@ -42,8 +43,8 @@ type searchReader interface {
 	CorrelationFacts(context.Context, sqlite.CorrelationScope, int) ([]correlation.Fact, error)
 }
 
-// NewSearchHandler returns only the protected handler, never a public unguarded
-// reader. Share one instance and an already opened store. Login/logout are mounted
+// NewSearchHandler returns the protected search/detail handler, never a public
+// unguarded reader. Share one instance and an already opened store. Login/logout are mounted
 // separately. No listener, SQL writes, projection installation or roles are added.
 func NewSearchHandler(guard *auth.HTTPHandler, store *sqlite.Store, options SearchOptions) (http.Handler, error) {
 	if store == nil {
@@ -80,9 +81,17 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		searchHTTPError(w, r, http.StatusBadRequest, "invalid_request")
 		return
 	}
+	detailID := ""
 	if r.URL.Path != SearchPath {
-		searchHTTPError(w, r, http.StatusNotFound, "not_found")
-		return
+		if !strings.HasPrefix(r.URL.Path, SearchPath+"/") {
+			searchHTTPError(w, r, http.StatusNotFound, "not_found")
+			return
+		}
+		detailID = strings.TrimPrefix(r.URL.Path, SearchPath+"/")
+		if detailID == "" || strings.Contains(detailID, "/") {
+			searchHTTPError(w, r, http.StatusNotFound, "not_found")
+			return
+		}
 	}
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		w.Header().Set("Allow", "GET, HEAD")
@@ -95,7 +104,18 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		searchHTTPError(w, r, http.StatusBadRequest, "invalid_request")
 		return
 	}
-	query, err := ParseSearchRequest(r.URL.RawQuery, h.now())
+	var query sqlite.SearchQuery
+	var key correlation.QueueInstanceKey
+	var err error
+	if detailID != "" {
+		if r.URL.RawQuery != "" || r.URL.ForceQuery {
+			searchHTTPError(w, r, http.StatusBadRequest, "invalid_request")
+			return
+		}
+		key, err = decodeCandidateID(detailID)
+	} else {
+		query, err = ParseSearchRequest(r.URL.RawQuery, h.now())
+	}
 	if err != nil {
 		if err == ErrSearchClock {
 			searchHTTPError(w, r, http.StatusServiceUnavailable, "unavailable")
@@ -113,10 +133,23 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), h.options.Timeout)
 	defer cancel()
-	response, err := h.search(ctx, query)
+	var response any
+	if detailID != "" {
+		response, err = h.detail(ctx, key)
+	} else {
+		response, err = h.search(ctx, query)
+	}
 	if err != nil || ctx.Err() != nil {
-		if ctx.Err() == nil && (errors.Is(err, correlation.ErrPartitionLimit) || errors.Is(err, sqlite.ErrCorrelationScope)) {
-			searchHTTPError(w, r, http.StatusUnprocessableEntity, "search_too_broad")
+		if ctx.Err() == nil && errors.Is(err, ErrCandidateNotFound) {
+			searchHTTPError(w, r, http.StatusNotFound, "not_found")
+		} else if ctx.Err() == nil && errors.Is(err, ErrCandidateStale) {
+			searchHTTPError(w, r, http.StatusConflict, "stale_candidate")
+		} else if ctx.Err() == nil && (errors.Is(err, correlation.ErrPartitionLimit) || errors.Is(err, sqlite.ErrCorrelationScope)) {
+			code := "search_too_broad"
+			if detailID != "" {
+				code = "detail_too_broad"
+			}
+			searchHTTPError(w, r, http.StatusUnprocessableEntity, code)
 		} else {
 			searchHTTPError(w, r, http.StatusServiceUnavailable, "unavailable")
 		}

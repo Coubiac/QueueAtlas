@@ -1,4 +1,4 @@
-# Recherche HTTP authentifiée — lots 154–155
+# Recherche HTTP authentifiée — lots 154–156
 
 `internal/httpapi.ParseSearchRequest(rawQuery, now)` valide la chaîne
 `URL.RawQuery` et produit un `sqlite.SearchQuery`. Ce lot prépare la recherche
@@ -86,7 +86,7 @@ ne les journalise pas ; l'infrastructure doit également éviter les journaux d'
 `NewSearchHandler(guard, store, options)` retourne uniquement un handler déjà
 enveloppé dans `auth.HTTPHandler.Protect`. L'appelant fournit un Store SQLite ouvert,
 partagé, et le garde construit pour son origine HTTPS. Login/logout sont montés
-séparément. La route exacte est `GET /api/v1/messages`, avec `HEAD` de mêmes
+séparément. La recherche exacte est `GET /api/v1/messages`, avec `HEAD` de mêmes
 validation/lecture/statut mais sans corps. Toute requête passe par le garde, même
 pour un chemin inexistant : cookie, TLS direct, Host et Origin/metadata selon151.
 Un compte local authentifié accède à cette lecture ; aucun rôle supplémentaire
@@ -130,13 +130,14 @@ JSON contient `from`, `until`, `limit`, `coverage_unproven:true`, `matches:[]` e
 éventuellement `next_cursor`. Les dates effectives permettent la page suivante
 figée. Chaque match contient ref physique, date/qualité, kind, NOQUEUE, candidat
 ou réserve d'assignation. Le candidat contient revision/instance/queue_id/generation,
-compteurs, expiration_reports et reserves. Les offsets de provenance sont des
+compteurs, expiration_reports et reserves ; depuis156, son `id` permet le
+[détail révisable](http-detail.md). Les offsets de provenance sont des
 chaînes décimales pour préserver int64 dans les clients JavaScript.
 
 Le nombre de matches pagine des événements ; le même candidat peut apparaître
 plusieurs fois, y compris sur plusieurs pages. Pas de total de messages distincts,
 de déduplication interpages ou d'identité globale promise. Les clés de candidat
-sont révisables, pas encore des liens vers une route de détail. Les lignes brutes,
+sont révisables et contrôlées à nouveau lors du détail156. Les lignes brutes,
 messages, maps de champs, adresses recherchées, credential et cookie sont exclus
 du DTO. Les données textuelles du DTO sont UTF-8 bornées et encodées par
 `encoding/json` avec son échappement standard, jamais injectées en HTML.
@@ -158,8 +159,8 @@ Les erreurs du garde151 restent inchangées. Erreurs propres à cette route :
 Recherche et faits sont deux snapshots de lecture distincts. Un import tardif
 peut changer la révision ; si une rétention fait disparaître un match entre les
 lectures, toute la réponse est refusée. Cette bibliothèque ne crée pas de listener,
-ne configure pas le YAML ou le service et ne livre pas encore le Web. Prochain156 :
-identifiant révisable et lecture de détail/timeline, dans cette même PR.
+ne configure pas le YAML ou le service et ne livre pas encore le Web. Détail156
+raccordé au même handler protégé et budget ; prochain157 : timeline paginée.
 
 ## Vérifications réalisées
 
@@ -171,7 +172,10 @@ avant stockage, HTTPS réel, HEAD, révocation, deadline/cancel/slot occupé/lib
 absence de match entre lectures et réponse JSON expansée dépassant1MiB sans fuite.
 Le premier fixture a été corrigé pour donner un ID d'origine distinct par source
 (identité globale immutable SQLite). Vet et format/diff passent. La CI ajoute
-HTTPAPI Windows et race HTTPAPI Linux Go1.26 ; résultat final à vérifier après push.
+HTTPAPI Windows et race HTTPAPI Linux Go1.26 ;
+[CI15537642563497](https://github.com/Coubiac/QueueAtlas/actions/runs/37642563497)
+entière/trois jobs/SHA exact sur4cf3e65 et ces étapes réussis, revérifiés REST156.
+Lot156 : détails de vérification dans [http-detail](http-detail.md).
 
 Lot154 : cinq tests HTTP Windows couvrent défauts/valeurs exactes/six critères, paramètres
 hostiles/dupliqués/bornés, calendrier/précision/horloge, vecteur binaire calculé

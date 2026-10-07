@@ -50,6 +50,7 @@ type SearchCounts struct {
 }
 
 type SearchCandidate struct {
+	ID                string                       `json:"id"`
 	Revision          string                       `json:"revision"`
 	Instance          string                       `json:"instance"`
 	QueueID           string                       `json:"queue_id"`
@@ -119,20 +120,17 @@ func searchMatches(ctx context.Context, hits []sqlite.SearchHit, facts []correla
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}
-		projection, err := correlation.BuildProjection(group, limit, correlation.LinkOptions{Window: time.Minute})
+		projection, err := buildQueueProjection(ctx, group, limit)
 		if err != nil {
 			return nil, err
 		}
 		for _, queue := range projection.Queues {
-			key, counts := queue.Key, queue.Summary.Counts
-			if !searchText(key.Instance, 1024) || !searchText(key.QueueID, 32) {
-				return nil, sqlite.ErrSearchStoredHit
+			candidate, err := searchCandidate(queue)
+			if err != nil {
+				return nil, err
 			}
-			candidate := &SearchCandidate{Revision: key.Revision, Instance: key.Instance, QueueID: key.QueueID, Generation: key.Generation,
-				Counts:            SearchCounts{counts.Unknown, counts.Sent, counts.Delivered, counts.Deferred, counts.Bounced},
-				ExpirationReports: queue.Summary.ExpirationReports, Reserves: append([]correlation.SummaryReserve(nil), queue.Summary.Reserves...)}
 			for _, ref := range queue.Summary.Queue.Generation.Facts {
-				candidates[ref] = candidate
+				candidates[ref] = &candidate
 			}
 		}
 		for _, stream := range projection.Unresolved {

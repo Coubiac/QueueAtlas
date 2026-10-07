@@ -330,6 +330,14 @@ func TestSearchHandlerDeadlineCancellationAdmissionAndPrivateErrors(t *testing.T
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, searchReadRequest("GET", searchTestURL(), token))
 	assertSearchHTTP(t, w, 429)
+	// Search and detail share this same admission budget.
+	detailID, err := EncodeCandidateID(goldenCandidateKey())
+	if err != nil {
+		t.Fatal(err)
+	}
+	w = httptest.NewRecorder()
+	h.ServeHTTP(w, searchReadRequest("GET", SearchPath+"/"+detailID, token))
+	assertSearchHTTP(t, w, 429)
 	cancel()
 	if storeCtx.Err() != context.Canceled {
 		t.Fatal("reader did not inherit request cancellation")
