@@ -46,7 +46,9 @@ SHA exact/race auth réussis. HTTP150 publié surc50c678, CI37623116898 entière
 jobs/SHA exact/race auth réussis. Garde HTTP151 publiée sur eb5d29c, CI37626687859
 entière/trois jobs/SHA exact/race auth réussis, revérifiés REST152. Corpus152 publié
 sur e4aaa12, CI37631390279 entière/trois jobs/SHA exact/race auth verts, revérifiés
-REST153. Revue153 favorable ; CI finale/fusion/main à terminer au commit.
+REST153. Clôture153 fusionnée #35 sur81f9f79 ; CI finale37634089599 et
+main37634433660 entières/trois jobs/SHA exact/race auth réussis, branche nettoyée.
+Contrat de requêtes154 validé localement ; publication/CI à terminer au commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -61,7 +63,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 153 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 154 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -78,9 +80,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142 et compte143–147 fusionnés/CI main verte ; auth148–152 publiés/CI verte, revue153 favorable | Clôture auth153, diagnostic élargi, API bornée, recherche/détail/timeline Web | 4–11 après clôture153/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147 et auth148–153 fusionnés/CI main verte ; contrat HTTP154 validé localement | Handlers API/reconstruction/détail, diagnostic élargi, recherche/détail/timeline Web et raccordement | 4–11 après154/CI |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après clôture153/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **14–29** |
+| **Total après154/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **14–29** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
@@ -127,6 +129,12 @@ M5 reste10–18, total15–30, sans modification de marge ou critères MVP.
 Après clôture153/CI, bibliothèque auth relue, corpus retenu avec défauts actuels
 et limites d'assemblage documentées ; suite API2–3/Web/revue2–4. M4 devient4–11,
 M5 reste10–18, total14–29. Le service/pilote/navigateur restent à réaliser.
+Après154/CI, le contrat d'entrée pur est réalisé ; les handlers de recherche,
+détail/timeline et leur raccordement/revue restent à développer en 2–3lots API
+estimés, puis Web/revue2–4 et marge d'intégration/diagnostic. Fourchette conservée
+M4 4–11, M5 10–18, total14–29 : préparer les paramètres ne livre pas une route.
+Les critères de recherche non couverts par les six index actuels devront être
+comptabilisés à ce raccordement ; leur coût n'est pas présenté comme déjà réalisé.
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -813,3 +821,25 @@ Prochain154 : contrat de requêtes de recherche HTTP bornées (filtres/période/
 limite/curseur/erreurs privées), puis adaptateur aux recherches/reconstruction.
 Après clôture153/CI : M4 4–11, M5 10–18, total14–29/deux jalons. MIT/AD/OIDC
 après MVP ; aucun lot154 commencé.
+
+## Bilan du lot 154 — paramètres et curseurs de recherche HTTP
+
+Clôture153 effective : #35 fusionnée sur81f9f79, finale f49381d/
+[CI37634089599](https://github.com/Coubiac/QueueAtlas/actions/runs/37634089599)
+et [CI main37634433660](https://github.com/Coubiac/QueueAtlas/actions/runs/37634433660)
+entières/trois jobs/SHA exact/race auth réussis, branche sessions nettoyée.
+
+Contrat pur [http-search](http-search.md) : six critères indexés exacts, chaîne
+RawQuery bornée/unique/UTF-8, dates UTC précises/fenêtre31jours, défaut24h/50résultats,
+limite1..200 et curseur canonique lié au sélecteur/période. Validation native
+réutilisée sans base ni schéma, erreurs fixes privées et sortie nulle aux échecs.
+Cinq tests HTTP et dix-neuf régressions SQLite de recherche passent Windows ;
+vecteurs indépendants, bornes/calendar/pagination/domaines, vet/format/diff réussis.
+Publication/PR/CI du lot154 encore à terminer au commit sur codex/m4-search-api.
+
+Pas de handler, route, transport ou Web ; les événements trouvés devront servir à
+la reconstruction complète. Critères supplémentaires du cadrage encore à préciser
+au raccordement. Prochain155 : handler de lecture authentifié/borné ; même PR API.
+M4 4–11 après154/CI, M5 10–18, total14–29/deux jalons. Fourchette conservée pour
+les handlers/détail/revue API, Web et marge ; pas de baisse au seul numéro de lot.
+MIT conservée, AD/OIDC/Keycloak après MVP, aucun lot155 commencé.

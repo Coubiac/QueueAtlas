@@ -170,6 +170,9 @@ func TestSearchEventsTreatsWildcardsSQLAndBinaryValuesLiterally(t *testing.T) {
 func TestSearchEventsBoundsValidationAndCancellation(t *testing.T) {
 	s, _ := openTestStore(t)
 	query := eventSearchQuery(SearchRecipient, "recipient@example.org")
+	if err := query.Validate(); err != nil {
+		t.Fatal("valid query refused before database access", err)
+	}
 	for _, change := range []func(*SearchQuery){
 		func(q *SearchQuery) { q.Instance = "" }, func(q *SearchQuery) { q.Instance = "bad\ninstance" }, func(q *SearchQuery) { q.Value = "bad\x00value" },
 		func(q *SearchQuery) { q.Value = strings.Repeat("v", 1025) }, func(q *SearchQuery) { q.Instance = strings.Repeat("i", 1025) }, func(q *SearchQuery) { q.Field = "sender OR 1=1" },
@@ -182,6 +185,9 @@ func TestSearchEventsBoundsValidationAndCancellation(t *testing.T) {
 	} {
 		bad := query
 		change(&bad)
+		if err := bad.Validate(); err != ErrSearchQuery {
+			t.Fatal("pure validation disagrees with search admission", err)
+		}
 		if got, err := s.SearchEvents(context.Background(), bad); !errors.Is(err, ErrSearchQuery) || !reflect.DeepEqual(got, SearchPage{}) {
 			t.Fatal("invalid search query", err)
 		}

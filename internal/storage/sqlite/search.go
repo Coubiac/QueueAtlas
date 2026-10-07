@@ -48,6 +48,13 @@ type SearchQuery struct {
 	After       *SearchCursor
 }
 
+// Validate checks the same bounds and cursor scope as SearchEvents, without a
+// Store, database access or mutation. It exposes no SQL or query fingerprint.
+func (query SearchQuery) Validate() error {
+	_, _, _, err := eventSearchSelection(query)
+	return err
+}
+
 // SearchCursor is pagination position, not fact identity or authorization.
 // QueryRevision binds it to instance/field/value/window (not page size).
 // Subsequent pages use new snapshots; earlier late imports require a new search.

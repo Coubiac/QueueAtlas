@@ -61,9 +61,12 @@ CI37623116898 entière/trois jobs/SHA exact/race auth réussis, REST revérifié
 Garde HTTP151 publiée sur eb5d29c dans #35, CI37626687859 entière/trois jobs/
 SHA exact/race auth réussis, revérifiés REST152. Corpus152 publié sur e4aaa12,
 CI37631390279 entière/trois jobs/SHA exact/race auth réussis, revérifiés REST153.
-Revue153 favorable ; publication/CI finale/fusion/main encore à terminer au commit.
-Prochain154 : contrat borné de recherche HTTP. Deux jalons M4/M5 restent,
-environ14–29lots après clôture153/CI, M3 zéro lot restant ;
+Clôture153 fusionnée #35 sur81f9f79 ; CI finale37634089599 et main37634433660
+entières/trois jobs/SHA exact/race auth réussis, branche sessions supprimée.
+Lot154 : contrat borné de recherche HTTP validé localement ; publication/CI encore
+à terminer au commit sur codex/m4-search-api. Prochain155 : handler de lecture
+authentifié/borné. Deux jalons M4/M5 restent, environ14–29lots après154/CI,
+M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3411,14 +3414,16 @@ réussis, REST revérifié150. HTTP150 publié surc50c678, CI37623116898 entièr
 jobs/SHA exact/race auth réussis, REST revérifié151. Garde HTTP151 publiée sur
 eb5d29c, CI37626687859 entière/trois jobs/SHA exact/race auth réussis, revérifiés
 REST152. Corpus152 publié sur e4aaa12, CI37631390279 entière/trois jobs/SHA exact/
-race auth réussis, revérifiés REST153. Revue153 favorable : publier le commit de
-clôture sur codex/m4-sessions dans #35, vérifier CI finale entière/trois jobs/SHA
-exact/race auth ; poster revue COMMENT assistée sur SHA final, rendre prête puis
-fusionner avec SHA attendu et vérifier CI main/nettoyer la branche fusionnée.
-Consigner les preuves effectives dans PR puis reprise154. Prochain154 : contrat
-borné de requêtes de recherche HTTP (filtres/période/limite/curseur/erreurs privées),
-préparant GET /api/v1/messages ; pas de serveur/Web/stockage dans ce lot.
-Ne pas commencer154 au lot153. Aucun listener/serve/Web/API de messages livré.
+race auth réussis, revérifiés REST153. Clôture153 publiée surf49381d, revue COMMENT
+5443572976 sur cette tête, CI finale37634089599 entière réussie. #35 fusionnée sur
+main81f9f79, CI37634433660 entière/trois jobs/SHA exact/race auth réussis, branche
+sessions supprimée. Lot154 contrat de requêtes HTTP validé localement : publier
+sur codex/m4-search-api, ouvrir la PR cohérente du chantier contre main et vérifier
+CI entière/trois jobs/SHA exact. Consigner les preuves dans PR puis reprise155.
+Prochain155 : handler de lecture authentifié, requêtes/délai/résultats/erreurs bornés,
+en réutilisant le contrat154 et la reconstruction complète existante. Ne pas
+présenter SearchHit comme identité de message ni reconstruire depuis une seule page.
+Un seul lot par reprise. Aucun listener/serve/Web/API de messages livré154.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4982,3 +4987,70 @@ Distinguer événements trouvés et messages reconstruits ; adaptateur/raccordem
 dans les lots suivants, aucune relecture de journal depuis Web ni SQL dynamique.
 Après clôture153/CI, M4 4–11 (API2–3/Web/revue2–4/marge), M5 10–18, total14–29,
 deux jalons et périmètre inchangés. Aucun lot154 commencé.
+
+## Lot 154 — contrat borné de recherche HTTP
+
+Résultat attendu avant modifications : convertir `URL.RawQuery` en sélecteur
+validé pour les six critères SQLite existants, avec périodes/limites/curseurs bornés
+et erreurs privées. Un seul comportement pur ; pas de handler, serveur ou Web.
+
+### État de départ et preuve effective153
+
+Dernier main validé `81f9f79b2c0a444d017095516e9c2e3976ba0caa`, #35 fusionnée.
+Finale153 `f49381d24e76b67dc75bfcb63e779a17c757e4e8`,
+[CI37634089599](https://github.com/Coubiac/QueueAtlas/actions/runs/37634089599)
+entière/trois jobs/SHA exact/race auth réussis ; revue COMMENT5443572976 sur cette
+tête, PR prête/fusion méthode merge. [CI main37634433660](https://github.com/Coubiac/QueueAtlas/actions/runs/37634433660)
+entière/trois jobs/SHA exact/race auth réussis, REST completed/success revérifié154.
+Branche sessions supprimée local/GitHub ; fetch/prune, HEAD==origin/main et état
+propre au début154. Nouvelle branche `codex/m4-search-api` sur main153.
+
+### Contrat livré localement
+
+`internal/httpapi.ParseSearchRequest` traite uniquement RawQuery, au plus8192octets,
+UTF-8 valide et noms uniques/exacts. Instance/field/value obligatoires, seules
+options from/until/limit/cursor acceptées. Six critères existants exacts, valeurs
+littérales et limites natives réutilisées via `sqlite.SearchQuery.Validate()` sans
+base, changement de schéma ou mutation. Pas de copie des règles/index/SQL.
+Limite défaut50, entière canonique1..200 ; fenêtre défaut24h, dates UTC strictes
+avec précision au plus9décimales et roundtrip ns, début inclusif/fin exclusive,
+fenêtre positive au plus31jours. Dates explicites par paire ; horloge fiable fournie
+une fois pour les défauts, horloge hors plage refusée par erreur fixe distincte.
+
+Codec curseur version1 :49octets/66caractères base64url canonique sans padding,
+révision SHA-25632octets/instant signé8/ligne positive8 ; decode strict/re-encode,
+pas de variantes whitespace/CRLF/padding/bits inutilisés/versions/lignes négatives.
+Pagination exige dates explicites conservées ; le validateur natif lie instance,
+critère, valeur normalisée et période, pas la taille de page. Instant du curseur
+dans la fenêtre ; résultat indépendant par copie. Erreurs fixes et requête nulle
+pour tout échec, sans détails fournis ou SQL.
+
+Contrat complet : [http-search](http-search.md). Ce curseur n'est pas signé ni une
+autorisation/identité de message. Le parseur ne contrôle pas méthode, route,
+authentification, permissions ou transport. Les SearchHit sont des références
+d'événement ; il faudra reconstruire le périmètre complet pour une réponse de
+messages. Chaque page est un nouveau snapshot ; les imports tardifs nécessitent
+une recherche neuve. Statut/direction/IP/SASL/etc. ne sont pas couverts par les six
+critères, couverture/coût applicatifs à préciser au raccordement.
+
+### Vérifications et prochaine action
+
+Cinq tests HTTP Windows passés : six critères/défauts/valeurs littérales/max UTF-8,
+URL/paramètres/limites hostiles et dupliqués, dates/calendrier/précision/horloge,
+vecteur indépendant hashlib/struct/base64 et limites signées, changement de
+sélecteur/fenêtre refusé et domaine canonique accepté. Dix-neuf tests SQLite
+`^TestSearch` passés : index, migrations/rollback, pagination/reconstruction,
+validation pure en accord avec admission. Première compilation des tests corrigée
+pour éviter `url.Values.Clone`, indisponible dans Go1.26 ; helper de copie local aux
+tests. Vet HTTPAPI/SQLite, format et diff passés. Aucun Linux local revendiqué.
+
+Au commit154 : publication/PR/CI encore à terminer. Publier sur codex/m4-search-api,
+ouvrir une PR brouillon cohérente contre main pour la recherche API et réutiliser
+cette PR aux lots suivants. Vérifier le workflow entier, les trois jobs et SHA
+exact ; preuve effective dans PR puis reprise155, sans fusionner ce premier lot.
+Dernier état publié validé reste main153/81f9f79 tant que cette CI n'est pas vérifiée.
+
+Prochain155 : handler de lecture authentifié/borné avec méthode/chemin, contexte
+annulable/délai, reconstruction complète et conversion/erreurs privées. Aucun
+lot155 commencé. M4 reste4–11lots, M5 10–18, total14–29/deux jalons ; contrat pur
+préparatoire, aucune route/serveur/UI livré154. MIT, AD/OIDC/Keycloak après MVP.

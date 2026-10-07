@@ -97,3 +97,17 @@ fusion puis CI main et nettoyage encore à terminer. La preuve effective sera
 consignée dans #35 puis au début de la reprise154. MIT conservée, AD/OIDC/Keycloak
 après MVP. Prochain154 : contrat borné des requêtes de recherche HTTP, sans
 combiner serveur, stockage ou interface dans le même lot.
+
+### Clôture effective153, consignée à la reprise154
+
+Commit final `f49381d24e76b67dc75bfcb63e779a17c757e4e8`,
+[CI finale37634089599](https://github.com/Coubiac/QueueAtlas/actions/runs/37634089599)
+entière réussie, trois jobs Windows/Linux Go1.26.x/stable sur le SHA exact,
+race auth passée. Revue COMMENT assistée5443572976 sur cette tête, #35 rendue
+prête puis fusionnée avec SHA attendu, méthode merge préservant les petits commits.
+Main `81f9f79b2c0a444d017095516e9c2e3976ba0caa`,
+[CI main37634433660](https://github.com/Coubiac/QueueAtlas/actions/runs/37634433660)
+entière réussie/trois jobs/SHA exact/race auth ; état completed/success revérifié
+REST154. Branche du chantier supprimée localement et sur GitHub, checkout main
+propre avant création de `codex/m4-search-api`. Cette clôture termine la bibliothèque
+auth148–152, pas M4 ni la livraison d'un serveur.
