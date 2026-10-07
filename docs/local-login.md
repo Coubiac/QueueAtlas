@@ -3,7 +3,8 @@
 Moteur en bibliothèque dans [login.go](../internal/auth/login.go), raccordant le
 compte143–147, VerifyPassword144 et les [sessions148](local-sessions.md).
 Chantier [PR #35](https://github.com/Coubiac/QueueAtlas/pull/35) en brouillon.
-Il faut encore le transport HTTP/cookies et ses protections avant exposition.
+Le [transport150](local-http-auth.md) ajoute login/logout/cookies ; la garde des
+routes de données et la revue restent requises avant exposition applicative.
 
 ## Construction et résultat
 
@@ -105,3 +106,9 @@ Prochain150 : transport HTTP login/logout et cookies. Contrôles transversaux
 CSRF/TLS/routes, corpus local de mots de passe adapté/provenance/licence et revue
 restent à réaliser avant clôture/authentification Web publiée. CLI/config/SQLite/
 FileSource/modules/workflow inchangés149. MIT, AD/OIDC/Keycloak après MVP.
+
+Validation149 effective : 94ef705 dans #35, CI37619138226 entière/trois jobs/SHA
+exact/race auth réussis, REST revérifié150. Le [transport HTTP150](local-http-auth.md)
+raccorde ce moteur partagé aux routes POST login/logout et cookies HTTPS ; vérifié
+Windows, publication/CI à terminer au commit150. Garde des routes de données,
+corpus d'enrôlement adapté et revue restent requis avant exposition applicative.
