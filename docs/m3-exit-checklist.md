@@ -1,8 +1,8 @@
 # Sortie M3 — matrice de vérification
 
-État au lot125, 7 octobre 2026. M3 reste ouvert. Cette matrice inventorie les
+État au lot126, 7 octobre 2026. M3 reste ouvert. Cette matrice inventorie les
 vérifications acquises et les travaux restants. Le contrôle ciblé124 est publié,
-CI entière réussie ; benchmarks125 préparés, mesures répétées encore à faire.
+CI entière réussie ; benchmarks125 publiés/CI verte, mesures répétées126 analysées.
 
 Référence : [roadmap](phase-0-proposal.md#11-roadmap-et-critères-mvp) et
 [ADR-005](adr/ADR-005-postfix-correlation.md). La sortie M3 concerne les API de
@@ -72,12 +72,20 @@ ajoute trois benchmarks : reconstruction pure, installation et lecture du manife
 quatre profils16/1024/4096faits dans les bornes4096/64parts. Exécution courte locale
 1x réussie sur les12cas ; parcours/générations/tentatives/réserves et cohérence SQL
 vérifiés avant mesure. [Protocole et sortie brute](projection-measurements.md).
-Préparation hors chronométrage, distinction CPU/allocations/IO ; un smoke Linux
-Go1.26 ajouté à la CI, aucun seuil de temps. CI125 à vérifier après publication.
+Préparation hors chronométrage, distinction CPU/allocations/IO ; smoke Linux
+Go1.26 réussi dans CI37552260931, trois jobs réussis suraa5f3c9. Aucun seuil de temps.
 
-Après125 : mesures répétées/analyse126 de reconstruction/installation/lecture,
-puis relire la matrice,
-les résultats et les limites avant de déclarer M3 terminé. Réutiliser les tests
+Campagne126 Windows Go1.26.2 : 5opérations × 3répétitions sur12cas, les36échantillons
+passés et conservés, médianes/plages/allocations calculées. À4096faits : environ26ms
+Build,134–137ms Install,74–76ms Current ; allocations cumulées Go significatives
+(jusqu'à environ112Mo/op pour Install), pas un pic mémoire. Build1024 bruité,
+7,268–13,597ms entre moyennes. Ces profils réguliers/cache chaud ne mesurent ni
+liens/NOQUEUE/origines multiples ni concurrence/Linux pilote. Aucune optimisation
+ou nouvelle garantie. [Résultats et limites126](projection-measurements.md#campagne126-et-résultats).
+Publication/CI126 à vérifier après commit ; M3 encore ouvert.
+
+Après126 : relire la matrice, les résultats et les limites au lot127 avant de
+déclarer M3 terminé. Réutiliser les tests
 scellés ; élargir seulement pour un risque concret. Les logs incomplets demeurent
 un cas avec réserves. Une future fusion prouvée exige producteur fiable,
 revalidation et règles propres ; elle n'est pas implicitement livrée par ce bilan.

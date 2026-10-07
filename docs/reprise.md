@@ -22,9 +22,10 @@ CI finale37543845063 et main37543982877 entièrement réussies.
 Lot123 publié dans #29 sur d9fde2f, CI37546917054 entièrement réussie.
 Lot124 publié dans #29 sur2f573a2, CI37549552434 entière réussie ; conflit à date
 égale conservé après stockage/reconstruction/reopen et insertion inverse.
-Lot125 : benchmarks/protocole préparés, smoke12cas/vet locaux réussis ;
-publication/CI125 à terminer et mesures répétées126 encore à faire.
-Trois jalons restent : M3–M5, environ27–47 lots après125, dont2–4 pour M3 ;
+Lot125 publié suraa5f3c9, CI37552260931 entière réussie, smoke Linux Go1.26 passé.
+Lot126 : campagne5x/count3 Windows passée,36échantillons/12cas analysés et conservés ;
+publication/CI126 à terminer, relecture de sortie M3 suivante.
+Trois jalons restent : M3–M5, environ26–45 lots après126, dont1–2 pour M3 ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -44,6 +45,10 @@ Les cas unknown/multiples non prouvés restent refusés et documentés.
 
 ## État validé
 
+- Lot125 publié : `aa5f3c9f727253ad3e2811050f6207e58adda2fe`, #29,
+  [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37552260931),
+  trois jobs/SHA exact et smoke Linux Go1.26 vérifiés REST. Lot126 passé/analyse
+  locale consignée ; publication/CI à terminer lors de cet enregistrement.
 - Lot124 publié : `2f573a2184c96d9cedfdc249dcda98633c6db327`, #29,
   [CI entière réussie](https://github.com/Coubiac/QueueAtlas/actions/runs/37549552434),
   trois jobs et SHA exact vérifiés REST. Lot125 validé localement, publication/CI
@@ -3288,9 +3293,9 @@ Lot120 publié sur codex/m3-continuity dans #28, CI37537740519 entière réussie
 Le lot120 contrôle un contrat d'attestation, sans fusion ni producteur
 automatique. L'intégration pure aux clés révisables121 est publiée dans la même PR,
 CI entière réussie ; clôture122 fusionnée #28, CI finale et main vertes.
-Matrice123 et contrôle124 publiés/CI entières réussies. Benchmarks125 préparés,
-smoke local réussi ; publier/vérifierCI125 dans la même PR #29, puis lot126 campagne
-répétée/analyse de reconstruction pure, remplacement de manifest et lecture.
+Matrice123, contrôle124 et benchmarks125 publiés/CI entières réussies. Campagne126
+répétée/analyse consignée ; publier/vérifierCI126 dans la même PR #29, puis lot127
+relecture de sortie M3, critères/limites/mesures, décision de clôture et CI finale.
 Branche codex/m3-validation. M3 reste ouvert jusqu'aux mesures et à la clôture.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
@@ -3577,3 +3582,36 @@ puis126 campagne5x/count3 et analyse, sorties brutes/environnement/SHA conservé
 aucun changement runtime sauf défaut précis révélé. Reste M3 : mesures/analyse1–2
 et revue/clôture1–2, soit2–4 ; total27–47MVP avec M4/M5. M3 toujours ouvert,
 pilote représentatif Linux M5, AD/OIDC après MVP. Réutiliser la PR #29.
+Publication125 validée : aa5f3c9f727253ad3e2811050f6207e58adda2fe,
+CI37552260931 entière réussie, trois jobs/SHA exact et smoke Linux Go1.26 vérifiés.
+
+## Lot126 : mesures répétées et analyse des projections
+
+Résultat attendu et acquis localement : campagne5x/count3 selon protocole125,
+sortie brute intégrale/environnement/SHA conservés,12groupes de3échantillons
+contrôlés et médianes/plages/allocations publiées dans docs/projection-measurements.md.
+Exécution Windows/amd64 Go1.26.2 i7-13650HX, modernc/sqlite1.60.1 ; début/finUTC,
+HEAD aa5f3c9f727253ad3e2811050f6207e58adda2fe et blob benchmark90385a32e324e650b262c556d0a95c2bdf630b91
+dans docs/benchmarks/projection-windows-2026-10-07.txt. GOMAXPROCS effectif20,
+boucles sérielles, TempDir C:NTFS ; charge et matériel disque non contrôlés.
+
+36échantillons/12cas passés,5opérations chacun, code de sortie0. À4096faits :
+Build≈26ms, Install≈134–137ms, Current≈74–76ms, selon1ou64parts du scope ;
+allocations cumulées jusqu'à≈112Mo/op pour Install. Build1024 bruité (7,268–13,597ms),
+pas de classement causal ni nouveau seuil. Pas de pic mémoire, coût IO isolé,
+liens/NOQUEUE/origines multiples/concurrence/Linux pilote mesurés. Aucun SLA,
+aucune extrapolation au-delà4096 ; observations descriptives, aucune optimisation.
+
+Vérifications : campagne entière passée, parser des36lignes avec N=5/procs20,
+12groupes ayant3échantillons chacun, calcul des minimums/médianes/maximums temps,
+B/op et allocs/op ; données présentes et non filtrées, diff vérifié. Aucun code,
+benchmark, dépendance ou configuration CI modifié. Fondations scellées réutilisées,
+aucun test/vet local relancé inutilement ; nouvelle CI déclenchée après publication.
+
+Au moment de cet enregistrement126, commit/publication/CI restent à terminer dans
+#29 sur codex/m3-validation. Dernier publié validé125 aa5f3c9/37552260931 ;
+dernier main validé122 7ec6dd7/37543982877. Prochaine action : publier/vérifierCI126,
+puis127 relecture de sortie M3/PR29, limites et critères, décision de clôture après
+CI finale et contrôle du merge/main. Réutiliser les tests acquis, élargir seulement
+pour un risque précis. Reste M3 revue/clôture1–2lots, total26–45MVP avec M4/M5,
+estimations incertaines ; M3 encore ouvert, pilote Linux M5 et AD/OIDC après MVP.

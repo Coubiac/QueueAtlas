@@ -1,8 +1,8 @@
-# Protocole de mesure des projections — lot125
+# Mesures locales des projections — lots125–126
 
-État au 7 octobre 2026 : benchmarks préparés et exécution courte locale réussie.
-Les mesures répétées et leur analyse restent au lot126. Aucune conclusion de
-capacité, comparaison avant/après ou optimisation n'est livrée par125.
+État au 7 octobre 2026 : benchmarks125 préparés, smoke Windows et CI Linux réussis ;
+campagne répétée126 exécutée et analysée. Les résultats restent locaux et
+synthétiques, sans conclusion de capacité, comparaison avant/après ou optimisation.
 
 ## Entrées et bornes
 
@@ -67,9 +67,8 @@ Les tests habituels compilent les benchmarks ; le smoke les exécute réellement
 Un succès établit la validité du jeu et du parcours, pas un budget de latence.
 [Sortie brute locale125](benchmarks/projection-smoke-windows-2026-10-07.txt).
 
-Lot126 prévu : enregistrer SHA des fichiers mesurés, date, Go/GOOS/GOARCH/CPU,
-driver et répertoire temporaire ; conserver toutes les sorties, y compris celles
-d'un essai qui échoue. Première campagne proposée :
+Campagne126 réalisée : SHA, date, Go/GOOS/GOARCH/CPU, driver et répertoire temporaire
+consignés dans la sortie brute. Commande de la campagne répétée :
 
 ```powershell
 go version
@@ -100,4 +99,79 @@ Les sorties smoke125 sont une seule observation par cas. Elles ne sont pas une
 mesure répétée ni un résultat pilote. Les profils bornés ne donnent pas de coût
 constant, débit d'ingestion, capacité maximale, SLA ou comportement au-delà4096.
 La transposition Windows→Linux et la charge représentative restent à vérifier M5.
-M3 demeure ouvert pour les mesures répétées, leur analyse et la revue finale.
+M3 demeure ouvert pour la revue finale et la décision de clôture.
+
+## Campagne126 et résultats
+
+Exécutée le7octobre2026 de00:55:44 à00:56:11UTC sur
+`aa5f3c9f727253ad3e2811050f6207e58adda2fe`, Git initial propre. Blob du benchmark
+`90385a32e324e650b262c556d0a95c2bdf630b91`, inchangé pendant la campagne et dans126.
+Windows/amd64, Go1.26.2, Intel Core i7-13650HX, modernc.org/sqlite v1.60.1 ;
+GOMAXPROCS non défini dans l'environnement, effectif20 indiqué par Go. TempDir sur
+`C:\Users\benoi\AppData\Local\Temp`, volumeC:NTFS. Matériel disque et charge du
+poste non qualifiés ; aucune autre campagne de mesure lancée en parallèle par
+l'agent. Boucles sérielles, conditions chaudes décrites ci-dessus.
+
+[Sortie brute complète126](benchmarks/projection-windows-2026-10-07.txt), stdout/stderr
+capturés sans réécriture des lignes de benchmark ; heures de début/fin et code de
+sortie0 conservés. 36échantillons parsés : 12cas × 3répétitions, tous avec5opérations
+mesurées ; contrôles de formes/révisions passés. Les warmups et calibrations Go
+ne sont pas comptés dans ces5opérations. Aucune tentative échouée ou valeur retirée.
+
+### Temps observés
+
+Médiane des trois moyennes ns/op, convertie en ms. Entre parenthèses : minimum–maximum
+des trois moyennes. Ce sont des moyennes de5opérations, pas des latences individuelles,
+percentiles, intervalle de confiance ou délai maximal garanti. Arrondi à0,001ms.
+
+| Faits / scope | Build ms | Install ms | Current ms |
+| --- | ---: | ---: | ---: |
+| 16 / 4 | 0,120 (0,115–0,147) | 1,340 (1,334–1,362) | 0,448 (0,447–0,462) |
+| 1 024 / 16 | 9,386 (7,268–13,597) | 34,245 (33,907–35,004) | 17,959 (17,885–18,085) |
+| 4 096 / 1 | 26,266 (25,555–26,717) | 133,933 (132,496–134,257) | 74,452 (73,374–77,244) |
+| 4 096 / 64 | 25,998 (25,660–28,270) | 136,706 (134,482–136,797) | 75,689 (74,946–75,798) |
+
+Build1024 varie de7,268 à13,597ms, rapport max/min≈1,87 ; la charge du poste n'est
+pas contrôlée et ces trois moyennes ne permettent pas d'en attribuer la cause.
+Le bilan est descriptif : aucune décision d'optimisation ou de classement ne dépend
+de cet écart, donc pas de répétition supplémentaire pour rechercher une valeur
+préférée. Une future comparaison nécessitera un environnement et un protocole
+adaptés à sa question précise.
+
+À4096faits, les deux distributions ont des temps du même ordre de grandeur dans
+cette campagne. On ne peut pas en déduire un coût indépendant du nombre de parts,
+ni extrapoler au-delà des limites. Install inclut deux reconstructions et un
+remplacement transactionnel ; Current relit les faits et reconstruit. Les écarts
+entre opérations ne sont pas une mesure isolée de leur coût IO.
+
+### Allocations Go observées
+
+Chaque cellule : médiane B/op en Mo décimaux (1Mo=1 000 000octets), puis médiane
+allocs/op. Les médianes sont calculées séparément par métrique ; ce ne sont pas
+nécessairement les valeurs de la répétition dont le temps est médian.
+
+| Faits / scope | Build Mo / allocs | Install Mo / allocs | Current Mo / allocs |
+| --- | ---: | ---: | ---: |
+| 16 / 4 | 0,160 / 2 115 | 0,430 / 7 149 | 0,265 / 4 962 |
+| 1 024 / 16 | 9,623 / 107 444 | 25,871 / 380 026 | 15,978 / 267 414 |
+| 4 096 / 1 | 42,132 / 420 455 | 111,929 / 1 500 372 | 68,712 / 1 058 983 |
+| 4 096 / 64 | 40,675 / 429 101 | 108,732 / 1 520 456 | 66,954 / 1 070 275 |
+
+La reconstruction alloue sensiblement à la borne4096, surtout lorsque Install
+compose deux projections. Ces quantités sont cumulées, pas une mémoire résidente
+ou un pic mémoire ; aucun profil d'allocation/pic/RSS natif n'a été réalisé.
+Le coût des scénarios exclus (liens, origines multiples, NOQUEUE, ambiguïtés),
+des pages froides, de la concurrence et du pilote Linux demeure non mesuré.
+
+## Bilan de vérification126
+
+Campagne5x/count3 entière réussie, cohérence des36échantillons et calcul des
+12groupes/minimums/médianes/maximums contrôlés. Sortie brute/environnement/SHA
+conservés ; aucun changement de code, benchmark ou configuration CI dans126.
+Validations fonctionnelles scellées réutilisées, pas de rerun local des fondations.
+Le lot125 est publié dans #29 suraa5f3c9 ;
+[CI37552260931](https://github.com/Coubiac/QueueAtlas/actions/runs/37552260931)
+entièrement réussie, étape smoke Linux Go1.26 passée. Publication/CI126 à vérifier
+après commit. Prochaine action127 : relecture de sortie M3, limites/critères et
+PR #29, puis décision de clôture après CI finale. Les mesures ne ferment pas M3
+à elles seules ; le pilote Linux représentatif demeure M5.

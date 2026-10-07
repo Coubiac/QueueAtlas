@@ -397,9 +397,11 @@ contextuelles restent distinctes. `BuildProjection` et SQLite restent inchangés
 Les chantiers purs, stockage, recherche et rétention #19–27 sont fusionnés.
 Le contrat et les clés120–121 sont fusionnés dans #28, CI finale/main réussies.
 La [matrice de sortie M3](m3-exit-checklist.md) inventorie les vérifications.
-Le contrôle124 valide localement le conflit de résultats à date égale après
-persistance et reopen, avec insertion inverse et réserves conservées. Publication/CI
-dans #29 à terminer ; mesures de reconstruction/installation/lecture suivantes.
+Le contrôle124 publié/CI verte valide le conflit de résultats à date égale après
+persistance et reopen, avec insertion inverse et réserves conservées.
+Les [mesures locales125–126](projection-measurements.md) couvrent un profil
+synthétique borné de reconstruction/installation/lecture. M3 reste ouvert pour
+sa relecture et sa clôture ; aucune capacité ou couverture complète certifiée.
 Conserver les ambiguïtés de chronologie, d'ID recyclé et de
 chevauchement inter-source. Les liens confirmés exigent des preuves corroborées ;
 le texte distant, Message-ID, PID ou Queue ID seul ne peut fusionner des parcours.

@@ -1,0 +1,56 @@
+Lot126: repeated projection measurements, synthetic input only.
+Started UTC: 2026-10-07T00:55:44.3624471Z
+Git HEAD measured: aa5f3c9f727253ad3e2811050f6207e58adda2fe
+Benchmark file Git blob: 90385a32e324e650b262c556d0a95c2bdf630b91
+Go: go version go1.26.2 windows/amd64
+Driver: modernc.org/sqlite v1.60.1
+TEMP: C:\Users\benoi\AppData\Local\Temp (C: NTFS; disk performance and host load not controlled)
+GOMAXPROCS environment: (unset; effective value in benchmark suffix)
+SQLite file; WAL/synchronous FULL; one connection; serial warm operations.
+Command: go test ./internal/storage/sqlite -run '^$' -bench '^BenchmarkProjection(Build|Install|Current)$' -benchtime=5x -count=3 -benchmem
+
+goos: windows
+goarch: amd64
+pkg: github.com/Coubiac/QueueAtlas/internal/storage/sqlite
+cpu: 13th Gen Intel(R) Core(TM) i7-13650HX
+BenchmarkProjectionBuild/facts16_scope4-20         	       5	    114580 ns/op	  159745 B/op	    2115 allocs/op
+BenchmarkProjectionBuild/facts16_scope4-20         	       5	    120000 ns/op	  159745 B/op	    2115 allocs/op
+BenchmarkProjectionBuild/facts16_scope4-20         	       5	    146520 ns/op	  159745 B/op	    2115 allocs/op
+BenchmarkProjectionBuild/facts1024_scope16-20      	       5	   7267660 ns/op	 9622987 B/op	  107444 allocs/op
+BenchmarkProjectionBuild/facts1024_scope16-20      	       5	   9385820 ns/op	 9623035 B/op	  107444 allocs/op
+BenchmarkProjectionBuild/facts1024_scope16-20      	       5	  13596880 ns/op	 9622942 B/op	  107443 allocs/op
+BenchmarkProjectionBuild/facts4096_scope1-20       	       5	  26266020 ns/op	42132164 B/op	  420456 allocs/op
+BenchmarkProjectionBuild/facts4096_scope1-20       	       5	  26717440 ns/op	42132056 B/op	  420455 allocs/op
+BenchmarkProjectionBuild/facts4096_scope1-20       	       5	  25555140 ns/op	42131059 B/op	  420454 allocs/op
+BenchmarkProjectionBuild/facts4096_scope64-20      	       5	  28270320 ns/op	40675129 B/op	  429102 allocs/op
+BenchmarkProjectionBuild/facts4096_scope64-20      	       5	  25659920 ns/op	40675024 B/op	  429101 allocs/op
+BenchmarkProjectionBuild/facts4096_scope64-20      	       5	  25997900 ns/op	40675017 B/op	  429101 allocs/op
+BenchmarkProjectionInstall/facts16_scope4-20       	       5	   1339900 ns/op	  431206 B/op	    7151 allocs/op
+BenchmarkProjectionInstall/facts16_scope4-20       	       5	   1362160 ns/op	  430262 B/op	    7149 allocs/op
+BenchmarkProjectionInstall/facts16_scope4-20       	       5	   1334460 ns/op	  429292 B/op	    7147 allocs/op
+BenchmarkProjectionInstall/facts1024_scope16-20    	       5	  34244620 ns/op	25871116 B/op	  380025 allocs/op
+BenchmarkProjectionInstall/facts1024_scope16-20    	       5	  33906960 ns/op	25871116 B/op	  380026 allocs/op
+BenchmarkProjectionInstall/facts1024_scope16-20    	       5	  35004180 ns/op	25871120 B/op	  380026 allocs/op
+BenchmarkProjectionInstall/facts4096_scope1-20     	       5	 133933180 ns/op	111928708 B/op	 1500372 allocs/op
+BenchmarkProjectionInstall/facts4096_scope1-20     	       5	 132495800 ns/op	111928756 B/op	 1500373 allocs/op
+BenchmarkProjectionInstall/facts4096_scope1-20     	       5	 134256660 ns/op	111928612 B/op	 1500371 allocs/op
+BenchmarkProjectionInstall/facts4096_scope64-20    	       5	 136706160 ns/op	108731985 B/op	 1520456 allocs/op
+BenchmarkProjectionInstall/facts4096_scope64-20    	       5	 136797000 ns/op	108732017 B/op	 1520456 allocs/op
+BenchmarkProjectionInstall/facts4096_scope64-20    	       5	 134481800 ns/op	108732033 B/op	 1520457 allocs/op
+BenchmarkProjectionCurrent/facts16_scope4-20       	       5	    446820 ns/op	  265204 B/op	    4962 allocs/op
+BenchmarkProjectionCurrent/facts16_scope4-20       	       5	    462420 ns/op	  265137 B/op	    4962 allocs/op
+BenchmarkProjectionCurrent/facts16_scope4-20       	       5	    448140 ns/op	  265272 B/op	    4963 allocs/op
+BenchmarkProjectionCurrent/facts1024_scope16-20    	       5	  17885160 ns/op	15978158 B/op	  267415 allocs/op
+BenchmarkProjectionCurrent/facts1024_scope16-20    	       5	  18084820 ns/op	15977998 B/op	  267414 allocs/op
+BenchmarkProjectionCurrent/facts1024_scope16-20    	       5	  17959360 ns/op	15977982 B/op	  267414 allocs/op
+BenchmarkProjectionCurrent/facts4096_scope1-20     	       5	  73373980 ns/op	68711588 B/op	 1058983 allocs/op
+BenchmarkProjectionCurrent/facts4096_scope1-20     	       5	  74451960 ns/op	68711774 B/op	 1058984 allocs/op
+BenchmarkProjectionCurrent/facts4096_scope1-20     	       5	  77244320 ns/op	68711624 B/op	 1058983 allocs/op
+BenchmarkProjectionCurrent/facts4096_scope64-20    	       5	  75689000 ns/op	66953955 B/op	 1070275 allocs/op
+BenchmarkProjectionCurrent/facts4096_scope64-20    	       5	  75797640 ns/op	66953862 B/op	 1070274 allocs/op
+BenchmarkProjectionCurrent/facts4096_scope64-20    	       5	  74946420 ns/op	66953846 B/op	 1070275 allocs/op
+PASS
+ok  	github.com/Coubiac/QueueAtlas/internal/storage/sqlite	26.264s
+
+Finished UTC: 2026-10-07T00:56:11.6312408Z
+Exit code: 0
