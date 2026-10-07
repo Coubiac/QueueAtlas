@@ -35,7 +35,8 @@ Contrat source139 publié surcfd2b39 dans #33, CI37585141938 entière réussie.
 YAML source140 publié sur455148a, CI37588258338 entière réussie. Conversion141
 publiée sur223849c, CI37591355873 entière réussie. Clôture142 fusionnée #33 sur19843d6,
 CI finale37594338289/main37594545438 entières réussies, branche sources supprimée.
-Contrat auth143 implémenté/vérifié localement, publication/PR/CI à terminer au commit.
+Contrat auth143 publié dans #34 sure00573c, CI37598069906 entière réussie.
+Hash/codec144 implémenté/vérifié localement, publication/CI à terminer au commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -50,7 +51,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 143 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 144 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -67,9 +68,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138 et sources139–142 fusionnés/CI main verte ; contrat auth143 vérifié localement | Hash/codec, compte local/CLI/sessions/protections, diagnostic élargi, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 10–18 après143 |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138 et sources139–142 fusionnés/CI main verte ; auth143 publié/CI verte, hash/codec144 vérifié localement | Compte local/CLI/sessions/protections/revue, diagnostic élargi, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 9–17 après144 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après143** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **20–36** |
+| **Total après144** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **19–35** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
@@ -84,6 +85,8 @@ hash/codec, persistance, CLI, sessions, protections HTTP et revue demandent au m
 six lots distincts ; API2–3 et Web/revue2–4 ensuite, marge d'intégration/diagnostic
 jusqu'à18. M4 devient10–18, sans élargir le périmètre ; un contrat pur n'est pas
 un compte utilisable et les lots ne réduisent pas automatiquement cette fourchette.
+Après144, hash/codec réalisé ; cinq lots auth minimum restent, M4 devient9–17,
+sans autre changement de périmètre ou de marge.
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -601,3 +604,17 @@ vet/format/diff Windows passés ; publication/PR/CI à terminer au commit.
 Prochain lot144 : hash/vérification/codec strict, tests/vecteurs/doc, puis stockage
 et CLI dans des lots distincts. Estimation révisée selon découpage ci-dessus :
 M4 10–18, M5 10–18, total20–36, deux jalons et incertitude élevée.
+
+Validation143 effective : e00573c publié dans #34,
+[CI37598069906](https://github.com/Coubiac/QueueAtlas/actions/runs/37598069906)
+entière réussie/trois jobs/SHA exact ; attentes143 prépublication terminées.
+
+## Bilan144 — hash et vérification Argon2id
+
+Sel aléatoire, codec strict/borné/coûts validés avant hash, comparaison des32octets
+à temps constant, secrets UTF-8 bornés/littéraux ; dépendance Go officielle épinglée.
+Cinq nouveaux tests/neuf auth, vet/format/diff Windows et vecteur indépendant passés ;
+fuzz codec5s/633884exécutions passé. CI Windows étendue à auth, publication/CI144
+à terminer au commit. Pas de compte/session/CLI/route utilisable.
+Prochain lot145 : persistance atomique/lecture bornée du compte et tests/doc.
+M4 9–17, M5 10–18, total19–35 après144, estimation incertaine.

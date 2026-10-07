@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	// These fixed lengths/version are reserved for the future Argon2id codec.
+	// Fixed lengths/version of the local Argon2id credential codec.
 	Argon2Version = 0x13
 	SaltBytes     = 16
 	KeyBytes      = 32

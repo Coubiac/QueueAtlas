@@ -48,9 +48,10 @@ CI37585141938 entière/trois jobs/SHA exact réussis. YAML source140 publié sur
 CI37588258338 entière/trois jobs/SHA exact réussis. Conversion141 publiée sur223849c,
 CI37591355873 entière/trois jobs/SHA exact réussis. Clôture142 fusionnée #33 sur19843d6,
 CI finale37594338289/main37594545438 entières réussies, branche sources supprimée.
-Contrat auth143 implémenté/vérifié localement sur codex/m4-local-auth ; publication/
-PR/CI à terminer au commit. Prochain lot144 : hash/vérification et codec Argon2id.
-Deux jalons M4/M5 restent, environ20–36lots après143, M3 zéro lot restant ;
+Contrat auth143 publié sure00573c dans #34, CI37598069906 entière/trois jobs/SHA
+exact réussis. Hash/vérification/codec144 implémentés/vérifiés localement ; publication/
+CI à terminer au commit. Prochain lot145 : persistance atomique/bornée du compte local.
+Deux jalons M4/M5 restent, environ19–35lots après144, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3386,10 +3387,11 @@ entières réussies, branche doctor supprimée. Contrat source139 publié surcfd
 dans #33, CI37585141938 entière réussie. YAML source140 publié sur455148a,
 CI37588258338 entière réussie. Conversion141 publiée sur223849c, CI37591355873
 entière réussie. Clôture142 fusionnée #33 sur19843d6, CI finale37594338289/
-main37594545438 entières réussies, branche sources supprimée. Auth143 validé
-localement : publier/créer et attacher PR cohérente puis vérifier CI entière/SHA.
-Prochain lot144 : hash/vérification et codec strict/borné Argon2id, tests/vecteurs/doc ;
-persistance, CLI d'initialisation et sessions/protections dans des lots suivants.
+main37594545438 entières réussies, branche sources supprimée. Auth143 publié
+sure00573c dans #34, CI37598069906 entière réussie. Hash/codec144 validé localement :
+publier dans la même PR puis vérifier CI entière/trois jobs/SHA exact.
+Prochain lot145 : persistance atomique/lecture bornée identité+hash validés, sans
+écrasement, tests/doc ; CLI146 puis revue, sessions/protections HTTP séparées.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4367,3 +4369,51 @@ La borne7–15 après142 sous-estimait l'auth3–5 : six lots restent au minimum
 hash/codec, persistance, CLI, sessions, protections HTTP et revue, puis API2–3 et
 Web/revue2–4, avec marge d'intégration/diagnostic jusqu'à18. Pas d'élargissement
 fonctionnel ni pourcentage livré ; ce découpage évite de réunir les sous-systèmes.
+
+Validation effective143 consignée à la reprise144 :
+`e00573ce861ce2f3a20e99f7a9cc064174b9bd27` publié dans #34 en brouillon,
+CI37598069906 entière réussie/trois jobs/SHA exact. Tests/vet/format Linux incluant
+auth, smoke/race source-file/builds et CLI/config/diagnostics Windows passés.
+À la reprise144 : fetch, checkout propre/têtes locale/origin/PR identiques,
+main14219843d6 inchangé, PR ouverte/brouillon/mergeable/clean et workflow réussi
+revérifiés REST. Attentes143 prépublication terminées ; #34 réattachée.
+
+## Lot144 : hash/vérification et codec Argon2id borné
+
+Résultat attendu : hash avec sel aléatoire, vérification/comparaison constante,
+codec strict avant allocation Argon2, tests/vecteur indépendant/doc ; même #34.
+API HashPassword/VerifyPassword/ValidatePasswordHash et ValidatePassword, dépendance
+Go officielle golang.org/x/crypto v0.57.0 épinglée ; autres versions inchangées.
+Profil/coûts143, sel16octets crypto/rand et hash32 via IDKey, version19.
+Codec128octets/six segments/ordre exact, entiers décimaux sans signes/zéros initiaux,
+coûts+alignement validés avant dérivation, base64 standard strict/canonique sans
+padding/CRLF, tailles fixes. Erreurs fixes sans valeur privée ; record zéro en erreur.
+Hash retourne chaîne vide en erreur ; Verify vrai si correspondance, faux,nil
+pour mismatch bien formé, faux/erreur pour entrée/hash invalide. Comparaison des
+32octets à temps constant ; fonction complète/validation pas à temps constant.
+
+Secrets UTF-8 15..256points de code/1024octets max, pas de trim/troncature/case
+folding/normalisation ; buffers inchangés, aucune garantie d'effacement mémoire.
+Limites non assimilées à une force suffisante ou conformité NIST globale ; liste
+de mots de passe compromis/courants/dérivés requise au CLI146. Aucune IO de stockage,
+aucun compte/route/session créé. Admission/essais/comptes inconnus/CSRF futurs,
+pas de limite globale de mémoire/concurrence/deadline par cette primitive.
+
+Cinq tests nouveaux144/neuf auth et vet/format/diff Windows passés : frontières,
+secret littéral, vecteur externe libargon2 via argon2-cffi25.1.0 figé, version
+algorithmique, mismatches, sels distincts, refus avant entropie/erreur sans résultat,
+codec hostile/tailles/versions/coûts/maxima sans hash coûteux. Fuzzer codec5s/2workers,
+633884exécutions réussies Windows, aucune dérivation dans la campagne. Helper privé
+permet source d'entropie sentinelle ; API publique toujours crypto/rand.
+CI Windows étendue à tests auth, Linux existant couvre tests/vet/build ; CLI/config/
+SQLite/FileSource inchangés, pas de rerun local des fondations sans nouveau risque.
+Contrat/provenance/vérifications/limites dans docs/local-auth.md.
+
+Au moment du commit144 : publication/CI à terminer, dernier publié validé143
+e00573c/CI37598069906, dernier main14219843d6/CI37594545438. Publier dans #34,
+vérifier workflow entier/trois jobs/SHA exact, consigner PR puis reprise145.
+Prochain lot145 : persistance atomique/lecture bornée du compte identité+hash,
+validation sans dérivation, refus sans écrasement, tests/doc ; CLI146 puis revue,
+sessions/protections HTTP dans un chantier distinct. M4 reste9–17lots (hash/codec
+terminé, cinq lots auth minimum restent), M5 10–18, total19–35, estimation incertaine.
+MIT conservée, AD/OIDC/Keycloak après MVP.

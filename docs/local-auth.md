@@ -53,7 +53,7 @@ zéros/maxima numériques/alignement (y compris trois voies). Tests synthétique
 sans données privées ou calcul cryptographique. Le workflow Linux existant teste
 le nouveau package via go test/vet ./... ; workflow inchangé.
 
-## Suite et limites
+## Suite au lot143 (snapshot)
 
 Lot144 : hachage/vérification Argon2id avec bibliothèque maintenue, sel aléatoire,
 codec strict/borné des hashes et comparaison constante, tests/vecteurs et doc.
@@ -62,3 +62,72 @@ format de hash ni paramètre YAML d'auth accepté au143, aucune dépendance ajou
 Persistance atomique du compte, CLI d'initialisation, sessions/révocation,
 protections HTTP/CSRF/essais et revue dans des lots suivants. Aucun serveur,
 cookie, route login ou accès distant n'est activé. MIT conservée ; AD/OIDC après MVP.
+
+Publication143 effective : e00573c dans [PR #34](https://github.com/Coubiac/QueueAtlas/pull/34),
+[CI37598069906](https://github.com/Coubiac/QueueAtlas/actions/runs/37598069906)
+entière réussie/trois jobs/SHA exact ; les attentes143 sont terminées.
+
+## Lot144 : hash et vérification Argon2id
+
+`HashPassword(password []byte, Parameters)` utilise `golang.org/x/crypto/argon2`
+v0.57.0, version officielle épinglée et compatible Go1.26. Paramètres143 et secret
+validés avant génération d'un sel frais de 16octets avec crypto/rand, puis IDKey.
+Le résultat est un hash de 32octets encodé avec sa version, ses coûts et son sel :
+
+```text
+$argon2id$v=19$m=65536,t=3,p=4$<sel-base64-sans-padding>$<hash-base64-sans-padding>
+```
+
+`ValidatePasswordHash` valide sans dérivation/IO. Codec limité à128octets,
+six segments exacts, argon2id/v19 uniquement, ordre m,t,p et entiers décimaux
+canoniques sans signe/zéro initial/suffixe. Coûts validés avant IDKey, y compris
+alignement ; base64 standard strict/canonique, sans padding/CRLF/espaces, longueurs
+exactes16/32octets. Autres algorithmes, versions, champs, tailles et débordements
+sont refusés avec ErrInvalidHash fixe, sans record partiel ni hash fourni.
+La validation n'atteste pas l'origine du hash ou la qualité du secret qui l'a produit.
+
+`VerifyPassword` revalide l'entrée et décode intégralement le record avant tout
+calcul. Correspondance = true,nil ; mot de passe valide différent = false,nil ;
+entrée/record invalide = false,erreur sûre. Comparaison des32octets via
+crypto/subtle.ConstantTimeCompare ; le décodeur et l'ensemble du login ne sont pas
+à temps constant. Les paramètres persistés sont utilisés tels que validés143.
+
+Politique d'entrée144 : UTF-8 valide, 15..256points de code, au plus1024octets,
+sans troncature/trim/case folding/normalisation Unicode. Espaces et caractères
+Unicode conservés, pas de règle de composition. La longueur15 et le comptage par
+point de code suivent les recommandations de longueur du
+[NIST SP800-63B §3.1.1.2](https://pages.nist.gov/800-63-4/sp800-63b.html#passwordver).
+Le choix applicatif conserve les octets : des formes Unicode visuellement identiques
+peuvent être distinctes ; NFC n'est pas appliqué. Aucune conformité NIST globale
+revendiquée. Liste de mots de passe courants/compromis et dérivés du compte reste
+à raccorder lors de l'initialisation146 ; une longueur acceptée ne prouve pas la force.
+
+L'appelant garde son buffer secret inchangé, sans le modifier pendant l'appel ;
+aucune garantie d'effacement des copies mémoire ou de confidentialité d'un hash
+imprimé par un appelant. Aucune journalisation ici. HashPassword retourne une
+chaîne vide sur erreur de validation/lecture de sel ; l'erreur de lecture injectée
+est ErrRandom fixe, sans détail de la dépendance. Source d'entropie injectée
+uniquement dans un helper privé de test, API publique toujours crypto/rand.
+Coûts bornés par appel, pas de deadline/annulation ni limite de concurrence :
+admission bornée/essais et politique comptes inconnus restent à la frontière HTTP.
+
+Cinq nouveaux tests144 (neuf tests auth au total) et vet/format/diff Windows passés :
+limites UTF-8/points de code/bytes et ownership, vecteur externe et mismatches
+casse/espaces/octet final, sel frais public, refus avant lecture du sel/erreurs sûres,
+codec strict et valeurs maximales validées sans calcul coûteux. Vecteur synthétique
+produit séparément avec argon2-cffi25.1.0/libargon2 : secret "synthetic secret phrase",
+sel "0123456789abcdef", ID/v19, m65536,t3,p4,hash32 ; résultat figé dans le test,
+pas recalculé avec la même implémentation pour établir l'attendu. Version Go de
+l'algorithme confrontée à la version du record. Fuzzer du codec seul (aucun hash) :
+5s,2workers,633884exécutions Windows réussies ; campagne bornée, pas preuve exhaustive.
+CI Windows étendue à auth ; Linux existant teste/vet/build l'ensemble, dépendance
+crypto seule ajoutée sans modification des versions existantes. CLI/SQLite/config/
+FileSource inchangés ; publication/CI144 à vérifier après commit dans #34 réutilisée.
+
+## Suite après144
+
+Lot145 : persistance atomique et lecture bornée du compte local, identité+hash
+validés sans vérification de mot de passe lors du chargement, refus sans écrasement,
+tests/doc. Aucun stockage créé par144 ; CLI d'initialisation146 puis revue de ce
+chantier. Sessions/protections HTTP dans un chantier distinct. Aucun compte
+utilisable, serveur, route ou cookie livré ; MIT, AD/OIDC après MVP.
