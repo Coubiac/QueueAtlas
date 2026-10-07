@@ -27,6 +27,8 @@ jobs:
         run: go test ./internal/config -count=1
       - name: Windows local credentials
         run: go test ./internal/auth -count=1
+      - name: Windows authenticated search
+        run: go test ./internal/httpapi -count=1
       - name: Windows SQLite diagnostics
         run: go test ./internal/storage/sqlite -run '^Test(OpenDiagnostics|DiagnosticsMetadata)' -count=1
   test:
@@ -60,6 +62,9 @@ jobs:
       - name: Local authentication race test
         if: matrix.go == '1.26.x'
         run: go test -race ./internal/auth
+      - name: Authenticated search race test
+        if: matrix.go == '1.26.x'
+        run: go test -race ./internal/httpapi
       - name: Static Linux amd64
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./...
       - name: Static Linux arm64

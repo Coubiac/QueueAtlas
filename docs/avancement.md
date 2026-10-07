@@ -46,7 +46,16 @@ SHA exact/race auth réussis. HTTP150 publié surc50c678, CI37623116898 entière
 jobs/SHA exact/race auth réussis. Garde HTTP151 publiée sur eb5d29c, CI37626687859
 entière/trois jobs/SHA exact/race auth réussis, revérifiés REST152. Corpus152 publié
 sur e4aaa12, CI37631390279 entière/trois jobs/SHA exact/race auth verts, revérifiés
-REST153. Revue153 favorable ; CI finale/fusion/main à terminer au commit.
+REST153. Clôture153 fusionnée #35 sur81f9f79 ; CI finale37634089599 et
+main37634433660 entières/trois jobs/SHA exact/race auth réussis, branche nettoyée.
+Contrat de requêtes154 publié sura2947e4 dans #36, CI37639327832 entière/trois
+jobs/SHA exact réussis, revérifiés REST155. Handler155 publié sur4cf3e65,
+CI37642563497 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux réussis,
+revérifiés REST156. Identité/détail156 publiés sur2298709, CI37646414652 entière/
+trois jobs/SHA exact réussis, race HTTPAPI Linux1.26/journal Windows vérifiés,
+revérifiés REST157. Timeline157 publiée sur277d981, CI37650350084 entière/trois jobs/
+SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Revue158
+favorable, publication finale/fusion/main à terminer au commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -61,7 +70,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 153 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 158 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -78,9 +87,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142 et compte143–147 fusionnés/CI main verte ; auth148–152 publiés/CI verte, revue153 favorable | Clôture auth153, diagnostic élargi, API bornée, recherche/détail/timeline Web | 4–11 après clôture153/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147 et auth148–153 fusionnés/CI main verte ; API154–157 publiée/CI verte, revue158 favorable/fusion à terminer | Web et revue, filtres complémentaires/diagnostic, raccordement | 2–9 après158/fusion/CI |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après clôture153/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **14–29** |
+| **Total après158/fusion/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **12–27** |
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
@@ -127,6 +136,22 @@ M5 reste10–18, total15–30, sans modification de marge ou critères MVP.
 Après clôture153/CI, bibliothèque auth relue, corpus retenu avec défauts actuels
 et limites d'assemblage documentées ; suite API2–3/Web/revue2–4. M4 devient4–11,
 M5 reste10–18, total14–29. Le service/pilote/navigateur restent à réaliser.
+Après154/CI, le contrat d'entrée pur est réalisé ; les handlers de recherche,
+détail/timeline et leur raccordement/revue restent à développer en 2–3lots API
+estimés, puis Web/revue2–4 et marge d'intégration/diagnostic. Fourchette conservée
+M4 4–11, M5 10–18, total14–29 : préparer les paramètres ne livre pas une route.
+Les critères de recherche non couverts par les six index actuels devront être
+comptabilisés à ce raccordement ; leur coût n'est pas présenté comme déjà réalisé.
+Après155/CI, handler de recherche avec reconstruction complète réalisé en
+bibliothèque. Identité révisable/détail et timeline restent distincts, puis revue
+du chantier API ; le détail de ces lots et les filtres supplémentaires peuvent
+modifier l'estimation. Fourchette M4 4–11 conservée à ce stade (Web/raccordement/
+diagnostic inclus), M5 10–18, total14–29 ; ce n'est pas un backlog exhaustif.
+Après156/CI, identité révisable et résumé/destinataires du détail sont réalisés.
+Suite concrète : timeline157 puis revue du chantier API, au moins2lots ; Web et
+revue au moins2lots, filtres complémentaires/raccordement/diagnostic dans la marge.
+M4 4–11 conservé, M5 10–18, total14–29 ; les critères non couverts restent visibles
+et seront reprécisés avant de déclarer M4 terminé.
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -813,3 +838,118 @@ Prochain154 : contrat de requêtes de recherche HTTP bornées (filtres/période/
 limite/curseur/erreurs privées), puis adaptateur aux recherches/reconstruction.
 Après clôture153/CI : M4 4–11, M5 10–18, total14–29/deux jalons. MIT/AD/OIDC
 après MVP ; aucun lot154 commencé.
+
+## Bilan du lot 154 — paramètres et curseurs de recherche HTTP
+
+Clôture153 effective : #35 fusionnée sur81f9f79, finale f49381d/
+[CI37634089599](https://github.com/Coubiac/QueueAtlas/actions/runs/37634089599)
+et [CI main37634433660](https://github.com/Coubiac/QueueAtlas/actions/runs/37634433660)
+entières/trois jobs/SHA exact/race auth réussis, branche sessions nettoyée.
+
+Contrat pur [http-search](http-search.md) : six critères indexés exacts, chaîne
+RawQuery bornée/unique/UTF-8, dates UTC précises/fenêtre31jours, défaut24h/50résultats,
+limite1..200 et curseur canonique lié au sélecteur/période. Validation native
+réutilisée sans base ni schéma, erreurs fixes privées et sortie nulle aux échecs.
+Cinq tests HTTP et dix-neuf régressions SQLite de recherche passent Windows ;
+vecteurs indépendants, bornes/calendar/pagination/domaines, vet/format/diff réussis.
+Publication/PR/CI du lot154 encore à terminer au commit sur codex/m4-search-api.
+
+Pas de handler, route, transport ou Web ; les événements trouvés devront servir à
+la reconstruction complète. Critères supplémentaires du cadrage encore à préciser
+au raccordement. Prochain155 : handler de lecture authentifié/borné ; même PR API.
+M4 4–11 après154/CI, M5 10–18, total14–29/deux jalons. Fourchette conservée pour
+les handlers/détail/revue API, Web et marge ; pas de baisse au seul numéro de lot.
+MIT conservée, AD/OIDC/Keycloak après MVP, aucun lot155 commencé.
+
+## Bilan du lot 155 — recherche HTTP authentifiée
+
+Lot154 publié `a2947e4`, [PR #36](https://github.com/Coubiac/QueueAtlas/pull/36)
+brouillon, [CI37639327832](https://github.com/Coubiac/QueueAtlas/actions/runs/37639327832)
+entière/trois jobs/SHA exact réussis, état et tête revérifiés REST155.
+
+Handler GET/HEAD `/api/v1/messages` directement protégé par auth151, validation154,
+admission partagée sans attente, contexte annulable/délai et lecture complète des
+scopes exacts. Reconstruction par file incluant faits hors page/période, autres
+origines et sans date ; clés indépendantes des autres files de page. DTO privé
+avec provenance/compteurs/réserves/NOQUEUE warning et ambiguïtés, offsets décimaux,
+JSON <=1MiB avant succès, erreurs fixes sans réponse partielle. Contrat :
+[http-search](http-search.md). Aucun write SQL, projection installée ou listener.
+
+Sept nouveaux tests/douze HTTPAPI total passent Windows : SQLite réel/pagination/
+faits complets, protocole avant stockage, NOQUEUE/conflits, contexte/admission,
+disparition/volume sans fuite, HTTPS réel/HEAD/révocation. Vet/format/diff passés.
+CI enrichie HTTPAPI Windows et race HTTPAPI Linux1.26 ; publication/CI155 encore
+à terminer au commit. Régressions SQLite154 réutilisées, pas de Linux local affirmé.
+
+Prochain156 : identité révisable et détail, timeline/revue ensuite dans #36.
+Pas de messages globaux uniques ou détail/timeline/Web/service promis par cette
+route de matches ; six critères seulement, compléments du cadrage à préciser.
+M4 4–11lots, M5 10–18, total14–29/deux jalons ; pas de décrément automatique,
+estimation à revoir avec les comportements API restants. MIT, AD/OIDC après MVP.
+
+## Bilan du lot 156 — identité révisable et détail
+
+Lot155 publié `4cf3e65`, #36 brouillon, [CI37642563497](https://github.com/Coubiac/QueueAtlas/actions/runs/37642563497)
+entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST156.
+ID canonique borné version1 ajouté aux candidats de recherche, détail GET/HEAD
+dans le même handler protégé/budget partagé. Lecture complète de file et révision
+recontrôlée avant sélection : ancienne clé après import tardif409, génération
+inexistante404, budget dépassé422 entier, autres erreurs privées503.
+
+Résumé/destinataires exacts avec réserves, counts prudents, latest refs/conflits,
+nombre de tentatives, ancre/removal ; pas de lignes/messages bruts ou maps.
+Contrat [http-detail](http-detail.md). Quatre nouveaux tests/seize HTTPAPI passent
+Windows Go1.26, codec avec vecteur indépendant, SQLite réel jusqu'au détail et
+stale-refusal, protocole/auth/budgets, HEAD, byte-preservation du DTO/conflits/deadline ;
+vet/format/diff passés. Publication/CI156 à terminer au commit, même #36.
+
+Prochain157 : timeline paginée sur la révision, puis revue API. Aucun listener/
+YAML/service/Web livré156. M4 reste4–11lots, M5 10–18, total14–29/deux jalons ;
+timeline+revue au moins2 et Web+revue au moins2, marge des compléments/raccordements.
+MIT, AD/OIDC/Keycloak après MVP ; aucun157 commencé.
+
+## Bilan du lot 157 — timeline paginée
+
+Lot156 publié `2298709`, #36 brouillon, [CI37646414652](https://github.com/Coubiac/QueueAtlas/actions/runs/37646414652)
+entière/trois jobs/SHA exact réussis, race HTTPAPI Linux1.26 et journal HTTPAPI
+Windows réussis vérifiés ; état revérifié REST157.
+
+Route GET/HEAD events dans le même handler/budget protégé. Chaque page relit la
+file complète et vérifie sa révision ; uniquement les faits de la génération,
+provenance/qualité/réserves conservées, pas de verdict déduit de l'ordre à date égale.
+Curseur public lié à ID/révision/mode brut, taille de page variable. DTO explicitement
+borné avec tentatives/DSN/réponse ; lignes brutes désactivées par défaut, permission
+serveur plus demande raw=1 nécessaires. Aucun nouveau stockage/source/interface.
+
+Contrat [http-timeline](http-timeline.md). Cinq nouveaux tests/21HTTPAPI passent
+Windows Go1.26, SQLite réel/pagination/stale-refusal et octets bruts binaires exacts,
+bindings/protocole/auth/politique/HEAD, conflits/presence/échappement JSON, cap entier
+et annulation ; vet/format/diff passés. Publication/CI157 à terminer au commit,
+preuve effective dans #36 puis prochaine reprise.
+
+Prochain158 : revue/clôture API154–157 si conforme. Timeline réalisée : revue API
+au moins1lot puis Web+revue au moins2, marge compléments/filtres/raccordement/diagnostic
+conservée. M4 devient3–10 après157/CI, M5 10–18, total13–28/deux jalons. Pas de
+listener/serve/YAML/Web livré157, API en bibliothèque. MIT, AD/OIDC après MVP.
+
+## Bilan du lot 158 — revue et clôture API
+
+Lot157 publié `277d981`, #36 brouillon, [CI37650350084](https://github.com/Coubiac/QueueAtlas/actions/runs/37650350084)
+entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158.
+[Relecture API](reviews/m4-search-api.md) favorable : aucun défaut bloquant identifié
+dans154–157, aucun changement de code/tests nécessaire. Frontières auth/SQL,
+révisions/faits complets, pagination/DTO/provenance/réserves, politique brute,
+budgets/cap/cache/erreurs relus. Revue assistée, pas une approbation indépendante.
+
+21tests HTTPAPI relancés Windows Go1.26 passent, format/diff passés ; CI complète
+157/fondations réutilisées. Limites de mémoire, calculs coopératifs, snapshots,
+montage serveur et rendu navigateur documentées. Aucune mesure de charge/browser
+ajoutée, aucun nouveau comportement. Publication/CI finale/revue COMMENT/prêt/
+fusion/main/nettoyage encore à terminer au commit158 ; preuves dans #36 puis159.
+
+Prochain159 : page Web de recherche protégée, formulaire/résultats échappés et
+réserves à six critères, détail/timeline Web ensuite. Revue API réalisée : son lot
+de clôture retiré, Web+revue au moins2, marge filtres/état sources/health/ready/liens/
+raccordement/diagnostic conservée. M4 2–9 après158/fusion/CI, M5 10–18,
+total12–27/deux jalons, à préciser au Web sans annoncer M4/MVP terminés.
+MIT conservée, AD/OIDC/Keycloak après MVP ; aucun159 commencé.
