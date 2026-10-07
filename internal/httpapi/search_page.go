@@ -20,7 +20,7 @@ import (
 
 const SearchPagePath = "/messages"
 
-//go:embed search_page.html search_page.css candidate_page.html timeline_page.html login_page.html
+//go:embed search_page.html search_page.css candidate_page.html timeline_page.html login_page.html session_actions.html
 var searchPageAssets embed.FS
 
 var (
@@ -34,7 +34,7 @@ var (
 		"candidateURL": func(id string) string { return CandidatePagePrefix + id },
 		"timelineURL":  timelinePageURL,
 		"visible":      visibleNativeText,
-	}).ParseFS(searchPageAssets, "search_page.html", "candidate_page.html", "timeline_page.html", "login_page.html"))
+	}).ParseFS(searchPageAssets, "search_page.html", "candidate_page.html", "timeline_page.html", "login_page.html", "session_actions.html"))
 )
 
 func embeddedSearchStyle() (string, string) {

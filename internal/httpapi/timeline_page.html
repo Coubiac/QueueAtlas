@@ -8,7 +8,7 @@
 </head>
 <body>
   <a class="skip" href="#main">Aller au contenu</a>
-  <header class="top"><a class="brand" href="/messages">QueueAtlas</a><span>Suivi Postfix</span></header>
+  <header class="top"><a class="brand" href="/messages">QueueAtlas</a><span>Suivi Postfix</span>{{template "session_actions.html"}}</header>
   <main id="main">
     <nav aria-label="Navigation"><a href="/messages">Rechercher un événement</a>{{with .Response}} · <a href="{{candidateURL .CandidateID}}">Détail du candidat</a>{{end}}</nav>
     <div class="heading"><p class="eyebrow">Faits de la génération</p><h1>Timeline du candidat</h1><p>Observations et tentatives, dans leur périmètre natif.</p></div>

@@ -11,7 +11,7 @@
   <header class="top"><a class="brand" href="/login">QueueAtlas</a><span>Suivi Postfix</span></header>
   <main id="main">
     <div class="heading"><p class="eyebrow">Compte local</p><h1>Connexion</h1><p>Connectez-vous pour consulter les journaux Postfix.</p></div>
-    {{if .Error}}<section class="panel error" aria-labelledby="error-title"><h2 id="error-title">Connexion interrompue</h2><p role="alert">{{.Error}}</p></section>{{end}}
+    {{if .Error}}<section class="panel error" aria-labelledby="error-title"><h2 id="error-title">{{.ErrorTitle}}</h2><p role="alert">{{.Error}}</p></section>{{end}}
     <section class="panel" aria-labelledby="login-title">
       <h2 id="login-title">Identifiants du compte local</h2>
       <form method="post" action="/login">

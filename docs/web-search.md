@@ -68,6 +68,7 @@ Depuis160, un candidat attribué possède un lien canonique local vers le
 [détail Web protégé](web-detail.md). NOQUEUE/streams non attribués restent sans lien.
 Depuis161, le détail mène à la [timeline Web](web-timeline.md) avec brut sous
 permission explicite. Depuis162, [formulaire de connexion local](web-login.md)
-et redirection fixe vers la recherche, même PR #37. Prochain163 : déconnexion Web.
+et redirection fixe vers la recherche, même PR #37. Depuis163, bouton de
+[déconnexion Web](web-logout.md) ; prochain164 : revue Web159–163 avec navigateur réel.
 Montage serveur et revue navigateur restent distincts.
 L'issue #7 reste ouverte ; MIT conservée, AD/OIDC/Keycloak après MVP.

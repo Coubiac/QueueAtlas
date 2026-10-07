@@ -127,4 +127,6 @@ handler auth et le même budget API/Web. Le parseur/guards/hash/sessions restent
 communs ; seul le succès navigateur devient303 vers `/messages` et les erreurs
 ont un rendu HTML fixe. API login200/logout204 compatibles. Cookie frais/rotation
 et révocation sur écriture échouée/partielle/panique/annulation réutilisés et testés.
-La déconnexion Web reste au lot163 ; aucun listener ou provider supplémentaire.
+Depuis163, [déconnexion Web](web-logout.md) POST `/logout` avec retour303 vers
+`/login`, même révocation/cookie et API204 inchangée. Aucun listener ou provider
+supplémentaire ; revue Web164 à venir.

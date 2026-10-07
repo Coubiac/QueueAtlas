@@ -77,9 +77,12 @@ Linux1.26 réussis, revérifiés160. Détail160 publié sur29cf545 dans #37,
 CI37660252622 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
 revérifiés161. Timeline Web161 publiée sur94095f8 dans #37,
 CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
-revérifiés162. Connexion Web162 réalisée localement ; tests auth/34HTTPAPI/vet/
-format/diff passent, publication/CI à terminer au commit. Prochain163 : déconnexion
-Web locale. Deux jalons M4/M5 restent, environ14–29lots après162/CI (M4 4–11),
+revérifiés162. Connexion Web162 publiée20f64e0 dans #37, CI37671925509 entière/
+trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 réussis,
+revérifiés163. Déconnexion Web163 réalisée localement ; tests auth/35HTTPAPI/vet/
+format/diff passent, publication/CI à terminer au commit. Prochain164 : revue
+Web159–163 avec navigateur réel. Deux jalons M4/M5 restent, environ13–28lots
+après163/CI (M4 3–10),
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3446,11 +3449,15 @@ HTTPAPI Windows/race Linux1.26 réussis, revérifiés160. Branche propre/synchro
 Lot160 détail Web publié29cf545, CI37660252622 entière/trois jobs/SHA exact/HTTPAPI
 Windows/race Linux1.26 réussis, revérifiés161. Lot161 timeline Web publiée94095f8,
 CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
-revérifiés162. Lot162 [connexion Web locale](web-login.md) réalisée. Au commit :
-publier sur codex/m4-web, même #37 brouillon, vérifier workflow entier/trois jobs/
-SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 ; consigner preuve
-dans PR puis reprise163. Prochain163 : déconnexion Web locale avec retour au
-formulaire et navigation depuis les vues protégées ; aucun163 commencé.
+revérifiés162. Lot162 [connexion Web locale](web-login.md) publiée20f64e0,
+CI37671925509 entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et
+HTTPAPI Linux1.26 réussis, revérifiés163. Lot163 [déconnexion Web](web-logout.md)
+réalisée. Au commit : publier sur codex/m4-web, même #37 brouillon, vérifier
+workflow entier/trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI
+Linux1.26 ; consigner preuve dans PR puis reprise164. Prochain164 : revue Web
+159–163, validation navigateur réel XSS de la source au rendu/CSP/clavier/rendu
+adaptatif, corrections nécessaires puis clôture de #37 si critères satisfaits.
+Aucun164 commencé. Montage applicatif et compléments dans les chantiers suivants.
 Ne pas présenter un événement comme identité globale ni reconstruire depuis une
 seule page. Bibliothèque API relue ; listener/serve/autres vues Web/filtres complémentaires
 et raccordements restent à réaliser. MIT, AD/OIDC/Keycloak après MVP.
@@ -5598,3 +5605,49 @@ prévue précédemment regroupait encore connexion/déconnexion : le premier flu
 est livré, le second reste distinct. M4 conservé4–11 après162/CI, M5 10–18,
 total14–29/deux jalons, estimation incertaine par comportements restants.
 #7/M4/MVP non clos, MIT et AD/OIDC/Keycloak après MVP. Aucun163 commencé.
+
+## Lot163 — déconnexion Web et retour au formulaire
+
+Résultat attendu : bouton POST de déconnexion sur recherche/détail/timeline,
+révocation de la session et suppression du cookie,303 fixe vers `/login`.
+Un seul lot, sans montage serveur/source/stockage/corrélation supplémentaires.
+
+Départ propre sur codex/m4-web, locale/origin/#37 sur
+`20f64e0a73fe678f8de68e155129dd8abf0b46ec`, main1588c3aa85, PR brouillon ouverte.
+[CI16237671925509](https://github.com/Coubiac/QueueAtlas/actions/runs/37671925509)
+entière completed/success sur ce SHA : Windows112965560563,
+Go1.26 112965560874, stable112965561005. Auth et HTTPAPI Windows/race auth et
+HTTPAPI Linux1.26 réussis, stable race skipped comme prévu. Workflow/jobs/étapes/
+SHA/tête/base revérifiés REST163 après fetch/prune. #7 ouverte, aucune fusion.
+
+POST `/logout` dans le même handler Web que `/login`, contrôles/parsing corps
+vide/révocation/cookie de l'API réutilisés. GET/HEAD/autres méthodes405 AllowPOST,
+origine/protocole/cookies avant body et révocation. Aucun query/next, destination
+fixe ; token absent/malformé/inconnu/révoqué : même303. Pas de Resolve/hash/budget
+de login/horloge ; autres sessions conservées. Annulation détectée avant revoke
+refusée503 ; après revoke, Write échoué/partiel/panique ne restaure jamais la
+session. Cookie supprimé avec même politique, API204 sans corps conservée.
+Navigation de session statique partagée par les trois vues, focus/retour à la
+ligne CSS ; CSP recalculée et headers privés sur erreurs et303. Erreurs HTML
+de déconnexion fixes, aucun token/credential/input réfléchi. [Contrat](web-logout.md).
+
+Deux nouveaux tests auth et un nouveau HTTPAPI (35HTTPAPI total). Windows Go1.26
+`go test ./internal/auth ./internal/httpapi -count=1` passe (auth1.505s,
+HTTPAPI2.513s), vet sur ces packages/gofmt/diff passent. Rejets avant lecture/hash/
+revocation, corps normal/chunked, cancel avant commit, idempotence/horloge non
+consultée/API204/IO terminale couverts. HTTPS réel/cookiejar/SQLite synthétique :
+formulaire des trois vues, action soumise, origine étrangère sans mutation,
+suppression cookie/autre session préservée/retour login et replay token401 sur
+toutes les vues et l'API. Test de montage corrigé pour utiliser l'origine réelle
+du serveur TLS ; aucune confiance proxy ajoutée. Pas de navigateur réel/Linux
+local revendiqué ; requête déjà autorisée avant revoke non annulée rétroactivement.
+
+Au commit163 : publier même branche/#37 brouillon et vérifier CI entière/trois
+jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26. Preuve dans
+PR puis reprise164. Dernier publié validé16220f64e0/CI37671925509 ; main1588c3aa85.
+Prochain164 : revue Web159–163 avec navigateur réel (source→rendu XSS/CSP,
+clavier/rendu adaptatif/caractères de présentation), corrections nécessaires et
+clôture #37 si critères satisfaits. Montage serveur/compléments ensuite.
+Déconnexion réalisée retire un comportement : M4 3–10 après163/CI, M5 10–18,
+total13–28/deux jalons, estimation incertaine. #7/M4/MVP ouverts, MIT et
+AD/OIDC/Keycloak après MVP. Aucun164 commencé.

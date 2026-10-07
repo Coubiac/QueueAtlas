@@ -83,7 +83,7 @@ func (h *HTTPHandler) serveAuth(w http.ResponseWriter, r *http.Request, render W
 		return
 	}
 	if r.URL.Path == LogoutPath {
-		h.logout(w, r, oldToken)
+		h.logout(w, r, oldToken, render)
 		return
 	}
 	h.connect(w, r, oldToken, render)
@@ -158,20 +158,33 @@ func (h *HTTPHandler) connect(w http.ResponseWriter, r *http.Request, oldToken s
 	completed = err == nil && n == len(message) && r.Context().Err() == nil
 }
 
-func (h *HTTPHandler) logout(w http.ResponseWriter, r *http.Request, token string) {
+func (h *HTTPHandler) logout(w http.ResponseWriter, r *http.Request, token string, render WebLoginRenderer) {
 	body := http.MaxBytesReader(w, r.Body, 0)
 	defer body.Close()
 	if raw, err := io.ReadAll(body); err != nil || len(raw) != 0 {
 		clear(raw)
-		authHTTPError(w, http.StatusBadRequest)
+		authLoginError(w, r, http.StatusBadRequest, render)
+		return
+	}
+	if render != nil && r.Context().Err() != nil {
+		authLoginError(w, r, http.StatusServiceUnavailable, render)
 		return
 	}
 	if err := h.login.sessions.Revoke(token); err != nil {
-		authHTTPError(w, http.StatusServiceUnavailable)
+		authLoginError(w, r, http.StatusServiceUnavailable, render)
 		return
 	}
 	http.SetCookie(w, authCookie("", true))
-	w.WriteHeader(http.StatusNoContent)
+	if render == nil {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	w.Header().Set("Location", WebLoginPath)
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusSeeOther)
+	// Revocation is already committed, even if redirect delivery fails.
+	// Never restore a session after logout; a retry remains idempotent.
+	_, _ = io.WriteString(w, "logged out\n")
 }
 
 func authCookie(token string, remove bool) *http.Cookie {

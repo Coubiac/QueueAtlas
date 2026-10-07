@@ -1,6 +1,7 @@
 # Connexion Web locale — lot 162
 
-`httpapi.NewWebLoginHandler(guard)` sert uniquement `/login`. Il partage le
+`httpapi.NewWebLoginHandler(guard)` sert `/login` et, depuis163, POST `/logout`.
+Il partage le
 `auth.HTTPHandler` de l'API et des vues protégées : compte local, Argon2id,
 admission des tentatives, origine HTTPS et magasin de sessions identiques.
 Le montage du serveur reste à réaliser ; le constructeur n'ouvre aucun listener.
@@ -50,8 +51,9 @@ Erreurs privées et absence de credentials dans le HTML vérifiées.
 
 Aucun navigateur réel ni Linux local revendiqué. Le client Go ne vérifie pas le
 parcours clavier, l'affichage adaptatif ou SameSite dans un navigateur. Le
-logout API204 est testé mais aucun bouton/parcours de déconnexion Web n'est
-encore livré ; lot163 dédié à cette déconnexion. Les vues protégées continuent
+logout API204 est testé ; depuis163, [déconnexion Web](web-logout.md) depuis les
+trois vues avec retour fixe au formulaire. Les vues protégées continuent
 de refuser401 une session absente/révoquée, sans redirection automatique.
-Montage serveur, filtres/diagnostics et revue navigateur restent à réaliser.
+Prochain164 : revue Web159–163 avec navigateur réel. Montage serveur et
+filtres/diagnostics restent à réaliser.
 Même PR #37 brouillon, issue #7/M4 ouvertes ; MIT, AD/OIDC/Keycloak après MVP.

@@ -57,6 +57,7 @@ La validation navigateur de bout en bout, clavier/rendu adaptatif et traitement
 des caractères de présentation restent pour la revue Web ; aucun navigateur réel
 ni Linux local revendiqué. Depuis161, lien vers la [timeline Web](web-timeline.md)
 paginée avec tentatives/permission brute explicite/rendu texte. Même PR #37.
-[Connexion Web locale](web-login.md) livrée162, déconnexion Web prévue163. Montage serveur,
+[Connexion Web locale](web-login.md) livrée162, [déconnexion Web](web-logout.md)163.
+Prochain164 : revue Web159–163 avec navigateur réel. Montage serveur,
 filtres/diagnostics et revue restent ; l'issue #7/M4 ne sont pas clos. MIT,
 AD/OIDC/Keycloak après MVP.

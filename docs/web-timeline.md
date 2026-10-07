@@ -64,6 +64,7 @@ de raw64KiB×4 refusée ; limit1 conserve une ligne complète, sans troncature.
 
 Aucun navigateur réel/Linux local revendiqué. Revue XSS de la source au rendu,
 CSP, clavier, caractères de présentation et affichage adaptatif reste à faire.
-[Connexion Web locale](web-login.md) livrée162, même PR #37 ; déconnexion Web163,
+[Connexion Web locale](web-login.md) livrée162, même PR #37 ; bouton de
+[déconnexion Web](web-logout.md)163, revue Web159–163 avec navigateur réel164,
 montage et compléments ensuite.
 Issue #7/M4 restent ouverts. MIT, AD/OIDC/Keycloak après MVP.

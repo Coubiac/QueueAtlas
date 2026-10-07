@@ -3,7 +3,8 @@ package auth
 import "net/http"
 
 const (
-	WebLoginPath = "/login"
+	WebLoginPath  = "/login"
+	WebLogoutPath = "/logout"
 	// Fixed local destination, never selected from a request or log field.
 	WebLoginSuccessPath = "/messages"
 )
@@ -21,7 +22,8 @@ type browserLoginHandler struct {
 // NewBrowserLoginHandler reuses the exact same local login, admission, sessions
 // and origin as the API. Successful writes issue a cookie and redirect to the
 // fixed Web destination; failed/short writes revoke the newly issued session.
-// Only /login is public; mount protected consultation and API auth separately.
+// The public form is /login; /logout accepts only an origin-checked POST.
+// Mount protected consultation and API auth separately.
 func NewBrowserLoginHandler(h *HTTPHandler, render WebLoginRenderer) (http.Handler, error) {
 	if h == nil || render == nil {
 		return nil, ErrInvalidHTTPAuth
@@ -33,11 +35,14 @@ func NewBrowserLoginHandler(h *HTTPHandler, render WebLoginRenderer) (http.Handl
 }
 
 func (b *browserLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.URL != nil && r.URL.Path == WebLoginPath && r.URL.RawPath == "" && r.URL.Fragment == "" && r.Method == http.MethodPost {
-		// Clone the URL only. The shared API validator/parser owns the original
+	if r.URL != nil && (r.URL.Path == WebLoginPath || r.URL.Path == WebLogoutPath) && r.URL.RawPath == "" && r.URL.Fragment == "" && r.Method == http.MethodPost {
+		// Clone request metadata. The shared API validator/parser owns the original
 		// bounded body; no intermediate response buffer or second password copy.
 		clone := r.Clone(r.Context())
 		clone.URL.Path = LoginPath
+		if r.URL.Path == WebLogoutPath {
+			clone.URL.Path = LogoutPath
+		}
 		b.auth.serveAuth(w, clone, b.render)
 		return
 	}
@@ -46,6 +51,9 @@ func (b *browserLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	switch {
 	case r.URL == nil || r.URL.RawPath != "" || r.URL.Fragment != "":
 		status = http.StatusBadRequest
+	case r.URL.Path == WebLogoutPath:
+		w.Header().Set("Allow", http.MethodPost)
+		status = http.StatusMethodNotAllowed
 	case r.URL.Path != WebLoginPath:
 		status = http.StatusNotFound
 	case r.Method != http.MethodGet && r.Method != http.MethodHead:
