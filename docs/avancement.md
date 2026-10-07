@@ -25,8 +25,8 @@ CI37564852420 entière réussie. CLI check-config131 publiée sur53d4ae0,
 CI37567003805 entière réussie. Clôture132 fusionnée #30 sur118634f,
 CI finale37569190697/main37569292737 entières réussies, branche CLI supprimée.
 Ouverture readonly de diagnostic133 publiée dans #31 sur41fbf0f, CI37571495723
-entière réussie. Métadonnées134 au même snapshot validées localement ; publication/
-CI encore à terminer au moment du commit.
+entière réussie. Métadonnées134 publiées sur8e9008b, CI37572091851 entière réussie.
+CLI db stats135 validée localement ; publication/CI encore à terminer au moment du commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -41,7 +41,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 134 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 135 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -58,9 +58,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132 fusionnés/CI main verte ; ouverture diagnostic133 publiée/CI verte, métadonnées134 validées localement | Publication/CI134, CLI de diagnostic, config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 8–18 après134 |
+| M4 — consultation sûre | CLI/config128–132 fusionnés/CI main verte ; diagnostics133–134 publiés/CI verte, CLI db stats135 validée localement | Publication/CI135, relecture/fusion diagnostics, doctor/config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 7–17 après135 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après134** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **18–36** |
+| **Total après135** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **17–35** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -439,3 +439,20 @@ historique modifié et annulation/relecture vérifiés. Étape Windows CI élarg
 Publication/CI134 encore à terminer au moment du commit dans la même PR #31.
 Prochain lot135 : db stats --config pour ce résultat limité, avec codes et tests du
 binaire. M4 reste8–18lots/M5 10–18, total18–36 après134, estimation incertaine.
+
+Validation134 effective : 8e9008b dans #31 en brouillon,
+[CI37572091851](https://github.com/Coubiac/QueueAtlas/actions/runs/37572091851)
+entière réussie, trois jobs/SHA exact et Windows diagnostics vérifiés. Les attentes
+précédentes sont le snapshot prépublication134.
+
+## Bilan135 — CLI db stats
+
+Commande stricte avec config explicite, six métadonnées JSON bornées, fermeture
+SQLite avant sortie, config invalide/code2 et erreurs DB fixes/code1. Aides sans IO,
+aucune création/migration/checkpoint applicatif ; limites des pages logiques/WAL et
+compatibilité conservées, aucune attestation d'intégrité. Onze tests CLI, vet/format/
+diff passés Windows ; binaire étendu aux cas db stats/codes0/1/2, refus sans création
+et effets readonly vérifiés. Publication/CI135 encore à terminer dans #31 au moment
+du commit. Prochain lot136 : relecture/clôture diagnostics133–135, CI finale/fusion/
+main ; pas de comportement indépendant. M4 reste7–17lots/M5 10–18, total17–35 après135,
+estimation incertaine. Service/auth/Web ne sont pas livrés par cette commande.

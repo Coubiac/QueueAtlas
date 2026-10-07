@@ -38,6 +38,9 @@ que le linker et l'exécutable utilisent réellement l'étiquette synthétique.
 | `queueatlas check-config --help` ou `-h` | Usage de la commande sur stdout | 0 |
 | Configuration refusée | Champ/règle connus sur stderr, aucune valeur fournie | 2 |
 | Configuration illisible ou entrée non régulière | Diagnostic fixe sur stderr, aucun chemin | 1 |
+| `queueatlas db stats --config <chemin>` avec base compatible | Un objet JSON et newline sur stdout, six métadonnées | 0 |
+| Base absente/illisible/incompatible ou diagnostic échoué | Diagnostic fixe sur stderr, aucune donnée partielle | 1 |
+| `queueatlas db --help` ou `db stats --help` (aussi `-h`) | Usage sur stdout, sans lecture | 0 |
 | Sans commande, commande inconnue ou argument supplémentaire | Usage sur stderr, arguments non recopiés | 2 |
 | Échec d'écriture de la sortie d'une commande valide | Diagnostic fixe sur stderr | 1 |
 
@@ -74,6 +77,49 @@ Les codes réels sont vérifiés sur le binaire compilé ; `go run` interpose sa
 gestion d'erreur et ne transmet pas directement un code2 à l'appelant. Une erreur
 d'écriture stdout d'une commande valide donne code1 et le diagnostic fixe existant.
 
+## Lot135 : db stats
+
+```powershell
+go run ./cmd/queueatlas db stats --config C:\chemin\queueatlas.yaml
+```
+
+Après compilation : `./queueatlas db stats --config /chemin/queueatlas.yaml` sur
+Linux ou `.\queueatlas.exe db stats --config C:\chemin\queueatlas.yaml` sous
+PowerShell. Un fichier YAML valide doit désigner une base QueueAtlas existante,
+compatible, locale et protégée. La commande ne crée pas la base manquante ;
+l'exemple du dépôt n'est donc pas une démonstration réussie sans base préalable.
+Un chemin SQLite relatif est résolu par le chargeur depuis le répertoire lexical
+du fichier YAML, comme pour check-config.
+
+Syntaxe unique `db stats --config <chemin>`, option/valeur séparées. Pas de config
+implicite, `--config=...`, option répétée, sous-commande inconnue ou argument
+supplémentaire : usage stderr/code2 avant chargement. Les aides `db --help`/`-h`
+et `db stats --help`/`-h` fonctionnent sans configuration ou base.
+
+En succès : un objet JSON compact, newline, stderr vide/code0. Champs stables :
+`schema_version`, `sqlite_version`, `journal_mode`, `page_size`, `page_count`,
+`free_page_count`. Valeurs définies dans le [contrat de métadonnées](sqlite-diagnostics.md#lot134--métadonnées-au-même-snapshot).
+Ce sont des pages logiques incluant le WAL validé, pas des compteurs de messages,
+une occupation physique du disque ou une preuve d'intégrité/sauvegarde. Aucun
+chemin, nom de table, identité, adresse ou journal n'est imprimé.
+
+Configuration invalide : diagnostic champ/règle existant, code2. Fichier config
+illisible : `queueatlas: cannot read configuration`, code1. Base absente/illisible
+ou entrée non régulière : `queueatlas: cannot open database for diagnostics`, code1.
+Version/historique incompatible : `queueatlas: database schema is not supported for diagnostics`,
+code1. Autre échec de lecture : `queueatlas: cannot read database diagnostic metadata`,
+code1. Expiration du contexte SQLite : `queueatlas: database diagnostic timed out`,
+code1. Messages fixes, aucun pilote/valeur/chemin recopié, stdout vide sur ces
+échecs. La connexion est fermée avant toute sortie réussie ; échec de fermeture
+signalé par message fixe/code1. Échec stdout : diagnostic partagé/code1, une sortie
+partielle reste possible si le flux échoue après avoir accepté des octets.
+
+La phase SQLite partage un contexte coopératif de10secondes après le chargement,
+avec busy5s du lecteur. Ce n'est pas une deadline dure pour tout IO/chargement.
+Aucune création/migration/checkpoint applicatif, ni ingestion/serveur démarré.
+SQLite peut créer/utiliser les auxiliaires WAL/SHM ; limites de chemins/droits/
+compatibilité133–134 conservées. `doctor` reste à développer.
+
 ## Vérifications et suite
 
 Quatre tests128 : version/aide et séparation des flux, arguments refusés sans
@@ -103,9 +149,12 @@ entière réussie/trois jobs/SHA exact et étape Windows CLI vérifiés. Lot132 
 code ; #30 fusionnée sur118634f, CI finale37569190697/main37569292737 entièrement
 réussies, branche CLI supprimée. Lot133 : [ouverture SQLite de diagnostic](sqlite-diagnostics.md)
 en lecture seule publiée sur41fbf0f dans #31, CI37571495723 entière réussie.
-Lectures bornées des métadonnées134 validées localement ; publication/CI encore à
-terminer au moment du commit. Prochain lot135 : db stats --config pour ces seules
-métadonnées, sans compteur de lignes ni diagnostic d'intégrité implicite.
-Doctor/db stats, configuration des composants, auth locale/API/Web
+Lectures bornées134 publiées sur8e9008b,
+[CI37572091851](https://github.com/Coubiac/QueueAtlas/actions/runs/37572091851)
+entière réussie, trois jobs/SHA exact vérifiés. Lot135 : quatre tests CLI nouveaux
+et binaire étendu à db stats/codes0/1/2 ; onze tests CLI et vet/format/diff passés
+sous Windows. Publication/CI135 encore à terminer au moment du commit dans #31.
+Prochain lot136 : relecture/clôture diagnostics133–135, puis CI finale/fusion/main.
+Doctor, configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

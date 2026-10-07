@@ -1,4 +1,4 @@
-# SQLite pour les diagnostics — lots133–134
+# SQLite pour les diagnostics — lots133–135
 
 Résultat attendu : ouvrir une base QueueAtlas existante en lecture seule, sans
 création ni migration, avant d'implémenter les statistiques et leur commande CLI.
@@ -128,3 +128,20 @@ relecture et handle fermé, résultat zéro/messages fixes. Les neuf tests porta
 Au moment du commit134 : publication/CI encore à terminer dans la même PR #31.
 Prochain lot135 : CLI `db stats --config <chemin>` pour ce résultat limité ; aucun
 compteur de lignes ou diagnostic d'intégrité implicite.
+
+Validation publiée134 : `8e9008b90d48eaff0f90b53cb4718e978521b223`,
+[CI37572091851](https://github.com/Coubiac/QueueAtlas/actions/runs/37572091851)
+entière réussie, trois jobs/SHA exact et étape Windows diagnostics vérifiés.
+Les attentes précédentes sont le snapshot avant publication134.
+
+## Raccordement CLI135
+
+[db stats --config](m4-cli.md#lot135--db-stats) imprime seulement les six champs
+en JSON, avec des noms stables distincts du struct de bibliothèque ; l'ajout d'un
+champ de bibliothèque n'étend donc pas automatiquement la sortie. Chargeur existant,
+OpenDiagnostics puis Metadata, fermeture avant sérialisation/sortie. Config invalide
+code2, diagnostic DB échoué code1/fixe/stdout vide, succès code0. Contexte DB
+coopératif10secondes ; pas de deadline dure IO. Aucun changement de stockage134,
+compteur de lignes, migration/checkpoint ni composant réseau. Les auxiliaires
+SQLite restent possibles. Tests réels du binaire et vérifications CLI Windows
+passés ; publication/CI135 encore à terminer dans #31 au moment du commit.
