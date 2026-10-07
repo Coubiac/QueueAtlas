@@ -40,10 +40,11 @@ Lot133 publié dans #31 sur41fbf0f, CI37571495723 entière réussie/trois jobs/S
 Lot134 publié dans #31 sur8e9008b, CI37572091851 entière réussie/trois jobs/SHA exact.
 Lot135 publié dans #31 surcae194c, CI37574528679 entière réussie/trois jobs/SHA exact.
 Lot136 clôturé : #31 fusionnée sur918ef0c, CI finale37576814504/main37576942301
-entières réussies, branche diagnostics supprimée. Lot137 doctor implémenté et
-vérifié localement sur codex/m4-doctor ; publication/CI à terminer au commit,
-voir bilan en fin de fichier. Prochain lot138 : relecture/clôture doctor.
-Deux jalons M4/M5 restent, environ15–33lots après137, M3 zéro lot restant ;
+entières réussies, branche diagnostics supprimée. Lot137 doctor publié dans #32
+sur d1feeb9, CI37579618027 entière/trois jobs/SHA exact réussis. Relecture138
+favorable ; publication/CI finale/fusion/main à terminer au moment du commit,
+voir bilan en fin de fichier. Prochain lot139 après clôture : contrat source fichier.
+Deux jalons M4/M5 restent, environ14–32lots après138, M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
 Les compléments86–88 ont demandé trois lots dans la
@@ -3373,10 +3374,11 @@ dans #31, CI37571495723 entière réussie. Lot134 publié sur8e9008b,
 CI37572091851 entière réussie. Lot135 publié surcae194c, CI37574528679 entière
 réussie. Clôture136 terminée : #31 fusionnée sur918ef0c, CI finale37576814504 et
 main37576942301 entières réussies, branche diagnostics supprimée.
-Doctor137 implémenté/vérifié localement sur codex/m4-doctor ; publier/vérifier CI
-sur SHA exact puis consigner dans PR et à la prochaine reprise. Prochain lot138 :
-relecture/clôture doctor137, bilan, CI finale sur tête exacte, COMMENT assisté/
-ready/fusion et CI main. Aucun comportement indépendant à ajouter.
+Doctor137 publié sur d1feeb9 dans #32, CI37579618027 entière/trois jobs/SHA exact.
+Relecture138 favorable : publier le bilan, vérifier CI finale sur tête exacte,
+COMMENT assisté/ready/fusion #32 et CI main, actualiser main/nettoyer la branche.
+Prochain lot139 après succès : contrat pur de configuration d'une source fichier,
+tests/doc ; chargement YAML et raccordement dans des lots suivants.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
 recherche temporelle ne signifie pas absence dans les journaux.
@@ -4110,3 +4112,35 @@ Prochain lot138 : relecture/clôture doctor137, bilan, CI finale/revue COMMENT a
 ready/fusion puis CI main. Réutiliser la PR du chantier. M4 reste5–15lots,
 M5 10–18, total15–33 après137, deux jalons, estimation incertaine.
 MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Validation effective137 consignée à la reprise138 :
+`d1feeb993f62b8f83ccc9540f0a9835d94846545` publié dans #32 en brouillon,
+CI37579618027 entière réussie, trois jobs/SHA exact revérifiés REST. Windows CLI,
+tests/vet/format Linux, smoke, race source/file et builds statiques passés. Têtes
+locale/origin/PR identiques, main136918ef0c inchangé, PR mergeable/clean.
+Les attentes137 précédentes sont le snapshot prépublication, terminé.
+
+## Lot138 : relecture/clôture du diagnostic initial doctor
+
+Résultat attendu : clôturer #32 après revue, bilan, CI finale sur tête exacte,
+COMMENT assisté/ready/fusion et CI main. Relecture favorable sur d1feeb9, aucun
+défaut bloquant identifié, aucune approbation humaine indépendante revendiquée.
+Bilan dans docs/reviews/m4-doctor.md : arguments/flux, chargeur, ouverture readonly,
+compatibilité limitée, fermeture/sortie, confidentialité et effets confrontés aux
+tests et CI acquis. Limites et diagnostic élargi du cadrage explicitement conservés.
+
+Lot documentaire seulement ; code/tests/dépendances/workflow inchangés. CI137
+entière/trois jobs/SHA exact revérifiés, diff documentaire à contrôler avant commit.
+Pas de rerun local des fondations sans risque nouveau. Compatibilité version/historique
+ne certifie pas intégrité/authenticité ; chemins/ACL/disque/port/service non attestés,
+auxiliaires SQLite possibles, contexte coopératif pas deadline dure IO.
+Sources/formats/checkpoints/lacunes restent au raccordement applicatif ultérieur.
+
+Au moment du commit138 : publication/CI finale/revue ready/fusion #32/CI main à
+terminer. Dernier publié validé137d1feeb9/CI37579618027, dernier main fusionné
+136918ef0c/CI37576942301. Après succès : main actualisé propre, branche doctor
+nettoyée ; consigner les preuves dans la PR et à la prochaine reprise.
+Prochain lot139 : contrat pur de configuration d'une source fichier (identité,
+chemin/politique de départ, bornes existantes), tests/doc ; YAML/raccordement dans
+des lots suivants. M4 reste4–14lots, M5 10–18, total14–32 après138, deux jalons,
+estimation incertaine. MIT conservée, AD/OIDC/Keycloak après MVP.

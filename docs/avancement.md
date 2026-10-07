@@ -28,8 +28,9 @@ Ouverture readonly de diagnostic133 publiée dans #31 sur41fbf0f, CI37571495723
 entière réussie. Métadonnées134 publiées sur8e9008b, CI37572091851 entière réussie.
 CLI db stats135 publiée surcae194c, CI37574528679 entière réussie. Clôture136
 fusionnée #31 sur918ef0c, CI finale37576814504/main37576942301 entières réussies,
-branche diagnostics supprimée. Doctor137 implémenté et vérifié localement ;
-publication/CI à terminer au moment du commit, chantier séparé codex/m4-doctor.
+branche diagnostics supprimée. Doctor137 publié sur d1feeb9 dans #32,
+CI37579618027 entière réussie. Relecture138 favorable ; publication/CI finale/
+fusion/main encore à terminer au moment du commit.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -44,7 +45,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 137 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 138 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -61,9 +62,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132 et diagnostics133–136 fusionnés/CI main verte ; doctor137 vérifié localement | Clôture doctor/CI main, config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 5–15 après137 |
+| M4 — consultation sûre | CLI/config128–132 et diagnostics133–136 fusionnés/CI main verte ; doctor137 publié/CI verte, relecture138 favorable | Clôture #32/CI main, config des composants/diagnostic élargi, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 4–14 après138 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après137** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **15–33** |
+| **Total après138** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **14–32** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -493,3 +494,19 @@ aucune attestation d'intégrité/déploiement. Quatre nouveaux tests CLI et bina
 à terminer au moment du commit ; nouveau chantier codex/m4-doctor depuis main136.
 Prochain lot138 : relecture/clôture doctor137 avec CI finale/fusion/main.
 M4 reste5–15lots, M5 10–18, total15–33 après137, estimation incertaine.
+
+Validation137 effective : d1feeb9 publié dans #32 en brouillon,
+[CI37579618027](https://github.com/Coubiac/QueueAtlas/actions/runs/37579618027)
+entière réussie/trois jobs/SHA exact revérifiés à la reprise138. Les attentes
+précédentes sont le snapshot avant publication137.
+
+## Bilan138 — relecture/clôture doctor initial
+
+[Relecture assistée](reviews/m4-doctor.md) favorable, aucun défaut bloquant dans
+le diagnostic initial livré ; aucune approbation humaine indépendante revendiquée.
+Sources/formats/checkpoints/lacunes restent au raccordement applicatif ultérieur.
+Lot documentaire seulement ; pas de rerun local sans risque nouveau, CI137
+revérifiée. Publication/CI finale/fusion #32 et CI main encore à terminer au commit.
+Après succès : M4 toujours en cours. Prochain lot139 : contrat pur de configuration
+d'une source fichier, tests/doc ; YAML et raccordement dans des lots suivants.
+M4 reste4–14lots, M5 10–18, total14–32 après138, estimation incertaine.

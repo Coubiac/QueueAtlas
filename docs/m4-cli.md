@@ -211,8 +211,14 @@ entières réussies, trois jobs/SHA exact vérifiés ; branche diagnostics suppr
 Lot137 : quatre nouveaux tests doctor et test du binaire étendu aux codes0/1/2,
 JSON à deux champs fixes, refus sans création/migration et base/config inchangées.
 Quinze tests CLI, vet/format/diff Windows passés. Code de stockage/chargeur et
-workflow inchangés ; CI de publication à vérifier après commit. Prochain lot138 :
-relecture/clôture du chantier doctor, CI finale/fusion et CI main.
+workflow inchangés ; lot137 publié sur d1feeb9 dans #32,
+[CI37579618027](https://github.com/Coubiac/QueueAtlas/actions/runs/37579618027)
+entière réussie/trois jobs/SHA exact revérifiés à la reprise138.
+[Relecture138](reviews/m4-doctor.md) favorable sur ce diagnostic initial, sans
+modification de code ; publication/CI finale/fusion #32/CI main à terminer au commit.
+La vérification des sources/formats/checkpoints/lacunes du cadrage reste ultérieure.
+Prochain lot139 : contrat pur de configuration d'une source fichier, tests/doc ;
+YAML et raccordement des composants dans des lots suivants.
 Configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.
