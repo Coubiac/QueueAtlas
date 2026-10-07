@@ -92,6 +92,12 @@ func TestDBStatsJSONAndReadOnly(t *testing.T) {
 }
 
 func TestDBStatsFailureCodesAndNoCreation(t *testing.T) {
+	testDiagnosticFailureCodesAndNoCreation(t, []string{"db", "stats"})
+}
+
+// Exercise the same refusal/side-effect contract through each CLI entry point.
+func testDiagnosticFailureCodesAndNoCreation(t *testing.T, command []string) {
+	t.Helper()
 	for _, tc := range []struct {
 		name, config, input, diagnostic string
 		code                            int
@@ -127,7 +133,8 @@ func TestDBStatsFailureCodesAndNoCreation(t *testing.T) {
 				}
 			}
 			var stdout, stderr bytes.Buffer
-			if code := run([]string{"db", "stats", "--config", configPath}, &stdout, &stderr); code != tc.code || stdout.Len() != 0 ||
+			args := append(append([]string(nil), command...), "--config", configPath)
+			if code := run(args, &stdout, &stderr); code != tc.code || stdout.Len() != 0 ||
 				stderr.String() != tc.diagnostic || strings.Contains(stderr.String(), "synthetic-private") {
 				t.Fatal("wrong failure result", code, stdout.String(), stderr.String())
 			}

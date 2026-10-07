@@ -118,7 +118,54 @@ La phase SQLite partage un contexte coopératif de10secondes après le chargemen
 avec busy5s du lecteur. Ce n'est pas une deadline dure pour tout IO/chargement.
 Aucune création/migration/checkpoint applicatif, ni ingestion/serveur démarré.
 SQLite peut créer/utiliser les auxiliaires WAL/SHM ; limites de chemins/droits/
-compatibilité133–134 conservées. `doctor` reste à développer.
+compatibilité133–134 conservées.
+
+## Lot137 : doctor
+
+```powershell
+go run ./cmd/queueatlas doctor --config C:\chemin\queueatlas.yaml
+```
+
+Après compilation : `./queueatlas doctor --config /chemin/queueatlas.yaml` sur
+Linux ou `.\queueatlas.exe doctor --config C:\chemin\queueatlas.yaml` sous
+PowerShell. La configuration doit désigner une base QueueAtlas existante ; un
+chemin SQLite relatif est résolu depuis le répertoire lexical du YAML.
+
+Syntaxe stricte `doctor --config <chemin>` : option/valeur séparées, pas de chemin
+implicite, option répétée ou argument supplémentaire. Usage stderr/code2 avant
+chargement en cas d'arguments refusés ; `doctor --help`/`-h` donne usage stdout/code0
+sans configuration ni base.
+
+Succès : stdout contient exactement cet objet compact et une newline, stderr
+vide/code0 :
+
+```json
+{"configuration":"valid","database":"compatible"}
+```
+
+`configuration` indique que le chargeur strict existant a accepté le YAML et ses
+paramètres. `database` indique que le lecteur en mode lecture seule a vérifié
+la version7 et la présence de l'historique requis ; la connexion est fermée avant
+la sortie. Ce résultat décrit les vérifications effectuées à l'ouverture. Il ne
+certifie ni intégrité/authenticité de la base, ni disponibilité d'un service ou
+aptitude au déploiement ; droits/chemins et auxiliaires SQLite restent soumis aux
+[limites du lecteur](sqlite-diagnostics.md). Aucun chemin, identité, journal ou
+valeur de configuration n'est imprimé. Aucun compteur ou scan supplémentaire.
+
+Configuration invalide : diagnostic champ/règle sûr existant, code2. Config
+illisible : `queueatlas: cannot read configuration`, code1. Base absente/illisible,
+non régulière ou corrompue : `queueatlas: cannot open database for diagnostics`,
+code1. Schéma incompatible : `queueatlas: database schema is not supported for diagnostics`,
+code1. Expiration : `queueatlas: database diagnostic timed out`, code1. Fermeture
+échouée : `queueatlas: cannot close database diagnostic connection`, code1.
+Ces erreurs n'impriment pas de résultat partiel sur stdout. Échec d'écriture stdout :
+`queueatlas: cannot write output`, code1 ; le flux peut avoir accepté des octets.
+
+Le contexte coopératif SQLite est de10secondes après le chargement ; il ne couvre
+pas les IO de configuration et n'est pas une deadline dure. Aucune création,
+migration, checkpoint applicatif, ingestion, connexion réseau ou service démarré.
+SQLite peut utiliser/créer des auxiliaires WAL/SHM. La commande ne lit pas les
+métadonnées de pages de `db stats` : elle vérifie seulement la compatibilité.
 
 ## Vérifications et suite
 
@@ -156,10 +203,16 @@ et binaire étendu à db stats/codes0/1/2 ; onze tests CLI et vet/format/diff pa
 sous Windows. Lot135 publié surcae194c,
 [CI37574528679](https://github.com/Coubiac/QueueAtlas/actions/runs/37574528679)
 entière réussie, trois jobs/SHA exact revérifiés à la reprise136.
-[Relecture136](reviews/m4-diagnostics.md) favorable ; publication/CI finale/fusion/
-main encore à terminer au moment du commit. Prochain lot137 après clôture : doctor
---config en lecture seule, rapport limité à config/compatibilité SQLite, sans
-attestation d'intégrité ou de déploiement.
-Doctor, configuration des composants, auth locale/API/Web
+[Relecture136](reviews/m4-diagnostics.md) favorable ; #31 fusionnée sur918ef0c,
+[CI finale37576814504](https://github.com/Coubiac/QueueAtlas/actions/runs/37576814504)
+et [CI main37576942301](https://github.com/Coubiac/QueueAtlas/actions/runs/37576942301)
+entières réussies, trois jobs/SHA exact vérifiés ; branche diagnostics supprimée.
+
+Lot137 : quatre nouveaux tests doctor et test du binaire étendu aux codes0/1/2,
+JSON à deux champs fixes, refus sans création/migration et base/config inchangées.
+Quinze tests CLI, vet/format/diff Windows passés. Code de stockage/chargeur et
+workflow inchangés ; CI de publication à vérifier après commit. Prochain lot138 :
+relecture/clôture du chantier doctor, CI finale/fusion et CI main.
+Configuration des composants, auth locale/API/Web
 restent à développer. Exécutable de service et packaging/pilote restent M5.
 Ce point d'entrée n'est pas une release installable ; MIT conservée, AD/OIDC après MVP.

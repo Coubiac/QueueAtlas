@@ -26,8 +26,10 @@ CI37567003805 entière réussie. Clôture132 fusionnée #30 sur118634f,
 CI finale37569190697/main37569292737 entières réussies, branche CLI supprimée.
 Ouverture readonly de diagnostic133 publiée dans #31 sur41fbf0f, CI37571495723
 entière réussie. Métadonnées134 publiées sur8e9008b, CI37572091851 entière réussie.
-CLI db stats135 publiée surcae194c, CI37574528679 entière réussie. Relecture136
-favorable ; publication/CI finale/fusion/main encore à terminer au moment du commit.
+CLI db stats135 publiée surcae194c, CI37574528679 entière réussie. Clôture136
+fusionnée #31 sur918ef0c, CI finale37576814504/main37576942301 entières réussies,
+branche diagnostics supprimée. Doctor137 implémenté et vérifié localement ;
+publication/CI à terminer au moment du commit, chantier séparé codex/m4-doctor.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -42,7 +44,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 136 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 137 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -59,9 +61,9 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132 fusionnés/CI main verte ; diagnostics133–135 publiés/CI verte, relecture136 favorable | Clôture #31/CI main, doctor/config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 6–16 après136 |
+| M4 — consultation sûre | CLI/config128–132 et diagnostics133–136 fusionnés/CI main verte ; doctor137 vérifié localement | Clôture doctor/CI main, config des composants, compte local/sessions, API bornée, recherche/détail/timeline Web, sécurité et accessibilité | 5–15 après137 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après136** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **16–34** |
+| **Total après137** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **15–33** |
 
 Pas d'estimation en jours à partir des heartbeats : quota, disponibilité des outils,
 CI et défauts découverts font varier la durée. Les extensions AD/OIDC/Keycloak sont
@@ -475,3 +477,19 @@ Après clôture effective : M4 toujours en cours, M5 à réaliser. Prochain lot1
 doctor --config en lecture seule, rapport de config/compatibilité DB limité aux
 vérifications disponibles, sans intégrité/déploiement attestés. M4 reste6–16lots,
 M5 10–18, total16–34 après136, estimation incertaine. MIT conservée, AD/OIDC après MVP.
+
+Clôture136 effective : #31 fusionnée sur918ef0c après revue COMMENT assistée sur
+3d78970, CI finale37576814504/main37576942301 entières réussies ; checkout principal
+actualisé propre et branche diagnostics supprimée. Les attentes136 précédentes
+sont le snapshot avant publication, désormais terminé.
+
+## Bilan137 — doctor --config
+
+Rapport JSON avec deux statuts fixes, configuration valide et schéma compatible,
+après chargement et ouverture readonly existants puis fermeture. Aucun compteur,
+scan, création/migration ou démarrage de service ; limites du lecteur conservées,
+aucune attestation d'intégrité/déploiement. Quatre nouveaux tests CLI et binaire
+étendu, quinze tests CLI/vet/format/diff Windows passés. Publication/CI137 encore
+à terminer au moment du commit ; nouveau chantier codex/m4-doctor depuis main136.
+Prochain lot138 : relecture/clôture doctor137 avec CI finale/fusion/main.
+M4 reste5–15lots, M5 10–18, total15–33 après137, estimation incertaine.
