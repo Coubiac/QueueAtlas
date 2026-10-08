@@ -25,7 +25,7 @@ import (
 func assertSearchPage(t *testing.T, w *httptest.ResponseRecorder, status int) {
 	t.Helper()
 	assertSearchHTTP(t, w, status)
-	if w.Header().Get("Content-Type") != "text/html; charset=utf-8" || w.Header().Get("X-Frame-Options") != "DENY" || w.Header().Get("Referrer-Policy") != "no-referrer" || !strings.Contains(w.Header().Get("Content-Security-Policy"), "default-src 'none'") || !strings.Contains(w.Header().Get("Content-Security-Policy"), "form-action 'self'") {
+	if w.Header().Get("Content-Type") != "text/html; charset=utf-8" || w.Header().Get("X-Frame-Options") != "DENY" || w.Header().Get("Referrer-Policy") != "strict-origin" || !strings.Contains(w.Header().Get("Content-Security-Policy"), "default-src 'none'") || !strings.Contains(w.Header().Get("Content-Security-Policy"), "form-action 'self'") {
 		t.Fatal("HTML response security policy changed")
 	}
 }
@@ -154,6 +154,9 @@ func TestConsultationSearchPageSQLitePaginationAndReserves(t *testing.T) {
 		t.Fatal("truncated page exposed a summary")
 	}
 	params, _ := searchFixture()
+	// This test's stored facts have fixed dates; do not use today's default window.
+	params.Set("from", "2026-10-07T00:00:00Z")
+	params.Set("until", "2026-10-08T00:00:00Z")
 	params.Set("value", "absent@example.test")
 	w = httptest.NewRecorder()
 	h.ServeHTTP(w, searchReadRequest("GET", SearchPagePath+"?"+params.Encode(), token))

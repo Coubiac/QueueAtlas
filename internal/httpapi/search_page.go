@@ -80,7 +80,9 @@ var searchPageChoices = []searchPageChoice{
 func searchPageHeaders(w http.ResponseWriter) {
 	w.Header().Set("Content-Security-Policy", searchPageCSP)
 	w.Header().Set("X-Frame-Options", "DENY")
-	w.Header().Set("Referrer-Policy", "no-referrer")
+	// no-referrer turns Origin into "null" on native form POSTs (Fetch).
+	// Keep HTTPS form origins while omitting paths/queries and downgrade referrers.
+	w.Header().Set("Referrer-Policy", "strict-origin")
 }
 
 func (h *searchHandler) serveSearchPage(w http.ResponseWriter, r *http.Request) {

@@ -69,10 +69,28 @@ New-Item -ItemType File -Path '<chemin affiché>'
 
 Le test se termine normalement et ferme le serveur/SQLite ; les temporaires sont
 nettoyés. Sans arrêt explicite, il échoue après30minutes et ferme le serveur.
+Il est alors nécessaire de relancer le test avant de réutiliser une ancienne URL.
+
+Pour redémarrer après une correction sur le port déjà utilisé par l'opérateur,
+la fixture TLS accepte une option **de test seulement** :
+
+```powershell
+$env:QUEUEATLAS_BROWSER_REVIEW = '1'
+$env:QUEUEATLAS_BROWSER_REVIEW_PORT = '50104'
+go test ./internal/httpapi -run '^TestWebBrowserReview$' -count=1 -v -timeout=35m
+```
+
+Port numérique1–65535, écoute toujours `127.0.0.1` ; port occupé/invalide : refus.
+Sans cette option, port temporaire aléatoire comme auparavant. Aucun changement
+de certificat/trust-store/TLS ni garde. Recharger GET `/login` avant un nouveau
+POST pour obtenir les en-têtes corrigés ; éviter de renvoyer l'ancien formulaire.
+Le mot de passe synthétique reste celui indiqué au début du guide.
+
 Après la session, retirer la variable dans le terminal de lancement :
 
 ```powershell
 Remove-Item Env:QUEUEATLAS_BROWSER_REVIEW
+Remove-Item Env:QUEUEATLAS_BROWSER_REVIEW_PORT -ErrorAction SilentlyContinue
 ```
 
 Sans opt-in, les deux fixtures sont skipped et la régression automatisée

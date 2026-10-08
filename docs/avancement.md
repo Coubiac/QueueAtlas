@@ -68,8 +68,9 @@ exact/auth et HTTPAPI Windows/race Linux1.26 réussis, revérifiés164. Lot164 e
 corrections navigateur CSP Windows/focus/texte, test import→rendu et captures.
 Corrections164 publiées ef87ceb, CI37676596678 entière/trois jobs/SHA exact verts.
 Page HTTPS confirmée visible par l'utilisateur après traitement du certificat ;
-accès outil encore refusé par sécurité, rapport manuel du parcours demandé.
-Revue incomplète, #37 reste brouillon.
+accès outil encore refusé par sécurité. Essai manuel ensuite refusé ; correctif
+Referrer-Policy strict-origin terminé localement, tests/vet passent, publication/CI
+à terminer. Nouvel essai manuel nécessaire ; revue incomplète, #37 brouillon.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -1101,3 +1102,13 @@ Reprise164 : corrections publiées ef87ceb/CI37676596678 entière/trois jobs/SHA
 exact verts. Utilisateur confirme la page HTTPS après certificat ; l'outil refuse
 encore l'accès par sécurité. Rapport manuel du parcours demandé, en attente.
 Cette confirmation ne clôture pas la revue ; même lot164, estimation inchangée.
+
+Suite de la même revue164 : essai humain « Requête de connexion refusée » avec
+capture, aucune connexion réussie. Défaut identifié : no-referrer rend Origin
+null sur un formulaire POST natif ; en-tête Web strict-origin corrigé, guards
+Origin/CSRF inchangés. Régression HTTPS reproduite sous ancien header puis corrigée,
+suite auth/HTTPAPI et vet passent ; test NOQUEUE stabilisé avec dates explicites.
+Port de fixture optionnel loopback pour la reprise sur50104, démarrage/arrêt testés.
+Aucun serveur temporaire actif. Publier/CI du correctif puis nouvel essai manuel,
+même #37 brouillon, aucun165 et aucune baisse de l'estimation avant fin de revue.
+[Diagnostic et limites](reviews/m4-web.md#refus-de-connexion-et-correction-de-referrer-policy).

@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 	"html"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -91,6 +93,19 @@ func TestWebBrowserReview(t *testing.T) {
 	s := importedWebReviewStore(t)
 	server := httptest.NewUnstartedServer(nil)
 	defer server.Close()
+	// Reuse the operator's URL when restarting after a correction. Always loopback.
+	if rawPort := os.Getenv("QUEUEATLAS_BROWSER_REVIEW_PORT"); rawPort != "" {
+		port, err := strconv.ParseUint(rawPort, 10, 16)
+		if err != nil || port == 0 {
+			t.Fatal("manual browser review port must be 1..65535")
+		}
+		listener, err := net.Listen("tcp", "127.0.0.1:"+strconv.FormatUint(port, 10))
+		if err != nil {
+			t.Fatal(err)
+		}
+		_ = server.Listener.Close()
+		server.Listener = listener
+	}
 	origin := "https://" + server.Listener.Addr().String()
 	guard, _, _ := searchGuardAtOrigin(t, origin)
 	webAuth, _ := NewWebLoginHandler(guard)

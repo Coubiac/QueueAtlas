@@ -35,7 +35,7 @@ Une requête sensible déjà autorisée avant révocation n'est pas rétroactive
 annulée. Le magasin local perd toutes ses sessions au redémarrage.
 
 Erreurs HTML fixes, aucun credential/token/valeur hostile réinjecté et aucun
-cookie modifié sur refus. CSP/no-store/Pragma/nosniff/anti-framing/no-referrer
+cookie modifié sur refus. CSP/no-store/Pragma/nosniff/anti-framing/strict-origin
 également sur le303 ; pas de CORS. Le formulaire public reste accessible après
 logout ; les vues/API sensibles donnent401 avec un token révoqué, sans redirection
 automatique des routes de données.
@@ -59,3 +59,9 @@ SameSite et XSS/CSP de la source au rendu restaient à valider après163.
 contrôlés ; soumission réelle de logout et SameSite dans le navigateur HTTPS
 encore à vérifier. Même PR #37 brouillon ; montage serveur et compléments ensuite.
 Issue #7/M4 restent ouvertes. MIT, AD/OIDC/Keycloak après MVP.
+
+Correction164 : la politique `strict-origin` des trois vues conserve l'Origin
+des POST natifs HTTPS ; `no-referrer` le rendait `null` et bloquait également
+logout. Aucun Origin opaque/absent/étranger accepté ; garde et révocation inchangées.
+Régression HTTPS tirant l'Origin de la politique de la vue, sans revendication
+d'un nouveau test navigateur réussi. [Diagnostic](reviews/m4-web.md#refus-de-connexion-et-correction-de-referrer-policy).

@@ -107,9 +107,19 @@ func TestWebLoginRealHTTPSRedirectRotationAndProtectedConsultation(t *testing.T)
 	u, _ := url.Parse(origin)
 	client.Jar.SetCookies(u, []*http.Cookie{{Name: auth.SessionCookieName, Value: oldToken, Path: "/", Secure: true}})
 	for range 2 {
+		form, err := client.Get(origin + auth.WebLoginPath)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, readErr := io.Copy(io.Discard, form.Body)
+		form.Body.Close()
+		if readErr != nil || form.StatusCode != 200 {
+			t.Fatal("public HTTPS form unavailable")
+		}
 		body := url.Values{"username": {"SyntheticOperator"}, "password": {"synthetic secret phrase"}}.Encode()
 		r, _ := http.NewRequest("POST", origin+auth.WebLoginPath, strings.NewReader(body))
-		r.Header.Set("Origin", origin)
+		r.Header.Set("Origin", httpsFormOrigin(t, form.Header.Get("Referrer-Policy"), origin))
+		r.Header.Set("Sec-Fetch-Site", "same-origin")
 		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		response, err := client.Do(r)
 		if err != nil {
@@ -156,5 +166,22 @@ func TestWebLoginRealHTTPSRedirectRotationAndProtectedConsultation(t *testing.T)
 	response.Body.Close()
 	if response.StatusCode != 401 || len(client.Jar.Cookies(u)) != 0 {
 		t.Fatal("logout did not remove access/cookie")
+	}
+}
+
+// Model Fetch's Origin header for a native same-origin HTTPS form submission.
+// Go's client does not implement browser referrer policies. This exercises the
+// real response policy instead of always supplying a successful Origin by hand;
+// it remains a protocol regression test, not evidence from a browser.
+func httpsFormOrigin(t *testing.T, policy, origin string) string {
+	t.Helper()
+	switch policy {
+	case "no-referrer":
+		return "null"
+	case "strict-origin":
+		return origin
+	default:
+		t.Fatal("unexpected Web referrer policy")
+		return ""
 	}
 }

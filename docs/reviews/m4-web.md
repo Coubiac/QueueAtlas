@@ -65,7 +65,9 @@ sécurité ; aucun contournement ni autre surface n'est tenté.
 
 Un rapport manuel est demandé pour connexion, recherche exacte de l'expéditeur
 synthétique, détail ABC123→timeline trois faits, logout→login et accès protégé
-refusé. Résultats en attente. Rotation, attributs des cookies et SameSite doivent
+refusé. L'utilisateur signale ensuite « Requête de connexion refusée » et fournit
+une capture du formulaire en erreur. Le parcours n'a pas réussi ; diagnostic et
+correction ci-dessous. Rotation, attributs des cookies et SameSite doivent
 être qualifiés séparément ; ces étapes seules ne démontrent pas tous ces points.
 
 [CI164](https://github.com/Coubiac/QueueAtlas/actions/runs/37676596678)
@@ -74,11 +76,54 @@ Go1.26 112981583001, Windows112981583298, stable112981583404. Auth/HTTPAPI Windo
 et race Linux1.26 réussis ; stable race skipped prévu. Preuves réutilisées de la
 publication des corrections, sans relancer les tests du code inchangé.
 
+Checkpoint documentaire140e50 publié, CI37682026040 entière completed/success
+sur `140e50decddfa59f741fbca8087104a373258421` : stable113000216367,
+Windows113000216586, Go1.26 113000216796. Auth/HTTPAPI Windows et race Linux1.26
+réussis, stable race skipped prévu ; preuve post-publication dans #37.
+
+## Refus de connexion et correction de Referrer-Policy
+
+Le message exact utilisateur/capture correspond au refus403 rendu avant
+vérification des credentials. L'Origin réellement reçu n'a pas été capturé :
+l'accès de l'outil au navigateur reste refusé. Le compte de test reste valide
+dans les tests de vérification Argon2id.
+
+Défaut de compatibilité identifié : toutes les pages envoyaient
+`Referrer-Policy: no-referrer`. Le
+[standard Fetch](https://fetch.spec.whatwg.org/#append-a-request-origin-header)
+spécifie Origin `null` sur un POST natif non-CORS avec cette politique ; la garde
+exige l'origine exacte et refuse donc le formulaire. Ce comportement est aussi
+[documenté par MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy#effect_on_the_origin_header).
+Le même défaut affectait les boutons logout des trois vues.
+
+Politique Web remplacée par `strict-origin` : conserve Origin pour un formulaire
+HTTPS→HTTPS ; Referer contient au plus l'origine, sans chemin ni critères privés,
+et reste absent lors d'un downgrade HTTPS→HTTP. CSP, TLS direct, Host/Origin exact,
+Fetch-Site, cookies Secure/HttpOnly/SameSiteStrict et refus d'Origin absent/null/
+étranger inchangés. Aucun fallback Referer ni nouvelle confiance proxy.
+
+Tests HTTPS login/logout renforcés : GET du formulaire/vues, puis Origin modélisé
+selon la politique effectivement reçue au lieu de forcer un Origin réussi.
+Régression reproduite avec l'ancienne politique : les deux tests échouent ;
+source corrigée restaurée, les deux passent. Cette modélisation suit Fetch,
+**sans démontrer un parcours navigateur réel réussi**.
+La suite a révélé un test NOQUEUE utilisant la fenêtre de la date courante sur
+des données du7octobre ; dates explicites fixées dans ce test, sans changement
+du comportement serveur ou des données. Suite Windows Go1.26 auth1.349s/
+HTTPAPI2.487s et vet passent ; format/diff vérifiés avant publication.
+
+Fixture TLS : port optionnel borné1–65535, loopback127.0.0.1 forcée, pour reprendre
+une URL déjà utilisée après redémarrage. Démarrage vérifié sur50104 puis arrêt
+propre PASS17.145s ; aucune interaction navigateur revendiquée. L'ancien serveur
+59518 a expiré après30minutes (FAIL attendu par timeout) ; aucun serveur de test
+ne reste actif à ce checkpoint. Relancer avant un essai utilisateur.
+
 ## Décision et reprise
 
 Corrections publiées/CI validée, même PR37 brouillon. Reprendre **le lot164**
-sur le rapport manuel demandé après le refus d'accès de l'outil. Si la fixture
-a expiré, relancer selon le guide. Documenter les résultats réels ; passer prêt/fusionner
+sur le correctif Referrer-Policy et un **nouvel essai manuel**. Relancer la
+fixture selon le guide, recharger GET login puis tester avec le même compte.
+Documenter les résultats réels ; passer prêt/fusionner
 seulement si les critères sont satisfaits, puis vérifier la CI main.
 Montage serveur applicatif et filtres/diagnostics restent ensuite ; issue7/M4/MVP
 ouverts. MIT et authentification AD/OIDC/Keycloak après MVP inchangés.

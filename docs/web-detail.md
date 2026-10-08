@@ -34,7 +34,7 @@ annulation/délai/HTML>1MiB503. Aucun résultat partiel. HEAD mêmes lectures sa
   Pas de lignes/messages bruts, DSN/relay/réponse ou maps/credential dans ce détail.
 
 Même `html/template`, stylesheet immuable embarquée/hash CSP, anti-framing,
-no-referrer/no-store/nosniff que la [recherche Web](web-search.md). Le lien de
+strict-origin/no-store/nosniff que la [recherche Web](web-search.md). Le lien de
 recherche utilise uniquement l'ID produit par l'encodeur canonique et un préfixe
 local fixe. Texte hostile toujours échappé ; aucun champ SMTP n'est une URL active.
 Les erreurs HTML sont fixes et ne reflètent ni l'ID ni les données privées.

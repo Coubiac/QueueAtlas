@@ -25,7 +25,7 @@ Le montage du serveur reste à réaliser ; le constructeur n'ouvre aucun listene
   Nom inconnu et mauvais mot de passe donnent le même401. Budget commun API/Web
   dépassé :429. Autres refus conservent les statuts de l'authentification.
 
-Même CSS embarquée/hash CSP, no-store/Pragma/nosniff, anti-framing et no-referrer
+Même CSS embarquée/hash CSP, no-store/Pragma/nosniff, anti-framing et strict-origin
 que les [vues de consultation](web-search.md), y compris sur le303. Aucun en-tête
 CORS, aucune copie intermédiaire de réponse contenant le cookie. Le callback
 `auth.WebLoginRenderer` est du code applicatif de confiance : ne pas y refléter
@@ -59,3 +59,11 @@ Lot164 : CSS/CSP normalisées en LF et main focusable pour le lien d'évitement.
 de test, sans exception TLS ni modification du magasin de confiance. Montage et
 filtres/diagnostics restent à réaliser.
 Même PR #37 brouillon, issue #7/M4 ouvertes ; MIT, AD/OIDC/Keycloak après MVP.
+
+Correction164 après retour utilisateur « Requête de connexion refusée » :
+`no-referrer` transformait Origin en `null` pour un formulaire POST natif.
+`strict-origin` conserve l'origine HTTPS sans exposer chemin/query dans Referer.
+Origin exact obligatoire, refus d'Origin absent/null/étranger et guards CSRF
+restent inchangés. Les tests HTTPS modélisent désormais l'Origin du formulaire
+depuis la politique réellement servie ; ce n'est pas une preuve navigateur.
+[Diagnostic et limites](reviews/m4-web.md#refus-de-connexion-et-correction-de-referrer-policy).

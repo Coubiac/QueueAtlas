@@ -38,7 +38,9 @@ Un résultat vide ne prouve pas l'absence dans les journaux.
   CSP. Aucun JavaScript, police externe ou dépendance réseau.
 - CSP : `default-src 'none'`, style embarqué autorisé par SHA-256,
   `form-action 'self'`, `base-uri 'none'`, `frame-ancestors 'none'` ;
-  `X-Frame-Options: DENY` et `Referrer-Policy: no-referrer`.
+  `X-Frame-Options: DENY` et `Referrer-Policy: strict-origin` (correction164).
+  Seule l'origine est envoyée comme référent HTTPS, sans chemin/query ; rien lors
+  d'un downgrade HTTPS→HTTP. Les formulaires natifs conservent leur en-tête Origin.
 - Budgets identiques à l'API, partagés entre Web/recherche/détail/timeline :
   délai5s,1024faits,2requêtes par défaut. Dépassement de faits422 ; admission429 ;
   erreur interne, annulation ou réponse HTML >1MiB :503. Paramètres invalides400.

@@ -86,7 +86,10 @@ présentation, test import→rendu et vérifications navigateur statiques passé
 Corrections164 publiées sur ef87ceb, CI37676596678 entière/trois jobs/SHA exact
 réussis. L'utilisateur confirme la page HTTPS visible après traitement du
 certificat ; l'outil navigateur refuse encore l'accès par politique de sécurité.
-Rapport manuel connexion/consultation/déconnexion demandé, PR37 reste brouillon.
+Essai manuel ensuite refusé (« Requête de connexion refusée »). Correction164
+en cours : Referrer-Policy strict-origin au lieu de no-referrer ; régression
+HTTPS et suite auth/HTTPAPI/vet passent. Publication/CI du correctif à terminer.
+Nouvel essai manuel nécessaire, aucun serveur temporaire actif ; PR37 brouillon.
 [Bilan](reviews/m4-web.md). Reprise sur164,
 aucun165 commencé. Deux jalons M4/M5 restent, environ13–28lots (M4 3–10),
 M3 zéro lot restant ;
@@ -3463,10 +3466,13 @@ Lot164 : corrections publiées ef87ceb, CI37676596678 entière/trois jobs/SHA ex
 auth et HTTPAPI Windows/race Linux1.26 réussis. L'utilisateur confirme la page
 HTTPS visible après traitement du certificat. L'outil navigateur refuse l'accès
 par politique de sécurité ; aucun contournement ni autre surface tentée.
-Attendre le rapport manuel demandé : connexion, recherche synthetic-postfix /
+Publier le correctif strict-origin validé localement, vérifier CI entière sur
+le SHA exact, même PR37 brouillon ; puis relancer la fixture TLS à la disponibilité
+de l'opérateur. Son essai précédent est refusé, pas réussi. Recharger GET login
+avant nouvelle connexion ; poursuivre recherche synthetic-postfix /
 Expéditeur exact synthetic@example.test / Oct7–8UTC, détail ABC123 et timeline,
 déconnexion/retour login puis accès protégé refusé. [Fixture](web-browser-review.md).
-Reprendre164 sur ces résultats, qualifier précisément SameSite/rotation.
+Reprendre164 sur le nouvel essai, qualifier précisément SameSite/rotation.
 La revue du rendu statique est faite,
 pas celle de l'auth navigateur ; [preuves et limites](reviews/m4-web.md).
 Clôturer #37 seulement si critères satisfaits. Aucun165 commencé.
@@ -5748,3 +5754,49 @@ Rotation, attributs des cookies et SameSite ne sont pas prouvés à eux seuls pa
 ces quatre étapes ; qualifier les limites et décider des contrôles restants.
 Documentation actualisée dans ce checkpoint, sans nouveau comportement ;
 publication/CI documentaire à terminer au commit. #37 reste brouillon ; aucun165.
+
+### Reprise164 — refus de connexion, correctif interrompu puis terminé localement
+
+Dernier publié validé au départ de cette correction :
+`140e50decddfa59f741fbca8087104a373258421`, checkpoint documentaire dans #37,
+CI37682026040 entière success/SHA exact : stable113000216367,
+Windows113000216586, Go1.26 113000216796. Auth/HTTPAPI Windows et race Linux1.26
+verts, stable race skipped prévu. Tête/base/draft vérifiés REST à la reprise ;
+base main1588c3aa85, aucune fusion.
+
+Utilisateur : « connexion refusée », réponse précise « Requête de connexion
+refusée », capture du formulaire en erreur. Ce texte correspond au refus403
+avant credentials, pas à Identifiants invalides. Interruption après les premières
+modifications Go : celles-ci étaient non committées ; rien de ce correctif n'était
+publié avant cette reprise. Les anciennes preuves CI portent sur140e50/ef87ceb,
+**pas** sur la correction strict-origin.
+
+Défaut certain de compatibilité des formulaires : no-referrer rend Origin null
+selon Fetch pour un POST natif non-CORS ; garde exige origine exacte. En-tête Web
+strict-origin désormais, origineHTTPS conservée/Referer sans chemin-query et rien
+sur downgrade. Aucun élargissement des guards TLS/Host/Origin/cookies/CSRF/proxy.
+Diagnostic réel des headers du navigateur indisponible ; cause du refus inférée
+du code/standard et régression reproduite, à confirmer par nouvel essai manuel.
+[Preuves et références](reviews/m4-web.md#refus-de-connexion-et-correction-de-referrer-policy).
+
+Tests HTTPS login/logout tirent l'Origin modélisé de la politique servie. Avec
+l'ancien header temporairement restauré, les deux échouent ; source corrigée
+restaurée avant toute autre vérification. Test NOQUEUE dépendant de la date
+courante corrigé avec période explicite des fixtures synthétiques ; aucun
+changement métier. Suite auth1.349s/HTTPAPI2.487s Windows Go1.26, vet passent,
+format/diff vérifiés avant commit. Pas de nouvel essai navigateur réussi revendiqué.
+
+Fixture TLS accepte QUEUEATLAS_BROWSER_REVIEW_PORT numérique1–65535,
+loopback127.0.0.1 toujours, pour reprendre50104 sans changer origine/certificat.
+Démarrage sur50104 et arrêt explicite vérifiés (PASS17.145s), aucun parcours
+browser. L'ancien serveur59518 est expiré (FAIL timeout30min) ; le serveur51178
+de vérification est arrêté proprement. **Aucun serveur actif**, ne pas demander
+de rouvrir50104 avant relance ; guide actualisé avec GET login à recharger.
+
+Au commit : publier même branche/#37 et vérifier CI entière/trois jobs/SHA exact/
+auth et HTTPAPI Windows/race Linux1.26 ; preuve post-publication dans PR.
+Suite concrète : relancer fixture à la présence humaine, nouvel essai connexion
+avec SyntheticOperator / synthetic secret phrase, puis consultation/logout.
+Refus de l'outil navigateur toujours respecté, rapport manuel nécessaire. La revue
+reste incomplète, #37 brouillon ; aucun165, #7/M4/MVP ouverts. Estimation conservée
+13–28lots/M4 3–10/M5 10–18, MIT et AD/OIDC/Keycloak après MVP.

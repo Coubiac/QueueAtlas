@@ -55,6 +55,7 @@ func TestWebLogoutHTTPSFromEveryViewClearsCookieAndRevokesOnlyCurrentSession(t *
 	consultation.ServeHTTP(w, apiRequest)
 	id := decodeSearchResponse(t, w).Matches[0].Candidate.ID
 	action := ""
+	formOrigin := ""
 	for _, path := range []string{SearchPagePath, CandidatePagePrefix + id, timelinePageURL(id)} {
 		response, err := client.Get(origin + path)
 		if err != nil {
@@ -67,6 +68,7 @@ func TestWebLogoutHTTPSFromEveryViewClearsCookieAndRevokesOnlyCurrentSession(t *
 			t.Fatal("view lost logout form or exposed session")
 		}
 		action = form[1]
+		formOrigin = httpsFormOrigin(t, response.Header.Get("Referrer-Policy"), origin)
 	}
 	// Rejected cross-origin POST must retain the cookie and its authority.
 	r, _ := http.NewRequest("POST", origin+action, nil)
@@ -86,7 +88,7 @@ func TestWebLogoutHTTPSFromEveryViewClearsCookieAndRevokesOnlyCurrentSession(t *
 	// Submit the button's actual action as an empty form, with the browser's origin.
 	for range 2 {
 		r, _ := http.NewRequest("POST", origin+action, strings.NewReader(""))
-		r.Header.Set("Origin", origin)
+		r.Header.Set("Origin", formOrigin)
 		r.Header.Set("Sec-Fetch-Site", "same-origin")
 		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		response, err := client.Do(r)
@@ -96,7 +98,7 @@ func TestWebLogoutHTTPSFromEveryViewClearsCookieAndRevokesOnlyCurrentSession(t *
 		data, readErr := io.ReadAll(response.Body)
 		response.Body.Close()
 		cookies := response.Cookies()
-		if readErr != nil || response.StatusCode != 303 || response.Header.Get("Location") != auth.WebLoginPath || response.Header.Get("Cache-Control") != "no-store" || response.Header.Get("X-Frame-Options") != "DENY" || response.Header.Get("Referrer-Policy") != "no-referrer" || response.Header.Get("Content-Security-Policy") == "" || len(cookies) != 1 || string(data) != "logged out\n" {
+		if readErr != nil || response.StatusCode != 303 || response.Header.Get("Location") != auth.WebLoginPath || response.Header.Get("Cache-Control") != "no-store" || response.Header.Get("X-Frame-Options") != "DENY" || response.Header.Get("Referrer-Policy") != "strict-origin" || response.Header.Get("Content-Security-Policy") == "" || len(cookies) != 1 || string(data) != "logged out\n" {
 			t.Fatal("logout redirect/security changed or differs on retry")
 		}
 		cookie := cookies[0]
