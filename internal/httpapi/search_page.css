@@ -2,3 +2,4 @@
 pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f2f5f3;padding:1rem;border:1px solid #cbd9d1;border-radius:.3rem}.timeline{list-style:none;padding:0}.timeline>li{margin-bottom:1rem}dt{font-weight:650;margin-top:.7rem}dd{margin:.2rem 0 .5rem;overflow-wrap:anywhere}input[type=checkbox]{width:auto;margin-right:.5rem}
 .top{gap:1rem;flex-wrap:wrap}.top form{margin:0}.top button{padding:.5rem .8rem}
 summary{cursor:pointer;font-weight:650}summary:focus-visible{outline:3px solid #a24608;outline-offset:3px}.technical dl{margin-bottom:0}
+.message-fields{display:grid;grid-template-columns:minmax(180px,1fr) minmax(0,2fr);gap:.5rem 1.5rem}.message-fields dt,.message-fields dd{margin:0}.recipient-card{margin-bottom:1rem}@media(max-width:640px){.message-fields{grid-template-columns:1fr;gap:.2rem}.message-fields dt{margin-top:.7rem}}

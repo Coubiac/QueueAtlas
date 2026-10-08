@@ -50,6 +50,7 @@ type SearchCounts struct {
 }
 
 type SearchCandidate struct {
+	Web               *webMessage                  `json:"-"`
 	ID                string                       `json:"id"`
 	Revision          string                       `json:"revision"`
 	Instance          string                       `json:"instance"`
@@ -97,7 +98,7 @@ func searchText(value string, max int) bool {
 	return value != "" && len(value) <= max && utf8.ValidString(value) && !strings.ContainsAny(value, "\x00\r\n\t")
 }
 
-func searchMatches(ctx context.Context, hits []sqlite.SearchHit, facts []correlation.Fact, limit int) ([]SearchMatch, error) {
+func searchMatches(ctx context.Context, hits []sqlite.SearchHit, facts []correlation.Fact, limit int, web bool) ([]SearchMatch, error) {
 	if len(facts) > limit {
 		return nil, correlation.ErrPartitionLimit
 	}
@@ -128,6 +129,12 @@ func searchMatches(ctx context.Context, hits []sqlite.SearchHit, facts []correla
 			candidate, err := searchCandidate(queue)
 			if err != nil {
 				return nil, err
+			}
+			if web {
+				candidate.Web, err = buildWebMessage(ctx, queue, byRef)
+				if err != nil {
+					return nil, err
+				}
 			}
 			for _, ref := range queue.Summary.Queue.Generation.Facts {
 				candidates[ref] = &candidate

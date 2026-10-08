@@ -6,6 +6,31 @@ la connexion et ABC123 dans les résultats de recherche. Détail/timeline/logout
 restent à vérifier. Retour sur la lisibilité et les filtres consigné ci-dessous.
 Aucun lot165 commencé.
 
+## Second retour humain : informations mail et routage
+
+L'utilisateur attend une fiche date/fuseau, expéditeurs SMTP et From:, RCPT TO
+multiples, Message-ID/Queue ID, source SMTP/destination, événements/codes/motifs/
+états et durée. L'allègement précédent9b97100 ne suffisait pas. CI de cet état
+antérieur37809143458 entière success/SHA exact/trois jobs, consignée dans #37.
+Correction dans164 : vue HTML de génération pour recherche et détail, champs
+sélectionnés à partir des faits déjà lus ; API/JSON et stockage inchangés.
+[Matrice détaillée](../message-tracking-view.md). Absence des en-têtes et état
+final/global non déterminé restent explicitement visibles, aucun champ inventé.
+Native delay par tentative et SMTP en préfixe de réponse, DSN distinct.
+
+Deux tests utiles ajoutés : import Postfix réel/SQLite/vues, valeurs opérationnelles
+et autre origine même Queue ID exclue, non-fuite JSON ; code SMTP distinct des
+DSN/quotes/local/absence. Suite HTTPAPI Windows Go1.26 PASS2.520s/vet/diff ; tests
+précédents de budget/HEAD/révocation/XSS/base64/vide/conflit conservés/adaptés à
+la sélection élargie explicite du détail Web (Message-ID désormais affiché).
+Nouveau DOM/rendu non encore constaté par l'utilisateur ; revue incomplète.
+
+Fixture TLS humaine remplacée par cinq faits lisibles, alice transmis250 et bob
+différé450 avec client/Message-ID/relais/delay. Fixture hostile inchangée pour
+les preuves de sécurité ; ne pas confondre les deux jeux. Au commit publication/
+CI exacte à terminer ; redémarrer serveur, nouveau login/recherche/détail,
+timeline cinq faits/logout restant à confirmer. PR37 brouillon, aucun165.
+
 ## Retour humain du 8 octobre et correction de lisibilité
 
 Fixture TLS relancée sur50104, code b845d95, session19343. L'utilisateur confirme

@@ -28,10 +28,11 @@ var (
 	searchPageCSS, searchPageCSP = embeddedSearchStyle()
 	searchPageTemplate           = template.Must(template.New("search_page.html").Funcs(template.FuncMap{
 		// The only trusted CSS is our embedded stylesheet, never request/log text.
-		"styles":       func() template.CSS { return template.CSS(searchPageCSS) },
-		"label":        searchPageLabel,
-		"date":         func(t time.Time) string { return t.UTC().Format(time.RFC3339Nano) },
-		"readableDate": func(t time.Time) string { return t.UTC().Format("02/01/2006 15:04:05.999999999") },
+		"styles":        func() template.CSS { return template.CSS(searchPageCSS) },
+		"label":         searchPageLabel,
+		"date":          func(t time.Time) string { return t.UTC().Format(time.RFC3339Nano) },
+		"readableDate":  func(t time.Time) string { return t.UTC().Format("02/01/2006 15:04:05.999999999") },
+		"deliveryLabel": webDeliveryLabel,
 		// Candidate IDs come from the canonical encoder, not native log URLs.
 		"candidateURL": func(id string) string { return CandidatePagePrefix + id },
 		"timelineURL":  timelinePageURL,
@@ -115,7 +116,7 @@ func (h *searchHandler) serveSearchPage(w http.ResponseWriter, r *http.Request) 
 		}
 		ctx, cancel := context.WithTimeout(r.Context(), h.options.Timeout)
 		defer cancel()
-		page, err := h.search(ctx, query)
+		page, err := h.searchWithWeb(ctx, query, true)
 		if err != nil || ctx.Err() != nil {
 			status := http.StatusServiceUnavailable
 			if ctx.Err() == nil && (errors.Is(err, correlation.ErrPartitionLimit) || errors.Is(err, sqlite.ErrCorrelationScope)) {

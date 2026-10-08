@@ -115,7 +115,7 @@ func TestConsultationSearchPageSQLitePaginationAndReserves(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, searchReadRequest("GET", path, token))
 	assertSearchPage(t, w, 200)
-	for _, required := range []string{"ABC123", "Transmis au prochain serveur ou transport : 1", "Couverture non prouvée", "Continuité entre origines incertaine", "Page suivante", "synthetic-first", `datetime="2026-10-07T00:00:00Z"`, "07/10/2026 00:00:00"} {
+	for _, required := range []string{"ABC123", "Transmis", "recipient@example.test", "Couverture non prouvée", "Continuité entre origines incertaine", "Page suivante", "synthetic-first", `datetime="2026-10-07T00:00:00Z"`, "07/10/2026 00:00:00"} {
 		if !strings.Contains(w.Body.String(), required) {
 			t.Fatal("full queue summary/reserve missing", required)
 		}

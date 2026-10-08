@@ -82,6 +82,13 @@ statique synthétique contrôlé, parcours HTTPS authentifié encore à vérifie
 Montage serveur et fin de revue restent à réaliser.
 L'issue #7 reste ouverte ; MIT conservée, AD/OIDC/Keycloak après MVP.
 
+Depuis le second retour du 8 octobre, les champs principaux du tableau sont
+date/événement, expéditeur SMTP, destinataires SMTP, Message-ID/Queue ID et
+derniers résultats par adresse. Ils viennent des seuls faits de la génération
+reconstruite sélectionnée, même hors fenêtre de recherche. Valeurs absentes
+indiquées, aucune fusion entre origines/instances/générations ; JSON inchangé.
+Le détail lié présente la [fiche opérationnelle](message-tracking-view.md).
+
 Le 8 octobre, l'utilisateur confirme login et ABC123 après soumission réelle de
 la recherche sur la fixture TLS corrigée b845d95. Il demande aussi calendrier,
 critères combinables et opérateurs textuels : [travaux restants](search-ux-follow-up.md).

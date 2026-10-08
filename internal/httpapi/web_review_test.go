@@ -28,11 +28,28 @@ const reviewReply = `</pre><script>alert(164)</script><a href="javascript:alert(
 
 func importedWebReviewStore(t *testing.T) *sqlite.Store {
 	t.Helper()
-	dir := t.TempDir()
-	path := filepath.Join(dir, "synthetic-postfix.log")
 	lines := "<22>1 2026-10-07T12:00:00Z mx-synthetic postfix/qmgr 1 - - ABC123: from=<synthetic@example.test>, size=42, nrcpt=1 (queue active)\n" +
 		"<22>1 2026-10-07T12:00:01Z mx-synthetic postfix/smtp 2 - - ABC123: to=<" + reviewRecipient + ">, relay=remote.example.test[192.0.2.1]:25, dsn=2.0.0, status=sent (" + reviewReply + ")\n" +
 		"<22>1 2026-10-07T12:00:02Z mx-synthetic postfix/qmgr 3 - - ABC123: removed\n"
+	return importedWebReviewLines(t, lines)
+}
+
+// Readable operational example for the human review; adversarial data above
+// stays in the source-to-render security test and static review fixture.
+func importedOperationalReviewStore(t *testing.T) *sqlite.Store {
+	t.Helper()
+	return importedWebReviewLines(t,
+		"<22>1 2026-10-07T12:00:00Z mx-synthetic postfix/smtpd 1 - - ABC123: client=sender.example.test[192.0.2.10]\n"+
+			"<22>1 2026-10-07T12:00:00.1Z mx-synthetic postfix/cleanup 2 - - ABC123: message-id=<demo-164@example.test>\n"+
+			"<22>1 2026-10-07T12:00:00.2Z mx-synthetic postfix/qmgr 3 - - ABC123: from=<synthetic@example.test>, size=42, nrcpt=2 (queue active)\n"+
+			"<22>1 2026-10-07T12:00:02Z mx-synthetic postfix/smtp 4 - - ABC123: to=<alice@example.test>, relay=remote.example.test[192.0.2.20]:25, delay=2.0, delays=0.2/0.1/0.2/1.5, dsn=2.0.0, status=sent (250 2.0.0 Message accepted)\n"+
+			"<22>1 2026-10-07T12:00:03Z mx-synthetic postfix/smtp 5 - - ABC123: to=<bob@example.test>, relay=second.example.test[192.0.2.30]:25, delay=3.0, delays=0.2/0.1/0.2/2.5, dsn=4.2.0, status=deferred (450 4.2.0 Mailbox temporarily unavailable)\n")
+}
+
+func importedWebReviewLines(t *testing.T, lines string) *sqlite.Store {
+	t.Helper()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "synthetic-postfix.log")
 	if err := os.WriteFile(path, []byte(lines), 0600); err != nil {
 		t.Fatal(err)
 	}
@@ -90,7 +107,7 @@ func TestWebBrowserReview(t *testing.T) {
 	if os.Getenv("QUEUEATLAS_BROWSER_REVIEW") != "1" {
 		t.Skip("manual browser review only")
 	}
-	s := importedWebReviewStore(t)
+	s := importedOperationalReviewStore(t)
 	server := httptest.NewUnstartedServer(nil)
 	defer server.Close()
 	// Reuse the operator's URL when restarting after a correction. Always loopback.

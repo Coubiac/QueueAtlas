@@ -12,8 +12,9 @@ import (
 const CandidatePagePrefix = SearchPagePath + "/"
 
 type candidatePageData struct {
-	Detail *DetailResponse
-	Error  string
+	Detail  *DetailResponse
+	Message *webMessage
+	Error   string
 }
 
 func (h *searchHandler) serveCandidatePage(w http.ResponseWriter, r *http.Request, id string) {
@@ -35,7 +36,19 @@ func (h *searchHandler) serveCandidatePage(w http.ResponseWriter, r *http.Reques
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), h.options.Timeout)
 	defer cancel()
-	detail, err := h.detail(ctx, key)
+	queue, facts, err := h.candidateSnapshot(ctx, key)
+	var detail DetailResponse
+	var message *webMessage
+	if err == nil {
+		detail, err = detailResponse(queue)
+	}
+	if err == nil {
+		lookup := make(map[correlation.FactRef]correlation.Fact, len(facts))
+		for _, fact := range facts {
+			lookup[fact.Ref] = fact
+		}
+		message, err = buildWebMessage(ctx, queue, lookup)
+	}
 	if err != nil || ctx.Err() != nil {
 		status := http.StatusServiceUnavailable
 		if ctx.Err() == nil {
@@ -51,7 +64,7 @@ func (h *searchHandler) serveCandidatePage(w http.ResponseWriter, r *http.Reques
 		candidatePageError(w, r, status)
 		return
 	}
-	if writeHTMLPage(w, r, ctx, 200, "candidate_page.html", candidatePageData{Detail: &detail}) != nil {
+	if writeHTMLPage(w, r, ctx, 200, "candidate_page.html", candidatePageData{Detail: &detail, Message: message}) != nil {
 		candidatePageError(w, r, 503)
 	}
 }

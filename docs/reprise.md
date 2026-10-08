@@ -3,7 +3,32 @@
 Mis à jour le 8 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
-**Reprise actuelle — lot164, retour humain et lisibilité de la recherche.**
+**Reprise actuelle — lot164, fiche de suivi opérationnelle demandée.**
+Le propriétaire précise les informations attendues : adresses d'enveloppe et
+en-tête, Message-ID/Queue ID, client source/relais, événements/codes/motifs/états
+et durée. Correction de revue : tableau from/to/Message-ID/états et fiche de
+détail opérationnelle sur les faits de la génération sélectionnée, JSON/API
+inchangés. [Matrice complète et limites](message-tracking-view.md).
+From:/Subject non collectés affichés explicitement ; aucun état global final
+ni attente actuelle inventé. Codes SMTP uniquement préfixes littéraux de réponse,
+DSN distinct ; durée native delay, pas calcul premier/dernier événement.
+Tests import Postfix→SQLite→Web et isolation d'autre origine même Queue ID,
+non-fuite API et codes SMTP prudents ; suite HTTPAPI2.520s/vet/diff passées.
+Après ajustement du libellé de durée, les deux nouveaux tests ciblés passent0.126s.
+Au commit : publier dans #37 brouillon et vérifier CI exacte/trois jobs.
+Revue humaine toujours incomplète : nouveau rendu/fiche, timeline et logout.
+Fixture TLS humaine désormais cinq événements lisibles, alice transmis250 et
+bob différé450 ; fixture hostile trois faits conservée pour les tests de sécurité.
+Après redémarrage du serveur, reprendre login puis recherche habituelle et détail
+ABC123 ; anciens identifiants de candidat/requête ne prouvent pas le nouveau rendu.
+Calendrier/filtres/en-têtes et vue NOQUEUE/état de file restent au suivi accepté.
+Aucun montage serveur/165 ni fusion avant fin de revue164.
+
+**État précédent — lisibilité de la recherche seule.**
+9b971005c7dfa05c5fd37f2578437547d7ea78cf publié, CI37809143458 entière success
+sur SHA exact : Windows113421151117, Go1.26 113421151483, stable113421151557.
+Auth/HTTPAPI Windows et race Linux1.26 verts, stable race skipped prévu.
+Preuve dans #37 et issue7 ; checkout propre/synchronisé avant cette correction.
 L'utilisateur confirme la connexion puis ABC123 après recherche sur la fixture
 TLS corrigée b845d9587b6321b74ea632ddd8bd10182d0131e9. CI37707149012 entière
 success sur ce SHA : Go1.26 113084115393, Windows113084115692,

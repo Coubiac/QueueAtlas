@@ -91,12 +91,12 @@ func TestCandidatePageSQLiteSearchLinkFullGenerationAndStale(t *testing.T) {
 			}
 			continue
 		}
-		for _, required := range []string{"Détail du candidat", "ABC123", "recipient@example.test", "sent (transport) : 1", "delivered (remise reconnue) : 0", "Continuité entre origines incertaine", "Couverture non prouvée", "synthetic-first", "synthetic-first-origin", "Retrait de file"} {
+		for _, required := range []string{"Détail du message", "ABC123", "synthetic@example.test", "recipient@example.test", "sent (transport) : 1", "delivered (remise reconnue) : 0", "Continuité entre origines incertaine", "Couverture non prouvée", "synthetic-first", "synthetic-first-origin", "Retrait de file"} {
 			if !strings.Contains(w.Body.String(), required) {
 				t.Fatal("detail lost complete-generation evidence", required)
 			}
 		}
-		for _, private := range []string{"synthetic-second", "synthetic-foreign", "synthetic-undated", "private reply", "private raw", "private.log", "synthetic@example.test"} {
+		for _, private := range []string{"synthetic-second", "synthetic-foreign", "synthetic-undated", "private reply", "private raw", "private.log"} {
 			if strings.Contains(w.Body.String(), private) {
 				t.Fatal("detail merged origins or exposed unselected data", private)
 			}
@@ -215,12 +215,12 @@ func TestCandidatePageProtocolBeforeReadAndHTTPSNativeText(t *testing.T) {
 			continue
 		}
 		text := string(body)
-		for _, required := range []string{html.EscapeString(payload), html.EscapeString(queue), "9007199254740993", "Adresse vide observée", "Adresse non spécifiée", "Octets non UTF-8 — base64", base64.StdEncoding.EncodeToString([]byte("\xffsynthetic")), "Case@example.test", "case@example.test", "Dernières tentatives simultanées", "Inconnus : 5"} {
+		for _, required := range []string{html.EscapeString(payload), html.EscapeString(queue), "synthetic@example.test", "9007199254740993", "Adresse vide observée", "Adresse non spécifiée", "Octets non UTF-8 — base64", base64.StdEncoding.EncodeToString([]byte("\xffsynthetic")), "Case@example.test", "case@example.test", "Dernières tentatives simultanées", "Inconnus : 5"} {
 			if !strings.Contains(text, required) {
 				t.Fatal("literal recipient/conflict/provenance lost", required)
 			}
 		}
-		for _, forbidden := range []string{"<script", "<img", `href="javascript:`, "private reply", "synthetic@example.test"} {
+		for _, forbidden := range []string{"<script", "<img", `href="javascript:`, "private reply"} {
 			if strings.Contains(text, forbidden) {
 				t.Fatal("hostile/native data became active or escaped allowlist", forbidden)
 			}

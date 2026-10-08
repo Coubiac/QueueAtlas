@@ -224,6 +224,10 @@ func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *searchHandler) search(ctx context.Context, query sqlite.SearchQuery) (SearchResponse, error) {
+	return h.searchWithWeb(ctx, query, false)
+}
+
+func (h *searchHandler) searchWithWeb(ctx context.Context, query sqlite.SearchQuery, web bool) (SearchResponse, error) {
 	if err := ctx.Err(); err != nil {
 		return SearchResponse{}, err
 	}
@@ -266,7 +270,7 @@ func (h *searchHandler) search(ctx context.Context, query sqlite.SearchQuery) (S
 	if err := ctx.Err(); err != nil {
 		return SearchResponse{}, err
 	}
-	out.Matches, err = searchMatches(ctx, page.Hits, facts, h.options.FactLimit)
+	out.Matches, err = searchMatches(ctx, page.Hits, facts, h.options.FactLimit, web)
 	if err != nil {
 		return SearchResponse{}, err
 	}

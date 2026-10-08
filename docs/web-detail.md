@@ -12,7 +12,7 @@ base64url borné, non signé, ni secret ni permission ; une génération d'une f
 exacte, pas un message global. Aucun query, même `?` vide, ni corps n'est accepté.
 ID invalide400 avant base, segment supplémentaire404, GET/HEAD seulement.
 
-Le détail appelle directement le même `h.detail` : toutes les origines/cycles/
+Le détail utilise le même `candidateSnapshot` que `h.detail` : toutes les origines/cycles/
 dates de la file participent au budget et à sa révision, puis seule la génération
 sélectionnée est présentée. Les faits hors fenêtre de recherche sont conservés.
 Une révision différente409 impose une nouvelle recherche ; aucune autre génération
@@ -31,7 +31,18 @@ annulation/délai/HTML>1MiB503. Aucun résultat partiel. HEAD mêmes lectures sa
 - Résultat observé et nombre de tentatives ; références de toutes les dernières
   tentatives simultanées, conservées comme incertaines. `sent` reste du transport.
 - Provenance en texte et offsets int64 décimaux, sans liens actifs issus des logs.
-  Pas de lignes/messages bruts, DSN/relay/réponse ou maps/credential dans ce détail.
+  Lignes/messages bruts, maps arbitraires et credentials restent exclus.
+
+Depuis le retour humain164 du 8 octobre, le détail Web expose une
+[fiche opérationnelle](message-tracking-view.md) : expéditeur qmgr, Message-ID
+cleanup, client smtpd, adresses et derniers résultats par destinataire, relais,
+réponse/DSN sélectionnés et délai natif. Code SMTP littéral si reconnu, jamais
+déduit du DSN ni utilisé pour modifier le résultat projeté. En-têtes From:/Subject
+non collectés explicitement indiqués. Toutes les dernières tentatives simultanées
+sont conservées. La sélection Web s'élargit donc aux métadonnées demandées,
+déjà disponibles dans la timeline protégée ; elle ne modifie pas le DTO JSON.
+Les informations techniques antérieures sont repliées sous details/summary.
+Même snapshot, pas de lecture supplémentaire, budgets et garde inchangés.
 
 Même `html/template`, stylesheet immuable embarquée/hash CSP, anti-framing,
 strict-origin/no-store/nosniff que la [recherche Web](web-search.md). Le lien de

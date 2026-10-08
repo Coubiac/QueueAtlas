@@ -35,7 +35,10 @@ peut effectuer le parcours dans sa page ouverte et transmettre ses observations 
 2. Instance `synthetic-postfix`, champ **Expéditeur exact**, valeur
    `synthetic@example.test`, dates `2026-10-07T00:00:00Z` à
    `2026-10-08T00:00:00Z` : candidat ABC123 retrouvé.
-3. Lien détail puis timeline : trois faits observés.
+3. Détail opérationnel : from synthetic@example.test, Message-ID
+   demo-164@example.test, client sender.example.test[192.0.2.10], alice transmis250
+   et bob différé450, relais/motifs/durées2.0/3.0 distincts. From:/Subject non
+   collectés. Puis timeline : **cinq** faits observés dans la fixture TLS actuelle.
 4. Déconnexion : retour au formulaire ; rouvrir `/messages` refuse l'accès.
 
 Rapporter chaque succès/erreur et le navigateur utilisé. Une confirmation de la
@@ -95,5 +98,8 @@ Remove-Item Env:QUEUEATLAS_BROWSER_REVIEW_PORT -ErrorAction SilentlyContinue
 
 Sans opt-in, les deux fixtures sont skipped et la régression automatisée
 `TestWebReviewImportedHostileValuesAcrossViews` s'exécute normalement.
+La fixture TLS humaine utilise l'exemple opérationnel lisible à cinq événements
+depuis le retour utilisateur164 ; la fixture de sécurité/aperçu statique conserve
+les trois événements hostiles. Les résultats de ces deux scénarios sont distincts.
 Consigner navigateur, dimensions, actions, résultats et limites dans la
 [revue Web164](reviews/m4-web.md), avec captures synthétiques.

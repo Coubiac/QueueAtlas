@@ -1,5 +1,12 @@
 # Avancement et estimation jusqu'au MVP
 
+**Dernier retour du 8 octobre — fiche de suivi attendue :** le propriétaire
+demande les informations mail/routage/SMTP/durée. La correction164 ajoute une
+vue opérationnelle HTML des faits déjà collectés, isolée par génération, sans
+changement de stockage/API. [Éléments affichés et manquants](message-tracking-view.md).
+L'en-tête From:/Subject, états actuels de file et rejets non attribués ne sont
+pas inventés. Revue utilisateur du nouveau rendu toujours requise, pas de fusion.
+
 **Retour utilisateur du 8 octobre, lot164 :** connexion et recherche ABC123
 confirmées manuellement après correctif b845d95/CI37707149012. Liste des résultats
 allégée pendant la revue ; calendrier et recherche expéditeur/destinataire/sujet,

@@ -39,15 +39,16 @@
       {{if .Response.Matches}}
       <div class="table-wrap" tabindex="0" role="region" aria-label="Résultats de recherche, tableau défilant">
       <table><caption>Événements du {{readableDate .Response.From}} inclus au {{readableDate .Response.Until}} exclu (UTC)</caption>
-      <thead><tr><th scope="col">Date UTC</th><th scope="col">Événement</th><th scope="col">Message</th><th scope="col">Livraison observée</th><th scope="col">Informations techniques</th></tr></thead>
+      <thead><tr><th scope="col">Date UTC / événement</th><th scope="col">Expéditeur SMTP</th><th scope="col">Destinataires SMTP</th><th scope="col">Message-ID / Queue ID</th><th scope="col">Dernier état observé</th><th scope="col">Informations techniques</th></tr></thead>
       <tbody>{{range .Response.Matches}}<tr>
-        <td><time datetime="{{date .At}}">{{readableDate .At}}</time></td>
-        <td>{{label .Kind}}{{if .NoQueue}}<small class="badge">NOQUEUE</small>{{end}}{{if .PrequeueDisposition}}<small>{{label .PrequeueDisposition}}</small>{{end}}</td>
+        <td><time datetime="{{date .At}}">{{readableDate .At}}</time><small>{{label .Kind}}</small>{{if .NoQueue}}<small class="badge">NOQUEUE</small>{{end}}{{if .PrequeueDisposition}}<small>{{label .PrequeueDisposition}}</small>{{end}}</td>
         {{if .Candidate}}
-        <td><a class="candidate" href="{{candidateURL .Candidate.ID}}"><code>{{visible .Candidate.QueueID}}</code> — détail</a><small>{{visible .Candidate.Instance}}</small></td>
-        <td><ul class="counts">{{if .Candidate.Counts.Unknown}}<li>Résultat inconnu : {{.Candidate.Counts.Unknown}}</li>{{end}}{{if .Candidate.Counts.Sent}}<li>Transmis au prochain serveur ou transport : {{.Candidate.Counts.Sent}}</li>{{end}}{{if .Candidate.Counts.Delivered}}<li>Remises reconnues dans les journaux : {{.Candidate.Counts.Delivered}}</li>{{end}}{{if .Candidate.Counts.Deferred}}<li>Différés : {{.Candidate.Counts.Deferred}}</li>{{end}}{{if .Candidate.Counts.Bounced}}<li>Échecs rapportés : {{.Candidate.Counts.Bounced}}</li>{{end}}</ul>{{if not (or .Candidate.Counts.Unknown .Candidate.Counts.Sent .Candidate.Counts.Delivered .Candidate.Counts.Deferred .Candidate.Counts.Bounced)}}Aucun résultat de livraison interprété{{end}}{{if .Candidate.ExpirationReports}}<small>Expirations rapportées : {{.Candidate.ExpirationReports}}</small>{{end}}</td>
+        <td>{{template "web-values" .Candidate.Web.Senders}}</td>
+        <td><ul class="counts">{{range .Candidate.Web.Recipients}}<li>{{template "timeline-native" .Address}}</li>{{else}}<li>Non observés</li>{{end}}</ul></td>
+        <td>{{template "web-values" .Candidate.Web.MessageIDs}}<small>Queue ID</small><a class="candidate" href="{{candidateURL .Candidate.ID}}"><code>{{visible .Candidate.QueueID}}</code> — détail</a><small>{{visible .Candidate.Instance}}</small></td>
+        <td><ul class="counts">{{range .Candidate.Web.Recipients}}<li>{{template "timeline-native" .Address}} : {{deliveryLabel .Status}}{{if .Uncertain}}<small>Résultats simultanés contradictoires</small>{{end}}</li>{{else}}<li>Non déterminé</li>{{end}}</ul>{{if .Candidate.ExpirationReports}}<small>Expirations rapportées : {{.Candidate.ExpirationReports}}</small>{{end}}</td>
         {{else}}
-        <td>Message non attribué</td><td>Aucun résultat de livraison attribué</td>
+        <td>Non attribué à un message</td><td>Non attribués à un message</td><td>Message non attribué</td><td>Aucun résultat de livraison attribué</td>
         {{end}}
         <td><details class="technical"><summary>Voir les informations techniques</summary>
           <dl><dt>Qualité de la date</dt><dd>{{label .TimeQuality}}</dd>

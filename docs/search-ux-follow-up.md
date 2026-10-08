@@ -17,6 +17,13 @@ Les faits, le détail, l'API, la pagination et la reconstruction ne changent pas
 Les chaînes étranges des fixtures sont synthétiques, certaines volontairement
 hostiles pour vérifier l'échappement ; elles ne représentent pas des mails réels.
 
+Le second retour précise que les informations mail/routage/SMTP doivent être
+principales : [matrice de suivi opérationnelle](message-tracking-view.md).
+Une correction164 ajoute le résumé HTML et la fiche de détail avec les données
+disponibles ; l'en-tête From: rejoint Subject dans la collecte facultative à
+prévoir. Les états actuels de file et les rejets non attribués demandent leurs
+vues/sources propres. La simplification visuelle seule ne répondait pas au besoin.
+
 ## Ordre des comportements suivants
 
 1. **Dates faciles à saisir.** Calendrier et heure, fuseau explicite, choix
