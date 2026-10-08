@@ -1,8 +1,34 @@
 # Revue assistée Web159–164 — PR #37
 
-État au 7 octobre 2026 : **revue incomplète**, PR conservée en brouillon.
-Les corrections du rendu sont publiées ef87ceb, CI37676596678 entière verte ; le parcours navigateur
-HTTPS connexion/déconnexion reste à vérifier avant fusion. Aucun lot165 commencé.
+État au 8 octobre 2026 : **revue incomplète**, PR conservée en brouillon.
+Après correction b845d95 (CI37707149012 entière verte), l'utilisateur confirme
+la connexion et ABC123 dans les résultats de recherche. Détail/timeline/logout
+restent à vérifier. Retour sur la lisibilité et les filtres consigné ci-dessous.
+Aucun lot165 commencé.
+
+## Retour humain du 8 octobre et correction de lisibilité
+
+Fixture TLS relancée sur50104, code b845d95, session19343. L'utilisateur confirme
+« la page de recherche apparait », puis « oui » pour ABC123 après recherche
+expéditeur aux dates explicites. Capture des résultats fournie : preuve humaine
+du login et de la soumission de recherche, pas de rotation/SameSite/logout.
+L'outil navigateur reste inutilisé après son refus de sécurité.
+
+Retour : provenance/hash/offsets/génération et compteurs zéro trop présents ;
+dates de formulaire difficiles, critères expéditeur ET/OU destinataire ET/OU
+sujet et correspondances début/contient/fin souhaités. Correction164 limitée
+au rendu des résultats : date lisible UTC, comptes non nuls avec labels lisibles,
+informations techniques accessibles via details/summary fermé. Avertissement
+global sur couverture/remise finale conservé ; faits/API/SQL inchangés.
+Suite HTTPAPI Windows Go1.26 -count=1 PASS2.474s, vet et diff-check passent.
+Test SQLite existant adapté : pagination/réserves inchangées, provenance dans
+le volet fermé et date canonique conservée. Rendu hostile HTTPS, budgets et
+headers restent vérifiés par la suite ; aucune nouvelle preuve DOM revendiquée.
+
+[Découpage des extensions de recherche](../search-ux-follow-up.md) accepté mais
+non réalisé par ce correctif. Au commit : publication/CI à vérifier. Reprendre
+le parcours humain sur le serveur redémarré ; l'ancien processus ne recharge
+pas les assets embarqués. Détail/timeline/logout non confirmés ; #37 brouillon.
 
 ## Périmètre et méthode
 

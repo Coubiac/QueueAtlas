@@ -1,5 +1,13 @@
 # Avancement et estimation jusqu'au MVP
 
+**Retour utilisateur du 8 octobre, lot164 :** connexion et recherche ABC123
+confirmées manuellement après correctif b845d95/CI37707149012. Liste des résultats
+allégée pendant la revue ; calendrier et recherche expéditeur/destinataire/sujet,
+ET/OU, égalité/début/contient/fin demandés et acceptés, pas encore implémentés.
+[Travaux et dépendances](search-ux-follow-up.md). L'estimation historique13–28
+ci-dessous précède ces extensions et doit être révisée lors de leur découpage.
+La revue164 reste incomplète, PR37 brouillon, M4/M5 et issue7 ouverts.
+
 État au 7 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
 (PR #18, CI finale et main réussies). Projections pures M3 validées aux lots89–92,
 CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration94 et

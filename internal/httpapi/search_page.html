@@ -35,22 +35,26 @@
     {{if .Searched}}
     <section class="results" aria-labelledby="results-title">
       <div class="result-heading"><h2 id="results-title">Événements trouvés</h2><span>{{len .Response.Matches}} sur cette page</span></div>
-      <p class="notice">Couverture des journaux non prouvée. Un même candidat peut apparaître plusieurs fois. Un rapport de transport ne prouve pas la livraison finale.</p>
+      <p class="notice">Les journaux peuvent être incomplets. Un message peut apparaître sur plusieurs lignes. Un envoi rapporté par le transport ne confirme pas la réception dans la boîte du destinataire.</p>
       {{if .Response.Matches}}
       <div class="table-wrap" tabindex="0" role="region" aria-label="Résultats de recherche, tableau défilant">
-      <table><caption>Faits entre {{date .Response.From}} inclus et {{date .Response.Until}} exclu</caption>
-      <thead><tr><th scope="col">Date UTC</th><th scope="col">Observation</th><th scope="col">Candidat de file</th><th scope="col">Destinataires observés</th><th scope="col">Réserves</th><th scope="col">Provenance</th></tr></thead>
+      <table><caption>Événements du {{readableDate .Response.From}} inclus au {{readableDate .Response.Until}} exclu (UTC)</caption>
+      <thead><tr><th scope="col">Date UTC</th><th scope="col">Événement</th><th scope="col">Message</th><th scope="col">Livraison observée</th><th scope="col">Informations techniques</th></tr></thead>
       <tbody>{{range .Response.Matches}}<tr>
-        <td><time datetime="{{date .At}}">{{date .At}}</time><small>{{label .TimeQuality}}</small></td>
+        <td><time datetime="{{date .At}}">{{readableDate .At}}</time></td>
         <td>{{label .Kind}}{{if .NoQueue}}<small class="badge">NOQUEUE</small>{{end}}{{if .PrequeueDisposition}}<small>{{label .PrequeueDisposition}}</small>{{end}}</td>
         {{if .Candidate}}
-        <td><a class="candidate" href="{{candidateURL .Candidate.ID}}"><code>{{visible .Candidate.QueueID}}</code> — détail</a><small>{{visible .Candidate.Instance}}</small><small>Génération {{.Candidate.Generation}}</small></td>
-        <td><ul class="counts"><li>Inconnus : {{.Candidate.Counts.Unknown}}</li><li>sent (transport) : {{.Candidate.Counts.Sent}}</li><li>delivered (remise reconnue) : {{.Candidate.Counts.Delivered}}</li><li>Différés : {{.Candidate.Counts.Deferred}}</li><li>Échecs : {{.Candidate.Counts.Bounced}}</li></ul>{{if .Candidate.ExpirationReports}}<small>Expirations rapportées : {{.Candidate.ExpirationReports}}</small>{{end}}</td>
-        <td><ul>{{range .Candidate.Reserves}}<li>{{label .}}</li>{{end}}</ul></td>
+        <td><a class="candidate" href="{{candidateURL .Candidate.ID}}"><code>{{visible .Candidate.QueueID}}</code> — détail</a><small>{{visible .Candidate.Instance}}</small></td>
+        <td><ul class="counts">{{if .Candidate.Counts.Unknown}}<li>Résultat inconnu : {{.Candidate.Counts.Unknown}}</li>{{end}}{{if .Candidate.Counts.Sent}}<li>Transmis au prochain serveur ou transport : {{.Candidate.Counts.Sent}}</li>{{end}}{{if .Candidate.Counts.Delivered}}<li>Remises reconnues dans les journaux : {{.Candidate.Counts.Delivered}}</li>{{end}}{{if .Candidate.Counts.Deferred}}<li>Différés : {{.Candidate.Counts.Deferred}}</li>{{end}}{{if .Candidate.Counts.Bounced}}<li>Échecs rapportés : {{.Candidate.Counts.Bounced}}</li>{{end}}</ul>{{if not (or .Candidate.Counts.Unknown .Candidate.Counts.Sent .Candidate.Counts.Delivered .Candidate.Counts.Deferred .Candidate.Counts.Bounced)}}Aucun résultat de livraison interprété{{end}}{{if .Candidate.ExpirationReports}}<small>Expirations rapportées : {{.Candidate.ExpirationReports}}</small>{{end}}</td>
         {{else}}
-        <td>Candidat non attribué</td><td>Inconnus</td><td>{{if .UnresolvedReason}}{{label .UnresolvedReason}}{{else}}Pas de génération de file attribuée{{end}}</td>
+        <td>Message non attribué</td><td>Aucun résultat de livraison attribué</td>
         {{end}}
-        <td><code>{{visible .Ref.SourceID}}</code><small>Origine : <code>{{visible .Ref.OriginID}}</code></small><small>Octets {{.Ref.Start}}–{{.Ref.End}}</small></td>
+        <td><details class="technical"><summary>Voir les informations techniques</summary>
+          <dl><dt>Qualité de la date</dt><dd>{{label .TimeQuality}}</dd>
+          {{if .Candidate}}<dt>Génération de file</dt><dd>{{.Candidate.Generation}}</dd><dt>Limites des observations</dt><dd><ul>{{range .Candidate.Reserves}}<li>{{label .}}</li>{{end}}</ul></dd>
+          {{else}}<dt>Attribution</dt><dd>{{if .UnresolvedReason}}{{label .UnresolvedReason}}{{else}}Pas de génération de file attribuée{{end}}</dd>{{end}}
+          <dt>Source</dt><dd><code>{{visible .Ref.SourceID}}</code></dd><dt>Origine</dt><dd><code>{{visible .Ref.OriginID}}</code></dd><dt>Position dans le journal</dt><dd>Octets {{.Ref.Start}}–{{.Ref.End}}</dd></dl>
+        </details></td>
       </tr>{{end}}</tbody></table></div>
       {{else}}<div class="panel empty"><h3>Aucun événement correspondant</h3><p>Aucun fait correspondant dans cette période et cette base. Cela ne prouve pas l’absence dans les journaux.</p></div>{{end}}
       {{if .NextURL}}<nav class="pagination" aria-label="Pagination"><a class="next" href="{{.NextURL}}">Page suivante →</a></nav>{{end}}

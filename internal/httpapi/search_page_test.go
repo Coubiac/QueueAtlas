@@ -115,10 +115,16 @@ func TestConsultationSearchPageSQLitePaginationAndReserves(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, searchReadRequest("GET", path, token))
 	assertSearchPage(t, w, 200)
-	for _, required := range []string{"ABC123", "sent (transport) : 1", "delivered (remise reconnue) : 0", "Couverture non prouvée", "Continuité entre origines incertaine", "Page suivante", "synthetic-first"} {
+	for _, required := range []string{"ABC123", "Transmis au prochain serveur ou transport : 1", "Couverture non prouvée", "Continuité entre origines incertaine", "Page suivante", "synthetic-first", `datetime="2026-10-07T00:00:00Z"`, "07/10/2026 00:00:00"} {
 		if !strings.Contains(w.Body.String(), required) {
 			t.Fatal("full queue summary/reserve missing", required)
 		}
+	}
+	// Real SQLite summary: technical provenance stays accessible in a closed
+	// disclosure and zero delivery counters no longer obscure the observed result.
+	technical := regexp.MustCompile(`(?s)<details class="technical">.*?</details>`).FindString(w.Body.String())
+	if !strings.Contains(technical, "synthetic-first") || !strings.Contains(technical, "Continuité entre origines incertaine") || strings.Contains(w.Body.String(), `<details class="technical" open`) || strings.Contains(w.Body.String(), "Remises reconnues dans les journaux : 0") || strings.Contains(w.Body.String(), "Inconnus : 0") {
+		t.Fatal("technical disclosure or compact delivery result regressed")
 	}
 	for _, private := range []string{"private raw", "private reply", "private.log", "PasswordHash"} {
 		if strings.Contains(w.Body.String(), private) {
@@ -175,7 +181,7 @@ func TestConsultationSearchPageSQLitePaginationAndReserves(t *testing.T) {
 	w = httptest.NewRecorder()
 	h.ServeHTTP(w, searchReadRequest("GET", SearchPagePath+"?"+params.Encode(), token))
 	assertSearchPage(t, w, 200)
-	for _, required := range []string{"NOQUEUE", "Avertissement, pas un rejet", "Candidat non attribué"} {
+	for _, required := range []string{"NOQUEUE", "Avertissement, pas un rejet", "Message non attribué"} {
 		if !strings.Contains(w.Body.String(), required) {
 			t.Fatal("prequeue warning acquired a queue or rejection", required)
 		}

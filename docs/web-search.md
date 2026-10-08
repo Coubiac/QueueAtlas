@@ -22,7 +22,10 @@ nouvelle recherche, sans conserver le curseur précédent.
 
 Les lignes sont des événements correspondants : un candidat peut apparaître
 plusieurs fois. Ses comptes/réserves proviennent des faits complets de la file,
-pas de la seule page. Date/qualité, provenance et offsets décimaux sont affichés.
+pas de la seule page. Depuis le retour humain164, date lisible en UTC et seuls
+les comptes non nuls sont affichés dans la liste. Qualité de date, génération,
+réserves, provenance et offsets décimaux restent dans « Informations techniques »,
+un volet natif fermé par défaut. Le datetime conserve l'instant canonique.
 `sent` décrit le transport, pas une livraison finale. Les avertissements NOQUEUE
 ne deviennent pas des rejets ; les faits sans génération restent non attribués.
 Un résultat vide ne prouve pas l'absence dans les journaux.
@@ -78,3 +81,9 @@ conservés littéralement. [Revue navigateur partielle](reviews/m4-web.md) : ren
 statique synthétique contrôlé, parcours HTTPS authentifié encore à vérifier.
 Montage serveur et fin de revue restent à réaliser.
 L'issue #7 reste ouverte ; MIT conservée, AD/OIDC/Keycloak après MVP.
+
+Le 8 octobre, l'utilisateur confirme login et ABC123 après soumission réelle de
+la recherche sur la fixture TLS corrigée b845d95. Il demande aussi calendrier,
+critères combinables et opérateurs textuels : [travaux restants](search-ux-follow-up.md).
+Ces filtres ne sont pas encore disponibles ; la correction de lisibilité164
+ne modifie pas le contrat de recherche exact à un seul critère.

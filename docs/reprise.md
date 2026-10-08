@@ -1,7 +1,29 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 7 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 8 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
+
+**Reprise actuelle — lot164, retour humain et lisibilité de la recherche.**
+L'utilisateur confirme la connexion puis ABC123 après recherche sur la fixture
+TLS corrigée b845d9587b6321b74ea632ddd8bd10182d0131e9. CI37707149012 entière
+success sur ce SHA : Go1.26 113084115393, Windows113084115692,
+stable113084116651 ; preuve post-publication dans #37. Le parcours humain
+détail/timeline/logout et les limites cookie/SameSite restent à terminer.
+La capture des résultats montre une présentation trop technique : correction
+dans le même lot, dates de résultat lisibles, comptes non nuls, provenance et
+qualité/génération/réserves dans un volet natif fermé. Aucune donnée supprimée,
+garde/API/SQL inchangées. Suite HTTPAPI Windows Go1.26 -count=1 : PASS2.474s.
+Au commit : publier dans #37 et vérifier les trois jobs de CI sur le nouveau SHA.
+Le serveur de revue doit être redémarré pour embarquer ce rendu ; la session
+précédente ne prouve que l'ancien rendu. Nouveau login nécessaire après relance.
+
+Demandes supplémentaires acceptées : calendrier/périodes rapides, critères
+expéditeur ET/OU destinataire ET/OU sujet et opérateurs égalité/début/contient/fin.
+[Découpage et dépendances](search-ux-follow-up.md), non implémentés par la seule
+correction de rendu. Le sujet n'est pas indexé dans le modèle actuel ; collecte
+explicite à définir. L'ancienne estimation13–28 n'inclut pas ce nouveau périmètre.
+Ne pas démarrer montage serveur/lot165 ni fusionner avant fin de revue164 ; les
+corrections de cette revue restent dans #37 brouillon.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
