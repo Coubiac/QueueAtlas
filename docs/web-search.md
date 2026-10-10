@@ -22,10 +22,13 @@ nouvelle recherche, sans conserver le curseur précédent.
 
 Les lignes sont des événements correspondants : un candidat peut apparaître
 plusieurs fois. Ses comptes/réserves proviennent des faits complets de la file,
-pas de la seule page. Depuis le retour humain164, date lisible en UTC et seuls
-les comptes non nuls sont affichés dans la liste. Qualité de date, génération,
-réserves, provenance et offsets décimaux restent dans « Informations techniques »,
-un volet natif fermé par défaut. Le datetime conserve l'instant canonique.
+pas de la seule page. Depuis le retour humain164 du 10 octobre, la liste garde
+cinq colonnes métier : date/événement, expéditeur, destinataires, identifiants et
+derniers états par destinataire. La colonne technique a été retirée ; génération,
+réserves et références restent consultables dans le détail lié et l’historique.
+Les dates sont lisibles en UTC. Quand l’année ou le fuseau ont été ajoutés lors
+de la lecture, une explication accompagne la date, y compris sans candidat lié.
+Le datetime conserve l'instant canonique.
 `sent` décrit le transport, pas une livraison finale. Les avertissements NOQUEUE
 ne deviennent pas des rejets ; les faits sans génération restent non attribués.
 Un résultat vide ne prouve pas l'absence dans les journaux.

@@ -115,18 +115,14 @@ func TestConsultationSearchPageSQLitePaginationAndReserves(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, searchReadRequest("GET", path, token))
 	assertSearchPage(t, w, 200)
-	for _, required := range []string{"ABC123", "Transmis", "recipient@example.test", "Couverture non prouvée", "Continuité entre origines incertaine", "Page suivante", "synthetic-first", `datetime="2026-10-07T00:00:00Z"`, "07/10/2026 00:00:00"} {
+	for _, required := range []string{"ABC123", "Transmis", "recipient@example.test", "Les journaux peuvent être incomplets", "Page suivante", `datetime="2026-10-07T00:00:00Z"`, "07/10/2026 00:00:00"} {
 		if !strings.Contains(w.Body.String(), required) {
 			t.Fatal("full queue summary/reserve missing", required)
 		}
 	}
-	// Real SQLite summary: technical provenance stays accessible in a closed
-	// disclosure and zero delivery counters no longer obscure the observed result.
-	technical := regexp.MustCompile(`(?s)<details class="technical">.*?</details>`).FindString(w.Body.String())
-	if !strings.Contains(technical, "synthetic-first") || !strings.Contains(technical, "Continuité entre origines incertaine") || strings.Contains(w.Body.String(), `<details class="technical" open`) || strings.Contains(w.Body.String(), "Remises reconnues dans les journaux : 0") || strings.Contains(w.Body.String(), "Inconnus : 0") {
-		t.Fatal("technical disclosure or compact delivery result regressed")
-	}
-	for _, private := range []string{"private raw", "private reply", "private.log", "PasswordHash"} {
+	// Technical references and reserves remain available in the linked detail,
+	// not as a sixth column in the operator's search results.
+	for _, private := range []string{"Informations techniques", "Qualité de la date", "Couverture non prouvée", "Continuité entre origines incertaine", "synthetic-first", "Octets", "private raw", "private reply", "private.log", "PasswordHash"} {
 		if strings.Contains(w.Body.String(), private) {
 			t.Fatal("search exposed unselected log/account content")
 		}
@@ -240,8 +236,8 @@ func TestConsultationSearchPageRealHTTPSHostileTextAndRevocation(t *testing.T) {
 			t.Fatal("HEAD sent HTML")
 		}
 		if tc.method == "GET" && tc.status == 200 {
-			if strings.Contains(string(body), "<script>") || strings.Contains(string(body), "<img") || !strings.Contains(string(body), html.EscapeString(payload)) || !strings.Contains(string(body), html.EscapeString(queue)) || !strings.Contains(string(body), "9007199254740993") {
-				t.Fatal("hostile input/ref/candidate became markup or offsets rounded")
+			if strings.Contains(string(body), "<script>") || strings.Contains(string(body), "<img") || !strings.Contains(string(body), html.EscapeString(payload)) || !strings.Contains(string(body), html.EscapeString(queue)) || strings.Contains(string(body), "9007199254740993") {
+				t.Fatal("hostile input/candidate became markup or technical offset leaked into search")
 			}
 		}
 	}
@@ -300,14 +296,14 @@ func TestConsultationSearchPageSharedAdmissionCancellationAndByteCap(t *testing.
 		t.Fatal("late successful read exposed results")
 	}
 	// Distinct refs of one queue fit the native count budget. HTML expansion of
-	// quoted provenance exceeds the shared one MiB response cap.
+	// a quoted Message-ID exceeds the shared one MiB response cap.
 	var facts []correlation.Fact
 	var hits []sqlite.SearchHit
 	quoted := strings.Repeat(`"`, 1024)
 	at := time.Unix(0, goldenSearchFromNS).UTC()
 	for i := 0; i < 200; i++ {
 		ref := correlation.FactRef{SourceID: quoted, OriginID: quoted, Start: int64(i * 2), End: int64(i*2 + 1)}
-		o := model.Observation{SourceID: quoted, QueueID: "ABC123", Kind: model.KindMessage, Service: "cleanup", Timestamp: model.Timestamp{Value: &at, Quality: model.TimeExplicitOffset}, Fields: map[string]string{"message-id": "synthetic@example.test"}, Present: map[string]bool{"message-id": true}}
+		o := model.Observation{SourceID: quoted, QueueID: "ABC123", Kind: model.KindMessage, Service: "cleanup", Timestamp: model.Timestamp{Value: &at, Quality: model.TimeExplicitOffset}, Fields: map[string]string{"message-id": quoted}, Present: map[string]bool{"message-id": true}}
 		facts = append(facts, correlation.Fact{Ref: ref, Instance: "synthetic-postfix", Observation: o})
 		hits = append(hits, sqlite.SearchHit{Ref: ref, Instance: "synthetic-postfix", QueueID: "ABC123", At: at, Kind: o.Kind, TimeQuality: o.Timestamp.Quality})
 	}

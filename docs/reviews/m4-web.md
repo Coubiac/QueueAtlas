@@ -1,10 +1,25 @@
 # Revue assistée Web159–164 — PR #37
 
-État au 8 octobre 2026 : **revue incomplète**, PR conservée en brouillon.
+État au 10 octobre 2026 : **revue incomplète**, PR conservée en brouillon.
 Après correction b845d95 (CI37707149012 entière verte), l'utilisateur confirme
 la connexion et ABC123 dans les résultats de recherche. Détail/timeline/logout
 restent à vérifier. Retour sur la lisibilité et les filtres consigné ci-dessous.
 Aucun lot165 commencé.
+
+## Retour humain du 10 octobre : diagnostics incompréhensibles
+
+Code0f58cfd publié, CI37812053841 entière success sur SHA exact/trois jobs,
+preuve dans PR37/issue7. Nouvelle fixture42023, l’utilisateur confirme login,
+puis capture des résultats ABC123/alice/bob ; aucune preuve du détail ni logout.
+Il demande une présentation compréhensible des positions et dates.
+Correction164 : suppression de la sixième colonne technique en recherche,
+références gardées dans le diagnostic du détail et volets fermés de l’historique.
+Offsets expliqués sans faux numéro de ligne. Dates UTC lisibles, provenance du
+fuseau/année expliquée en phrases, sans notation « qualité de la date ».
+Tests existants adaptés aux données sélectionnées, plafond HTML/XSS maintenus ;
+suite HTTPAPI PASS3.958s et format/diff passés. Publication/CI du nouveau commit
+à vérifier ; relancer la fixture pour la revue humaine. Détail/timeline/logout
+restent à constater ; pas de nouvelle preuve DOM par outil navigateur.
 
 ## Second retour humain : informations mail et routage
 

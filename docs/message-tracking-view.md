@@ -6,6 +6,12 @@ dans un volet technique, pas les informations principales. Cette correction de
 la revue164 ajoute une projection **HTML seulement** des faits déjà disponibles.
 Le tableau suivant distingue ce qui est affiché de ce qui reste à collecter.
 
+Retour humain du 10 octobre : références internes retirées de la liste de
+recherche, accessibles dans le diagnostic du détail et les volets fermés de
+l’historique. Offsets expliqués comme repères techniques, aucun numéro de ligne
+inventé. La provenance de l’année/fuseau est expliquée directement ; les dates
+normales n’affichent pas une appréciation de « qualité ».
+
 | Élément demandé | Origine et affichage actuel | Limite / travail restant |
 | --- | --- | --- |
 | Date et heure | Instant de l'événement en UTC, fractions de seconde conservées ; première/dernière observation dans le détail | Calendrier et fuseau choisi restent au chantier des filtres ; hypothèses temporelles conservées |

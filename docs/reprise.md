@@ -1,9 +1,29 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 8 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 10 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
 
-**Reprise actuelle — lot164, fiche de suivi opérationnelle demandée.**
+**Reprise actuelle — lot164, diagnostics retirés de la recherche.**
+Le propriétaire confirme à nouveau le login le 10 octobre puis fournit une
+capture des résultats ABC123 : expéditeur, alice transmis et bob différé visibles.
+Il signale que les octets et « qualité de la date » restent incompréhensibles.
+Correction : tableau à cinq colonnes métier, diagnostics seulement dans le détail
+et les volets fermés de l’historique ; repères en octets expliqués sans inventer
+de numéros de ligne. Date UTC lisible dans l’historique, année/fuseau ajoutés
+expliqués lorsqu’ils sont nécessaires, pas de jugement de fiabilité de l’horloge.
+Stockage, DTO JSON, permissions et recherche inchangés. Tests existants adaptés :
+absence de références techniques dans la liste, XSS/HEAD/session et plafond HTML
+maintenus (expansion d’un Message-ID au lieu d’une provenance masquée).
+Suite HTTPAPI Windows Go1.26 PASS3.958s, gofmt/diff passés.
+Au commit : publier dans #37 et vérifier toute la CI sur le SHA exact.
+Dernier état publié0f58cfd : CI37812053841 entière success, Windows113431137005,
+Go1.26 113431137240, stable113431137539 ; preuve déjà consignée dans #37/issue7.
+La session humaine42023 doit être remplacée pour montrer cette correction.
+Prochaine action : nouveau login puis ouvrir ABC123 — détail ; fiche/historique/
+logout encore à confirmer. La capture actuelle prouve la recherche, pas le détail.
+Revue164 toujours incomplète, PR37 brouillon ; aucun165/montage/fusion.
+
+**État précédent — lot164, fiche de suivi opérationnelle demandée.**
 Le propriétaire précise les informations attendues : adresses d'enveloppe et
 en-tête, Message-ID/Queue ID, client source/relais, événements/codes/motifs/états
 et durée. Correction de revue : tableau from/to/Message-ID/états et fiche de

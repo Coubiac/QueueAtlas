@@ -39,9 +39,9 @@
       {{if .Response.Matches}}
       <div class="table-wrap" tabindex="0" role="region" aria-label="Résultats de recherche, tableau défilant">
       <table><caption>Événements du {{readableDate .Response.From}} inclus au {{readableDate .Response.Until}} exclu (UTC)</caption>
-      <thead><tr><th scope="col">Date UTC / événement</th><th scope="col">Expéditeur SMTP</th><th scope="col">Destinataires SMTP</th><th scope="col">Message-ID / Queue ID</th><th scope="col">Dernier état observé</th><th scope="col">Informations techniques</th></tr></thead>
+      <thead><tr><th scope="col">Date UTC / événement</th><th scope="col">Expéditeur SMTP</th><th scope="col">Destinataires SMTP</th><th scope="col">Message-ID / Queue ID</th><th scope="col">Dernier état observé</th></tr></thead>
       <tbody>{{range .Response.Matches}}<tr>
-        <td><time datetime="{{date .At}}">{{readableDate .At}}</time><small>{{label .Kind}}</small>{{if .NoQueue}}<small class="badge">NOQUEUE</small>{{end}}{{if .PrequeueDisposition}}<small>{{label .PrequeueDisposition}}</small>{{end}}</td>
+        <td><time datetime="{{date .At}}">{{readableDate .At}}</time><small>{{label .Kind}}</small>{{if ne .TimeQuality "explicit_offset"}}<small>{{label .TimeQuality}}</small>{{end}}{{if .NoQueue}}<small class="badge">NOQUEUE</small>{{end}}{{if .PrequeueDisposition}}<small>{{label .PrequeueDisposition}}</small>{{end}}</td>
         {{if .Candidate}}
         <td>{{template "web-values" .Candidate.Web.Senders}}</td>
         <td><ul class="counts">{{range .Candidate.Web.Recipients}}<li>{{template "timeline-native" .Address}}</li>{{else}}<li>Non observés</li>{{end}}</ul></td>
@@ -50,12 +50,6 @@
         {{else}}
         <td>Non attribué à un message</td><td>Non attribués à un message</td><td>Message non attribué</td><td>Aucun résultat de livraison attribué</td>
         {{end}}
-        <td><details class="technical"><summary>Voir les informations techniques</summary>
-          <dl><dt>Qualité de la date</dt><dd>{{label .TimeQuality}}</dd>
-          {{if .Candidate}}<dt>Génération de file</dt><dd>{{.Candidate.Generation}}</dd><dt>Limites des observations</dt><dd><ul>{{range .Candidate.Reserves}}<li>{{label .}}</li>{{end}}</ul></dd>
-          {{else}}<dt>Attribution</dt><dd>{{if .UnresolvedReason}}{{label .UnresolvedReason}}{{else}}Pas de génération de file attribuée{{end}}</dd>{{end}}
-          <dt>Source</dt><dd><code>{{visible .Ref.SourceID}}</code></dd><dt>Origine</dt><dd><code>{{visible .Ref.OriginID}}</code></dd><dt>Position dans le journal</dt><dd>Octets {{.Ref.Start}}–{{.Ref.End}}</dd></dl>
-        </details></td>
       </tr>{{end}}</tbody></table></div>
       {{else}}<div class="panel empty"><h3>Aucun événement correspondant</h3><p>Aucun fait correspondant dans cette période et cette base. Cela ne prouve pas l’absence dans les journaux.</p></div>{{end}}
       {{if .NextURL}}<nav class="pagination" aria-label="Pagination"><a class="next" href="{{.NextURL}}">Page suivante →</a></nav>{{end}}

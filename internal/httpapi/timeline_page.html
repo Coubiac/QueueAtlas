@@ -29,11 +29,9 @@
     <section class="results" aria-labelledby="events-title">
       <h2 id="events-title">Faits observés — {{len .Events}} sur cette page</h2>
       <ol class="timeline">{{range .Events}}<li><article class="panel">
-        <h3><time datetime="{{date .At}}">{{date .At}}</time> · {{label .Kind}}</h3>
-        <p class="help">{{label .TimeQuality}}{{if .ParseFailed}} · Analyse incomplète{{end}}</p>
+        <h3><time datetime="{{date .At}}">{{readableDate .At}}</time> (UTC) · {{label .Kind}}</h3>
+        {{if ne .TimeQuality "explicit_offset"}}<p class="help">{{label .TimeQuality}}</p>{{end}}{{if .ParseFailed}}<p class="help">Analyse incomplète</p>{{end}}
         <dl>
-          <dt>Provenance</dt><dd><code>{{visible .Ref.SourceID}}</code><small>Origine : <code>{{visible .Ref.OriginID}}</code></small><small>Octets {{.Ref.Start}}–{{.Ref.End}}</small></dd>
-          <dt>Date native</dt><dd>{{template "timeline-native" .TimestampRaw}}</dd>
           <dt>Hôte déclaré</dt><dd>{{template "timeline-native" .Host}}</dd>
           <dt>Service</dt><dd>{{template "timeline-native" .Service}}</dd>
           <dt>PID</dt><dd>{{template "timeline-native" .PID}}</dd>
@@ -49,6 +47,13 @@
           <dt>Réponse native</dt><dd>{{template "timeline-field" .Reply}}</dd>
           {{end}}
         </dl>
+        <details class="technical"><summary>Retrouver cet événement dans les journaux</summary>
+          <dl><dt>Collecte de journaux</dt><dd><code>{{visible .Ref.SourceID}}</code></dd>
+          <dt>Identifiant du journal</dt><dd><code>{{visible .Ref.OriginID}}</code></dd>
+          <dt>Repère technique dans le fichier</dt><dd>Octets {{.Ref.Start}}–{{.Ref.End}}<small>Emplacement de la ligne pour le diagnostic ; ce n’est ni un numéro de ligne ni la taille du message.</small></dd>
+          <dt>Interprétation de la date</dt><dd>{{label .TimeQuality}}</dd>
+          <dt>Date telle qu’écrite dans le journal</dt><dd>{{template "timeline-native" .TimestampRaw}}</dd></dl>
+        </details>
         {{with .Raw}}<section aria-label="Ligne brute"><h4>Ligne brute</h4>{{if eq .Encoding "base64"}}<p class="help">Octets non UTF-8 — base64</p>{{end}}<pre>{{visible .Value}}</pre></section>{{end}}
       </article></li>{{end}}</ol>
       {{if $.NextURL}}<nav class="pagination" aria-label="Pagination"><a class="next" href="{{$.NextURL}}">Page suivante →</a></nav>{{end}}

@@ -1,5 +1,11 @@
 # Avancement et estimation jusqu'au MVP
 
+**Retour du 10 octobre — revue164 toujours en cours :** login/recherche confirmés
+sur0f58cfd (CI37812053841 entière verte). Nouvelle correction de présentation :
+diagnostics retirés de la liste, repères techniques et interprétation des dates
+expliqués dans détail/historique. Fiche/historique/logout restent à valider ;
+pas de nouveau lot ni de fusion. Filtres/calendrier/en-têtes restent au backlog.
+
 **Dernier retour du 8 octobre — fiche de suivi attendue :** le propriétaire
 demande les informations mail/routage/SMTP/durée. La correction164 ajoute une
 vue opérationnelle HTML des faits déjà collectés, isolée par génération, sans

@@ -28,11 +28,18 @@ les autres vues ; garde/protocole antérieurs gardent leurs réponses texte/JSON
 
 ## Métadonnées et lignes brutes
 
-Date UTC/qualité/date native, hôte déclaré/service/PID, kind/parse_failed,
+Date UTC/interprétation/date native, hôte déclaré/service/PID, kind/parse_failed,
 source/origine/offsets int64 exacts, expéditeur/Message-ID présents. Tentative
 reconnue : adresse/orig_to, statut natif et interprété, transport, relais/DSN/réponse.
 Absence distincte du vide, casse conservée ; métadonnées privées accessibles au
 compte même sans ligne brute. Pas d'Observation/Message/maps/compte sérialisés.
+
+Retour humain du 10 octobre164 : dates lisibles en UTC, explication directe
+lorsque l’année/fuseau ont été ajoutés. Références source/origine/offset et date
+native dans un volet fermé « Retrouver cet événement dans les journaux ».
+Les offsets sont explicitement des repères techniques pour retrouver une ligne,
+pas des numéros de ligne ni une taille de message. « Qualité de date » supprimé
+de l’interface ; aucun jugement sur la justesse de l’horloge n’est introduit.
 
 `AllowRawLogs` reste false par défaut ; raw1 interdit403 avant base après auth.
 La permission serveur seule n'affiche aucune ligne : il faut cocher le formulaire

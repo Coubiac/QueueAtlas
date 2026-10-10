@@ -51,7 +51,8 @@
         <p class="help">Temps écoulé rapporté par Postfix au moment de cette tentative ; les destinataires peuvent avoir des durées différentes.</p>
       </article>{{else}}<div class="panel"><p>Aucun résultat de livraison par destinataire observé. L’état final est non déterminé.</p></div>{{end}}
     </section>
-    <details class="technical results"><summary>Informations techniques et limites des observations</summary>
+    <details class="technical results"><summary>Diagnostic et références des journaux</summary>
+    <p class="help">Ce volet sert à vérifier la reconstruction et à retrouver les lignes d’origine. Les références en octets sont des repères techniques dans le fichier, pas des numéros de ligne ni la taille du message.</p>
     <p class="notice">Couverture des journaux non prouvée. Cette génération n’est pas une identité globale de message.</p>
     <section class="panel" aria-labelledby="candidate-title">
       <h2 id="candidate-title">File <code>{{visible .Candidate.QueueID}}</code></h2>
@@ -61,7 +62,7 @@
         <dt>Réception native</dt><dd>{{if .ReceiptObserved}}Observée{{else}}Non observée{{end}}</dd>
         <dt>Première référence de la génération</dt><dd>{{template "candidate-ref" .First}}</dd>
         <dt>Retrait de file</dt><dd>{{if .Removed}}{{template "candidate-ref" .Removed}}{{else}}Non observé{{end}}</dd>
-        <dt>Temps sous hypothèse</dt><dd>{{if .HasNonExplicitTime}}Présent{{else}}Non signalé{{end}}</dd>
+        <dt>Interprétation des dates</dt><dd>{{if .HasNonExplicitTime}}Au moins une date utilise une année ou un fuseau ajoutés lors de la lecture. Consultez l’historique pour connaître l’explication par événement.{{else}}Les journaux indiquent le fuseau horaire des dates observées ; les heures sont affichées en UTC.{{end}}</dd>
         <dt>Continuité entre origines</dt><dd>{{if .CrossStreamUncertain}}Incertaine{{else}}Non signalée ; couverture non prouvée{{end}}</dd>
         <dt>Tentatives non interprétées</dt><dd>{{.UnprojectedDeliveryCount}}</dd>
         <dt>Expirations rapportées</dt><dd>{{.Candidate.ExpirationReports}}</dd>
@@ -92,5 +93,5 @@
   <footer>QueueAtlas · Journaux observés, reconstruction prudente</footer>
 </body>
 </html>
-{{define "candidate-ref"}}<code>{{visible .SourceID}}</code><small>Origine : <code>{{visible .OriginID}}</code></small><small>Octets {{.Start}}–{{.End}}</small>{{end}}
+{{define "candidate-ref"}}<small>Collecte : <code>{{visible .SourceID}}</code></small><small>Identifiant du journal : <code>{{visible .OriginID}}</code></small><small>Repère technique dans le fichier : octets {{.Start}}–{{.End}}</small>{{end}}
 {{define "web-values"}}<ul class="counts">{{range .}}<li>{{template "timeline-native" .}}</li>{{else}}<li>Non observé</li>{{end}}</ul>{{end}}

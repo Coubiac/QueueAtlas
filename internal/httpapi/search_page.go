@@ -186,7 +186,7 @@ func searchPageError(w http.ResponseWriter, r *http.Request, status int) {
 func searchPageLabel(value any) string {
 	labels := map[string]string{
 		"message": "Message observé", "delivery": "Tentative observée", "removed": "Retrait de file observé", "bounce": "Notification d'échec", "reject": "Rapport pré-file", "unknown": "Inconnu",
-		"explicit_offset": "Fuseau explicite", "configured_year_and_zone": "Année et fuseau configurés", "inferred_year_and_zone": "Année et fuseau inférés",
+		"explicit_offset": "Le journal indique le fuseau horaire ; l’heure est affichée en UTC.", "configured_year_and_zone": "Année et fuseau absents du journal : ceux de la configuration ont été utilisés.", "inferred_year_and_zone": "Année et fuseau absents du journal : ils ont été estimés lors de la lecture.",
 		"coverage_unproven": "Couverture non prouvée", "cross_stream_uncertain": "Continuité entre origines incertaine", "non_explicit_time": "Date sous hypothèse",
 		"receipt_not_observed": "Réception non observée", "removal_not_observed": "Retrait non observé", "no_recipients_observed": "Aucun destinataire observé",
 		"address_unspecified": "Adresse non spécifiée", "latest_order_uncertain": "Dernières tentatives simultanées", "unknown_result": "Résultat inconnu", "unprojected_deliveries": "Tentatives non interprétées",
