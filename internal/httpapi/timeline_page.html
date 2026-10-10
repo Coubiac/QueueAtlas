@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeline du candidat — QueueAtlas</title>
+  <style>{{styles}}</style>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <header class="top"><a class="brand" href="/messages">QueueAtlas</a><span>Suivi Postfix</span>{{template "session_actions.html"}}</header>
+  <main id="main" tabindex="-1">
+    <nav aria-label="Navigation"><a href="/messages">Rechercher un événement</a>{{with .Response}} · <a href="{{candidateURL .CandidateID}}">Détail du candidat</a>{{end}}</nav>
+    <div class="heading"><p class="eyebrow">Faits de la génération</p><h1>Timeline du candidat</h1><p>Observations et tentatives, dans leur périmètre natif.</p></div>
+    {{if .Error}}<section class="panel error" aria-labelledby="error-title"><h2 id="error-title">Consultation interrompue</h2><p>{{.Error}}</p><a href="/messages">Relancer la recherche</a></section>{{end}}
+    {{with .Response}}
+    <p class="notice">Couverture des journaux non prouvée. Ordre par date puis provenance pour l’affichage ; les faits simultanés ne prouvent pas un ordre causal. Un rapport de transport ne prouve pas la livraison finale.</p>
+    {{if .HasNonExplicitTime}}<p class="notice">Dates sous hypothèse dans cette génération.</p>{{end}}
+    {{if .CrossStreamUncertain}}<p class="notice">Continuité entre origines incertaine.</p>{{end}}
+    <section class="panel" aria-labelledby="page-title">
+      <h2 id="page-title">Affichage de la timeline</h2>
+      <form method="get" action="{{timelineURL .CandidateID}}">
+        <label for="limit">Faits par page</label><input id="limit" type="number" name="limit" min="1" max="200" value="{{.Limit}}" required>
+        {{if $.RawAllowed}}<label><input type="checkbox" name="raw" value="1"{{if .RawIncluded}} checked{{end}}> Afficher les lignes brutes</label>{{else}}<p>Lignes brutes non autorisées sur ce serveur.</p>{{end}}
+        <p class="help">Les métadonnées SMTP/DSN restent privées et visibles même sans ligne brute. Les contrôles CR/LF/tabulation/ANSI et de direction sont représentés par des séquences visibles ; les valeurs binaires sont étiquetées en base64.</p>
+        <button type="submit">Afficher depuis le début</button>
+      </form>
+    </section>
+    <section class="results" aria-labelledby="events-title">
+      <h2 id="events-title">Faits observés — {{len .Events}} sur cette page</h2>
+      <ol class="timeline">{{range .Events}}<li><article class="panel">
+        <h3><time datetime="{{date .At}}">{{readableDate .At}}</time> (UTC) · {{label .Kind}}</h3>
+        {{if ne .TimeQuality "explicit_offset"}}<p class="help">{{label .TimeQuality}}</p>{{end}}{{if .ParseFailed}}<p class="help">Analyse incomplète</p>{{end}}
+        <dl>
+          <dt>Hôte déclaré</dt><dd>{{template "timeline-native" .Host}}</dd>
+          <dt>Service</dt><dd>{{template "timeline-native" .Service}}</dd>
+          <dt>PID</dt><dd>{{template "timeline-native" .PID}}</dd>
+          <dt>Expéditeur</dt><dd>{{template "timeline-field" .Sender}}</dd>
+          <dt>Message-ID</dt><dd>{{template "timeline-field" .MessageID}}</dd>
+          {{with .Delivery}}
+          <dt>Destinataire</dt><dd>{{template "timeline-native" .Recipient}}</dd>
+          <dt>Destinataire d’origine</dt><dd>{{template "timeline-field" .OriginalRecipient}}</dd>
+          <dt>Statut natif</dt><dd>{{template "timeline-native" .NativeStatus}}</dd>
+          <dt>Résultat observé</dt><dd>{{label .ObservedStatus}} · {{label .Scope}}</dd>
+          <dt>Relais</dt><dd>{{template "timeline-field" .Relay}}</dd>
+          <dt>DSN</dt><dd>{{template "timeline-field" .DSN}}</dd>
+          <dt>Réponse native</dt><dd>{{template "timeline-field" .Reply}}</dd>
+          {{end}}
+        </dl>
+        <details class="technical"><summary>Retrouver cet événement dans les journaux</summary>
+          <dl><dt>Collecte de journaux</dt><dd><code>{{visible .Ref.SourceID}}</code></dd>
+          <dt>Identifiant du journal</dt><dd><code>{{visible .Ref.OriginID}}</code></dd>
+          <dt>Repère technique dans le fichier</dt><dd>Octets {{.Ref.Start}}–{{.Ref.End}}<small>Emplacement de la ligne pour le diagnostic ; ce n’est ni un numéro de ligne ni la taille du message.</small></dd>
+          <dt>Interprétation de la date</dt><dd>{{label .TimeQuality}}</dd>
+          <dt>Date telle qu’écrite dans le journal</dt><dd>{{template "timeline-native" .TimestampRaw}}</dd></dl>
+        </details>
+        {{with .Raw}}<section aria-label="Ligne brute"><h4>Ligne brute</h4>{{if eq .Encoding "base64"}}<p class="help">Octets non UTF-8 — base64</p>{{end}}<pre>{{visible .Value}}</pre></section>{{end}}
+      </article></li>{{end}}</ol>
+      {{if $.NextURL}}<nav class="pagination" aria-label="Pagination"><a class="next" href="{{$.NextURL}}">Page suivante →</a></nav>{{end}}
+    </section>
+    {{end}}
+  </main>
+  <footer>QueueAtlas · Journaux observés, reconstruction prudente</footer>
+</body>
+</html>
+{{define "timeline-native"}}{{if eq .Encoding "base64"}}<small>Octets non UTF-8 — base64</small><code>{{.Value}}</code>{{else}}{{if .Value}}<code>{{visible .Value}}</code>{{else}}Valeur vide observée{{end}}{{end}}{{end}}
+{{define "timeline-field"}}{{if .Present}}{{template "timeline-native" .Value}}{{else}}Non observé{{end}}{{end}}

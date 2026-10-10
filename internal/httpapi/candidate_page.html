@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Détail du message — QueueAtlas</title>
+  <style>{{styles}}</style>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <header class="top"><a class="brand" href="/messages">QueueAtlas</a><span>Suivi Postfix</span>{{template "session_actions.html"}}</header>
+  <main id="main" tabindex="-1">
+    <nav aria-label="Navigation"><a href="/messages">Rechercher un événement</a></nav>
+    <div class="heading"><p class="eyebrow">Suivi du message</p><h1>Détail du message</h1><p>Adresses, routage et derniers résultats observés dans les journaux Postfix.</p></div>
+    {{if .Error}}<section class="panel error" aria-labelledby="error-title"><h2 id="error-title">Consultation interrompue</h2><p>{{.Error}}</p><a href="/messages">Relancer la recherche</a></section>{{end}}
+    {{with .Detail}}
+    <section class="panel" aria-labelledby="message-title">
+      <h2 id="message-title">Message <code>{{visible .Candidate.QueueID}}</code></h2>
+      <p><a class="timeline-link" href="{{timelineURL .Candidate.ID}}">Consulter la timeline et les tentatives</a></p>
+      <dl class="message-fields">
+        <dt>Queue ID</dt><dd><code>{{visible .Candidate.QueueID}}</code></dd>
+        <dt>Instance Postfix</dt><dd>{{visible .Candidate.Instance}}</dd>
+        {{with $.Message}}
+        <dt>Première observation (UTC)</dt><dd><time datetime="{{date .FirstAt}}">{{readableDate .FirstAt}}</time></dd>
+        <dt>Dernière observation (UTC)</dt><dd><time datetime="{{date .LastAt}}">{{readableDate .LastAt}}</time></dd>
+        <dt>Expéditeur SMTP (enveloppe)</dt><dd>{{template "web-values" .Senders}}</dd>
+        <dt>Expéditeur visible — From:</dt><dd>Non observé — en-tête non collecté</dd>
+        <dt>Sujet — Subject:</dt><dd>Non observé — en-tête non collecté</dd>
+        <dt>Message-ID</dt><dd>{{template "web-values" .MessageIDs}}</dd>
+        <dt>Serveur source SMTP — client</dt><dd>{{template "web-values" .SourceServers}}</dd>
+        {{end}}
+      </dl>
+      <p class="help">Les adresses sont celles journalisées par Postfix ; elles peuvent refléter une réécriture. Les valeurs multiples sont conservées. Le serveur source est le client SMTP observé, pas la source d’import des journaux.</p>
+    </section>
+    <section class="results" aria-labelledby="delivery-title"><h2 id="delivery-title">Destinataires et derniers résultats observés</h2>
+      <p class="notice">Les journaux peuvent être incomplets. « Transmis » indique une remise au serveur ou au transport suivant ; cela ne confirme pas la réception finale dans une boîte. L’état actuel de la file n’est pas interrogé.</p>
+      {{range $.Message.Recipients}}<article class="panel recipient-card">
+        <h3>{{template "timeline-native" .Address}} — {{deliveryLabel .Status}}</h3>
+        {{if .Uncertain}}<p class="notice">Résultats simultanés contradictoires : état non déterminé. Toutes les dernières tentatives sont affichées.</p>{{end}}
+        {{range .Latest}}<dl class="message-fields">
+          <dt>Date et heure (UTC)</dt><dd><time datetime="{{date .At}}">{{readableDate .At}}</time></dd>
+          <dt>Serveur de destination / relais</dt><dd>{{template "timeline-field" .Delivery.Relay}}</dd>
+          <dt>Destinataire d’origine observé</dt><dd>{{template "timeline-field" .Delivery.OriginalRecipient}}</dd>
+          <dt>Transport</dt><dd>{{label .Delivery.Scope}}</dd>
+          <dt>Statut Postfix</dt><dd>{{template "timeline-native" .Delivery.NativeStatus}}</dd>
+          <dt>Code SMTP observé</dt><dd>{{if .SMTPCode}}{{.SMTPCode}}{{else}}Non identifié — voir la réponse{{end}}</dd>
+          <dt>Code DSN</dt><dd>{{template "timeline-field" .Delivery.DSN}}</dd>
+          <dt>Motif / réponse du transport</dt><dd>{{template "timeline-field" .Delivery.Reply}}</dd>
+          <dt>Durée de traitement rapportée (secondes)</dt><dd>{{template "timeline-field" .Delay}}</dd>
+        </dl>{{end}}
+        <p class="help">Temps écoulé rapporté par Postfix au moment de cette tentative ; les destinataires peuvent avoir des durées différentes.</p>
+      </article>{{else}}<div class="panel"><p>Aucun résultat de livraison par destinataire observé. L’état final est non déterminé.</p></div>{{end}}
+    </section>
+    <details class="technical results"><summary>Diagnostic et références des journaux</summary>
+    <p class="help">Ce volet sert à vérifier la reconstruction et à retrouver les lignes d’origine. Les références en octets sont des repères techniques dans le fichier, pas des numéros de ligne ni la taille du message.</p>
+    <p class="notice">Couverture des journaux non prouvée. Cette génération n’est pas une identité globale de message.</p>
+    <section class="panel" aria-labelledby="candidate-title">
+      <h2 id="candidate-title">File <code>{{visible .Candidate.QueueID}}</code></h2>
+      <dl>
+        <dt>Instance</dt><dd><code>{{visible .Candidate.Instance}}</code></dd>
+        <dt>Génération candidate</dt><dd>{{.Candidate.Generation}}</dd>
+        <dt>Réception native</dt><dd>{{if .ReceiptObserved}}Observée{{else}}Non observée{{end}}</dd>
+        <dt>Première référence de la génération</dt><dd>{{template "candidate-ref" .First}}</dd>
+        <dt>Retrait de file</dt><dd>{{if .Removed}}{{template "candidate-ref" .Removed}}{{else}}Non observé{{end}}</dd>
+        <dt>Interprétation des dates</dt><dd>{{if .HasNonExplicitTime}}Au moins une date utilise une année ou un fuseau ajoutés lors de la lecture. Consultez l’historique pour connaître l’explication par événement.{{else}}Les journaux indiquent le fuseau horaire des dates observées ; les heures sont affichées en UTC.{{end}}</dd>
+        <dt>Continuité entre origines</dt><dd>{{if .CrossStreamUncertain}}Incertaine{{else}}Non signalée ; couverture non prouvée{{end}}</dd>
+        <dt>Tentatives non interprétées</dt><dd>{{.UnprojectedDeliveryCount}}</dd>
+        <dt>Expirations rapportées</dt><dd>{{.Candidate.ExpirationReports}}</dd>
+      </dl>
+      <h3>Comptes observés</h3>
+      <ul class="counts"><li>Inconnus : {{.Candidate.Counts.Unknown}}</li><li>sent (transport) : {{.Candidate.Counts.Sent}}</li><li>delivered (remise reconnue) : {{.Candidate.Counts.Delivered}}</li><li>Différés : {{.Candidate.Counts.Deferred}}</li><li>Échecs : {{.Candidate.Counts.Bounced}}</li></ul>
+    </section>
+    <section class="results" aria-labelledby="reserve-title"><h2 id="reserve-title">Réserves de reconstruction</h2><div class="panel"><ul>{{range .Candidate.Reserves}}<li>{{label .}}</li>{{end}}</ul></div></section>
+    <section class="results" aria-labelledby="recipients-title">
+      <h2 id="recipients-title">Destinataires observés</h2>
+      <p class="help">Adresses exactes, sans normalisation. Les dernières tentatives simultanées restent incertaines ; leurs références sont toutes conservées.</p>
+      {{if .Recipients}}
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Destinataires, tableau défilant"><table>
+        <caption>Résultats par adresse pour cette génération uniquement</caption>
+        <thead><tr><th scope="col">Adresse native</th><th scope="col">Résultat observé</th><th scope="col">Tentatives</th><th scope="col">Dernières références</th></tr></thead>
+        <tbody>{{range .Recipients}}<tr>
+          <td>{{if eq .Address.Encoding "base64"}}<small>Octets non UTF-8 — base64</small><code>{{.Address.Value}}</code>{{else}}{{if .Address.Value}}<code>{{visible .Address.Value}}</code>{{else}}Adresse vide observée{{end}}{{end}}{{if .AddressUnspecified}}<small>Adresse non spécifiée</small>{{end}}</td>
+          <td>{{label .ObservedStatus}}{{if .OrderUncertain}}<small>Dernières tentatives simultanées</small>{{end}}</td>
+          <td>{{.AttemptCount}}</td>
+          <td><ul>{{range .Latest}}<li>{{template "candidate-ref" .}}</li>{{end}}</ul></td>
+        </tr>{{end}}</tbody>
+      </table></div>
+      {{else}}<div class="panel empty"><p>Aucun destinataire observé pour cette génération. Cela ne prouve pas l’absence dans les journaux.</p></div>{{end}}
+    </section>
+    </details>
+    {{end}}
+  </main>
+  <footer>QueueAtlas · Journaux observés, reconstruction prudente</footer>
+</body>
+</html>
+{{define "candidate-ref"}}<small>Collecte : <code>{{visible .SourceID}}</code></small><small>Identifiant du journal : <code>{{visible .OriginID}}</code></small><small>Repère technique dans le fichier : octets {{.Start}}–{{.End}}</small>{{end}}
+{{define "web-values"}}<ul class="counts">{{range .}}<li>{{template "timeline-native" .}}</li>{{else}}<li>Non observé</li>{{end}}</ul>{{end}}

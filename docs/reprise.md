@@ -1,7 +1,74 @@
 # Point de reprise QueueAtlas
 
-Mis à jour le 7 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
+Mis à jour le 10 octobre 2026. Ce fichier décrit le dernier état connu ; vérifier
 Git et GitHub avant de modifier une branche ou de fusionner une PR.
+
+**Reprise actuelle — lot164, diagnostics retirés de la recherche.**
+Le propriétaire confirme à nouveau le login le 10 octobre puis fournit une
+capture des résultats ABC123 : expéditeur, alice transmis et bob différé visibles.
+Il signale que les octets et « qualité de la date » restent incompréhensibles.
+Correction : tableau à cinq colonnes métier, diagnostics seulement dans le détail
+et les volets fermés de l’historique ; repères en octets expliqués sans inventer
+de numéros de ligne. Date UTC lisible dans l’historique, année/fuseau ajoutés
+expliqués lorsqu’ils sont nécessaires, pas de jugement de fiabilité de l’horloge.
+Stockage, DTO JSON, permissions et recherche inchangés. Tests existants adaptés :
+absence de références techniques dans la liste, XSS/HEAD/session et plafond HTML
+maintenus (expansion d’un Message-ID au lieu d’une provenance masquée).
+Suite HTTPAPI Windows Go1.26 PASS3.958s, gofmt/diff passés.
+Au commit : publier dans #37 et vérifier toute la CI sur le SHA exact.
+Dernier état publié0f58cfd : CI37812053841 entière success, Windows113431137005,
+Go1.26 113431137240, stable113431137539 ; preuve déjà consignée dans #37/issue7.
+La session humaine42023 doit être remplacée pour montrer cette correction.
+Prochaine action : nouveau login puis ouvrir ABC123 — détail ; fiche/historique/
+logout encore à confirmer. La capture actuelle prouve la recherche, pas le détail.
+Revue164 toujours incomplète, PR37 brouillon ; aucun165/montage/fusion.
+
+**État précédent — lot164, fiche de suivi opérationnelle demandée.**
+Le propriétaire précise les informations attendues : adresses d'enveloppe et
+en-tête, Message-ID/Queue ID, client source/relais, événements/codes/motifs/états
+et durée. Correction de revue : tableau from/to/Message-ID/états et fiche de
+détail opérationnelle sur les faits de la génération sélectionnée, JSON/API
+inchangés. [Matrice complète et limites](message-tracking-view.md).
+From:/Subject non collectés affichés explicitement ; aucun état global final
+ni attente actuelle inventé. Codes SMTP uniquement préfixes littéraux de réponse,
+DSN distinct ; durée native delay, pas calcul premier/dernier événement.
+Tests import Postfix→SQLite→Web et isolation d'autre origine même Queue ID,
+non-fuite API et codes SMTP prudents ; suite HTTPAPI2.520s/vet/diff passées.
+Après ajustement du libellé de durée, les deux nouveaux tests ciblés passent0.126s.
+Au commit : publier dans #37 brouillon et vérifier CI exacte/trois jobs.
+Revue humaine toujours incomplète : nouveau rendu/fiche, timeline et logout.
+Fixture TLS humaine désormais cinq événements lisibles, alice transmis250 et
+bob différé450 ; fixture hostile trois faits conservée pour les tests de sécurité.
+Après redémarrage du serveur, reprendre login puis recherche habituelle et détail
+ABC123 ; anciens identifiants de candidat/requête ne prouvent pas le nouveau rendu.
+Calendrier/filtres/en-têtes et vue NOQUEUE/état de file restent au suivi accepté.
+Aucun montage serveur/165 ni fusion avant fin de revue164.
+
+**État précédent — lisibilité de la recherche seule.**
+9b971005c7dfa05c5fd37f2578437547d7ea78cf publié, CI37809143458 entière success
+sur SHA exact : Windows113421151117, Go1.26 113421151483, stable113421151557.
+Auth/HTTPAPI Windows et race Linux1.26 verts, stable race skipped prévu.
+Preuve dans #37 et issue7 ; checkout propre/synchronisé avant cette correction.
+L'utilisateur confirme la connexion puis ABC123 après recherche sur la fixture
+TLS corrigée b845d9587b6321b74ea632ddd8bd10182d0131e9. CI37707149012 entière
+success sur ce SHA : Go1.26 113084115393, Windows113084115692,
+stable113084116651 ; preuve post-publication dans #37. Le parcours humain
+détail/timeline/logout et les limites cookie/SameSite restent à terminer.
+La capture des résultats montre une présentation trop technique : correction
+dans le même lot, dates de résultat lisibles, comptes non nuls, provenance et
+qualité/génération/réserves dans un volet natif fermé. Aucune donnée supprimée,
+garde/API/SQL inchangées. Suite HTTPAPI Windows Go1.26 -count=1 : PASS2.474s.
+Au commit : publier dans #37 et vérifier les trois jobs de CI sur le nouveau SHA.
+Le serveur de revue doit être redémarré pour embarquer ce rendu ; la session
+précédente ne prouve que l'ancien rendu. Nouveau login nécessaire après relance.
+
+Demandes supplémentaires acceptées : calendrier/périodes rapides, critères
+expéditeur ET/OU destinataire ET/OU sujet et opérateurs égalité/début/contient/fin.
+[Découpage et dépendances](search-ux-follow-up.md), non implémentés par la seule
+correction de rendu. Le sujet n'est pas indexé dans le modèle actuel ; collecte
+explicite à définir. L'ancienne estimation13–28 n'inclut pas ce nouveau périmètre.
+Ne pas démarrer montage serveur/lot165 ni fusionner avant fin de revue164 ; les
+corrections de cette revue restent dans #37 brouillon.
 
 Vue des jalons et estimation des lots restants : [avancement](avancement.md).
 Après diagnostic/intégration87, le socle M2 est fusionné en bibliothèque ; clôture88
@@ -69,10 +136,29 @@ CI37642563497 entière/trois jobs/SHA exact/HTTPAPI Windows/race HTTPAPI Linux
 réussis, revérifiés REST156. Lot156 publié sur2298709, CI37646414652 entière/trois
 jobs/SHA exact réussis, race HTTPAPI Linux1.26 et journal HTTPAPI Windows vérifiés,
 état revérifié REST157. Lot157 publié sur277d981, CI37650350084 entière/trois jobs/
-SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Revue158
-favorable ; publication finale/fusion/main à terminer au commit. Prochain159 :
-page Web de recherche protégée. Deux jalons M4/M5 restent, environ12–27lots
-après clôture158/CI,
+SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Clôture158
+fusionnée #36 sur8c3aa85, CI finale37653248114 et main37653544179 entières réussies,
+branche API nettoyée ; preuves revérifiées159. Recherche Web159 publiée dans #37
+sur b907914, CI37657564872 entière/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26 réussis, revérifiés160. Détail160 publié sur29cf545 dans #37,
+CI37660252622 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés161. Timeline Web161 publiée sur94095f8 dans #37,
+CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés162. Connexion Web162 publiée20f64e0 dans #37, CI37671925509 entière/
+trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 réussis,
+revérifiés163. Déconnexion Web163 publiée sur33596e2 dans #37, CI37675032968
+entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés164. Lot164 en cours : corrections CSP Windows/focus/contrôles de
+présentation, test import→rendu et vérifications navigateur statiques passés.
+Corrections164 publiées sur ef87ceb, CI37676596678 entière/trois jobs/SHA exact
+réussis. L'utilisateur confirme la page HTTPS visible après traitement du
+certificat ; l'outil navigateur refuse encore l'accès par politique de sécurité.
+Essai manuel ensuite refusé (« Requête de connexion refusée »). Correction164
+en cours : Referrer-Policy strict-origin au lieu de no-referrer ; régression
+HTTPS et suite auth/HTTPAPI/vet passent. Publication/CI du correctif à terminer.
+Nouvel essai manuel nécessaire, aucun serveur temporaire actif ; PR37 brouillon.
+[Bilan](reviews/m4-web.md). Reprise sur164,
+aucun165 commencé. Deux jalons M4/M5 restent, environ13–28lots (M4 3–10),
 M3 zéro lot restant ;
 estimation par comportements restants, pas pourcentage livré. Le contrat120 ne
 produit pas une preuve physique ; raccordement à une autorité fiable encore requis.
@@ -3431,15 +3517,35 @@ HTTPAPI Windows/race HTTPAPI Linux1.26 réussis, revérifiés REST156. Lot156 pu
 sur2298709, CI37646414652 entière/trois jobs/SHA exact réussis, revérifiés REST157 ;
 race HTTPAPI Linux1.26 et journal HTTPAPI Windows réussis vérifiés.
 Lot157 publié sur277d981, CI37650350084 entière/trois jobs/SHA exact/HTTPAPI Windows/
-race Linux1.26 réussis, revérifiés REST158. Revue158 favorable : publier le commit
-documentaire final sur codex/m4-search-api, vérifier sa CI entière/trois jobs/SHA,
-consigner revue COMMENT sur tête finale, rendre #36 prête puis fusionner avec SHA
-attendu, vérifier CI main et supprimer branche fusionnée locale/distante.
-Consigner preuves dans #36 puis reprise159. Prochain159 : page Web de recherche
-protégée, formulaire/résultats échappés et réserves, six critères existants ;
-détail/timeline Web séparés ensuite. Aucun159 à commencer dans la reprise158.
+race Linux1.26 réussis, revérifiés REST158. Clôture158 effective : #36 fusionnée
+sur8c3aa85, CI finale37653248114/main37653544179 entières réussies, revue COMMENT
+5445385773 sur tête e8bde71, branche nettoyée ; preuves revérifiées159.
+Lot159 recherche Web publiée #37/b907914, CI37657564872 entière/trois jobs/SHA exact/
+HTTPAPI Windows/race Linux1.26 réussis, revérifiés160. Branche propre/synchronisée.
+Lot160 détail Web publié29cf545, CI37660252622 entière/trois jobs/SHA exact/HTTPAPI
+Windows/race Linux1.26 réussis, revérifiés161. Lot161 timeline Web publiée94095f8,
+CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés162. Lot162 [connexion Web locale](web-login.md) publiée20f64e0,
+CI37671925509 entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et
+HTTPAPI Linux1.26 réussis, revérifiés163. Lot163 [déconnexion Web](web-logout.md)
+publiée33596e2, CI37675032968 entière/trois jobs/SHA exact réussis, revérifiés164.
+Lot164 : corrections publiées ef87ceb, CI37676596678 entière/trois jobs/SHA exact/
+auth et HTTPAPI Windows/race Linux1.26 réussis. L'utilisateur confirme la page
+HTTPS visible après traitement du certificat. L'outil navigateur refuse l'accès
+par politique de sécurité ; aucun contournement ni autre surface tentée.
+Publier le correctif strict-origin validé localement, vérifier CI entière sur
+le SHA exact, même PR37 brouillon ; puis relancer la fixture TLS à la disponibilité
+de l'opérateur. Son essai précédent est refusé, pas réussi. Recharger GET login
+avant nouvelle connexion ; poursuivre recherche synthetic-postfix /
+Expéditeur exact synthetic@example.test / Oct7–8UTC, détail ABC123 et timeline,
+déconnexion/retour login puis accès protégé refusé. [Fixture](web-browser-review.md).
+Reprendre164 sur le nouvel essai, qualifier précisément SameSite/rotation.
+La revue du rendu statique est faite,
+pas celle de l'auth navigateur ; [preuves et limites](reviews/m4-web.md).
+Clôturer #37 seulement si critères satisfaits. Aucun165 commencé.
+Montage applicatif et compléments dans les chantiers suivants.
 Ne pas présenter un événement comme identité globale ni reconstruire depuis une
-seule page. Bibliothèque API relue ; listener/serve/Web/filtres complémentaires
+seule page. Bibliothèque API relue ; listener/serve/autres vues Web/filtres complémentaires
 et raccordements restent à réaliser. MIT, AD/OIDC/Keycloak après MVP.
 Prévision rétention3–4 après115, quatre lots réalisés116–119.
 Main115/CI push validés ; date inconnue exclue d'une
@@ -5369,3 +5475,395 @@ réalisée retire son seul lot de clôture : M4 2–9 après158/fusion/CI, M5 10
 total12–27/deux jalons ; marge des compléments/raccordement conservée et à préciser
 au Web. Pas de pourcentage livré, aucune sortie M4 annoncée. MIT conservée,
 AD/OIDC/Keycloak après MVP. Aucun159 commencé, un seul lot par reprise.
+
+## Lot 159 — page Web de recherche protégée
+
+Résultat attendu : formulaire GET, événements/candidats/réserves échappés et
+pagination conservant les six critères API. Détail/timeline Web dans des lots
+distincts, un seul petit lot dans cette reprise.
+
+### Départ et clôture effective158
+
+Main propre `8c3aa859eb9489f0e969cb47b087053448126ac4`, locale/origin identiques.
+PR #36 fusionnée ; tête finale e8bde7189be8ae45ff0e156cd7ed0924e9a0c1b2,
+CI37653248114 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis.
+Revue COMMENT5445385773 sur cette tête, passage prêt et merge avec SHA attendu.
+CI main37653544179 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26
+réussis ; preuves revérifiées REST159, détails dans [revue API](reviews/m4-search-api.md).
+Branche API supprimée GitHub/local après contrôle d'ascendance. Création de
+codex/m4-web depuis ce main validé ; aucune PR Web existante à réutiliser.
+
+### Comportement réalisé
+
+`NewConsultationHandler` ajoute GET/HEAD `/messages` au routeur protégé API,
+même Store/admission/délai ; constructeur API seul inchangé. Formulaire sans query
+sans lecture SQLite ; défaut24hUTC/50. Même validateur fermé, six critères,
+période31jours, pagination canonique aux dates effectives figées. Nouveau submit
+sans curseur. Résultats `html/template` : date/qualité, comptes prudents, réserves,
+provenance/offsets exacts ; NOQUEUE warning n'est pas rejeté, non assigné reste tel.
+Pas de diagnostics/lignes brutes/chemins privés en page de recherche.
+
+CSS embarquée seule déclarée fiable, CSP hash sur octets exacts, aucun script/
+réseau externe ; anti-framing/referrer/cache. Aucun champ SMTP devient HTML/URL
+actif. HTML tamponné <=1MiB avant200, erreurs fixes400/422/429/503 sans résultat
+partiel, garde/protocole antérieurs gardent leurs refus existants. HEAD mêmes
+lectures sans corps, contexte/admission API et Web communs.
+[Contrat](web-search.md) : détails et limites, GET/historique privé, budget de
+réponse distinct de la RAM totale et délais coopératifs.
+
+### Vérifications et suite
+
+Quatre nouveaux tests,25HTTPAPI total : Windows Go1.26 `go test ./internal/httpapi
+-count=1` passe (2.290s), vet HTTPAPI, gofmt/diff passent. SQLite réel pagination/
+faits hors fenêtre/réserves/vide/NOQUEUE/budget complet ; client HTTPS réel avec
+payload hostile/offset>2^53/HEAD/révocation, aucun accès sans session. Budgets
+API/Web partagés, annulation tardive et expansion HTML>1MiB refusées atomiquement.
+CSP correspond aux octets CSS réellement rendus. Pas de Linux local ni navigateur
+réel revendiqué ; parcours clavier/rendu adaptatif/XSS de la source au navigateur
+restent au critère de revue Web. Pas de nouveau schéma/SQL/source/dépendance.
+
+Au commit159 : publier codex/m4-web et nouvelle PR Web brouillon, vérifier CI
+entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 ; consigner preuves dans
+la PR puis reprise160. Dernier fusionné validé1588c3aa85/CI37653544179.
+L'issue #7 reste ouverte pour les vues restantes et les critères applicatifs ;
+suivi GitHub à actualiser après publication/CI159, sans clôture prématurée.
+
+Prochain160 : vue de détail protégée du candidat, même PR Web ; timeline et revue
+navigateur ensuite. La borne Web+revue précédente regroupait les vues : au moins
+deux lots restent (vues restantes/revue), leur découpage précis et raccordement
+restent dans la marge. M4 2–9 après159/CI, M5 10–18, total12–27/deux jalons,
+fourchette conservée sans réduction automatique à chaque numéro. Aucun160 commencé.
+MIT, AD/OIDC/Keycloak après MVP. Aucun serveur installable ou M4 terminé annoncé.
+
+## Lot160 — détail Web protégé du candidat
+
+Résultat attendu : lien depuis les candidats attribués de recherche vers leur
+génération complète, destinataires/références/réserves en texte échappé ; refus
+explicite d'une révision périmée. Timeline dans le lot suivant, même PR #37.
+
+### Départ et preuve effective159
+
+codex/m4-web propre, locale/origin/#37 identiques à
+`b907914269faea03cdd794d317062f636691d3e1`, base main8c3aa85, #37 ouverte/brouillon.
+[CI37657564872](https://github.com/Coubiac/QueueAtlas/actions/runs/37657564872)
+entière completed/success, trois jobs : Go1.26 112916458112, stable112916458348,
+Windows112916458577. HTTPAPI Windows/race HTTPAPI Linux1.26 réussis ; stable race
+normalement skipped. SHA/étapes/workflow/tête/base revérifiés REST160 après fetch/
+prune. Main validé1588c3aa85/CI37653544179, aucune nouvelle fusion. Issue #7
+actualisée159 avec réalisé/restant, toujours ouverte ; pas de clôture applicative.
+
+### Comportement réalisé
+
+GET/HEAD `/messages/{id}` via `NewConsultationHandler`. Liens de recherche depuis
+ID canonique et préfixe local, pas d'URL SMTP. Même decode/detail API, toutes
+origines/cycles/dates participent au budget/révision puis génération sélectionnée.
+Query même vide refusée400, protocole avant base, ID canonique borné, segment
+supplémentaire404. API seule inchangée, aucune autre lecture de recherche ou horloge.
+
+Réception/ancre/retrait/réserves, comptes/expirations/tentatives non interprétées ;
+adresses exactes/vide/base64 explicite, résultat observé et nombre de tentatives,
+toutes références simultanées, offsets int64 exacts. Unknown/conflits/transport
+restent prudents. Aucun raw/message/DSN/relay/réponse/maps/credential dans cette vue.
+Même template/CSS/CSP/cache/anti-framing, HTML cap1MiB avant200, erreurs fixes sans
+ID réfléchi. Import tardif409 sans nouvelle génération ; absence404 sans conclure
+absence de logs, budget entier422, admission429, contexte/volume/SQL503 sans données
+partielles. Garde/protocole antérieurs gardent leurs refus texte/JSON.
+[Contrat](web-detail.md), contrat recherche/API actualisés.
+
+### Vérifications et suite
+
+Trois nouveaux tests,28HTTPAPI total : Windows Go1.26 `-count=1` passe (2.276s),
+vet HTTPAPI/gofmt/diff passent. SQLite réel recherche→lien canonique→détail, faits
+hors période, générations séparées/absente, budget entier/import tardif409 ;
+protocole avant base et constructeur API inchangé. Client HTTPS réel données
+hostiles/vide/base64/casse/offset>2^53/conflits simultanés/HEAD/révocation. Champs
+binaires via seam privé, pas une preuve d'import SQLite de non UTF-8. Admission
+API/recherche/détail Web partagée, annulation tardive et expansion des références
+HTML>1MiB refusées sans préfixe partiel ; erreurs privées et HEAD404/slot libéré.
+Pas de navigateur réel/Linux local revendiqué ; clavier/rendu adaptatif/XSS de la
+source au rendu et caractères de présentation restent pour la revue Web.
+
+Au commit160 : publication/CI à terminer sur codex/m4-web dans la même #37
+brouillon. Vérifier workflow entier/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26, consigner preuve dans PR puis reprise161. Dernier publié validé159
+b907914/CI37657564872, main1588c3aa85/CI37653544179.
+
+Prochain161 : timeline Web paginée, tentatives et rendu texte sous permission
+brute explicite. Connexion, montage serveur, compléments et revue ensuite.
+L'ancienne borne2–9 comptait seulement les vues/revue au minimum ; connexion,
+montage et compléments étaient implicites. Au moins cinq comportements distincts
+restent, M4 corrigé5–12 après160/CI ; M5 10–18, total15–30/deux jalons. Périmètre
+MVP inchangé, fourchette de planification incertaine. #7/M4/MVP non clos, aucun161
+commencé. MIT, AD/OIDC/Keycloak après MVP. Un seul petit lot dans cette reprise.
+
+## Lot161 — timeline Web et lignes brutes sous permission
+
+Résultat attendu : navigation détail→timeline paginée de la génération, tentatives
+et octets natifs en texte échappé, brut opt-in explicite. Même #37, aucun nouveau
+stockage/source/corrélation ou montage serveur ; un seul lot dans cette reprise.
+
+Départ propre sur codex/m4-web, locale/origin/#37 au SHA
+`29cf545b8dea8e2be413c24bf197601db21f9942`, base main1588c3aa85, PR brouillon ouverte.
+[CI16037660252622](https://github.com/Coubiac/QueueAtlas/actions/runs/37660252622)
+entière completed/success sur ce SHA : Windows112925637868, stable112925638203,
+Go1.26 112925638339. HTTPAPI Windows et race HTTPAPI Linux1.26 réussis, stable race
+skipped comme prévu. Workflow/jobs/SHA/étapes/tête/base revérifiés REST161 après
+fetch/prune. #7 actualisée160 et ouverte. Aucune nouvelle fusion depuis158.
+
+GET/HEAD `/messages/{id}/events`, même decode/parseTimelineRequest/lecture API.
+Liens locaux canoniques, paramètres limit/cursor/raw fermés, pagination liée à
+ID/révision/mode ; nouveau submit sans curseur. Budget de file complet puis faits
+de cette génération seulement, hors période conservés. Stale409 avant position,
+absence404, query/ID400, budget422, admission429, erreurs privées/annulation/cap503.
+Raw1 interdit403 avant base sans AllowRawLogs ; permission seule ne l'affiche pas,
+contrôle proposé seulement si autorisé. Métadonnées SMTP privées visibles sans
+brut, absence/vide/base64 distingués, statuts natifs/transport/réserves conservés.
+
+Rendu html/template, native text ordinaire, base64 explicitement étiqueté ; CR/LF/
+tabulation/ANSI/C1/direction visibles et antislash doublé, aucun octet original
+modifié en DTO/SQLite. La présentation HTML n'est pas un export identique. Champs/
+provenance timeline traités, autres vues à relire au lot de revue. CSS embarquée/
+CSP/cache/anti-framing communs, HTML entier1MiB avant200, pas une borne de RAM.
+Contrat [web-timeline](web-timeline.md), liens détail/recherche/API actualisés.
+
+Quatre nouveaux tests,32HTTPAPI total Windows Go1.26 `-count=1` passe (2.336s),
+vet HTTPAPI/gofmt/diff passent. SQLite pages/lien/faits complets/origines/réserves/
+raw/budget/stale ; brut binaire SQLite exact en base64 HTML. Protocole/raw interdit
+avant base, API seule inchangée ; HTTPS réel texte hostile/contrôles/vide/absence/
+métadonnées sans raw/tentatives simultanées/binaireDTO/HEAD/révocation. Admission
+API/toutes vues Web partagée, annulation et expansion raw64KiB×4 refusée sans
+préfixe partiel puis page1 complète. Champ binaire via seam, pas import SQLite de
+champ binaire revendiqué. Test corrigé : fixture sans reply natif reste Non observé,
+ne pas extraire un verdict/réponse en reparsant Message pour le rendu.
+Pas de navigateur réel/Linux local revendiqué ; revue clavier/CSP/XSS source→rendu/
+caractères de présentation/rendu adaptatif reste à faire.
+
+Au commit161 : publier même branche/#37 brouillon, vérifier CI entière/trois jobs/
+SHA exact/HTTPAPI Windows/race Linux1.26 ; preuve dans PR puis reprise162. Dernier
+publié validé16029cf545/CI37660252622, main1588c3aa85/CI37653544179.
+Prochain162 : connexion Web locale ; montage, filtres/diagnostics et revue ensuite.
+Timeline réalisée retire un comportement : M4 4–11 après161/CI, M5 10–18,
+total14–29/deux jalons, marge des compléments conservée. #7/M4/MVP non clos,
+MIT et AD/OIDC/Keycloak après MVP. Aucun162 commencé.
+
+## Lot162 — formulaire de connexion local et redirection fixe
+
+Résultat attendu : formulaire public GET/HEAD et soumission POST `/login`,
+authentification locale partagée avec l'API, rotation de session et303 vers la
+recherche. Un seul comportement ; déconnexion Web et montage dans des lots suivants.
+
+Départ propre sur codex/m4-web, locale/origin/#37 sur
+`94095f88aa4b20932a9ba12b0670522b7fdc81cc`, main1588c3aa85, PR ouverte brouillon.
+[CI16137664362505](https://github.com/Coubiac/QueueAtlas/actions/runs/37664362505)
+entière completed/success sur ce SHA : Windows112939662675,
+stable112939662999, Go1.26 112939663015. HTTPAPI Windows et race HTTPAPI Linux1.26
+réussis, stable race skipped comme prévu. Workflow/jobs/SHA/étapes/tête/base
+revérifiés REST162. #7 ouverte, main CI37653544179 verte, aucune nouvelle fusion.
+
+Formulaire français, labels/autocomplete/lien d'évitement, aucun JavaScript.
+Lecture publique contrôlée HTTPS/origine/cookies sans Resolve/renouvellement ni
+budget de tentative. POST réutilise le parseur/guards/hash/admission/magasin
+existants ; aucune deuxième autorité d'authentification. Cookie sécurisé frais,
+ancien token révoqué et303 Location fixe `/messages` ; aucune query/next admise.
+Refus HTML fixes/champs vides, aucun credential reflété ; API200/logout204 restent
+compatibles. CSS/hash CSP/cache/anti-framing identiques aux vues, y compris303.
+Erreur/écriture courte/panique/annulation après émission révoque la nouvelle session.
+Write réussi ne prouve pas réception client ; ancienne révocation non annulée.
+[Contrat Web](web-login.md), contrats des vues et auth HTTP actualisés.
+
+Trois nouveaux tests auth, deux nouveaux tests HTTPAPI (34HTTPAPI total).
+Windows Go1.26 `go test ./internal/auth ./internal/httpapi -count=1` passe
+(auth1.453s, HTTPAPI2.480s), vet sur ces packages/gofmt/diff passent. Rejets avant
+body/hash, budget API/Web partagé, rotation, destination fixe, ancien token sur
+refus et cleanup sur IO/annulation. HTTPS réel/vrai Argon2id/cookiejar : formulaire,
+HEAD, connexion/rotation, recherche protégée et révocation via logout API existant.
+Pas de navigateur réel/Linux local revendiqué. Lecture lente/deadlines du futur
+serveur, parcours clavier/adaptatif/SameSite et revue XSS restent à vérifier.
+
+Au commit162 : publication/CI à terminer dans la même #37 brouillon. Vérifier
+workflow entier/trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI
+Linux1.26 ; preuve dans PR puis reprise163. Dernier publié validé16194095f8/
+CI37664362505, main1588c3aa85/CI37653544179.
+Prochain163 : déconnexion Web locale, retour fixe au formulaire et navigation
+depuis les vues protégées. Aucun bouton Web de logout livré162 ; l'API204 est
+testée et disponible. Montage serveur, compléments et revue ensuite. La connexion
+prévue précédemment regroupait encore connexion/déconnexion : le premier flux
+est livré, le second reste distinct. M4 conservé4–11 après162/CI, M5 10–18,
+total14–29/deux jalons, estimation incertaine par comportements restants.
+#7/M4/MVP non clos, MIT et AD/OIDC/Keycloak après MVP. Aucun163 commencé.
+
+## Lot163 — déconnexion Web et retour au formulaire
+
+Résultat attendu : bouton POST de déconnexion sur recherche/détail/timeline,
+révocation de la session et suppression du cookie,303 fixe vers `/login`.
+Un seul lot, sans montage serveur/source/stockage/corrélation supplémentaires.
+
+Départ propre sur codex/m4-web, locale/origin/#37 sur
+`20f64e0a73fe678f8de68e155129dd8abf0b46ec`, main1588c3aa85, PR brouillon ouverte.
+[CI16237671925509](https://github.com/Coubiac/QueueAtlas/actions/runs/37671925509)
+entière completed/success sur ce SHA : Windows112965560563,
+Go1.26 112965560874, stable112965561005. Auth et HTTPAPI Windows/race auth et
+HTTPAPI Linux1.26 réussis, stable race skipped comme prévu. Workflow/jobs/étapes/
+SHA/tête/base revérifiés REST163 après fetch/prune. #7 ouverte, aucune fusion.
+
+POST `/logout` dans le même handler Web que `/login`, contrôles/parsing corps
+vide/révocation/cookie de l'API réutilisés. GET/HEAD/autres méthodes405 AllowPOST,
+origine/protocole/cookies avant body et révocation. Aucun query/next, destination
+fixe ; token absent/malformé/inconnu/révoqué : même303. Pas de Resolve/hash/budget
+de login/horloge ; autres sessions conservées. Annulation détectée avant revoke
+refusée503 ; après revoke, Write échoué/partiel/panique ne restaure jamais la
+session. Cookie supprimé avec même politique, API204 sans corps conservée.
+Navigation de session statique partagée par les trois vues, focus/retour à la
+ligne CSS ; CSP recalculée et headers privés sur erreurs et303. Erreurs HTML
+de déconnexion fixes, aucun token/credential/input réfléchi. [Contrat](web-logout.md).
+
+Deux nouveaux tests auth et un nouveau HTTPAPI (35HTTPAPI total). Windows Go1.26
+`go test ./internal/auth ./internal/httpapi -count=1` passe (auth1.505s,
+HTTPAPI2.513s), vet sur ces packages/gofmt/diff passent. Rejets avant lecture/hash/
+revocation, corps normal/chunked, cancel avant commit, idempotence/horloge non
+consultée/API204/IO terminale couverts. HTTPS réel/cookiejar/SQLite synthétique :
+formulaire des trois vues, action soumise, origine étrangère sans mutation,
+suppression cookie/autre session préservée/retour login et replay token401 sur
+toutes les vues et l'API. Test de montage corrigé pour utiliser l'origine réelle
+du serveur TLS ; aucune confiance proxy ajoutée. Pas de navigateur réel/Linux
+local revendiqué ; requête déjà autorisée avant revoke non annulée rétroactivement.
+
+Au commit163 : publier même branche/#37 brouillon et vérifier CI entière/trois
+jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26. Preuve dans
+PR puis reprise164. Dernier publié validé16220f64e0/CI37671925509 ; main1588c3aa85.
+Prochain164 : revue Web159–163 avec navigateur réel (source→rendu XSS/CSP,
+clavier/rendu adaptatif/caractères de présentation), corrections nécessaires et
+clôture #37 si critères satisfaits. Montage serveur/compléments ensuite.
+Déconnexion réalisée retire un comportement : M4 3–10 après163/CI, M5 10–18,
+total13–28/deux jalons, estimation incertaine. #7/M4/MVP ouverts, MIT et
+AD/OIDC/Keycloak après MVP. Aucun164 commencé.
+
+## Lot164 — revue navigateur partielle et corrections du rendu
+
+Résultat attendu : relire Web159–163 avec un navigateur, corriger les défauts
+constatés et clôturer #37 seulement si tous les critères sont satisfaits.
+**Revue incomplète : auth navigateur HTTPS encore à valider.** Aucun165 commencé.
+
+Départ sur codex/m4-web propre, locale/origin/#37 sur
+`33596e2f3a569fc47b30bf69fea0f22c2f942d02`, base main1588c3aa85, PR37 brouillon.
+[CI16337675032968](https://github.com/Coubiac/QueueAtlas/actions/runs/37675032968)
+entière completed/success sur ce SHA exact : Go1.26 112976207709,
+stable112976208275, Windows112976208332. Auth/HTTPAPI Windows et race auth/HTTPAPI
+Linux1.26 réussis, stable race skipped prévu. Workflow/jobs/étapes/tête/base
+revérifiés REST164. #7 ouverte, aucune fusion.
+
+Le navigateur refuse le certificat de httptest TLS avec
+ERR_CERT_AUTHORITY_INVALID. La compétence Computer Use exige une intervention
+humaine pour franchir l'avertissement ; demande transmise à l'utilisateur.
+Aucune exception TLS, aucun changement de confiance ni garde affaiblie.
+Suite indépendante : serveur loopback HTTP de **snapshots synthétiques seulement**,
+générés par les vrais handlers protégés après ImportFile/Postfix/SQLite.
+Pas de session/login/POST dans ce serveur ; les formulaires GET sélectionnent
+des pages prédéfinies et ne démontrent pas de nouvelles requêtes SQL.
+
+Trois défauts de présentation corrigés : normalisation LF de CSS/hash CSP pour
+le parseur HTML Windows ; main tabindex=-1 sur les quatre pages ; notation visible
+des contrôles/provenances des valeurs natives recherche/détail. Champs de saisie,
+identifiants canoniques, octets DTO/SQLite et politique CSP conservés.
+DOM réel détail/timeline/raw : aucune image/script/iframe/object/embed, aucun lien
+javascript, contrôle U+202E affiché littéralement. Clavier : skiplink donne focus
+MAIN sur recherche ; lien détail→timeline par Entrée ; Tab vers checkbox/Espace/
+Entrée produit raw=1 et trois pre. Captures desktop/mobile375×812 enregistrées,
+timeline sans débordement extérieur (document/corps360px hors scrollbar).
+[Revue détaillée](reviews/m4-web.md), [fixture et arrêt](web-browser-review.md).
+
+Une nouvelle régression automatique import→recherche exacte→détail/timeline brute.
+Deux fixtures manuelles opt-in, skipped en CI normale. Windows Go1.26 :
+`go test ./internal/auth ./internal/httpapi -count=1` réussi (auth1.501s,
+HTTPAPI2.554s), vet des deux packages réussi, format/diff vérifiés avant commit.
+Tests Go HTTPS/cookiejar des lots162/163 passent ; aucun parcours login/logout
+HTTPS navigateur/SameSite ni Linux local revendiqué.
+Les deux serveurs temporaires ont été arrêtés proprement par leur fichier stop ;
+les fixtures terminent PASS (arrêt normal, pas preuve d'auth navigateur).
+Les anciennes URL locales ne sont plus disponibles ; relancer selon le guide.
+
+Au commit164 : publier les corrections dans la même #37 brouillon et vérifier CI
+entière/trois jobs/SHA exact/auth et HTTPAPI Windows/race Linux1.26 ; consigner
+la preuve post-publication dans la PR. Dernier publié validé avant ce commit :
+16333596e2/CI37675032968, main1588c3aa85/CI37653544179.
+Reprise concrète : terminer164 après intervention humaine sur le certificat de
+la fixture TLS relancée (URL/port temporaires affichés à chaque lancement), puis
+documenter connexion/rotation/session/déconnexion/SameSite et décider de la fusion.
+Pas de lot165 ni de montage serveur avant cette reprise. M4/M5 restent ouverts,
+estimation13–28lots (M4 3–10, M5 10–18) conservée car revue non clôturée.
+MIT et AD/OIDC/Keycloak après MVP inchangés.
+
+### Reprise164 — certificat traité, accès outil refusé
+
+État publié vérifié avant cette reprise :
+`ef87ceb6b24d5ad20538ecda5bdf23af75965083`, codex/m4-web propre et synchronisée,
+[CI37676596678](https://github.com/Coubiac/QueueAtlas/actions/runs/37676596678)
+entière completed/success sur ce SHA : Go1.26 112981583001,
+Windows112981583298, stable112981583404. Auth/HTTPAPI Windows et race auth/HTTPAPI
+Linux1.26 réussis ; stable race skipped prévu. Preuve post-publication dans #37.
+Ces résultats sont réutilisés ; aucun changement de code ni risque nouveau.
+
+Fixture TLS relancée sur le code publié, session terminal59518, arrêt temporaire
+`C:\Users\benoi\AppData\Local\Temp\TestWebBrowserReview2250385975\003\stop-review`.
+URL temporaire `https://127.0.0.1:50104/login`, expire après30minutes ; vérifier
+le processus avant réutilisation et relancer selon le guide si nécessaire.
+L'utilisateur répond « c'est fait. Page visible » ; contexte ambiant affiche
+cette URL dans le navigateur de Codex. Il s'agit d'une confirmation humaine de
+la page, **pas** d'une preuve de connexion/déconnexion.
+
+La tentative de lecture de cet onglet par Computer Use est refusée par la
+politique de sécurité du navigateur. Aucun autre accès/surface/contournement
+tenté. Rapport manuel demandé avec compte synthétique : connexion, recherche
+de l'expéditeur aux dates explicites, ABC123→détail→trois faits timeline,
+déconnexion→formulaire puis accès /messages refusé, navigateur utilisé et erreurs.
+Question en attente ; ne pas déclarer ce parcours réussi avant la réponse.
+Rotation, attributs des cookies et SameSite ne sont pas prouvés à eux seuls par
+ces quatre étapes ; qualifier les limites et décider des contrôles restants.
+Documentation actualisée dans ce checkpoint, sans nouveau comportement ;
+publication/CI documentaire à terminer au commit. #37 reste brouillon ; aucun165.
+
+### Reprise164 — refus de connexion, correctif interrompu puis terminé localement
+
+Dernier publié validé au départ de cette correction :
+`140e50decddfa59f741fbca8087104a373258421`, checkpoint documentaire dans #37,
+CI37682026040 entière success/SHA exact : stable113000216367,
+Windows113000216586, Go1.26 113000216796. Auth/HTTPAPI Windows et race Linux1.26
+verts, stable race skipped prévu. Tête/base/draft vérifiés REST à la reprise ;
+base main1588c3aa85, aucune fusion.
+
+Utilisateur : « connexion refusée », réponse précise « Requête de connexion
+refusée », capture du formulaire en erreur. Ce texte correspond au refus403
+avant credentials, pas à Identifiants invalides. Interruption après les premières
+modifications Go : celles-ci étaient non committées ; rien de ce correctif n'était
+publié avant cette reprise. Les anciennes preuves CI portent sur140e50/ef87ceb,
+**pas** sur la correction strict-origin.
+
+Défaut certain de compatibilité des formulaires : no-referrer rend Origin null
+selon Fetch pour un POST natif non-CORS ; garde exige origine exacte. En-tête Web
+strict-origin désormais, origineHTTPS conservée/Referer sans chemin-query et rien
+sur downgrade. Aucun élargissement des guards TLS/Host/Origin/cookies/CSRF/proxy.
+Diagnostic réel des headers du navigateur indisponible ; cause du refus inférée
+du code/standard et régression reproduite, à confirmer par nouvel essai manuel.
+[Preuves et références](reviews/m4-web.md#refus-de-connexion-et-correction-de-referrer-policy).
+
+Tests HTTPS login/logout tirent l'Origin modélisé de la politique servie. Avec
+l'ancien header temporairement restauré, les deux échouent ; source corrigée
+restaurée avant toute autre vérification. Test NOQUEUE dépendant de la date
+courante corrigé avec période explicite des fixtures synthétiques ; aucun
+changement métier. Suite auth1.349s/HTTPAPI2.487s Windows Go1.26, vet passent,
+format/diff vérifiés avant commit. Pas de nouvel essai navigateur réussi revendiqué.
+
+Fixture TLS accepte QUEUEATLAS_BROWSER_REVIEW_PORT numérique1–65535,
+loopback127.0.0.1 toujours, pour reprendre50104 sans changer origine/certificat.
+Démarrage sur50104 et arrêt explicite vérifiés (PASS17.145s), aucun parcours
+browser. L'ancien serveur59518 est expiré (FAIL timeout30min) ; le serveur51178
+de vérification est arrêté proprement. **Aucun serveur actif**, ne pas demander
+de rouvrir50104 avant relance ; guide actualisé avec GET login à recharger.
+
+Au commit : publier même branche/#37 et vérifier CI entière/trois jobs/SHA exact/
+auth et HTTPAPI Windows/race Linux1.26 ; preuve post-publication dans PR.
+Suite concrète : relancer fixture à la présence humaine, nouvel essai connexion
+avec SyntheticOperator / synthetic secret phrase, puis consultation/logout.
+Refus de l'outil navigateur toujours respecté, rapport manuel nécessaire. La revue
+reste incomplète, #37 brouillon ; aucun165, #7/M4/MVP ouverts. Estimation conservée
+13–28lots/M4 3–10/M5 10–18, MIT et AD/OIDC/Keycloak après MVP.

@@ -5,6 +5,9 @@ GET/HEAD `/api/v1/messages/{id}/events`, sur le même handler protégé que
 locale, contrôle d'origine/transport, absence de cache, admission partagée et
 délai identiques. Aucun corps lu ou fusionné avec la query.
 
+Depuis161, `NewConsultationHandler` fournit la [timeline Web](web-timeline.md),
+même lecture/révision/budgets/politique brute ; `NewSearchHandler` reste API seul.
+
 ## Pages liées au snapshot
 
 Chaque page relit les faits complets de l'instance/file, reconstruit avec les

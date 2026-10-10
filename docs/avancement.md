@@ -1,5 +1,26 @@
 # Avancement et estimation jusqu'au MVP
 
+**Retour du 10 octobre — revue164 toujours en cours :** login/recherche confirmés
+sur0f58cfd (CI37812053841 entière verte). Nouvelle correction de présentation :
+diagnostics retirés de la liste, repères techniques et interprétation des dates
+expliqués dans détail/historique. Fiche/historique/logout restent à valider ;
+pas de nouveau lot ni de fusion. Filtres/calendrier/en-têtes restent au backlog.
+
+**Dernier retour du 8 octobre — fiche de suivi attendue :** le propriétaire
+demande les informations mail/routage/SMTP/durée. La correction164 ajoute une
+vue opérationnelle HTML des faits déjà collectés, isolée par génération, sans
+changement de stockage/API. [Éléments affichés et manquants](message-tracking-view.md).
+L'en-tête From:/Subject, états actuels de file et rejets non attribués ne sont
+pas inventés. Revue utilisateur du nouveau rendu toujours requise, pas de fusion.
+
+**Retour utilisateur du 8 octobre, lot164 :** connexion et recherche ABC123
+confirmées manuellement après correctif b845d95/CI37707149012. Liste des résultats
+allégée pendant la revue ; calendrier et recherche expéditeur/destinataire/sujet,
+ET/OU, égalité/début/contient/fin demandés et acceptés, pas encore implémentés.
+[Travaux et dépendances](search-ux-follow-up.md). L'estimation historique13–28
+ci-dessous précède ces extensions et doit être révisée lors de leur découpage.
+La revue164 reste incomplète, PR37 brouillon, M4/M5 et issue7 ouverts.
+
 État au 7 octobre 2026, après diagnostic/intégration87 et clôture88 fusionnés
 (PR #18, CI finale et main réussies). Projections pures M3 validées aux lots89–92,
 CI verte ; clôture93 de #19 fusionnée, CI finale et main réussies. Expiration94 et
@@ -54,8 +75,23 @@ CI37642563497 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux réussis,
 revérifiés REST156. Identité/détail156 publiés sur2298709, CI37646414652 entière/
 trois jobs/SHA exact réussis, race HTTPAPI Linux1.26/journal Windows vérifiés,
 revérifiés REST157. Timeline157 publiée sur277d981, CI37650350084 entière/trois jobs/
-SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Revue158
-favorable, publication finale/fusion/main à terminer au commit.
+SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST158. Clôture158
+fusionnée #36 sur8c3aa85 ; CI finale37653248114/main37653544179 entières réussies,
+branche API nettoyée, revérifiées159. Recherche Web159 publiée dans #37 surb907914,
+CI37657564872 entière/trois jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis,
+revérifiés160. Détail160 publié sur29cf545 dans #37, CI37660252622 entière/trois
+jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés161. Timeline161
+publiée94095f8, CI37664362505 entière/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26 réussis, revérifiés162. Connexion162 publiée20f64e0, CI37671925509 entière/
+trois jobs/SHA exact/auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 réussis,
+revérifiés163. Déconnexion163 publiée33596e2, CI37675032968 entière/trois jobs/SHA
+exact/auth et HTTPAPI Windows/race Linux1.26 réussis, revérifiés164. Lot164 en cours :
+corrections navigateur CSP Windows/focus/texte, test import→rendu et captures.
+Corrections164 publiées ef87ceb, CI37676596678 entière/trois jobs/SHA exact verts.
+Page HTTPS confirmée visible par l'utilisateur après traitement du certificat ;
+accès outil encore refusé par sécurité. Essai manuel ensuite refusé ; correctif
+Referrer-Policy strict-origin terminé localement, tests/vet passent, publication/CI
+à terminer. Nouvel essai manuel nécessaire ; revue incomplète, #37 brouillon.
 Référence de périmètre :
 [plan M0–M5](phase-0-proposal.md#11-roadmap-et-critères-mvp).
 État technique et prochaine action : [point de reprise](reprise.md).
@@ -70,7 +106,7 @@ suit les livrables de la roadmap ; les issues
 Le MVP visé est installable sur Linux, avec ingestion et reprise, reconstruction
 prudente des messages/destinataires, recherche Web authentifiée et paquets natifs.
 
-Les lots numérotés sont des unités de reprise après quota. Le numéro 158 compte
+Les lots numérotés sont des unités de reprise après quota. Le numéro 164 compte
 surtout les petites étapes FileSource et les revues/corrections des fondations.
 Il ne mesure pas un pourcentage du MVP. Une PR développée mais encore en revue
 n'est pas comptée comme fusionnée ; un socle de CI n'est pas un paquet installable.
@@ -87,9 +123,17 @@ détaillé. Elles incluent développement, tests, documentation et revues habitu
 | M1 — faits Postfix | Terminé : parseurs/corpus/tests, PR #9 fusionnée | Maintenir les régressions pendant les étapes suivantes | 0 |
 | M2 — ingestion | Socle fusionné : SQLite/FileSource/reprise/import (#10–17), diagnostics et intégration #18 CI finale/main vertes | CLI/exporteur/projections et preuves de chevauchement applicatives restent au backlog des jalons suivants | 0 |
 | M3 — reconstruction | Terminé en bibliothèque, #19–29 fusionnés, CI finale/main vertes | Maintenir ambiguïtés/réserves et contrôles pendant les développements applicatifs | 0 |
-| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147 et auth148–153 fusionnés/CI main verte ; API154–157 publiée/CI verte, revue158 favorable/fusion à terminer | Web et revue, filtres complémentaires/diagnostic, raccordement | 2–9 après158/fusion/CI |
+| M4 — consultation sûre | CLI/config128–132, diagnostics133–136, doctor137–138, sources139–142, compte143–147, auth148–153 et API154–158 fusionnés/CI main verte ; Web159–164 publiés/CI verte, revue HTTPS incomplète | Terminer revue164, montage serveur et filtres/diagnostics | 3–10 |
 | M5 — installation pilote | CI Go partielle existante ; livraison à réaliser | Exécutable/service, paquets, sauvegarde/restauration, installation Linux, sécurité de release et mesures de charge/pilote | 10–18 |
-| **Total après158/fusion/CI** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **12–27** |
+| **Total pendant164** | **Deux jalons à clôturer** | **Application installable répondant aux critères du cadrage** | **13–28** |
+
+Révision160 : la borne2–9 après159 ne comptait pas explicitement connexion Web,
+montage serveur et compléments de consultation. Elle était trop optimiste.
+Au moins cinq comportements restent : timeline, connexion, montage, compléments
+de filtres/diagnostics et revue navigateur. Les compléments peuvent nécessiter
+plusieurs lots, avec corrections/intégration : M4 devient5–12, M5 reste10–18.
+Le périmètre du cadrage ne change pas ; les lots réalisés ne diminuent pas une
+borne qui regroupait encore plusieurs comportements indépendants.
 
 Révision139 : l'ancienne borne4–14 pour M4 après138 était trop optimiste.
 Le découpage restant compte YAML/raccordement/clôture sources3lots,
@@ -953,3 +997,139 @@ de clôture retiré, Web+revue au moins2, marge filtres/état sources/health/rea
 raccordement/diagnostic conservée. M4 2–9 après158/fusion/CI, M5 10–18,
 total12–27/deux jalons, à préciser au Web sans annoncer M4/MVP terminés.
 MIT conservée, AD/OIDC/Keycloak après MVP ; aucun159 commencé.
+
+## Bilan du lot 159 — première vue Web
+
+Clôture158 effective : #36 fusionnée sur8c3aa85 ; tête finale e8bde71,
+CI37653248114/main37653544179 entières/trois jobs/SHA exact/HTTPAPI Windows/race
+Linux1.26 réussis, revue COMMENT5445385773, branche API nettoyée. Revérifiés REST159.
+
+[Recherche Web](web-search.md) réalisée sur codex/m4-web : formulaire protégé,
+six critères, pagination aux dates figées, événements/réserves/provenance en texte
+échappé, budgets partagés avec l'API, CSP CSS embarquée sans JavaScript, réponse
+HTML <=1MiB avant succès. Vide et NOQUEUE conservateurs.25tests HTTPAPI Windows
+Go1.26/vet/format/diff passent, incluant SQLite et client HTTPS réels. Publication
+et CI159 encore à terminer au commit ; preuve après publication dans la PR Web.
+Rendu/attaque XSS dans un navigateur réel et parcours clavier pas encore validés.
+
+Prochain160 : détail Web, même PR ; timeline et revue navigateur ensuite. L'ancienne
+borne Web+revue regroupait les vues ; au moins deux lots restent, découpage précis
+des vues/raccordements dans la marge. Conserver M4 2–9 après159/CI, M5 10–18,
+total12–27/deux jalons sans décrément artificiel. L'issue #7 reste ouverte,
+mise à jour de progression après publication ; M4/MVP non terminés. MIT conservée,
+AD/OIDC/Keycloak après MVP ; aucun160 commencé.
+
+## Bilan160 — détail Web
+
+Recherche159 publiée surb907914 dans #37 brouillon ; CI37657564872 entière/trois
+jobs/SHA exact/HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST160. Main
+fusionné reste1588c3aa85/CI37653544179 ; #37 est publiée, pas intégrée à main.
+
+[Détail Web](web-detail.md) réalisé : liens canoniques depuis recherche, mêmes
+faits complets/révision/génération de l'API, destinataires/références/réserves en
+texte échappé, conflits inconnus et adresses exactes/vide/base64 conservés. Erreur
+409 si faits modifiés, aucune sélection silencieuse ; HTML entier plafonné et
+admission/délai communs API/Web.28tests HTTPAPI Windows Go1.26/vet/format/diff
+passent ; SQLite/client HTTPS réels, hostilité/protocole/révocation/conflits et
+budget/annulation/HTML>1MiB couverts. Pas de navigateur réel revendiqué.
+
+Publication/CI160 à terminer au commit dans la même #37. Prochain161 : timeline
+Web, pas commencé. Estimation corrigée pour compter explicitement les comportements
+restants, sans nouveau périmètre : M4 5–12, M5 10–18, total15–30/deux jalons,
+voir détail de révision160 au tableau. #7/M4 restent ouverts, MIT conservée,
+AD/OIDC/Keycloak après MVP.
+
+## Bilan161 — timeline Web
+
+Détail160 publié29cf545/#37 brouillon, CI37660252622 entière/trois jobs/SHA exact/
+HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST161. Main reste1588c3aa85,
+aucune nouvelle fusion. Timeline Web161 réalisée localement : lien depuis détail,
+pagination liée au candidat/révision/raw, tentatives/métadonnées/provenance/réserves
+en texte ; raw interdit par défaut, permission et demande explicites nécessaires.
+Contrôles/direction en notation visible, octets binaires en base64 étiqueté ;
+HTML entier borné, mêmes budgets API/Web. [Contrat](web-timeline.md).
+
+32tests HTTPAPI Windows Go1.26/vet/format/diff passent, incluant SQLite/HTTPS réels,
+stale/budget/protocole/permission avant base, hostile/contrôles/vide/absence/binaire,
+concurrence partagée/annulation/volume brut sans troncature. Pas de navigateur réel
+revendiqué. Publication/CI161 encore à terminer au commit dans la même #37.
+Prochain162 : connexion Web locale ; pas commencé. Timeline réalisée retire un
+comportement de la révision160 : M4 4–11, M5 10–18, total14–29/deux jalons après
+161/CI. #7/M4/MVP restent ouverts, MIT conservée, AD/OIDC/Keycloak après MVP.
+
+## Bilan162 — connexion Web locale
+
+Timeline161 publiée94095f8/#37 brouillon, CI37664362505 entière/trois jobs/SHA exact/
+HTTPAPI Windows/race Linux1.26 réussis, revérifiés REST162. Main reste1588c3aa85.
+Formulaire local public, POST sécurisé partageant l'auth API, cookie frais avec
+rotation et303 fixe vers la recherche. Erreurs HTML privées et aucun credential
+réinjecté ; l'API login/logout conserve ses réponses. [Contrat](web-login.md).
+
+Trois nouveaux tests auth et deux HTTPAPI, 34HTTPAPI total ; tests Windows Go1.26,
+vet/gofmt/diff passent. HTTPS réel/vrai Argon2id/cookiejar, refus avant body/hash,
+budget partagé, session sur rotation/révocation/IO/cancellation couverts.
+Publication/CI162 encore à terminer au commit dans la même #37. Pas de navigateur
+réel ou serveur applicatif livré ; le logout API204 testé n'est pas un parcours
+Web. Prochain163 : déconnexion Web avec retour au formulaire et navigation depuis
+les vues protégées. Aucun163 commencé.
+
+Précision162 : le comportement « connexion » de l'ancienne estimation regroupait
+encore connexion et déconnexion. Le formulaire/succès est réalisé ; la déconnexion
+Web reste un lot distinct avant montage/compléments/revue. Borne M4 maintenue4–11,
+M5 10–18, total14–29 après162/CI, deux jalons. Aucun pourcentage déduit du numéro.
+#7/M4/MVP ouverts, MIT conservée, AD/OIDC/Keycloak après MVP.
+
+## Bilan163 — déconnexion Web
+
+Connexion162 publiée20f64e0/#37 brouillon, CI37671925509 entière/trois jobs/SHA exact/
+auth et HTTPAPI Windows/race auth et HTTPAPI Linux1.26 réussis, revérifiés REST163.
+Main reste1588c3aa85. Déconnexion Web depuis les trois vues, révocation avant
+réponse, cookie supprimé et303 fixe vers le formulaire. Même contrôle d'origine
+et magasin que l'API204 conservée, autres sessions préservées, refus sans mutation
+et idempotence ; IO échouée ne restaure pas la session. [Contrat](web-logout.md).
+
+Deux nouveaux tests auth et un HTTPAPI,35HTTPAPI total ; tests Windows Go1.26,
+vet/gofmt/diff passent. HTTPS réel/SQLite/cookiejar, formulaire des trois vues,
+origine hostile, retry, replay du token révoqué401, garde avant body/hash et
+échecs d'écriture couverts. Publication/CI163 à terminer au commit, même #37.
+Pas de navigateur réel ou montage serveur applicatif livré.
+
+Prochain164 : revue Web159–163 avec navigateur réel et corrections nécessaires,
+puis clôture #37 si critères satisfaits. Montage et compléments dans les chantiers
+suivants. Déconnexion réalisée retire un comportement : M4 3–10, M5 10–18,
+total13–28 après163/CI, deux jalons. #7/M4/MVP restent ouverts. MIT,
+AD/OIDC/Keycloak après MVP ; aucun164 commencé.
+
+## Bilan164 — corrections du rendu, revue HTTPS incomplète
+
+Lot163 publié33596e2/#37, CI37675032968 entière/trois jobs/SHA exact/auth et
+HTTPAPI Windows/race Linux1.26 verts, revérifiés164. Main reste1588c3aa85.
+Le navigateur a révélé trois défauts corrigés : hash CSP/CSS Windows CRLF,
+focus du lien d'évitement et contrôles de direction visibles dans le détail.
+ImportFile synthétique→Postfix→SQLite→handlers protégés→HTML : DOM hostile texte,
+clavier raw et captures desktop/mobile contrôlés sur snapshots statiques.
+Une régression automatisée ajoutée ; fixtures manuelles opt-in, hors CI normale.
+Tests auth/HTTPAPI Windows Go1.26, vet/format/diff passent.
+
+**La revue164 reste incomplète** : certificat HTTPS de test refusé, intervention
+humaine requise par Computer Use. Aucun login/logout ou SameSite navigateur
+revendiqué par les snapshots HTTP. Corrections à publier et CI à contrôler dans
+la même #37 brouillon ; [preuves, limites et reprise](reviews/m4-web.md).
+Reprendre164, aucun165 commencé, pas de fusion à ce stade. Deux jalons restent,
+M4 3–10/M5 10–18/total13–28 conservés ; clôture de revue non acquise.
+Issue7/M4/MVP ouverts, MIT, AD/OIDC/Keycloak après MVP.
+
+Reprise164 : corrections publiées ef87ceb/CI37676596678 entière/trois jobs/SHA
+exact verts. Utilisateur confirme la page HTTPS après certificat ; l'outil refuse
+encore l'accès par sécurité. Rapport manuel du parcours demandé, en attente.
+Cette confirmation ne clôture pas la revue ; même lot164, estimation inchangée.
+
+Suite de la même revue164 : essai humain « Requête de connexion refusée » avec
+capture, aucune connexion réussie. Défaut identifié : no-referrer rend Origin
+null sur un formulaire POST natif ; en-tête Web strict-origin corrigé, guards
+Origin/CSRF inchangés. Régression HTTPS reproduite sous ancien header puis corrigée,
+suite auth/HTTPAPI et vet passent ; test NOQUEUE stabilisé avec dates explicites.
+Port de fixture optionnel loopback pour la reprise sur50104, démarrage/arrêt testés.
+Aucun serveur temporaire actif. Publier/CI du correctif puis nouvel essai manuel,
+même #37 brouillon, aucun165 et aucune baisse de l'estimation avant fin de revue.
+[Diagnostic et limites](reviews/m4-web.md#refus-de-connexion-et-correction-de-referrer-policy).
